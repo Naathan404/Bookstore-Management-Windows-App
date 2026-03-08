@@ -1,0 +1,12 @@
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\bin\Debug\net8.0\Bookstore.Share.deps.json
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\bin\Debug\net8.0\Bookstore.Share.dll
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\bin\Debug\net8.0\Bookstore.Share.pdb
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\Bookstore.Share.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\Bookstore.Share.AssemblyInfoInputs.cache
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\Bookstore.Share.AssemblyInfo.cs
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\Bookstore.Share.csproj.CoreCompileInputs.cache
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\Bookstore.Share.sourcelink.json
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\Bookstore.Share.dll
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\refint\Bookstore.Share.dll
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\Bookstore.Share.pdb
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.Share\obj\Debug\net8.0\ref\Bookstore.Share.dll
