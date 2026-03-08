@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "8uK4ptjZm64=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\luugi\\Desktop\\BookstoreManagement\\Bookstore.WPF\\Bookstore.WPF.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\luugi\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",
+    "C:\\Users\\luugi\\.nuget\\packages\\materialdesigncolors\\5.3.1-ci1292\\materialdesigncolors.5.3.1-ci1292.nupkg.sha512",
+    "C:\\Users\\luugi\\.nuget\\packages\\materialdesignthemes\\5.3.1-ci1292\\materialdesignthemes.5.3.1-ci1292.nupkg.sha512",
+    "C:\\Users\\luugi\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.77\\microsoft.xaml.behaviors.wpf.1.1.77.nupkg.sha512",
+    "C:\\Users\\luugi\\.nuget\\packages\\newtonsoft.json\\13.0.5-beta1\\newtonsoft.json.13.0.5-beta1.nupkg.sha512"
+  ],
+  "logs": []
+}
