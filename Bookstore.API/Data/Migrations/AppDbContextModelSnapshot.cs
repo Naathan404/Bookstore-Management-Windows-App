@@ -77,6 +77,35 @@ namespace Bookstore.API.Data.Migrations
                             Title = "Lập trình C#"
                         });
                 });
+
+            modelBuilder.Entity("Bookstore.API.Models.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Cần Thơ",
+                            Name = "Nguyễn Gia Hưng"
+                        });
+                });
 #pragma warning restore 612, 618
         }
     }

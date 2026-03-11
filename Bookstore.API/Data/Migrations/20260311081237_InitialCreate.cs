@@ -2,6 +2,8 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Bookstore.API.Data.Migrations
 {
     /// <inheritdoc />
@@ -27,6 +29,34 @@ namespace Bookstore.API.Data.Migrations
                 {
                     table.PrimaryKey("PK_Books", x => x.BookId);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Books",
+                columns: new[] { "BookId", "Author", "Category", "Description", "Price", "StockQuantity", "Title" },
+                values: new object[,]
+                {
+                    { 1, "Aoyama Gosho", "Truyện tranh", "", 25000m, 50, "Conan Tập 100" },
+                    { 2, "NXB Trẻ", "Giáo trình", "", 120000m, 20, "Lập trình C#" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Customers",
+                columns: new[] { "Id", "Address", "Name" },
+                values: new object[] { 1, "Cần Thơ", "Nguyễn Gia Hưng" });
         }
 
         /// <inheritdoc />
@@ -34,6 +64,9 @@ namespace Bookstore.API.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Books");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
         }
     }
 }
