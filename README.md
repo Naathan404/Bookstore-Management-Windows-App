@@ -24,19 +24,18 @@
 │   ├── Controllers/    Chứa các file xử lý API
 │   ├── Data/           AppDbContext và Migrations 
 │   ├── Models/         Các bảng trong DB
-│   ├── DTOs/           Chứa các class DTO
 │   └── Services/       Chứa các class và hàm thao tác, phức tạp
 ├── Bookstore.WPF/
 │   ├── Views/          Chứa các file giao diện .xaml
 │   ├── ViewModels/     ViewModel của các giao diện
-│   ├── Models/         Chứa các class phía client
 │   ├── Services/       Các hàm gọi API, http
 │   ├── Resources/      Chứa hình ảnh, font và các styles.xaml
 │   └── Helpers/        Các hàm tiện ích
 └── Bookstore.Share/
     ├── Constants/      Chứa hằng số dùng chung
     ├── Enums/          Chứa enum dùng chung
-    └── Requests/       Chứa dữ liệu mẫu gửi từ wpf đến api
+    └── DTORequests/       Chứa dữ liệu mẫu gửi từ frontend đến backend
+    └── DTOReponses/       Chứa dữ liệu mẫu gửi từ backend đến frontend
 ```
 
 ---

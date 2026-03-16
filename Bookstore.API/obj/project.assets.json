@@ -2693,6 +2693,16 @@
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
         }
+      },
+      "Bookstore.Share/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Bookstore.Share.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Bookstore.Share.dll": {}
+        }
       }
     }
   },
@@ -7586,10 +7596,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "Bookstore.Share/1.0.0": {
+      "type": "project",
+      "path": "../Bookstore.Share/Bookstore.Share.csproj",
+      "msbuildProject": "../Bookstore.Share/Bookstore.Share.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Bookstore.Share >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.24",
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.24",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.24",
@@ -7628,7 +7644,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\luugi\\Desktop\\BookstoreManagement\\Bookstore.Share\\Bookstore.Share.csproj": {
+              "projectPath": "C:\\Users\\luugi\\Desktop\\BookstoreManagement\\Bookstore.Share\\Bookstore.Share.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

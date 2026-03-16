@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v8.0": {
       "Bookstore.WPF/1.0.0": {
         "dependencies": {
+          "Bookstore.Share": "1.0.0",
           "CommunityToolkit.Mvvm": "8.4.0",
           "MaterialDesignThemes": "5.3.1-ci1292",
           "Newtonsoft.Json": "13.0.5-beta1"
@@ -59,6 +60,14 @@
             "fileVersion": "13.0.5.31230"
           }
         }
+      },
+      "Bookstore.Share/1.0.0": {
+        "runtime": {
+          "Bookstore.Share.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -102,6 +111,11 @@
       "sha512": "sha512-cGxikAY78u8CPfIT7mkICvI2ZNL7oDsC+DzgVWxtU5DmNhF2qDcU3YheDitdO9TKIra6Y5rHRD2T7oEexbAbLA==",
       "path": "newtonsoft.json/13.0.5-beta1",
       "hashPath": "newtonsoft.json.13.0.5-beta1.nupkg.sha512"
+    },
+    "Bookstore.Share/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

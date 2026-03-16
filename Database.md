@@ -5,16 +5,23 @@ Các cột `CreatedBy`, `CreatedAt` được lấy tự động do người dùn
 Table Books //Tất cả loại sách
 {
   BookID int [primary key]
+  ISBN nvarchar [unique]
   CreatedAt time
-  CreatedBy int --> Accounts
-  Status int
+  CreatedBy int --> Accounts 
   ---
   Title nvarchar
   Author nvarchar
-  Category int --> Categories
+  Publisher nvarchar
+  Edition int
+  CategoryID int --> Categories
   Description nvarchar
   ImageURL varchar
   Price money
+  ListPrice money
+  ImportedPrice money
+
+  StockQuantity int
+  IsDeleted bool
 }
 
 Table Categories
@@ -45,24 +52,24 @@ Table BookCounts
 {
   BookCountID integer pk
   BookID integer --> Books
-  StockID interger --> Stocks
-  Count interger
+  StockID integer --> Stocks
+  Count integer
+  Threshold integer
 }
 ```  
 - Không quản lý theo kệ, quản lý theo kho và độ ưu tiên, để xử lý việc bán hàng và quản lý số lượng dễ hơn. 
 - Số lượng sách trên kệ do quy định từ cửa hàng, nhân viên thấy hết sách phải tự động vào kho mặc định (Priority = 0) lấy sách thêm lên kệ hàng.
-- Khi bán hàng, số lượng tự động trừ vào kệ hàng độ ưu tiên nhỏ nhất (0), nếu quản lý theo kệ sẽ rất phiền. Như vậy, số lượng sách trong kho ưu tiên 0 = số lượng thật trong kho + số lượng trưng bày. Những kho ưu tiên != 0 lưu đúng số lượng thật.
-- Cảnh báo khi số lượng sách trong kho mặc định nhỏ hơn số nào đó. Nếu kho mặc định còn 0, nhưng những kho khác vẫn còn, trên hệ thống tra cứu thông tin sách vẫn kết ra số lượng > 0. 
-- Lúc này khi khách hàng mua hàng thì số lượng trong kho mặc định có thể âm, không tự động trừ vào các kho khác, vẫn phải đảm bảo phần âm không vượt qua số lượng tại các kho khác (đám bảo select sum số lượng luôn >=0)
+- Khi bán hàng, số lượng tự động trừ vào kệ hàng độ ưu tiên nhỏ nhất (0) - hang trung bay. Như vậy, số lượng sách trong kho ưu tiên 0 chinh la số lượng trưng bày. Những kho ưu tiên != 0 là cac kho con lai.
+- Cảnh báo khi số lượng sách trung bay nhỏ hơn số nào đó. Nếu trung bay còn 0, nhưng những kho khác vẫn còn, trên hệ thống tra cứu thông tin sách vẫn kết ra số lượng > 0. 
 - Sau khi có cảnh bảo số lượng trong kho mặc định (nhỏ hơn n, 0 hoặc bị âm), các nhân viên phải lập một phiếu chuyển kho để điều chỉnh số lượng sách giữa các kho, hoặc tiến hành nhập sách và lập phiếu nhập nếu tổng số lượng tại các kho không đạt.
 ```sql
 --Thông tin chung của phiếu chuyển
 Table StockTransfers 
 {
   TransferID int [primary key]
-  TransferDate datetime
+  CreatedAt datetime
   CreatedBy int --> Accounts
-  Status varchar
+  Status varchar --> 0: pending, 1: approved, 2: rejected
   ---
   FromStockID int --> Stocks
   ToStockID int --> Stocks 
@@ -97,7 +104,9 @@ Table ImportReceipts
   ImportReceiptID integer pk
   CreatedAt time
   CreatedBy integer --> Accounts
-  Status int
+  ReviewedAt time
+  ReviewedBy integer
+  Status int --> 0: draft, 1: pending, 2: approved, 3: rejected
   ---
   SupplierID integer --> Suppliers
   StockID integer --> Stocks
@@ -129,14 +138,16 @@ Table Customers
 {
   CustomerID integer pk
   CreatedAt time
-  CreatedBy int --> Accounts
 
-  Phonenumber nvarchar unique
-  FullName nvarchar
-  Score int
-  Dept int
+  CustomerName nvarchar
+  Gender int --> 0: Male, 1: Female
   Address nvarchar [null]
+  Phonenumber nvarchar unique
   Email nvarchar [null]
+  TotalPurchaseValue decimal
+  TotalOrders int
+  TotalDebt decimal
+
   AccountID integer [null] --> Accounts
 }
 
@@ -145,8 +156,14 @@ Table Accounts
   AccountID integer pk
   Userame nvarchar unique
   Email nvarchar unique
-  PasswordHashed nvarchar
-  Role integer //0: admin, 1: staff, 2: customers
+  PasswordHash nvarchar
+  RoleID integer //0: admin, 1: staff, 2: customers
+}
+
+Table Role
+{
+  RoleID int pk
+  RoleName nvarchar
 }
 ```
 - Tại nhiều cửa hàng, khách hàng không cần tạo tài khoản mà nhân viên hỏi một số thông tin như Tên, Số điện thoại để tiến hành tích điểm mà không cần một Account phức tạp.
@@ -167,7 +184,7 @@ Table Promotions
 {
   PromotionID integer pk
   Code varchar [unique, not null]
-  Name nvarchar [not null]       
+  Discription nvarchar [not null]       
   CreatedAt datetime [not null]
   CreatedBy integer [not null] --> Accounts
   ---  
@@ -176,7 +193,6 @@ Table Promotions
   --Điều kiện
   MinimumOrderValue money [null]  --0
   RequiredBookID integer [null]   --1, 2 --> Books
-  RequiredCategoryID int [null]   --1    --> Categories
   RequiredQuantity integer [null] --1, 2
 
   --Phần thưởng
@@ -199,13 +215,6 @@ Minh họa một số khuyến mãi
   > MinimumOrderValue = 100k  
   > DiscountRate = 50%  
   > MaxDiscountAmount = 10k  
-- Giảm 10% sách giáo khoa khi mua từ 2 cuốn
-  > Loại 1:  
-  > RequiredBookID = null  
-  > RequiredCategoryID =  SGK  
-  > RequiredQuantity = 2  
-  > DiscountRate = 10%  
-  > MaxDiscountAmount = MAX  
 - Mua 1 sách A tặng 1 sách B
   > Loại 2:  
   > RequiredBookID = A  
@@ -245,6 +254,7 @@ Table InvoiceDetails
   InvoiceDetailID integer pk
   InvoiceID integer   --> Invoices
   BookID integer      --> Books
+  StockID integer
   Quantity integer
   UnitPrice money     --from Books
   PromotionID int     --> Promotions
@@ -280,13 +290,14 @@ Table InvoiceDetails
 --Phiếu thu
 Table Receipts 
 {
-  Receipts integer pk
+  ReceiptID integer pk
   CreatedAt time
   CreatedBy int            --> Accounts
 
   CustomerID int [null]    --> Customers
   InvoiceID integer [null] --> Invoices
   ReceiptValue money // != invoice value
+  PaymentMethod int-- 0: cash, 1: banking
 }
 ```
 - Thực tế, trước khi nhất nút xuất hóa đơn, nhân viên thực hiện đưa "hóa đơn ảo" cho khách xem và thực hiện thanh toán trước. 
@@ -346,8 +357,8 @@ Table MonthlyStockReports
   BookID integer --> Books
   ---
   StartCount integer  -- Tồn đầu kỳ
-  ImportCount integer -- Tổng Nhập (Nhập NCC + Chuyển kho đến)
-  ExportCount integer -- Tổng Xuất (Bán hàng + Chuyển kho đi)
+  ImportedCount integer -- Tổng Nhập (Nhập NCC + Chuyển kho đến)
+  ExportedCount integer -- Tổng Xuất (Bán hàng + Chuyển kho đi)
   EndCount integer    -- Tồn cuối kỳ = StartCount + ImportCount - ExportCount
 }
 ```

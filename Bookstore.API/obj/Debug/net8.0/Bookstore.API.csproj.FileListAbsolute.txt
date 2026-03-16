@@ -253,3 +253,5 @@ C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.API\bin\Debug\net8.0\ru\Mic
 C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.API\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Scripting.resources.dll
 C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.API\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Scripting.resources.dll
 C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.API\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Scripting.resources.dll
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.API\bin\Debug\net8.0\Bookstore.Share.dll
+C:\Users\luugi\Desktop\BookstoreManagement\Bookstore.API\bin\Debug\net8.0\Bookstore.Share.pdb
