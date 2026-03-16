@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
@@ -41,6 +41,10 @@
               "WhenOpened": "2026-03-08T11:55:30.638Z",
               "IsPinned": true,
               "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Bookmark",
@@ -62,7 +66,7 @@
               "RelativeDocumentMoniker": "Bookstore.API\\Controllers\\BaseController.cs",
               "ToolTip": "C:\\Users\\luugi\\Desktop\\BookstoreManagement\\Bookstore.API\\Controllers\\BaseController.cs",
               "RelativeToolTip": "Bookstore.API\\Controllers\\BaseController.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAowEEAAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAADEAAAAAAAAAAAAYwEEAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-16T09:54:28.5Z",
               "EditorCaption": ""
