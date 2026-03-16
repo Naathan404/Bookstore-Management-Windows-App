@@ -22,8 +22,11 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bookstore.Share\Bookstore.Share.csproj" />
   </ItemGroup>
 
 </Project>
