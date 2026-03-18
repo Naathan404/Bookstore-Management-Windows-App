@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260316140556_SoftDeleted")]
-    partial class SoftDeleted
+    [Migration("20260317064956_260317")]
+    partial class _260317
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

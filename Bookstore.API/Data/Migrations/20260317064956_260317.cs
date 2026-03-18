@@ -5,7 +5,7 @@
 namespace Bookstore.API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class SoftDeleted : Migration
+    public partial class _260317 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
