@@ -45,7 +45,7 @@ namespace Bookstore.API.Services.Auth
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(2),
+                expires: DateTime.Now.AddHours(2), //
                 signingCredentials: creds
             );
 
