@@ -62,7 +62,7 @@
 #### 5. JWT token
 Chạy lệnh tải gói bằng Package Manager Console
 ```cmd
-Package Manager Console
+Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -Version 8.0.3
 ```
 
 ---
