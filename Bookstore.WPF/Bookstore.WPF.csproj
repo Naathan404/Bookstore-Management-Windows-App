@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\Login\bg0.png" />
+    <None Remove="Resources\Images\Login\bg1_1.png" />
+    <None Remove="Resources\Images\Login\bg1_2.png" />
+    <None Remove="Resources\Images\Login\bg1_3.png" />
+    <None Remove="Resources\Images\Login\bg1_4.png" />
+    <None Remove="Resources\Images\Login\bg1_5.png" />
     <None Remove="Resources\Images\Login\login0.png" />
     <None Remove="Resources\Images\Login\login1.png" />
     <None Remove="Resources\Images\Login\login2.png" />
@@ -21,14 +27,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Bookstore.Share\Bookstore.Share.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\Login\bg0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Login\bg1_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Login\bg1_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Login\bg1_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Login\bg1_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Login\bg1_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Login\login0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
