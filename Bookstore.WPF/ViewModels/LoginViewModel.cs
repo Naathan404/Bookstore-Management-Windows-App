@@ -1,9 +1,14 @@
-﻿using Bookstore.WPF.Services;
+﻿using Bookstore.Share.DTORequests;
+using Bookstore.Share.DTOResponses;
+using Bookstore.WPF.Services;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 using System.Windows;
 using System.Windows.Input;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 public class LoginViewModel : BaseViewModel
 {
@@ -54,10 +59,50 @@ public class LoginViewModel : BaseViewModel
         });
 
         
-        LoginCommand = new RelayCommand<object>((p) => {
+        LoginCommand = new RelayCommand<object>(async (p) => {
             string plainText = new NetworkCredential("", SecurePassword).Password;
             MessageBox.Show($"Login for: username - {Username} and password - {plainText}");
             // call api hiaa
+            var requestData = new LoginRequest
+            {
+                Username = this.Username,
+                Password = this.Password
+            };
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    // 2. GỬI THẲNG OBJECT LÊN (Hàm PostAsJsonAsync tự động bọc thành JSON, ông không cần Serialize thủ công nữa)
+                    var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth/login", requestData);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // 3. ĐỌC RESPONSE VÀ ÉP KIỂU VỀ OBJECT CỦA SHARE LUÔN (Không cần bóc tách từng node JSON)
+                        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                        if (result != null)
+                        {
+                            // Lấy cục dữ liệu ra xài cái rẹt
+                            //AppSession.Token = result.Token;
+                            //AppSession.CurrentUsername = result.Username;
+                            //AppSession.Role = result.Role;
+
+                            MessageBox.Show($"Đăng nhập thành công!");
+                            // Chuyển màn hình...
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Sai tài khoản hoặc mật khẩu rồi ông giáo ạ!");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi kết nối đến Server: {ex.Message}");
+                }
+            }
+
         });
 
         SendOTPCommand = new RelayCommand<object>((p) => {

@@ -59,6 +59,12 @@
 - Dùng lệnh `Add-Migration InitialCreate -OutputDir Data/Migrations` để cập nhật Migrations khi thay đổi code database
 - Dùng lệnh 'Update-Database` để cập nhật Migrations vào database trong SQL Server
 - Nếu chạy migration bị sai thì dùng lệnh `Remove-Migration` để xóa
+#### 5. JWT token
+Chạy lệnh tải gói bằng Package Manager Console
+```cmd
+Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -Version 8.0.3
+```
+
 ---
 
 ## **Quy định làm việc**

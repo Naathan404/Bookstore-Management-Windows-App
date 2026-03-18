@@ -9,8 +9,10 @@
   <ItemGroup>
     <Folder Include="Constants\" />
     <Folder Include="Enums\" />
-    <Folder Include="DTORespones\" />
-    <Folder Include="DTORequests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
   </ItemGroup>
 
 </Project>

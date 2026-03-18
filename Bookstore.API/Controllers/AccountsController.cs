@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bookstore.API.Data;
+using Bookstore.API.Interfaces;
+using Bookstore.API.Models;
+using Bookstore.API.Services.Interface;
+using Bookstore.Share.DTORequests;
+using Bookstore.Share.DTOResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Bookstore.API.Data;
-using Bookstore.API.Models;
-using Bookstore.API.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bookstore.API.Controllers
 {
@@ -15,8 +18,23 @@ namespace Bookstore.API.Controllers
     [ApiController]
     public class AccountsController : BaseController<Account>
     {
-        public AccountsController(IGenericRepository<Account> repo) : base(repo)
+        private readonly IAuthService _authService;
+        public AccountsController(IGenericRepository<Account> repo, IAuthService authService) : base(repo)
         {
+            _authService = authService;
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+        {
+            var result = await _authService.LoginAsync(request);
+
+            if (result == null)
+            {
+                return Unauthorized("Sai tài khoản hoặc mật khẩu!");
+            }
+
+            return Ok(result);
         }
     }
 }
