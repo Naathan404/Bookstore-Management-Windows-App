@@ -11,15 +11,56 @@
 
     <Grid>
         <Canvas ClipToBounds="True">
-            <Image Source="/Resources/Images/Login/login0.png" Height="712" Width="1164" Canvas.Top="-3"/>
+            <Canvas.Resources>
+                <Storyboard x:Key="ParallaxAnimation">
+                    <DoubleAnimation Storyboard.TargetName="Trans1" Storyboard.TargetProperty="Y" From="-5" To="5" Duration="0:0:12" AutoReverse="True" RepeatBehavior="Forever"/>
+                    <DoubleAnimation Storyboard.TargetName="Trans2" Storyboard.TargetProperty="Y" From="-8" To="8" Duration="0:0:10" AutoReverse="True" RepeatBehavior="Forever"/>
+                    <DoubleAnimation Storyboard.TargetName="Trans3" Storyboard.TargetProperty="Y" From="-12" To="12" Duration="0:0:8" AutoReverse="True" RepeatBehavior="Forever"/>
+                    <DoubleAnimation Storyboard.TargetName="Trans4" Storyboard.TargetProperty="Y" From="-15" To="15" Duration="0:0:7" AutoReverse="True" RepeatBehavior="Forever"/>
+                    <DoubleAnimation Storyboard.TargetName="Trans5" Storyboard.TargetProperty="Y" From="-20" To="20" Duration="0:0:6" AutoReverse="True" RepeatBehavior="Forever"/>
+                </Storyboard>
+            </Canvas.Resources>
+
+            <Canvas.Triggers>
+                <EventTrigger RoutedEvent="Canvas.Loaded">
+                    <BeginStoryboard Storyboard="{StaticResource ParallaxAnimation}"/>
+                </EventTrigger>
+            </Canvas.Triggers>
+
+            <Image Source="/Resources/Images/Login/bg0.png" Height="712" Width="1164" Canvas.Top="-3"/>
+
+            <Image Source="/Resources/Images/Login/bg1_1.png" Height="712" Width="1164" Canvas.Top="-3">
+                <Image.RenderTransform>
+                    <TranslateTransform x:Name="Trans1"/>
+                </Image.RenderTransform>
+            </Image>
+            <Image Source="/Resources/Images/Login/bg1_2.png" Height="712" Width="1164" Canvas.Top="-3">
+                <Image.RenderTransform>
+                    <TranslateTransform x:Name="Trans2"/>
+                </Image.RenderTransform>
+            </Image>
+            <Image Source="/Resources/Images/Login/bg1_3.png" Height="712" Width="1164" Canvas.Top="-3">
+                <Image.RenderTransform>
+                    <TranslateTransform x:Name="Trans3"/>
+                </Image.RenderTransform>
+            </Image>
+            <Image Source="/Resources/Images/Login/bg1_4.png" Height="712" Width="1164" Canvas.Top="-3">
+                <Image.RenderTransform>
+                    <TranslateTransform x:Name="Trans4"/>
+                </Image.RenderTransform>
+            </Image>
+            <Image Source="/Resources/Images/Login/bg1_5.png" Height="712" Width="1164" Canvas.Top="-3">
+                <Image.RenderTransform>
+                    <TranslateTransform x:Name="Trans5"/>
+                </Image.RenderTransform>
+            </Image>
+
             <Ellipse Width="400" Height="400" Fill="#FFC75F" Opacity="0.2" Canvas.Left="-100" Canvas.Top="-100">
                 <Ellipse.Effect>
                     <BlurEffect Radius="100"/>
                 </Ellipse.Effect>
             </Ellipse>
-            <Ellipse Width="350" Height="350" 
-                     Fill="#F9F871" Opacity="0.2" 
-                     Canvas.Right="-50" Canvas.Bottom="-50">
+            <Ellipse Width="350" Height="350" Fill="#F9F871" Opacity="0.2" Canvas.Right="-50" Canvas.Bottom="-50">
                 <Ellipse.Effect>
                     <BlurEffect Radius="70"/>
                 </Ellipse.Effect>
@@ -49,7 +90,7 @@
                                    FontSize="40" Foreground="#432818" FontWeight="Bold"/>
                         <Line Stroke="#99582a" StrokeThickness="2" X1="0" X2="110" Margin="0,5"/>
                         <TextBlock x:Name="txtSubTitle" 
-                                   Text="{Binding Subtitle}" 
+                                   Text="{Binding SubTitle}" 
                                    FontSize="14" Foreground="#99582a" Opacity="0.8"/>
                     </StackPanel>
                     <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="50" Height="50" HorizontalAlignment="Right" Foreground="#99582a"/>
@@ -58,11 +99,13 @@
                 <Grid Grid.Row="1">
 
                     <StackPanel x:Name="LoginGroup" Visibility="{Binding IsLoginVisible}">
-                        <TextBlock Text="Username" Margin="5,0,0,5" FontSize="14" FontWeight="SemiBold" Foreground="#432818"/>
+                        <TextBlock Text="Username" Margin="5,0,0,5" FontSize="14" FontWeight="SemiBold" Foreground="#432818"
+                                   />
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,20">
                             <TextBox materialDesign:HintAssist.Hint="Enter your username..." 
                                      materialDesign:HintAssist.Foreground="White"
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 
+                                     Text="{Binding Username, Mode=TwoWay}"
                                      Foreground="White" CaretBrush="White"
                                      materialDesign:TextFieldAssist.LeadingIcon="Account" 
                                      materialDesign:TextFieldAssist.HasClearButton="True"
@@ -74,7 +117,8 @@
                         <Border Background="#bb9457" CornerRadius="12">
                             <PasswordBox materialDesign:HintAssist.Hint="Enter your password..." 
                                          materialDesign:HintAssist.Foreground="White"
-                                         materialDesign:TextFieldAssist.UnderlineBrush="Transparent"   
+                                         materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 
+                                         PasswordChanged="PasswordBox_PasswordChanged"
                                          Foreground="White" CaretBrush="White"
                                          materialDesign:TextFieldAssist.LeadingIcon="Lock" 
                                          materialDesign:TextFieldAssist.HasClearButton="True"
@@ -111,18 +155,20 @@
                         <TextBlock Text="We will send you an OTP through this email." FontSize="12" Foreground="#99582a" FontStyle="Italic" Margin="5,0,0,30"/>
 
                         <Button Content="SEND OTP" Height="50" 
-                                Command="{Binding SwitchStateCommand}"
-                                CommandParameter="Verify"
+                                Command="{Binding SendOTPCommand}"
                                 materialDesign:ButtonAssist.CornerRadius="15"
                                 Background="#432818" BorderBrush="Transparent" FontWeight="Bold" Margin="0,0,0,15"/>
 
-                        <Button Content="Return to Login" Style="{StaticResource MaterialDesignFlatButton}" 
+                        <Button Content="Return to Login" 
+                                Command="{Binding SwitchStateCommand}"
+                                CommandParameter="Login"
+                                Style="{StaticResource MaterialDesignFlatButton}" 
                                 Foreground="#99582a" HorizontalAlignment="Center"/>
                     </StackPanel>
 
                     <StackPanel x:Name="VerifyOTPGroup" Visibility="{Binding IsVerifyVisible}">
                         <TextBlock Text="Verification Code" Margin="5,0,0,5" 
-                                   FontSize="14" FontWeight="SemiBold" Foreground="#432818"/>
+                                   FontSize="18" FontWeight="SemiBold" Foreground="#432818"/>
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,10">
                             <TextBox materialDesign:HintAssist.Hint="Enter 6-digit OTP..." 
                                      materialDesign:TextFieldAssist.HasClearButton="True"
@@ -130,17 +176,19 @@
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 
                                      Foreground="White" CaretBrush="White"
                                 BorderThickness="0" Height="50" 
-                                Style="{StaticResource MaterialDesignFloatingHintTextBox}" Padding="10,0" HorizontalContentAlignment="Center" FontSize="18"/>
+                                Style="{StaticResource MaterialDesignFloatingHintTextBox}" Padding="10,0" HorizontalContentAlignment="Left"/>
                         </Border>
                         <TextBlock Text="Check your inbox (including spam folder)." 
                                    FontSize="12" Foreground="#99582a" FontStyle="Italic" Margin="5,0,0,30"/>
 
                         <Button Content="VERIFY OTP" Height="50" materialDesign:ButtonAssist.CornerRadius="15"
                                    Background="#432818" BorderBrush="Transparent" 
-                                Command="{Binding SwitchStateCommand}"
-                                CommandParameter="Reset"
+                                Command="{Binding VerifyOTPCommand}"
                                 FontWeight="Bold" Margin="0,0,0,15"/>
-                        <Button Content="Resend Code" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#99582a" HorizontalAlignment="Center"/>
+                        <Button Content="Resend Code" 
+                                Style="{StaticResource MaterialDesignFlatButton}" 
+                                Foreground="#99582a" HorizontalAlignment="Center"
+                                Command="{Binding ResendOTPCommand}"/>
                     </StackPanel>
 
                     <StackPanel x:Name="ResetPasswordGroup" Visibility="{Binding IsResetVisible}">
@@ -170,8 +218,8 @@
 
                         <Button Content="UPDATE PASSWORD" Height="50" materialDesign:ButtonAssist.CornerRadius="15"
                                 Background="#432818" BorderBrush="Transparent" FontWeight="Bold"
-                                Command="{Binding SwitchStateCommand}"
-                                CommandParameter="Login"/>
+                                Command="{Binding ResetPasswordCommand}"
+                                />
                     </StackPanel>
 
                 </Grid>
