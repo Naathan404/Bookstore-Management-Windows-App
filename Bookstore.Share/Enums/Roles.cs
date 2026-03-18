@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Share.Enums
 {
-    internal class Class1
+    internal class Roles
     {
+        public enum RoleID
+        {
+            Admin,
+            Manager,
+            Staff,
+            Custommer
+        }
     }
 }
