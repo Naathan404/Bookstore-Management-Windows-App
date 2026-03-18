@@ -34,12 +34,12 @@ public class LoginViewModel : BaseViewModel
     public string SubTitle { get; private set; } = "Welcome back! Have a nice day :3";
 
     // --- Data Properties
-    public string Username { get; set; }
-    public string Password { get; private set; }
-    public SecureString SecurePassword { private get; set; }
+    public string Username { get; set; } = String.Empty;
+    public string Password { get; private set; } = String.Empty;
+    public SecureString SecurePassword { private get; set; } = new SecureString();
 
-    public string Email { get; set; }
-    public string OTP { get; set; }
+    public string Email { get; set; } = String.Empty;
+    public string OTP { get; set; } = String.Empty;
     // Lưu ý: Password nên xử lý qua PasswordBoxAssistant hoặc CommandParameter để bảo mật
 
     // --- Commands ---
@@ -124,7 +124,7 @@ public class LoginViewModel : BaseViewModel
             MessageBox.Show("Mật khẩu đã đổi! Về đăng nhập thôi.");
             CurrentState = LoginState.Login;
         });
-    }
+    } 
 
     // Visibility Helpers
     public Visibility IsLoginVisible => CurrentState == LoginState.Login ? Visibility.Visible : Visibility.Collapsed;
