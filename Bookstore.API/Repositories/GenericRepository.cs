@@ -1,6 +1,7 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Bookstore.API.Repositories
 {
@@ -45,5 +46,9 @@ namespace Bookstore.API.Repositories
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.AnyAsync(predicate);
+        }
     }
 }

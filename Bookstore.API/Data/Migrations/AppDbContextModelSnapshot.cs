@@ -57,6 +57,26 @@ namespace Bookstore.API.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            AccountID = 1,
+                            Email = "nathannguyen6002@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
+                            Role = 0,
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            AccountID = 2,
+                            Email = "24521186@gm.uit.edu.vn",
+                            IsDeleted = false,
+                            PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
+                            Role = 1,
+                            Username = "staff"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.Book", b =>

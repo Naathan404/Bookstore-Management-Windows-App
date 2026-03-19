@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bookstore.WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,13 +16,14 @@ using System.Windows.Shapes;
 namespace Bookstore.WPF.Views
 {
     /// <summary>
-    /// Interaction logic for ForgotPasswordView.xaml
+    /// Interaction logic for AdminView.xaml
     /// </summary>
-    public partial class ForgotPasswordView : Window
+    public partial class AdminView : Window
     {
-        public ForgotPasswordView()
+        public AdminView()
         {
             InitializeComponent();
+            this.DataContext = new AdminViewModel();
         }
     }
 }

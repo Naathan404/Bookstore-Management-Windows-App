@@ -1,5 +1,6 @@
 ﻿using Bookstore.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Bookstore.API.Data
 {
@@ -98,6 +99,25 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<MonthlyStockReport>().HasOne<Book>().WithMany().HasForeignKey(m => m.BookID);
 
             // sEeD dAtA dE tEsT tHu ApI
+
+            modelBuilder.Entity<Account>().HasData(
+                new Account
+                {
+                    AccountID = 1,
+                    Username = "admin",
+                    PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
+                    Email = "nathannguyen6002@gmail.com",
+                    Role = 0,
+                },
+                new Account
+                {
+                    AccountID = 2,
+                    Username = "staff",
+                    PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
+                    Email = "24521186@gm.uit.edu.vn",
+                    Role = 1,
+                }
+            );
 
             modelBuilder.Entity<Category>().HasData(
                 new Category { CategoryID = 1, CategoryName = "Truyện tranh" },

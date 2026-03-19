@@ -25,9 +25,9 @@ namespace Bookstore.API.Services.Auth
         public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
             var accounts = await _repository.GetAllAsync();
-            var user = accounts.SingleOrDefault(a => a.Username == request.Username);
+            var user = accounts.SingleOrDefault(a => a.Username == request.username);
 
-            if (user == null || user.PasswordHash != request.Password)
+            if (user == null || user.PasswordHash != request.password)
             {
                 return null;
             }
@@ -57,6 +57,16 @@ namespace Bookstore.API.Services.Auth
                 Username = user.Username,
                 Role = user.Role
             };
+        }
+
+        public async Task<bool> IsEmailExistAsync(string email)
+        {
+            return await _repository.AnyAsync(x => x.Email == email);
+        }
+
+        public Task SendEmailAsync(string email, string otp)
+        {
+            
         }
     }
 }

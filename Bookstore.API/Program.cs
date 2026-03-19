@@ -1,11 +1,13 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Interfaces;
+using Bookstore.API.Models;
 using Bookstore.API.Repositories;
 using Bookstore.API.Services.Auth;
 using Bookstore.API.Services.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +49,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    try
+    {
+        var context = serviceProvider.GetRequiredService<AppDbContext>();
+        // Trong Program.cs của Backend
+        _ = Task.Run(async () => {
+            var stopwatch = Stopwatch.StartNew();
+            await context.Accounts.AnyAsync();
+            stopwatch.Stop();
+        });
+    }
+    catch
+    {
+
+    }
+}    
 
 app.UseHttpsRedirection();
 

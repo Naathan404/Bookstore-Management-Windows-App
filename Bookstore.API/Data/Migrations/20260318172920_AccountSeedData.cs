@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bookstore.API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AccountSeedData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,8 @@ namespace Bookstore.API.Data.Migrations
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false)
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,6 +89,7 @@ namespace Bookstore.API.Data.Migrations
                     TotalPurchaseValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalOrders = table.Column<int>(type: "int", nullable: false),
                     TotalDebt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     AccountID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -479,6 +481,15 @@ namespace Bookstore.API.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Accounts",
+                columns: new[] { "AccountID", "Email", "IsDeleted", "PasswordHash", "Role", "Username" },
+                values: new object[,]
+                {
+                    { 1, "nathannguyen6002@gmail.com", false, "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db", 0, "admin" },
+                    { 2, "24521186@gm.uit.edu.vn", false, "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db", 1, "staff" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "CategoryID", "CategoryName" },
                 values: new object[,]
@@ -492,8 +503,8 @@ namespace Bookstore.API.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Customers",
-                columns: new[] { "CustomerID", "AccountID", "Address", "CreatedAt", "CustomerName", "Email", "Gender", "PhoneNumber", "TotalDebt", "TotalOrders", "TotalPurchaseValue" },
-                values: new object[] { 1, null, "Cần Thơ", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyễn Gia Hưng", "", 0, "0901234567", 0m, 0, 0m });
+                columns: new[] { "CustomerID", "AccountID", "Address", "CreatedAt", "CustomerName", "Email", "Gender", "IsDeleted", "PhoneNumber", "TotalDebt", "TotalOrders", "TotalPurchaseValue" },
+                values: new object[] { 1, null, "Cần Thơ", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyễn Gia Hưng", "", 0, false, "0901234567", 0m, 0, 0m });
 
             migrationBuilder.InsertData(
                 table: "Positions",
