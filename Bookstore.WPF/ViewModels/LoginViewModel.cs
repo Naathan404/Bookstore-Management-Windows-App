@@ -87,8 +87,28 @@ public class LoginViewModel : BaseViewModel
                   
     }
 
-    public string Email { get; set; } = String.Empty;
-    public string OTP { get; set; } = String.Empty;
+    private string _email = String.Empty;
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            _email = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _otp;
+    public string OTP
+    { 
+        get { return _otp; }
+        set
+        {
+            _otp = value;
+            OnPropertyChanged();
+        }
+    }
+
     // Lưu ý: Password nên xử lý qua PasswordBoxAssistant hoặc CommandParameter để bảo mật
 
     #region Commands
@@ -173,21 +193,21 @@ public class LoginViewModel : BaseViewModel
             {
                 try
                 {
-                    var response = await client.GetAsync($"https://localhost:7001/api/Auth/check-email?email={Email}");
-                    if(response.IsSuccessStatusCode)
+                    var response = await client.PostAsync($"https://localhost:7001/api/Auth/forgot-password?email={Email}", null);
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show(Email);
-                        var result = await response.Content.ReadFromJsonAsync<EmailCheckResponse>();
-                        if(result != null)
-                        {
-                            CurrentState = LoginState.Verify;
-                            IsErrorLogVisible = Visibility.Hidden;
-                        }
+                        MessageBox.Show("Gửi otp rồi đó, Check mail liền đi má!");
+                        CurrentState = LoginState.Verify;
+                        IsErrorLogVisible = Visibility.Hidden;
                     }
                     else
                     {
+                        var errorDetail = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Lỗi Server: {response.StatusCode} - {errorDetail}");
+
                         IsErrorLogVisible = Visibility.Visible;
-                        ErrorLog = "Email not registered. Please try again!";
+                        ErrorLog = "Email not registered in Sahara System!";
                     }
                 }
                 catch
@@ -203,9 +223,33 @@ public class LoginViewModel : BaseViewModel
             MessageBox.Show("Da gui lai OTP ve email");
         });
 
-        VerifyOTPCommand = new RelayCommand<object>((p) => {
-            MessageBox.Show("Xac thuc OTP thanh cong");
-            CurrentState = LoginState.Reset;
+        VerifyOTPCommand = new RelayCommand<object>(async (p) => {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth/verify-otp",
+                        new { Email = this.Email, Otp = this.OTP });
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        CurrentState = LoginState.Reset;
+                        IsErrorLogVisible = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        var realError = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Server từ chối (Mã {response.StatusCode}):\n{realError}");
+
+                        IsErrorLogVisible = Visibility.Visible;
+                        ErrorLog = "OTP is invalid or expired!";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi kết nối: {ex.Message}");
+                }
+            }
         });
 
         ResetPasswordCommand = new RelayCommand<object>((p) => {
@@ -231,6 +275,22 @@ public class LoginViewModel : BaseViewModel
         }
         OnPropertyChanged(nameof(Title));
         OnPropertyChanged(nameof(SubTitle));
+    }
+
+    private async Task SendOTPAsync()
+    {
+        using var client = new HttpClient();
+        var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth//send-otp", Email);
+
+        if (response.IsSuccessStatusCode)
+        {
+            MessageBox.Show("Mã OTP đã được gửi vào Email!");
+            CurrentState = LoginState.Verify; 
+        }
+        else
+        {
+            MessageBox.Show("Gửi mã thất bại, kiểm tra lại Email.");
+        }
     }
 }
 public enum LoginState 

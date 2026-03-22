@@ -1,5 +1,6 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Interfaces;
+using Bookstore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -49,6 +50,13 @@ namespace Bookstore.API.Repositories
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.AnyAsync(predicate);
+        }
+
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _dbSet.FirstOrDefaultAsync(predicate);
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

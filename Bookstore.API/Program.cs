@@ -2,6 +2,7 @@
 using Bookstore.API.Interfaces;
 using Bookstore.API.Models;
 using Bookstore.API.Repositories;
+using Bookstore.API.Services;
 using Bookstore.API.Services.Auth;
 using Bookstore.API.Services.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,6 +24,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddScoped<IAuthService, AuthService>(); //Auth
+builder.Services.AddScoped<IMailService, MailService>(); // Mail
+
+//builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+//builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Cấu hình JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

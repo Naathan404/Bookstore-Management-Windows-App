@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Bookstore.API.Models;
+using System.Linq.Expressions;
 
 namespace Bookstore.API.Interfaces
 {
@@ -11,5 +12,6 @@ namespace Bookstore.API.Interfaces
         void Update(T item);
         void Delete(T item);
         Task<bool> SaveChangesAsync();
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
     }
 }

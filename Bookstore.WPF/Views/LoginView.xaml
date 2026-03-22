@@ -132,7 +132,7 @@
                             <TextBox x:Name="txbUsername" materialDesign:HintAssist.Hint="Enter your username..." 
                                      materialDesign:HintAssist.Foreground="White"
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 
-                                     Text="{Binding Username, Mode=TwoWay}"
+                                     Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Foreground="White" CaretBrush="White"
                                      materialDesign:TextFieldAssist.LeadingIcon="Account" 
                                      materialDesign:TextFieldAssist.HasClearButton="True"
@@ -191,7 +191,7 @@
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,10">
                             <TextBox materialDesign:HintAssist.Hint="Enter your registered email.." 
                                      Foreground="White" CaretBrush="White"
-                                     Text="{Binding Email}"
+                                     Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      materialDesign:HintAssist.Foreground="White"
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent"                                      
                                      materialDesign:TextFieldAssist.LeadingIcon="Email" 
@@ -218,7 +218,8 @@
                         <TextBlock Text="Verification Code" Margin="5,0,0,5" 
                                    FontSize="18" FontWeight="SemiBold" Foreground="#432818"/>
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,10">
-                            <TextBox materialDesign:HintAssist.Hint="Enter 6-digit OTP..." 
+                            <TextBox materialDesign:HintAssist.Hint="Enter 6-digit OTP..."
+                                     Text="{Binding OTP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      materialDesign:TextFieldAssist.HasClearButton="True"
                                      materialDesign:HintAssist.Foreground="White"
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 

@@ -7,6 +7,8 @@ namespace Bookstore.API.Services.Interface
     {
         Task<Share.DTOResponses.LoginResponse?> LoginAsync(Share.DTORequests.LoginRequest request);
         Task<bool> IsEmailExistAsync(string email);
-        Task SendEmailAsync(string email, string otp);
+        Task SaveOTPAsync(string email, string otp);
+        Task<bool> RequestOTPAsync(string email);
+        Task<bool> VerifyOTPAsync(string email, string otp);
     }
 }

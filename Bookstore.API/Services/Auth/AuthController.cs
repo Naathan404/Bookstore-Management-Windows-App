@@ -32,17 +32,30 @@ namespace Bookstore.API.Controllers
         [HttpGet("check-email")]
         public async Task<IActionResult> CheckMail(string email)
         {
-            var exist = _authService.IsEmailExistAsync(email);
+            var exist = await _authService.IsEmailExistAsync(email);
             return Ok(new { IsExist = exist });
         }
 
-        [HttpPost("send-otp")]
-        public async Task<IActionResult> SendOTP([FromBody] string email)
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
-            var exist = await _authService?.IsEmailExistAsync(email);
-            if (!exist) return NotFound();
-            string otp = OTPGenerator.GenerateOTPCode(6);
-            await 
+            var result = await _authService.RequestOTPAsync(email);
+            if (!result) return NotFound(new { message = "Email chưa được đăng ký thành viên Sahara!" });
+
+            return Ok(new { message = "Đã gửi OTP, check mail đi mẹ!" });
+        }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOTP([FromBody] VerifyOtpRequest request)
+        {
+            var isValid = await _authService.VerifyOTPAsync(request.Email, request.Otp);
+
+            if (!isValid)
+            {
+                return BadRequest(new { message = "Mã OTP không đúng hoặc đã hết hạn!" });
+            }
+
+            return Ok(new { message = "Xác thực thành công!" });
         }
     }
 }
