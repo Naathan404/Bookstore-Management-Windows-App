@@ -11,7 +11,14 @@ namespace Bookstore.WPF.Views
         public LoginView()
         {
             InitializeComponent();
-            this.DataContext = new LoginViewModel();
+            LoginViewModel viewModel = new LoginViewModel();
+            this.DataContext = viewModel;
+
+            viewModel.OnLoginFailed = () => 
+            { 
+                pwbPassword.Password = String.Empty;
+                txbUsername.Focus();
+            };
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)

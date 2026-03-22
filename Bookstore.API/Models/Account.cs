@@ -11,5 +11,8 @@
         public bool IsDeleted { get; set; }
 
         public int GetID() => AccountID;
+
+        public string? OTP { get; set;  } = String.Empty;
+        public DateTime? OTPExpire { get; set; }
     }
 }

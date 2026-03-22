@@ -7,11 +7,18 @@ using System.Net.Http;
 using System.Security;
 using System.Windows;
 using System.Windows.Input;
-using System.Net.Http;
 using System.Net.Http.Json;
+using CoffeeShop.Helper;
+using Bookstore.WPF.Views;
+using Bookstore.WPF.ViewModels;
+using System.IO.Packaging;
+using System.Net.WebSockets;
 
 public class LoginViewModel : BaseViewModel
 {
+    private WindowService _windowService = new WindowService();
+    public Action OnLoginFailed { get; set; }
+    #region Properties
     // --- State & Header Logic ---
     private LoginState _currentState = LoginState.Login;
     public LoginState CurrentState
@@ -30,18 +37,81 @@ public class LoginViewModel : BaseViewModel
         }
     }
 
+    // log lỗi
+    private Visibility _isLoginVisible = Visibility.Hidden;
+    public Visibility IsErrorLogVisible
+    {
+        get => _isLoginVisible;
+        set
+        {
+            _isLoginVisible = value;
+            OnPropertyChanged();
+        }
+    }
+    private string _errorLog = String.Empty;
+    public string ErrorLog
+    {
+        get => _errorLog;
+        set
+        {
+            _errorLog = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    #endregion
+
     public string Title { get; private set; } = "Login";
     public string SubTitle { get; private set; } = "Welcome back! Have a nice day :3";
 
     // --- Data Properties
-    public string Username { get; set; } = String.Empty;
-    public string Password { get; private set; } = String.Empty;
-    public SecureString SecurePassword { private get; set; } = new SecureString();
+    private string _username = String.Empty;
+    public string Username
+    {
+        get => _username;
+        set
+        {
+            _username = value;
+            OnPropertyChanged();
+        }
+    }
+    private SecureString _securePassword = new SecureString();
+    public SecureString SecurePassword
+    {
+        private get => _securePassword;
+        set
+        {
+            _securePassword = value;
+            OnPropertyChanged();
+        }
+                  
+    }
 
-    public string Email { get; set; } = String.Empty;
-    public string OTP { get; set; } = String.Empty;
+    private string _email = String.Empty;
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            _email = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _otp;
+    public string OTP
+    { 
+        get { return _otp; }
+        set
+        {
+            _otp = value;
+            OnPropertyChanged();
+        }
+    }
+
     // Lưu ý: Password nên xử lý qua PasswordBoxAssistant hoặc CommandParameter để bảo mật
 
+    #region Commands
     // --- Commands ---
     public ICommand SwitchStateCommand { get; }
     public ICommand LoginCommand { get; }
@@ -49,52 +119,65 @@ public class LoginViewModel : BaseViewModel
     public ICommand VerifyOTPCommand { get; }
     public ICommand ResetPasswordCommand { get; }
     public ICommand ResendOTPCommand { get; }
-
+    #endregion
     public LoginViewModel()
     {
-       
+
         SwitchStateCommand = new RelayCommand<string>((p) => {
             if (Enum.TryParse(p, out LoginState newState))
                 CurrentState = newState;
+            IsErrorLogVisible = Visibility.Hidden;
         });
 
         
         LoginCommand = new RelayCommand<object>(async (p) => {
             string plainText = new NetworkCredential("", SecurePassword).Password;
-            MessageBox.Show($"Login for: username - {Username} and password - {plainText}");
             // call api hiaa
             var requestData = new LoginRequest
             {
-                Username = this.Username,
-                Password = this.Password
+                username = this.Username,
+                password = HashHelper.SHA256_Encode(HashHelper.Base64_Encode(plainText))
             };
-
+            MessageBox.Show($"username: {requestData.username}, pw: {plainText}");
             using (var client = new HttpClient())
             {
                 try
                 {
-                    // 2. GỬI THẲNG OBJECT LÊN (Hàm PostAsJsonAsync tự động bọc thành JSON, ông không cần Serialize thủ công nữa)
+                    // Gửi requestData -> server
+                    // Hàm PostAsJsonAsync tự động bọc requestData thành JSON
                     var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth/login", requestData);
 
+                    // nếu response trả về là thành công thì thực hiện đăng nhập
                     if (response.IsSuccessStatusCode)
                     {
-                        // 3. ĐỌC RESPONSE VÀ ÉP KIỂU VỀ OBJECT CỦA SHARE LUÔN (Không cần bóc tách từng node JSON)
+                        // đọc response
                         var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
                         if (result != null)
                         {
-                            // Lấy cục dữ liệu ra xài cái rẹt
-                            //AppSession.Token = result.Token;
-                            //AppSession.CurrentUsername = result.Username;
-                            //AppSession.Role = result.Role;
+                            IsErrorLogVisible = Visibility.Hidden;
+                            if(result.Role == 0)        // admin
+                            {
+                                _windowService.ShowWindow<AdminViewModel>();
+                            }
+                            else if(result.Role == 1)
+                            {
+                                _windowService.ShowWindow<StaffViewModel>();
+                            }
+                            _windowService.CloseWindow<LoginViewModel>();
 
-                            MessageBox.Show($"Đăng nhập thành công!");
-                            // Chuyển màn hình...
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Sai tài khoản hoặc mật khẩu rồi ông giáo ạ!");
+                        var errorDetail = await response.Content.ReadAsStringAsync();
+                        //MessageBox.Show($"Server từ chối (Mã {response.StatusCode}): {errorDetail}");
+                        Username = String.Empty;
+                        SecurePassword.Clear();
+                        SecurePassword = new SecureString();
+                        OnLoginFailed?.Invoke();
+                        IsErrorLogVisible = Visibility.Visible;
+                        ErrorLog = "Incorrect Username or Password.";
                     }
                 }
                 catch (Exception ex)
@@ -105,9 +188,34 @@ public class LoginViewModel : BaseViewModel
 
         });
 
-        SendOTPCommand = new RelayCommand<object>((p) => {
-            MessageBox.Show("Da gui OTP ve email");
-            CurrentState = LoginState.Verify; 
+        SendOTPCommand = new RelayCommand<object>(async (p) => {
+            using(var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.PostAsync($"https://localhost:7001/api/Auth/forgot-password?email={Email}", null);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Gửi otp rồi đó, Check mail liền đi má!");
+                        CurrentState = LoginState.Verify;
+                        IsErrorLogVisible = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        var errorDetail = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Lỗi Server: {response.StatusCode} - {errorDetail}");
+
+                        IsErrorLogVisible = Visibility.Visible;
+                        ErrorLog = "Email not registered in Sahara System!";
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+            //CurrentState = LoginState.Verify; 
         });
 
         ResendOTPCommand = new RelayCommand<object>((p) =>
@@ -115,9 +223,33 @@ public class LoginViewModel : BaseViewModel
             MessageBox.Show("Da gui lai OTP ve email");
         });
 
-        VerifyOTPCommand = new RelayCommand<object>((p) => {
-            MessageBox.Show("Xac thuc OTP thanh cong");
-            CurrentState = LoginState.Reset;
+        VerifyOTPCommand = new RelayCommand<object>(async (p) => {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth/verify-otp",
+                        new { Email = this.Email, Otp = this.OTP });
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        CurrentState = LoginState.Reset;
+                        IsErrorLogVisible = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        var realError = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Server từ chối (Mã {response.StatusCode}):\n{realError}");
+
+                        IsErrorLogVisible = Visibility.Visible;
+                        ErrorLog = "OTP is invalid or expired!";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi kết nối: {ex.Message}");
+                }
+            }
         });
 
         ResetPasswordCommand = new RelayCommand<object>((p) => {
@@ -143,6 +275,22 @@ public class LoginViewModel : BaseViewModel
         }
         OnPropertyChanged(nameof(Title));
         OnPropertyChanged(nameof(SubTitle));
+    }
+
+    private async Task SendOTPAsync()
+    {
+        using var client = new HttpClient();
+        var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth//send-otp", Email);
+
+        if (response.IsSuccessStatusCode)
+        {
+            MessageBox.Show("Mã OTP đã được gửi vào Email!");
+            CurrentState = LoginState.Verify; 
+        }
+        else
+        {
+            MessageBox.Show("Gửi mã thất bại, kiểm tra lại Email.");
+        }
     }
 }
 public enum LoginState 

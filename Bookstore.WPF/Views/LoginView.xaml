@@ -3,6 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Đăng nhập - Nhà sách Sahara" Height="650" Width="1100"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -80,32 +83,56 @@
             <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0" Margin="0,10,0,80">
+                <!-- lời chào -->
+                <Grid Grid.Row="0" Margin="0,10,0,30" >
                     <StackPanel>
                         <TextBlock x:Name="txtTitle" 
-                                   Text="{Binding Title}" 
+                                   Text="{Binding Title}"
+                                   d:Text="Login"
                                    FontSize="40" Foreground="#432818" FontWeight="Bold"/>
                         <Line Stroke="#99582a" StrokeThickness="2" X1="0" X2="110" Margin="0,5"/>
                         <TextBlock x:Name="txtSubTitle" 
                                    Text="{Binding SubTitle}" 
+                                   d:Text="Welcome back"
                                    FontSize="14" Foreground="#99582a" Opacity="0.8"/>
                     </StackPanel>
                     <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="50" Height="50" HorizontalAlignment="Right" Foreground="#99582a"/>
                 </Grid>
-
-                <Grid Grid.Row="1">
-
+                
+                <!-- bảng thông báo lỗi -->
+                <Grid Grid.Row="1" Margin="0 0 0 10" Visibility="{Binding IsErrorLogVisible}">
+                    <materialDesign:Card 
+                        Height="50"
+                        UniformCornerRadius="10"
+                        Background="#FFB2B2"
+                        >
+                        <TextBlock
+                            Text="{Binding ErrorLog}"
+                            d:Text="Incorrect Username or Password."
+                            Foreground="#A82323"
+                            VerticalAlignment="Center"
+                            Margin="10 0 0 0"
+                            FontSize="15"
+                            FontWeight="Bold"
+                            FontFamily="Segoe UI">
+                        </TextBlock>
+                    </materialDesign:Card>
+                </Grid>
+                
+                <!-- content đăng nhập chính -->
+                <Grid Grid.Row="2">
+                    <!--LOG IN-->
                     <StackPanel x:Name="LoginGroup" Visibility="{Binding IsLoginVisible}">
                         <TextBlock Text="Username" Margin="5,0,0,5" FontSize="14" FontWeight="SemiBold" Foreground="#432818"
                                    />
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,20">
-                            <TextBox materialDesign:HintAssist.Hint="Enter your username..." 
+                            <TextBox x:Name="txbUsername" materialDesign:HintAssist.Hint="Enter your username..." 
                                      materialDesign:HintAssist.Foreground="White"
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 
-                                     Text="{Binding Username, Mode=TwoWay}"
+                                     Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Foreground="White" CaretBrush="White"
                                      materialDesign:TextFieldAssist.LeadingIcon="Account" 
                                      materialDesign:TextFieldAssist.HasClearButton="True"
@@ -115,7 +142,7 @@
 
                         <TextBlock Text="Password" Margin="5,0,0,5" FontSize="14" FontWeight="SemiBold" Foreground="#432818"/>
                         <Border Background="#bb9457" CornerRadius="12">
-                            <PasswordBox materialDesign:HintAssist.Hint="Enter your password..." 
+                            <PasswordBox x:Name="pwbPassword" materialDesign:HintAssist.Hint="Enter your password..." 
                                          materialDesign:HintAssist.Foreground="White"
                                          materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 
                                          PasswordChanged="PasswordBox_PasswordChanged"
@@ -158,12 +185,13 @@
                                 materialDesign:ButtonAssist.CornerRadius="15"
                                 Background="#432818" BorderBrush="Transparent" FontWeight="Bold"/>
                     </StackPanel>
-
+                    <!--FORGOT PASSWORD-->
                     <StackPanel x:Name="ForgotGroup" Visibility="{Binding IsForgotVisible}">
                         <TextBlock Text="Recovery Email" Margin="5,0,0,5" FontSize="14" FontWeight="SemiBold" Foreground="#432818"/>
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,10">
                             <TextBox materialDesign:HintAssist.Hint="Enter your registered email.." 
                                      Foreground="White" CaretBrush="White"
+                                     Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      materialDesign:HintAssist.Foreground="White"
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent"                                      
                                      materialDesign:TextFieldAssist.LeadingIcon="Email" 
@@ -171,7 +199,7 @@
                                      BorderThickness="0" Height="50" 
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" Padding="10,0"/>
                         </Border>
-
+                        <!-- bảng thông báo lỗi -->
                         <TextBlock Text="We will send you an OTP through this email." FontSize="12" Foreground="#99582a" FontStyle="Italic" Margin="5,0,0,30"/>
 
                         <Button Content="SEND OTP" Height="50" 
@@ -190,7 +218,8 @@
                         <TextBlock Text="Verification Code" Margin="5,0,0,5" 
                                    FontSize="18" FontWeight="SemiBold" Foreground="#432818"/>
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,10">
-                            <TextBox materialDesign:HintAssist.Hint="Enter 6-digit OTP..." 
+                            <TextBox materialDesign:HintAssist.Hint="Enter 6-digit OTP..."
+                                     Text="{Binding OTP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      materialDesign:TextFieldAssist.HasClearButton="True"
                                      materialDesign:HintAssist.Foreground="White"
                                      materialDesign:TextFieldAssist.UnderlineBrush="Transparent" 

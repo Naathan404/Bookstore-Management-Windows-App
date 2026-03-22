@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Bookstore.WPF.Services
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260317064956_260317")]
-    partial class _260317
+    [Migration("20260322100130_AddOTP")]
+    partial class AddOTP
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,12 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("OTP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("OTPExpire")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -60,6 +66,28 @@ namespace Bookstore.API.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            AccountID = 1,
+                            Email = "nathannguyen6002@gmail.com",
+                            IsDeleted = false,
+                            OTP = "",
+                            PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
+                            Role = 0,
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            AccountID = 2,
+                            Email = "24521186@gm.uit.edu.vn",
+                            IsDeleted = false,
+                            OTP = "",
+                            PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
+                            Role = 1,
+                            Username = "staff"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.Book", b =>

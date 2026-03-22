@@ -1,5 +1,7 @@
-﻿using System.Configuration;
+﻿using Bookstore.WPF.Views;
+using System.Configuration;
 using System.Data;
+using System.Net.Http;
 using System.Windows;
 
 namespace Bookstore.WPF
@@ -9,6 +11,28 @@ namespace Bookstore.WPF
     /// </summary>
     public partial class App : Application
     {
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            await Task.Run(async () => {
+                try
+                {
+                    using var client = new HttpClient();
+                    await client.GetAsync("https://localhost:7001/api/System/ping");
+                }
+                catch {}
+            });
+            var login = new LoginView();
+            login.Show();
+
+
+        }
+
+        private async void App_Startup(object sender, StartupEventArgs e)
+        {
+            // nữa mà có slash sceen thì đặt ở đây nha :333 
+
+        }
     }
 
 }
