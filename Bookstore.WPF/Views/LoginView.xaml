@@ -243,7 +243,9 @@
                     <StackPanel x:Name="ResetPasswordGroup" Visibility="{Binding IsResetVisible}">
                         <TextBlock Text="New Password" Margin="5,0,0,5" FontSize="14" FontWeight="SemiBold" Foreground="#432818"/>
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,15">
-                            <PasswordBox materialDesign:HintAssist.Hint="New password..." 
+                            <PasswordBox x:Name="pwbNewPassword"
+                                PasswordChanged="NewPasswordBox_PasswordChanged"
+                                materialDesign:HintAssist.Hint="New password..." 
                                 Foreground="White" CaretBrush="White"
                                 materialDesign:TextFieldAssist.LeadingIcon="LockReset" 
                                 materialDesign:TextFieldAssist.HasClearButton="True"
@@ -255,7 +257,9 @@
 
                         <TextBlock Text="Confirm Password" Margin="5,0,0,5" FontSize="14" FontWeight="SemiBold" Foreground="#432818"/>
                         <Border Background="#bb9457" CornerRadius="12" Margin="0,0,0,30">
-                            <PasswordBox materialDesign:HintAssist.Hint="Confirm password..."
+                            <PasswordBox x:Name="pwbConfirmPassword"
+                                PasswordChanged="ConfirmPasswordBox_PasswordChanged"
+                                materialDesign:HintAssist.Hint="Confirm password..."
                                 materialDesign:TextFieldAssist.LeadingIcon="LockCheck" 
                                 materialDesign:TextFieldAssist.HasClearButton="True"
                                 materialDesign:HintAssist.Foreground="White"

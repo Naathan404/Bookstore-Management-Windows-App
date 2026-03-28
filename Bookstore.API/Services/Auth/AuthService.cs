@@ -5,6 +5,7 @@ using Bookstore.API.Services.Interface;
 using Bookstore.Share.DTORequests;
 using Bookstore.Share.DTOResponses;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -30,7 +31,6 @@ namespace Bookstore.API.Services.Auth
         {
             var accounts = await _repository.GetAllAsync();
             var user = accounts.FirstOrDefault(a => a.Username == request.username);
-
             if (user == null || user.PasswordHash != request.password)
             {
                 return null;
@@ -114,6 +114,19 @@ namespace Bookstore.API.Services.Auth
             }
 
             return false;
+        }
+
+        public async Task<bool> ResetPasswordAsync(string email, string newPassword)
+        {
+            var searchEmail = email.Trim().ToLower();
+            var user = await _repository.FirstOrDefaultAsync(x => x.Email.ToLower() == searchEmail);
+
+            if (user == null) return false;
+
+            user.PasswordHash = newPassword;
+
+            _repository.Update(user);
+            return await _repository.SaveChangesAsync();
         }
     }
 }
