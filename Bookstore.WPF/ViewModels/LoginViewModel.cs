@@ -87,6 +87,28 @@ public class LoginViewModel : BaseViewModel
                   
     }
 
+    private SecureString _newPassword = new SecureString();
+    public SecureString NewPassword
+    {
+        private get => _newPassword;
+        set
+        {
+            _newPassword = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private SecureString _confirmPassword = new SecureString();
+    public SecureString ConfirmPassword
+    {
+        private get => _confirmPassword;
+        set
+        {
+            _confirmPassword = value;
+            OnPropertyChanged();
+        }
+    }
+
     private string _email = String.Empty;
     public string Email
     {
@@ -138,7 +160,7 @@ public class LoginViewModel : BaseViewModel
                 username = this.Username,
                 password = HashHelper.SHA256_Encode(HashHelper.Base64_Encode(plainText))
             };
-            MessageBox.Show($"username: {requestData.username}, pw: {plainText}");
+            MessageBox.Show($"username: {requestData.username}, pw: {plainText}, pwHASH: {requestData.password}");
             using (var client = new HttpClient())
             {
                 try
@@ -252,9 +274,51 @@ public class LoginViewModel : BaseViewModel
             }
         });
 
-        ResetPasswordCommand = new RelayCommand<object>((p) => {
-            MessageBox.Show("Mật khẩu đã đổi! Về đăng nhập thôi.");
-            CurrentState = LoginState.Login;
+        ResetPasswordCommand = new RelayCommand<object>(async (p) => {
+            string newPw = new NetworkCredential("", NewPassword).Password;
+            string ConfirmPw = new NetworkCredential("", ConfirmPassword).Password;
+            MessageBox.Show($"{newPw} và {ConfirmPw}");
+            if (newPw != ConfirmPw)
+            {
+                ErrorLog = "Passwords do not match!";
+                IsErrorLogVisible = Visibility.Visible;
+                return;
+            }
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    string pwHash = HashHelper.SHA256_Encode(HashHelper.Base64_Encode(newPw));
+                    var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth/reset-password", 
+                        new { Email = this.Email, NewPassword = pwHash });
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Mật khẩu đã đổi thành công!");
+                        NewPassword.Clear();
+                        NewPassword = new SecureString();
+                        ConfirmPassword.Clear();
+                        ConfirmPassword = new SecureString();
+                        OTP = string.Empty;
+                        Username = string.Empty;
+                        SecurePassword.Clear();
+                        SecurePassword = new SecureString();
+                        Email = string.Empty;
+                        IsErrorLogVisible = Visibility.Hidden;
+                        CurrentState = LoginState.Login;
+                    }
+                    else
+                    {
+                        ErrorLog = "Reset failed. Try again!";
+                        IsErrorLogVisible = Visibility.Visible;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi: {ex.Message}");
+                }
+            }
         });
     } 
 
@@ -278,7 +342,7 @@ public class LoginViewModel : BaseViewModel
     }
 
     private async Task SendOTPAsync()
-    {
+    {   
         using var client = new HttpClient();
         var response = await client.PostAsJsonAsync("https://localhost:7001/api/Auth//send-otp", Email);
 

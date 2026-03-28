@@ -57,5 +57,13 @@ namespace Bookstore.API.Controllers
 
             return Ok(new { message = "Xác thực thành công!" });
         }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await _authService.ResetPasswordAsync(request.Email, request.NewPassword);
+            if (!result) return BadRequest(new {message = "bad request, khong tim thay user voi email can doi mat khau"} );
+            return Ok(new {message = "Doi mat khau thanh cong"});
+        }
     }
 }

@@ -10,5 +10,6 @@ namespace Bookstore.API.Services.Interface
         Task SaveOTPAsync(string email, string otp);
         Task<bool> RequestOTPAsync(string email);
         Task<bool> VerifyOTPAsync(string email, string otp);
+        Task<bool> ResetPasswordAsync(string email, string newPassword);
     }
 }
