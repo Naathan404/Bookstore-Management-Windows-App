@@ -3,10 +3,396 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Bookstore.WPF.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="AdminView" Height="450" Width="800">
+        Title="Admin Dashboard" Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="#F0F2F5"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        FontFamily="Segoe UI, Inter, Roboto, sans-serif">
+
+    <Window.Resources>
+        <!-- Gradient Màu sắc -->
+        <LinearGradientBrush x:Key="SidebarGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1a1a2e" Offset="0"/>
+            <GradientStop Color="#16213e" Offset="0.5"/>
+            <GradientStop Color="#0f3460" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="LogoGradient" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#FF416C" Offset="0"/>
+            <GradientStop Color="#FF4B2B" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#ffffff" Offset="0"/>
+            <GradientStop Color="#f8f9fa" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="StatCardGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#ffffff" Offset="0"/>
+            <GradientStop Color="#f0f2f5" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Màu sắc cơ bản -->
+        <SolidColorBrush x:Key="SidebarHover" Color="#1e2746"/>
+        <SolidColorBrush x:Key="SidebarSelected" Color="#0f3460"/>
+        <SolidColorBrush x:Key="SidebarText" Color="#eeeeee"/>
+        <SolidColorBrush x:Key="SidebarTextLight" Color="#a0a0b0"/>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#FF416C"/>
+        <SolidColorBrush x:Key="MainBg" Color="#F0F2F5"/>
+        <SolidColorBrush x:Key="CardBg" Color="#ffffff"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#2c3e50"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#7f8c8d"/>
+        <SolidColorBrush x:Key="Divider" Color="#e0e4e8"/>
+
+        <!-- Style cho ListBoxItem -->
+        <Style x:Key="NavListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="8,2,12,2"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="{StaticResource SidebarTextLight}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SidebarHover}"/>
+                    <Setter Property="Foreground" Value="{StaticResource SidebarText}"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SidebarSelected}"/>
+                    <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+                    <Setter Property="BorderThickness" Value="3,0,0,0"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Style cho Card -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="12" Opacity="0.06" ShadowDepth="2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style cho Stat Card -->
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource StatCardGradient}"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" Opacity="0.05" ShadowDepth="1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <TextBlock Text="Admin View" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40"></TextBlock>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar - Gradient Background -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarGradient}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Logo -->
+                <Border Grid.Row="0" Padding="20,20" Background="Transparent">
+                    <TextBlock FontSize="18" FontWeight="Black" 
+                               Foreground="{StaticResource LogoGradient}" 
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI, Inter">
+                        BOOKSTORE
+                    </TextBlock>
+                </Border>
+
+                <!-- User Info -->
+                <StackPanel Grid.Row="1" Margin="20,8" HorizontalAlignment="Center">
+                    <Border CornerRadius="30" Width="50" Height="50" 
+                            Background="#1e2746"
+                            HorizontalAlignment="Center">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" Opacity="0.3" ShadowDepth="2"/>
+                        </Border.Effect>
+                        <materialDesign:PackIcon Kind="Account" Width="26" Height="26" 
+                                        Foreground="#FF416C"
+                                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="Jhon Doe" FontSize="14" FontWeight="SemiBold" 
+                               HorizontalAlignment="Center" Margin="0,8,0,2"
+                               Foreground="{StaticResource SidebarText}"
+                               FontFamily="Segoe UI"/>
+                    <TextBlock Text="Administrator" FontSize="10" 
+                               HorizontalAlignment="Center" Margin="0,0,0,8"
+                               Foreground="{StaticResource SidebarTextLight}"
+                               Opacity="0.7"/>
+
+                    <!-- Search Box với Placeholder thủ công -->
+                    <Grid Margin="0,6,0,0" Width="160" Height="32">
+                        <TextBox x:Name="SearchBox" 
+                                 BorderThickness="0"
+                                 Background="#1e2746"
+                                 FontSize="12"
+                                 VerticalAlignment="Center"
+                                 Foreground="{StaticResource SidebarText}"
+                                 Padding="10,8"
+                                 CaretBrush="#FF416C"
+                                 TextChanged="SearchBox_TextChanged"/>
+                        <TextBlock x:Name="SearchPlaceholder"
+                                   Text="Search"
+                                   FontSize="12"
+                                   Foreground="White"
+                                   Opacity="0.4"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,0,0,0"
+                                   IsHitTestVisible="False"
+                                   Background="Transparent">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Navigation Menu -->
+                <StackPanel Grid.Row="2" Margin="8,0,0,0">
+                    <ListBox x:Name="NavListBox" BorderThickness="0" Background="Transparent" 
+                             ItemContainerStyle="{StaticResource NavListBoxItemStyle}"
+                             SelectedIndex="0">
+
+                        <ListBoxItem Tag="Dashboard">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ViewDashboard" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="Dashboard" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <ListBoxItem Tag="Products">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="PackageVariant" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="Products" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <ListBoxItem Tag="Clients">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AccountGroup" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="Clients" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <ListBoxItem Tag="Messages">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Message" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="Messages" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <ListBoxItem Tag="Database">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Database" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="DataBase" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <ListBoxItem Tag="Notifications">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Bell" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="Notfications" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <ListBoxItem Tag="Settings">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Cog" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="Settings" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <!-- Divider -->
+                        <Separator Height="1" Background="#2a2a4a" Margin="20,12,20,12"/>
+
+                        <!-- Help -->
+                        <ListBoxItem Tag="Help">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="HelpCircleOutline" Width="18" Height="18" Margin="0,0,14,0"/>
+                                <TextBlock Text="Help" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </ListBoxItem>
+
+                        <!-- Logout -->
+                        <ListBoxItem Tag="Logout">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Logout" Width="18" Height="18" Margin="0,0,14,0"
+                                                Foreground="#FF416C"/>
+                                <TextBlock Text="Logout" FontSize="13" FontWeight="Medium" 
+                                   Foreground="#FF416C"/>
+                            </StackPanel>
+                        </ListBoxItem>
+                    </ListBox>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" Background="{StaticResource MainBg}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Top Bar -->
+            <Border Grid.Row="0" Background="White" 
+                    BorderBrush="{StaticResource Divider}" BorderThickness="0,0,0,1">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="4" Opacity="0.04" ShadowDepth="1"/>
+                </Border.Effect>
+                <Grid Margin="25,0">
+                    <TextBlock x:Name="PageTitleText" Text="Dashboard" FontSize="20" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" VerticalAlignment="Center"
+                               FontFamily="Segoe UI"/>
+                </Grid>
+            </Border>
+
+            <!-- Content Area -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ContentControl x:Name="ContentArea" Margin="25" Opacity="1">
+                    <ContentControl.Content>
+                        <StackPanel>
+                            <!-- Welcome Card -->
+                            <Border Style="{StaticResource CardStyle}" Padding="25" Margin="0,0,0,25">
+                                <StackPanel>
+                                    <TextBlock FontSize="18" FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimary}"
+                                               FontFamily="Segoe UI">
+                                        Welcome back, <Run Text="Jhon Doe!"/>
+                                    </TextBlock>
+                                    <TextBlock Text="Here's what's happening with your bookstore today."
+                                               Foreground="{StaticResource TextSecondary}" 
+                                               Margin="0,6,0,0" FontSize="13"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Stats Grid -->
+                            <Grid Margin="0,0,0,25">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Style="{StaticResource StatCardStyle}" Padding="20" Margin="0,0,12,0">
+                                    <StackPanel>
+                                        <materialDesign:PackIcon Kind="PackageVariant" Width="32" Height="32"
+                                                                Foreground="#FF416C"/>
+                                        <TextBlock Text="Total Products" FontSize="12" 
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   Margin="0,14,0,4"/>
+                                        <TextBlock Text="1,234" FontSize="28" FontWeight="Bold"
+                                                   Foreground="{StaticResource TextPrimary}"/>
+                                        <TextBlock Text="↑ +12% from last month" FontSize="10" 
+                                                   Foreground="#00C853"
+                                                   Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="1" Style="{StaticResource StatCardStyle}" Padding="20" Margin="6,0">
+                                    <StackPanel>
+                                        <materialDesign:PackIcon Kind="AccountGroup" Width="32" Height="32"
+                                                                Foreground="#FF416C"/>
+                                        <TextBlock Text="Active Clients" FontSize="12" 
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   Margin="0,14,0,4"/>
+                                        <TextBlock Text="567" FontSize="28" FontWeight="Bold"
+                                                   Foreground="{StaticResource TextPrimary}"/>
+                                        <TextBlock Text="↑ +5% from last month" FontSize="10" 
+                                                   Foreground="#00C853"
+                                                   Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Style="{StaticResource StatCardStyle}" Padding="20" Margin="6,0">
+                                    <StackPanel>
+                                        <materialDesign:PackIcon Kind="Message" Width="32" Height="32"
+                                                                Foreground="#FF416C"/>
+                                        <TextBlock Text="New Messages" FontSize="12" 
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   Margin="0,14,0,4"/>
+                                        <TextBlock Text="23" FontSize="28" FontWeight="Bold"
+                                                   Foreground="{StaticResource TextPrimary}"/>
+                                        <TextBlock Text="3 unread" FontSize="10" 
+                                                   Foreground="#FF9800"
+                                                   Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="3" Style="{StaticResource StatCardStyle}" Padding="20" Margin="12,0,0,0">
+                                    <StackPanel>
+                                        <materialDesign:PackIcon Kind="CurrencyUsd" Width="32" Height="32"
+                                                                Foreground="#FF416C"/>
+                                        <TextBlock Text="Revenue" FontSize="12" 
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   Margin="0,14,0,4"/>
+                                        <TextBlock Text="$45,678" FontSize="28" FontWeight="Bold"
+                                                   Foreground="{StaticResource TextPrimary}"/>
+                                        <TextBlock Text="↑ +18% from last month" FontSize="10" 
+                                                   Foreground="#00C853"
+                                                   Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <!-- Recent Activity Card -->
+                            <Border Style="{StaticResource CardStyle}" Padding="0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Border Grid.Row="0" Padding="20" BorderBrush="{StaticResource Divider}" 
+                                            BorderThickness="0,0,0,1">
+                                        <TextBlock Text="Recent Activity" FontSize="15" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"/>
+                                    </Border>
+
+                                    <StackPanel Grid.Row="1" Margin="20">
+                                        <TextBlock Text="No recent activities to display."
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   TextAlignment="Center" Margin="0,20"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </ContentControl.Content>
+                </ContentControl>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using Bookstore.WPF.Views;
+﻿using Bookstore.WPF.ViewModels;
+using Bookstore.WPF.Views;
 using System.Configuration;
 using System.Data;
 using System.Net.Http;
@@ -22,10 +23,12 @@ namespace Bookstore.WPF
                 }
                 catch {}
             });
-            var login = new LoginView();
-            login.Show();
+            //var login = new LoginView();
+            //login.Show();
 
-
+            var admin = new AdminView();
+            admin.DataContext = new AdminViewModel();
+            admin.Show();
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)
