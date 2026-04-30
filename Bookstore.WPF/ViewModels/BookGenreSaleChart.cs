@@ -1,5 +1,6 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using System.IO.Packaging;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -7,7 +8,15 @@ namespace Bookstore.WPF.ViewModels
     {
         // LiveCharts v2 cần ISeries[] để vẽ
         public ISeries[] Data { get; set; }
-
+        public class Items
+        {
+            public string Name { get; set; }
+            public string BrandName { get; set; } = string.Empty;
+            public double Value { get; set; }
+            public DateTime Date { get; set; }
+            public string StatusColor { get; set; } = "#000000";
+            public string StatusText { get; set; } = string.Empty;
+        }
         public BookGenreSaleChart()
         {
             // Khởi tạo dữ liệu mẫu trực tiếp thành các PieSeries

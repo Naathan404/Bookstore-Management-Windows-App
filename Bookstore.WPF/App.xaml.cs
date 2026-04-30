@@ -23,8 +23,11 @@ namespace Bookstore.WPF
                 }
                 catch {}
             });
-            var login = new LoginView();
-            login.Show();
+            //var login = new LoginView();
+            //login.Show();
+            // Thử DashboardView
+            var test = new test();
+            test.Show();
 
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();

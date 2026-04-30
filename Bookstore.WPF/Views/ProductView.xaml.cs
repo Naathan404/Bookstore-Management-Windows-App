@@ -1,5 +1,4 @@
-﻿using Bookstore.WPF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,14 +16,13 @@ using System.Windows.Shapes;
 namespace Bookstore.WPF.Views
 {
     /// <summary>
-    /// Interaction logic for DashBoardView.xaml
+    /// Interaction logic for ProductView.xaml
     /// </summary>
-    public partial class DashBoardView : UserControl
+    public partial class ProductView : UserControl
     {
-        public DashBoardView()
+        public ProductView()
         {
             InitializeComponent();
-            this.DataContext = new BookGenreSaleChart();
         }
     }
 }
