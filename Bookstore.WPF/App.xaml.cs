@@ -1,5 +1,6 @@
 ﻿using Bookstore.WPF.ViewModels;
 using Bookstore.WPF.Views;
+using MaterialDesignThemes.Wpf;
 using System.Configuration;
 using System.Data;
 using System.Net.Http;
@@ -15,6 +16,8 @@ namespace Bookstore.WPF
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            //var login = new LoginView();
+            //login.Show();
             await Task.Run(async () => {
                 try
                 {
@@ -25,10 +28,14 @@ namespace Bookstore.WPF
             });
             //var login = new LoginView();
             //login.Show();
-
-            var admin = new AdminView();
-            admin.DataContext = new AdminViewModel();
-            admin.Show();
+            // Thử DashboardView
+            //var test = new test();
+            //test.Show();
+            var mainView = new MainView();
+            mainView.Show();
+            //var admin = new AdminView();
+            //admin.DataContext = new AdminViewModel();
+            //admin.Show();
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)

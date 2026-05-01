@@ -18,12 +18,22 @@
     <None Remove="Resources\Images\Login\login0.png" />
     <None Remove="Resources\Images\Login\login1.png" />
     <None Remove="Resources\Images\Login\login2.png" />
+    <None Remove="Resources\Images\your_avatar.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\your_avatar.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="MailKit" Version="4.16.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.3.1-ci1292" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.1.0-dev-247" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.1.0-dev-247" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />
     <PackageReference Include="NuGet.Packaging" Version="6.11.2" />
     <PackageReference Include="NuGet.Protocol" Version="6.11.2" />
@@ -34,6 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\Login\Background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Login\bg0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
