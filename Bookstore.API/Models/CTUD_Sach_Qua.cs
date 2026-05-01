@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class CTUD_Sach_Qua : IEntity
+    public class CTUD_Sach_Qua : IEntity<int>
         //CTUD_SACH_QUA
     {
         [Key]

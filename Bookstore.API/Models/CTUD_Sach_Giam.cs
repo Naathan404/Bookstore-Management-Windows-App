@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookstore.API.Models
 {
-    public class CTUD_Sach_Giam : IEntity
+    public class CTUD_Sach_Giam : IEntity<int>
         //CTUD_SACH_GIAM
     {
         [Key]

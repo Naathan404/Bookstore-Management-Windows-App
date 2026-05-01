@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class BC_Sach : IEntity
+    public class BC_Sach : IEntity<int>
         //BAOCAOSACH
     {
         [Key]

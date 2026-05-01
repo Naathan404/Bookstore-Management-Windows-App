@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace Bookstore.API.Models
 {
-    public class TheLoai : IEntity
+    public class TheLoai : IEntity<int>
         // THELOAI
     {
         [Key] 

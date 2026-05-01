@@ -15,12 +15,12 @@ namespace Bookstore.API.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly IGenericRepository<NguoiDung> _repository;
+        private readonly IGenericRepository<NguoiDung, string> _repository;
         private readonly IConfiguration _config;
         private readonly IMailService _mailService;
 
         // Tiêm Repository và Config vào Service
-        public AuthService(IGenericRepository<NguoiDung> repo, IConfiguration config, IMailService mailService)
+        public AuthService(IGenericRepository<NguoiDung, string> repo, IConfiguration config, IMailService mailService)
         {
             _repository = repo;
             _config = config;
@@ -29,38 +29,39 @@ namespace Bookstore.API.Services.Auth
 
         public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
-            var accounts = await _repository.GetAllAsync();
-            var user = accounts.FirstOrDefault(a => a.Username == request.username);
-            if (user == null || user.PasswordHash != request.password)
-            {
-                return null;
-            }
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.RoleID.ToString())
-            };
+            return new LoginResponse();
+            //var accounts = await _repository.GetAllAsync();
+            //var user = accounts.FirstOrDefault(a => a.TenDangNhap == request.username);
+            //if (user == null || user.MatKhau != request.password)
+            //{
+            //    return null;
+            //}
+            //var claims = new[]
+            //{
+            //    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+            //    new Claim(ClaimTypes.Name, user.Username),
+            //    new Claim(ClaimTypes.Role, user.RoleID.ToString())
+            //};
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(2), //
-                signingCredentials: creds
-            );
+            //var token = new JwtSecurityToken(
+            //    issuer: _config["Jwt:Issuer"],
+            //    audience: _config["Jwt:Audience"],
+            //    claims: claims,
+            //    expires: DateTime.Now.AddHours(2), //
+            //    signingCredentials: creds
+            //);
 
-            var jwtString = new JwtSecurityTokenHandler().WriteToken(token);
+            //var jwtString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new LoginResponse
-            {
-                Token = jwtString,
-                Username = user.Username,
-                Role = user.RoleID
-            };
+            //return new LoginResponse
+            //{
+            //    Token = jwtString,
+            //    Username = user.Username,
+            //    Role = user.RoleID
+            //};
         }
 
         public async Task<bool> IsEmailExistAsync(string email)
@@ -85,47 +86,47 @@ namespace Bookstore.API.Services.Auth
 
         public async Task SaveOTPAsync(string email, string otp)
         {
-            var user = await _repository.FirstOrDefaultAsync(x => x.Email.ToLower() == email.Trim().ToLower());
-            if (user == null) return;
+            //var user = await _repository.FirstOrDefaultAsync(x => x.Email.ToLower() == email.Trim().ToLower());
+            //if (user == null) return;
 
-            user.OTP = otp;
-            user.OTPExpire = DateTime.Now.AddMinutes(5);
+            //user.OTP = otp;
+            //user.OTPExpire = DateTime.Now.AddMinutes(5);
 
-            _repository.Update(user);
+            //_repository.Update(user);
             await _repository.SaveChangesAsync();
         }
 
         public async Task<bool> VerifyOTPAsync(string email, string otp)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(otp)) return false;
-            var searchEmail = email.Trim().ToLower();
-            var user = await _repository.FirstOrDefaultAsync(x => x.Email.ToLower() == searchEmail);
+            //if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(otp)) return false;
+            //var searchEmail = email.Trim().ToLower();
+            //var user = await _repository.FirstOrDefaultAsync(x => x.Email.ToLower() == searchEmail);
 
-            if (user == null) return false; // khong tim được usserr
-            if (user.OTP.IsNullOrEmpty()) return false;
-            if (user.OTP!.Trim().ToLower() == otp.Trim().ToLower() && user.OTPExpire > DateTime.Now)
-            {
-                user.OTP = null;
-                user.OTPExpire = null;
-                _repository.Update(user);
-                await _repository.SaveChangesAsync();
+            //if (user == null) return false; // khong tim được usserr
+            //if (user.OTP.IsNullOrEmpty()) return false;
+            //if (user.OTP!.Trim().ToLower() == otp.Trim().ToLower() && user.OTPExpire > DateTime.Now)
+            //{
+            //    user.OTP = null;
+            //    user.OTPExpire = null;
+            //    _repository.Update(user);
+            //    await _repository.SaveChangesAsync();
 
-                return true; 
-            }
+            //    return true; 
+            //}
 
             return false;
         }
 
         public async Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
-            var searchEmail = email.Trim().ToLower();
-            var user = await _repository.FirstOrDefaultAsync(x => x.Email.ToLower() == searchEmail);
+            //var searchEmail = email.Trim().ToLower();
+            //var user = await _repository.FirstOrDefaultAsync(x => x.Email.ToLower() == searchEmail);
 
-            if (user == null) return false;
+            //if (user == null) return false;
 
-            user.PasswordHash = newPassword;
+            //user.PasswordHash = newPassword;
 
-            _repository.Update(user);
+            //_repository.Update(user);
             return await _repository.SaveChangesAsync();
         }
     }

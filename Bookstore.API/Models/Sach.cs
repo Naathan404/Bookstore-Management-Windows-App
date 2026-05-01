@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class Sach : IEntity
+    public class Sach : IEntity<int>
         // SACH
     {
         [Key]

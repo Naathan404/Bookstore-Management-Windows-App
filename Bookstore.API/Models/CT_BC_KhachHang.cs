@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class CT_BC_KhachHang : IEntity
+    public class CT_BC_KhachHang
         // CT_BC_KHACHHANG
     {
         public int MaBaoCaoKhachHang { get; set; }
@@ -18,6 +18,5 @@ namespace Bookstore.API.Models
         public decimal DaTra { get; set; }
 
         public decimal NoCuoi { get; set; }
-        public int GetID() => MaBaoCaoKhachHang;
     }
 }

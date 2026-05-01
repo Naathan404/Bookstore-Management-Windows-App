@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class NhaCungCap : IEntity
+    public class NhaCungCap : IEntity<int>
         // NHACUNGCAP
     {
         [Key]

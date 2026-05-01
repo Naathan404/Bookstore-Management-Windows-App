@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class UuDai : IEntity
+    public class UuDai : IEntity<int>
         // UUDAI
     {
         [Key]

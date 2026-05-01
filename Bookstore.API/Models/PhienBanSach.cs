@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookstore.API.Models
 {
-    public class PhienBanSach
+    public class PhienBanSach : IEntity<string>
         // PHIENBANSACH
     {
         [Key]
@@ -21,5 +21,6 @@ namespace Bookstore.API.Models
         public decimal DonGiaBan { get; set; }
         public int TonKho { get; set; }
         public int TongSoDaBan { get; set; }
+        public string GetID() => ISBN;
     }
 }

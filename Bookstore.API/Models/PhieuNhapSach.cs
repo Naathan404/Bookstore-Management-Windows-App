@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class PhieuNhapSach : IEntity
+    public class PhieuNhapSach : IEntity<int>
         // PHIEUNHAPSACH
     {
         [Key]

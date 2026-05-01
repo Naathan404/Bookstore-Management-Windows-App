@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace Bookstore.API.Models
 {
-    public class NhaXuatBan : IEntity
+    public class NhaXuatBan : IEntity<int>
         //NHACUNGCAP
     {
         [Key]

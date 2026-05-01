@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class HoaDon : IEntity
+    public class HoaDon : IEntity<int>
         // HOADON
     {
         [Key]

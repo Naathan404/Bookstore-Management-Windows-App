@@ -3,15 +3,15 @@ using System.Linq.Expressions;
 
 namespace Bookstore.API.Interfaces
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T?> GetByIDAsync(int id);
-        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
-        Task AddAsync(T item);
-        void Update(T item);
-        void Delete(T item);
+        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<TEntity?> GetByIDAsync(TKey id);
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate);
+        Task AddAsync(TEntity item);
+        void Update(TEntity item);
+        void Delete(TEntity item);
         Task<bool> SaveChangesAsync();
-        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
+        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }

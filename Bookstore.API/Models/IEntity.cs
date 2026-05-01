@@ -1,7 +1,7 @@
 ﻿namespace Bookstore.API.Models
 {
-    public interface IEntity
+    public interface IEntity<TKey>
     {
-        int GetID();
+        TKey GetID();
     }
 }

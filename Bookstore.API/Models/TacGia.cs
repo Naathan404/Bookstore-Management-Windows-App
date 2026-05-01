@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class TacGia : IEntity
+    public class TacGia : IEntity<int>
         // TACGIA
     {
         [Key]

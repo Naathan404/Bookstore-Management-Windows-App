@@ -2,7 +2,7 @@
 
 namespace Bookstore.API.Models
 {
-    public class NguoiDung
+    public class NguoiDung : IEntity<string>
         //NGUOI DUNG
     {
         [Key]
@@ -17,5 +17,6 @@ namespace Bookstore.API.Models
         public string ChucVu { get; set; } = string.Empty;
 
         public bool DangLamViec { get; set; }
+        public string GetID() => TenDangNhap;
     }
 }

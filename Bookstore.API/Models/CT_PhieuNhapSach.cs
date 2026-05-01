@@ -7,7 +7,7 @@ namespace Bookstore.API.Models
         //CT_PHIEUNHAP
     {
         public int MaPhieuNhapSach { get; set; }
-        public int ISBN { get; set; }
+        public required string ISBN { get; set; }
         public int SoLuong { get; set; }
         public decimal DonGiaNhap { get; set; }
     }
