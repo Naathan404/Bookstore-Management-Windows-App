@@ -1,0 +1,45 @@
+﻿<Window x:Class="Bookstore.WPF.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Bookstore.WPF.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Sahara Bookstore - Quản lý Nhà Sách" Height="768" Width="1366"
+        WindowStartupLocation="CenterScreen"
+        Background="#F4F7FE">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!--cột trái-->
+        <Border Grid.Column="0" Background="White">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.05" ShadowDepth="0"/>
+            </Border.Effect>
+
+            <local:SidebarView />
+        </Border>
+        
+        <!--cột phải-->
+        <Border Grid.Column="1" Margin="20" Background="White" CornerRadius="15">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.02" ShadowDepth="5"/>
+            </Border.Effect>
+
+            <Grid>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="BookEducationOutline" Width="100" Height="100" 
+                                             Foreground="#A3AED0" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                    <TextBlock Text="KHU VỰC NỘI DUNG MÀN HÌNH CHÍNH" 
+                               FontSize="24" FontWeight="Bold" Foreground="#2B3674" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Khi click vào menu, nội dung sẽ được tải ở đây..." 
+                               FontSize="16" Foreground="#A3AED0" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
