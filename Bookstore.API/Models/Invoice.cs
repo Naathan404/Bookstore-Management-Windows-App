@@ -1,21 +1,17 @@
 ﻿namespace Bookstore.API.Models
 {
     public class Invoice : IEntity
+        // HOADON
     {
         public int InvoiceID { get; set; }
         public DateTime CreatedAt { get; set; }
         public int CreatedBy { get; set; }
-
-
         public int CustomerID { get; set; }
-        public int PromotionID { get; set; }
-        public decimal InvoiceValue { get; set; }
-        public decimal DiscountValue { get; set; }
-        public decimal CustomerPaid { get; set; }
-        public decimal DebtIncurred { get; set; }
-        public int Status { get; set; }
-        public string Note { get; set; } = string.Empty;
-
+        public decimal SubTotal { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal Total { get; set; }
+        public decimal PaidAmount { get; set; }
         public int GetID() => InvoiceID;
     }
 }

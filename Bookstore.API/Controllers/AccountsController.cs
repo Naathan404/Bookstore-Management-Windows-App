@@ -16,10 +16,10 @@ namespace Bookstore.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountsController : BaseController<Account>
+    public class AccountsController : BaseController<User>
     {
         private readonly IAuthService _authService;
-        public AccountsController(IGenericRepository<Account> repo, IAuthService authService) : base(repo)
+        public AccountsController(IGenericRepository<User> repo, IAuthService authService) : base(repo)
         {
             _authService = authService;
         }

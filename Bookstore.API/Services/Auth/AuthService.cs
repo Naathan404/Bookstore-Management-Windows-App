@@ -15,12 +15,12 @@ namespace Bookstore.API.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly IGenericRepository<Account> _repository;
+        private readonly IGenericRepository<User> _repository;
         private readonly IConfiguration _config;
         private readonly IMailService _mailService;
 
         // Tiêm Repository và Config vào Service
-        public AuthService(IGenericRepository<Account> repo, IConfiguration config, IMailService mailService)
+        public AuthService(IGenericRepository<User> repo, IConfiguration config, IMailService mailService)
         {
             _repository = repo;
             _config = config;
@@ -37,9 +37,9 @@ namespace Bookstore.API.Services.Auth
             }
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.AccountID.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.Role, user.RoleID.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
@@ -59,7 +59,7 @@ namespace Bookstore.API.Services.Auth
             {
                 Token = jwtString,
                 Username = user.Username,
-                Role = user.Role
+                Role = user.RoleID
             };
         }
 

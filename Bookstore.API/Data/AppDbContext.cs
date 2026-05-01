@@ -20,9 +20,9 @@ namespace Bookstore.API.Data
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Receipt> Receipts { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<MonthlyDebtReport> MonthlyDebtReports { get; set; }
-        public DbSet<MonthlyStockReport> MonthlyStockReports { get; set; }
+        public DbSet<User> Accounts { get; set; }
+        public DbSet<MonthlyCustomerReport> MonthlyDebtReports { get; set; }
+        public DbSet<MonthlyBookReport> MonthlyStockReports { get; set; }
         public DbSet<StockTransfer> StockTransfers { get; set; }
         public DbSet<StockTransferDetail> StockTransferDetails { get; set; }
 
@@ -41,19 +41,19 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<ImportReceipt>().HasKey(k => k.ImportReceiptID);
             modelBuilder.Entity<ImportDetail>().HasKey(k => k.ImportDetailID);
             modelBuilder.Entity<Customer>().HasKey(k => k.CustomerID);
-            modelBuilder.Entity<Account>().HasKey(k => k.AccountID);
-            modelBuilder.Entity<Promotion>().HasKey(k => k.PromotionID);
+            modelBuilder.Entity<User>().HasKey(k => k.UserID);
+            modelBuilder.Entity<Promotion>().HasKey(k => k.PromotionCode);
             modelBuilder.Entity<Invoice>().HasKey(k => k.InvoiceID);
             modelBuilder.Entity<InvoiceDetail>().HasKey(k => k.InvoiceDetailID);
             modelBuilder.Entity<Receipt>().HasKey(k => k.ReceiptID);
-            modelBuilder.Entity<MonthlyDebtReport>().HasKey(k => k.ReportID);
-            modelBuilder.Entity<MonthlyStockReport>().HasKey(k => k.ReportID);
+            modelBuilder.Entity<MonthlyCustomerReport>().HasKey(k => k.ReportID);
+            modelBuilder.Entity<MonthlyBookReport>().HasKey(k => k.ReportID);
 
             // Unique
             modelBuilder.Entity<Book>().HasIndex(b => b.ISBN).IsUnique();
             modelBuilder.Entity<Customer>().HasIndex(c => c.PhoneNumber).IsUnique();
-            modelBuilder.Entity<Account>().HasIndex(a => a.Username).IsUnique();
-            modelBuilder.Entity<Account>().HasIndex(a => a.Email).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(a => a.Username).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(a => a.Email).IsUnique();
             modelBuilder.Entity<Promotion>().HasIndex(p => p.Code).IsUnique();
 
             // Forgein keys
@@ -75,7 +75,7 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<ImportDetail>().HasOne<Book>().WithMany().HasForeignKey(id => id.BookID);
 
             // Khách hàng
-            modelBuilder.Entity<Customer>().HasOne<Account>().WithOne().HasForeignKey<Customer>(c => c.AccountID).IsRequired(false);
+            modelBuilder.Entity<Customer>().HasOne<User>().WithOne().HasForeignKey<Customer>(c => c.AccountID).IsRequired(false);
             
 
             // Ưu đãi 
@@ -94,28 +94,28 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<Receipt>().HasOne<Invoice>().WithMany().HasForeignKey(r => r.InvoiceID).IsRequired(false);
 
             // Nhóm Báo cáo
-            modelBuilder.Entity<MonthlyDebtReport>().HasOne<Customer>().WithMany().HasForeignKey(m => m.CustomerID);
-            modelBuilder.Entity<MonthlyStockReport>().HasOne<Stock>().WithMany().HasForeignKey(m => m.StockID);
-            modelBuilder.Entity<MonthlyStockReport>().HasOne<Book>().WithMany().HasForeignKey(m => m.BookID);
+            modelBuilder.Entity<MonthlyCustomerReport>().HasOne<Customer>().WithMany().HasForeignKey(m => m.CustomerID);
+            modelBuilder.Entity<MonthlyBookReport>().HasOne<Stock>().WithMany().HasForeignKey(m => m.StockID);
+            modelBuilder.Entity<MonthlyBookReport>().HasOne<Book>().WithMany().HasForeignKey(m => m.BookID);
 
             // sEeD dAtA dE tEsT tHu ApI
 
-            modelBuilder.Entity<Account>().HasData(
-                new Account
+            modelBuilder.Entity<User>().HasData(
+                new User
                 {
-                    AccountID = 1,
+                    UserID = 1,
                     Username = "admin",
                     PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
                     Email = "nathannguyen6002@gmail.com",
-                    Role = 0,
+                    RoleID = 0,
                 },
-                new Account
+                new User
                 {
-                    AccountID = 2,
+                    UserID = 2,
                     Username = "staff",
                     PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
                     Email = "24521186@gm.uit.edu.vn",
-                    Role = 1,
+                    RoleID = 1,
                 }
             );
 
