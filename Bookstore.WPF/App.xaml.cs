@@ -15,6 +15,8 @@ namespace Bookstore.WPF
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            var login = new LoginView();
+            login.Show();
             await Task.Run(async () => {
                 try
                 {
@@ -23,12 +25,10 @@ namespace Bookstore.WPF
                 }
                 catch {}
             });
-            //var login = new LoginView();
-            //login.Show();
 
-            var admin = new AdminView();
-            admin.DataContext = new AdminViewModel();
-            admin.Show();
+            //var admin = new AdminView();
+            //admin.DataContext = new AdminViewModel();
+            //admin.Show();
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)
