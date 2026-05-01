@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260501191740_RebuilđB")]
-    partial class RebuilđB
+    [Migration("20260501192730_InitNewDB")]
+    partial class InitNewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -9,8 +9,8 @@ namespace Bookstore.API.Models
         [Key]
         public int MaCT { get; set; }
         public int MaUuDai { get; set; }
-        public decimal SoTienToiThieu { get; set; }
-        public decimal SoTienToiDa { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal SoTienToiThieu { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal SoTienToiDa { get; set; }
 
         public int GetID() => MaCT;
     }

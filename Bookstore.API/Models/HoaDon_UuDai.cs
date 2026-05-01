@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookstore.API.Models
 {
@@ -10,7 +11,7 @@ namespace Bookstore.API.Models
         public int MaHoaDon { get; set; }
         public int MaUuDai { get; set; }
         public required string ISBN { get; set; }
-        public decimal SoTienGiam { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal SoTienGiam { get; set; }
         public int GetID() => MaCT_HoaDon_UuDai;
 
     }

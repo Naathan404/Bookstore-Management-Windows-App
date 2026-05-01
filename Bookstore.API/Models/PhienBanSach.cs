@@ -16,9 +16,9 @@ namespace Bookstore.API.Models
         public int LanTaiBan { get; set; } = 1;
         public string HinhThucBia { get; set; } = string.Empty;
 
-        public decimal GiaNiemYet { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal GiaNiemYet { get; set; }
 
-        public decimal DonGiaBan { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal DonGiaBan { get; set; }
         public int TonKho { get; set; }
         public int TongSoDaBan { get; set; }
         public string GetID() => ISBN;

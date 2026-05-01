@@ -7,8 +7,8 @@ namespace Bookstore.API.Models
     {
         public int MaBaoCaoSach { get; set; }
         public required string ISBN { get; set; }
-        public decimal DoanhThu { get; set; }
-        public decimal ChiPhiNhap { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal DoanhThu { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal ChiPhiNhap { get; set; }
 
         public int TonDau { get; set; } 
         public int TongNhap { get; set; } 

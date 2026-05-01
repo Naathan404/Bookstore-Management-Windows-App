@@ -9,14 +9,14 @@ namespace Bookstore.API.Models
         public int MaKhachHang { get; set; }
 
         public int SoHoaDon { get; set; }
-        public decimal DoanhThu { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal DoanhThu { get; set; }
         public float TiLeDoanhThu { get; set; }
 
-        public decimal NoDau { get; set; } 
-        public decimal NoPhatSinh { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal NoDau { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal NoPhatSinh { get; set; }
 
-        public decimal DaTra { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal DaTra { get; set; }
 
-        public decimal NoCuoi { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal NoCuoi { get; set; }
     }
 }
