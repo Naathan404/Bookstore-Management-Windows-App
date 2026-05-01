@@ -1,5 +1,6 @@
 ﻿using Bookstore.WPF.ViewModels;
 using Bookstore.WPF.Views;
+using MaterialDesignThemes.Wpf;
 using System.Configuration;
 using System.Data;
 using System.Net.Http;
@@ -26,9 +27,16 @@ namespace Bookstore.WPF
             //var login = new LoginView();
             //login.Show();
 
-            var admin = new AdminView();
-            admin.DataContext = new AdminViewModel();
-            admin.Show();
+            //var admin = new AdminView();
+            //admin.DataContext = new AdminViewModel();
+            //admin.Show();
+            var window = new Window
+            {
+                Content = new TraCuuSach(),
+                Title = "Tra cứu sách",
+                WindowState = WindowState.Maximized
+            };
+            window.Show();
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)
