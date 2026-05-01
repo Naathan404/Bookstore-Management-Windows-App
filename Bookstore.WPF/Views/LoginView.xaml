@@ -80,7 +80,7 @@
             </StackPanel>
 
             <!-- Footer -->
-            <TextBlock Text="Nhóm 12 – Đề tài Quản lý nhà sách" Foreground="#A3AED0" FontSize="12" 
+            <TextBlock Grid.Row ="2" Text="Nhóm 12 – Đề tài Quản lý nhà sách" Foreground="#A3AED0" FontSize="12" 
                        VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
             <!-- ====== KHÔI PHỤC MẬT KHẨU ===== -->
