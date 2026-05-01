@@ -3,9 +3,9 @@ using Bookstore.API.Models;
 
 namespace Bookstore.API.Controllers
 {
-    public class SuppliersConntroller : BaseController<Supplier>
+    public class SuppliersConntroller : BaseController<NhaCungCap>
     {
-        public SuppliersConntroller(IGenericRepository<Supplier> repo) : base(repo)
+        public SuppliersConntroller(IGenericRepository<NhaCungCap> repo) : base(repo)
         {
         }
     }

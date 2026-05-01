@@ -3,9 +3,9 @@ using Bookstore.API.Interfaces;
 
 namespace Bookstore.API.Controllers
 {
-    public class BooksController : BaseController<Book>
+    public class BooksController : BaseController<Sach>
     {
-        public BooksController(IGenericRepository<Book> repo) : base(repo)
+        public BooksController(IGenericRepository<Sach> repo) : base(repo)
         {
         }
     }

@@ -3,9 +3,9 @@ using Bookstore.API.Models;
 
 namespace Bookstore.API.Controllers
 {
-    public class MonthlyStockReportsController : BaseController<MonthlyBookReport>
+    public class MonthlyStockReportsController : BaseController<BC_Sach>
     {
-        public MonthlyStockReportsController(IGenericRepository<MonthlyBookReport> repo) : base(repo)
+        public MonthlyStockReportsController(IGenericRepository<BC_Sach> repo) : base(repo)
         {
         }
     }

@@ -3,9 +3,9 @@ using Bookstore.API.Models;
 
 namespace Bookstore.API.Controllers
 {
-    public class ImportDetailsController : BaseController<ImportDetail>
+    public class ImportDetailsController : BaseController<CT_PhieuNhapSach>
     {
-        public ImportDetailsController(IGenericRepository<ImportDetail> repo) : base(repo)
+        public ImportDetailsController(IGenericRepository<CT_PhieuNhapSach> repo) : base(repo)
         {
         }
     }

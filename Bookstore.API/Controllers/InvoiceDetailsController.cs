@@ -3,9 +3,9 @@ using Bookstore.API.Models;
 
 namespace Bookstore.API.Controllers
 {
-    public class InvoiceDetailsController : BaseController<InvoiceDetail>
+    public class InvoiceDetailsController : BaseController<CT_HoaDon>
     {
-        public InvoiceDetailsController(IGenericRepository<InvoiceDetail> repo) : base(repo)
+        public InvoiceDetailsController(IGenericRepository<CT_HoaDon> repo) : base(repo)
         {
         }
     }

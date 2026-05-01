@@ -1,11 +1,11 @@
 ﻿namespace Bookstore.API.Models
 {
-    public class PromoConditionBook
+    public class UuDai_SachDieuKien
         //DIEUKIEN_SACH
     {
-        public int DetailID { get; set; }
+        public int MaUuDai { get; set; }
         public required string ISBN { get; set; }
-        public int MinQuantity { get; set; }
+        public int SoLuongMua { get; set; }
 
     }
 }

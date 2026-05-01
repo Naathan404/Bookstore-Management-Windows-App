@@ -2,9 +2,9 @@
 
 namespace Bookstore.API.Controllers
 {
-    public class InvoicesController : BaseController<Invoice>
+    public class InvoicesController : BaseController<HoaDon>
     {
-        public InvoicesController(Interfaces.IGenericRepository<Invoice> repo) : base(repo)
+        public InvoicesController(Interfaces.IGenericRepository<HoaDon> repo) : base(repo)
         {
         }
     }

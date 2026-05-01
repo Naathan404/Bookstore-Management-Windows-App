@@ -3,9 +3,9 @@ using Bookstore.API.Models;
 
 namespace Bookstore.API.Controllers
 {
-    public class CategoriesController : BaseController<Category>
+    public class CategoriesController : BaseController<TheLoai>
     {
-        public CategoriesController(IGenericRepository<Category> repo) : base(repo)
+        public CategoriesController(IGenericRepository<TheLoai> repo) : base(repo)
         {
         }
     }

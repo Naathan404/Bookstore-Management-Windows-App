@@ -15,12 +15,12 @@ namespace Bookstore.API.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly IGenericRepository<User> _repository;
+        private readonly IGenericRepository<NguoiDung> _repository;
         private readonly IConfiguration _config;
         private readonly IMailService _mailService;
 
         // Tiêm Repository và Config vào Service
-        public AuthService(IGenericRepository<User> repo, IConfiguration config, IMailService mailService)
+        public AuthService(IGenericRepository<NguoiDung> repo, IConfiguration config, IMailService mailService)
         {
             _repository = repo;
             _config = config;
