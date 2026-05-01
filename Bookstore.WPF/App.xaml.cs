@@ -1,5 +1,6 @@
 ﻿using Bookstore.WPF.ViewModels;
 using Bookstore.WPF.Views;
+using MaterialDesignThemes.Wpf;
 using System.Configuration;
 using System.Data;
 using System.Net.Http;
@@ -15,6 +16,8 @@ namespace Bookstore.WPF
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            var login = new LoginView();
+            login.Show();
             await Task.Run(async () => {
                 try
                 {

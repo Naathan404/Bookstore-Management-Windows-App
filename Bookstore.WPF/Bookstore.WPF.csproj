@@ -40,6 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\Login\Background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Login\bg0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
