@@ -1,6 +1,9 @@
 ﻿using Bookstore.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Identity.Client;
+using System.Security.Policy;
+using System.Security.Principal;
 
 namespace Bookstore.API.Data
 {
@@ -8,217 +11,178 @@ namespace Bookstore.API.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Book> Books { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<Stock> Positions { get; set; }
-        public DbSet<BookCount> BookCounts { get; set; }
-        public DbSet<ImportReceipt> ImportReceipts { get; set; }
-        public DbSet<ImportDetail> ImportDetails { get; set; }
-        public DbSet<Invoice> Invoices { get; set; }
-        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
-        public DbSet<Promotion> Promotions { get; set; }
-        public DbSet<Receipt> Receipts { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<MonthlyDebtReport> MonthlyDebtReports { get; set; }
-        public DbSet<MonthlyStockReport> MonthlyStockReports { get; set; }
-        public DbSet<StockTransfer> StockTransfers { get; set; }
-        public DbSet<StockTransferDetail> StockTransferDetails { get; set; }
+        public DbSet<Sach> Sach { get; set; }
+        public DbSet<PhienBanSach> PhienBanSach { get; set; }
+        public DbSet<NhaXuatBan> NhaXuatBan { get; set; }
+        public DbSet<TacGia> TacGia { get; set; }
+        public DbSet<TacGia_Sach> TacGia_Sach { get; set; }
+        public DbSet<TheLoai> TheLoai { get; set; }
+        public DbSet<NhaCungCap> NhaCungCap { get; set; }
+        public DbSet<PhieuNhapSach> PhieuNhapSach { get; set; }
+        public DbSet<CT_PhieuNhapSach> CT_PhieuNhapSach { get; set; }
+        public DbSet<KhachHang> KhachHang { get; set; }
+        public DbSet<LoaiKhachHang> LoaiKhachHang { get; set;  }
+        public DbSet<UuDai> UuDai { get; set; }
+        public DbSet<LoaiUuDai> LoaiUuDai { get; set; }
+        public DbSet<CTUD_HoaDon_Giam> CTUD_HoaDon_Giam { get; set; }
+        public DbSet<CTUD_HoaDon_Qua> CTUD_HoaDon_Qua { get; set; }
+        public DbSet<CTUD_Sach_Giam> CTUD_Sach_Giam { get; set; }
+        public DbSet<CTUD_Sach_Qua> CTUD_Sach_Qua { get; set; }
+        public DbSet<UuDai_SachDieuKien> UuDai_SachDieuKien { get; set; }
+        public DbSet<UuDai_SachTang> UuDai_SachTang { get; set; }
+        public DbSet<HoaDon> HoaDon { get; set; }
+        public DbSet<CT_HoaDon> CT_HoaDon { get; set; }
+        public DbSet<HoaDon_UuDai> HoaDon_Uudai { get; set;  }
+        public DbSet<PhieuThuTien> PhieuThuTien { get; set; }
+        public DbSet<BC_Sach> BC_Sach { get; set; }
+        public DbSet<CT_BC_Sach> CT_BC_Sach { get; set; }
+        public DbSet<BC_KhachHang> BC_KhachHang { get; set; }
+        public DbSet<CT_BC_KhachHang> CT_BC_KhachHang { get;set; }
+        public DbSet<NguoiDung> NguoiDung { get; set; }
+        public DbSet<NhomNguoiDung> NhomNguoiDung { get; set; }
+        public DbSet<ChucNang> ChucNang { get; set; }
+        public DbSet<PhanQuyen> PhanQuyen { get; set; }
+        public DbSet<ThamSo> ThamSo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Primary keys
-            modelBuilder.Entity<Book>().HasKey(k => k.BookID);
-            modelBuilder.Entity<Category>().HasKey(k => k.CategoryID);
-            modelBuilder.Entity<Supplier>().HasKey(k => k.SupplierID);
-            modelBuilder.Entity<Stock>().HasKey(k => k.StockID);
-            modelBuilder.Entity<BookCount>().HasKey(k => k.BookCountID);
-            modelBuilder.Entity<StockTransfer>().HasKey(k => k.TransferID);
-            modelBuilder.Entity<StockTransferDetail>().HasKey(k => k.StockTransferDetailID);
-            modelBuilder.Entity<ImportReceipt>().HasKey(k => k.ImportReceiptID);
-            modelBuilder.Entity<ImportDetail>().HasKey(k => k.ImportDetailID);
-            modelBuilder.Entity<Customer>().HasKey(k => k.CustomerID);
-            modelBuilder.Entity<Account>().HasKey(k => k.AccountID);
-            modelBuilder.Entity<Promotion>().HasKey(k => k.PromotionID);
-            modelBuilder.Entity<Invoice>().HasKey(k => k.InvoiceID);
-            modelBuilder.Entity<InvoiceDetail>().HasKey(k => k.InvoiceDetailID);
-            modelBuilder.Entity<Receipt>().HasKey(k => k.ReceiptID);
-            modelBuilder.Entity<MonthlyDebtReport>().HasKey(k => k.ReportID);
-            modelBuilder.Entity<MonthlyStockReport>().HasKey(k => k.ReportID);
+            // PRIMARY KEYS
+            modelBuilder.Entity<TacGia_Sach>().HasKey(k => new { k.MaTacGia, k.MaSach });
+            modelBuilder.Entity<CT_PhieuNhapSach>().HasKey(k => new { k.MaPhieuNhapSach, k.ISBN });
+            modelBuilder.Entity<UuDai_SachDieuKien>().HasKey(k => new { k.MaUuDai, k.ISBN });
+            modelBuilder.Entity<UuDai_SachTang>().HasKey(k => new { k.MaUuDai, k.ISBN });
+            modelBuilder.Entity<CT_HoaDon>().HasKey(k => new { k.MaHoaDon, k.ISBN });
+            modelBuilder.Entity<CT_BC_Sach>().HasKey(k => new { k.MaBaoCaoSach, k.ISBN });
+            modelBuilder.Entity<CT_BC_KhachHang>().HasKey(k => new { k.MaBaoCaoKhachHang, k.MaKhachHang });
+            modelBuilder.Entity<PhanQuyen>().HasKey(k => new { k.MaChucNang, k.MaNhomNguoiDung });
 
-            // Unique
-            modelBuilder.Entity<Book>().HasIndex(b => b.ISBN).IsUnique();
-            modelBuilder.Entity<Customer>().HasIndex(c => c.PhoneNumber).IsUnique();
-            modelBuilder.Entity<Account>().HasIndex(a => a.Username).IsUnique();
-            modelBuilder.Entity<Account>().HasIndex(a => a.Email).IsUnique();
-            modelBuilder.Entity<Promotion>().HasIndex(p => p.Code).IsUnique();
+            // UNIQUE
+            modelBuilder.Entity<NhaCungCap>().HasIndex(ncc => ncc.MaSoThue).IsUnique();
+            modelBuilder.Entity<NhaCungCap>().HasIndex(ncc => ncc.SoDienThoai).IsUnique();
+            modelBuilder.Entity<NhaCungCap>().HasIndex(ncc => ncc.Email).IsUnique();
+            modelBuilder.Entity<KhachHang>().HasIndex(k => k.MaSoThue).IsUnique();
+            modelBuilder.Entity<KhachHang>().HasIndex(k => k.SoDienThoai).IsUnique();
+            modelBuilder.Entity<KhachHang>().HasIndex(k => k.Email).IsUnique();
+            modelBuilder.Entity<NguoiDung>().HasIndex(n => n.Email).IsUnique();
 
-            // Forgein keys
-            // Sách & Kho
-            modelBuilder.Entity<Book>().HasOne<Category>().WithMany().HasForeignKey(b => b.CategoryID);
-            modelBuilder.Entity<BookCount>().HasOne<Book>().WithMany().HasForeignKey(bc => bc.BookID);
-            modelBuilder.Entity<BookCount>().HasOne<Stock>().WithMany().HasForeignKey(bc => bc.StockID);
 
-            // Chuyển kho 
-            modelBuilder.Entity<StockTransfer>().HasOne<Stock>().WithMany().HasForeignKey(st => st.FromStockID).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<StockTransfer>().HasOne<Stock>().WithMany().HasForeignKey(st => st.ToStockID).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<StockTransferDetail>().HasOne<StockTransfer>().WithMany().HasForeignKey(std => std.TransferID);
-            modelBuilder.Entity<StockTransferDetail>().HasOne<Book>().WithMany().HasForeignKey(std => std.BookID);
+            // FOREIGNKEY
+            modelBuilder.Entity<Sach>()
+                .HasOne<TheLoai>().WithMany().HasForeignKey(s => s.MaTheLoai)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Nhập hàng
-            modelBuilder.Entity<ImportReceipt>().HasOne<Supplier>().WithMany().HasForeignKey(ir => ir.SupplierID);
-            modelBuilder.Entity<ImportReceipt>().HasOne<Stock>().WithMany().HasForeignKey(ir => ir.StockID);
-            modelBuilder.Entity<ImportDetail>().HasOne<ImportReceipt>().WithMany().HasForeignKey(id => id.ImportReceiptID);
-            modelBuilder.Entity<ImportDetail>().HasOne<Book>().WithMany().HasForeignKey(id => id.BookID);
+            modelBuilder.Entity<PhienBanSach>()
+                .HasOne<Sach>().WithMany().HasForeignKey(p => p.MaSach)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PhienBanSach>()
+                .HasOne<NhaXuatBan>().WithMany().HasForeignKey(p => p.MaNhaXuatBan)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Khách hàng
-            modelBuilder.Entity<Customer>().HasOne<Account>().WithOne().HasForeignKey<Customer>(c => c.AccountID).IsRequired(false);
-            
+            modelBuilder.Entity<TacGia_Sach>()
+                .HasOne<TacGia>().WithMany().HasForeignKey(t => t.MaTacGia)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TacGia_Sach>()
+                .HasOne<Sach>().WithMany().HasForeignKey(s => s.MaSach)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Ưu đãi 
-            modelBuilder.Entity<Promotion>().HasOne<Book>().WithMany().HasForeignKey(p => p.RequiredBookID).IsRequired(false);
-            modelBuilder.Entity<Promotion>().HasOne<Book>().WithMany().HasForeignKey(p => p.GiftBookID).IsRequired(false);
+            modelBuilder.Entity<PhieuNhapSach>()
+                .HasOne<NhaCungCap>().WithMany().HasForeignKey(n => n.MaNhaCungCap)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Hóa đơn & Thanh toán
-            modelBuilder.Entity<Invoice>().HasOne<Customer>().WithMany().HasForeignKey(i => i.CustomerID).IsRequired(false);
-            modelBuilder.Entity<Invoice>().HasOne<Promotion>().WithMany().HasForeignKey(i => i.PromotionID).IsRequired(false);
-            modelBuilder.Entity<InvoiceDetail>().HasOne<Invoice>().WithMany().HasForeignKey(id => id.InvoiceID);
-            modelBuilder.Entity<InvoiceDetail>().HasOne<Book>().WithMany().HasForeignKey(id => id.BookID);
-            modelBuilder.Entity<InvoiceDetail>().HasOne<Stock>().WithMany().HasForeignKey(id => id.StockID);
-            modelBuilder.Entity<InvoiceDetail>().HasOne<Promotion>().WithMany().HasForeignKey(id => id.PromotionID).IsRequired(false);
+            modelBuilder.Entity<CT_PhieuNhapSach>()
+                .HasOne<PhieuNhapSach>().WithMany().HasForeignKey(p => p.MaPhieuNhapSach)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CT_PhieuNhapSach>()
+                .HasOne<PhienBanSach>().WithMany().HasForeignKey(p => p.ISBN)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Receipt>().HasOne<Customer>().WithMany().HasForeignKey(r => r.CustomerID).IsRequired(false);
-            modelBuilder.Entity<Receipt>().HasOne<Invoice>().WithMany().HasForeignKey(r => r.InvoiceID).IsRequired(false);
+            modelBuilder.Entity<KhachHang>()
+                .HasOne<LoaiKhachHang>().WithMany().HasForeignKey(k => k.MaLoaiKhachHang)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Nhóm Báo cáo
-            modelBuilder.Entity<MonthlyDebtReport>().HasOne<Customer>().WithMany().HasForeignKey(m => m.CustomerID);
-            modelBuilder.Entity<MonthlyStockReport>().HasOne<Stock>().WithMany().HasForeignKey(m => m.StockID);
-            modelBuilder.Entity<MonthlyStockReport>().HasOne<Book>().WithMany().HasForeignKey(m => m.BookID);
+            modelBuilder.Entity<UuDai>()
+                .HasOne<LoaiUuDai>().WithMany().HasForeignKey(u => u.MaLoaiUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<UuDai>()
+                .HasOne<LoaiKhachHang>().WithMany().HasForeignKey(u => u.MaLoaiKhachHang)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // sEeD dAtA dE tEsT tHu ApI
+            modelBuilder.Entity<CTUD_HoaDon_Giam>()
+                .HasOne<UuDai>().WithMany().HasForeignKey(u => u.MaUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CTUD_HoaDon_Qua>()
+                .HasOne<UuDai>().WithMany().HasForeignKey(u => u.MaUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CTUD_Sach_Giam>()
+                .HasOne<UuDai>().WithMany().HasForeignKey(u => u.MaUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CTUD_Sach_Qua>()
+                .HasOne<UuDai>().WithMany().HasForeignKey(u => u.MaUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Account>().HasData(
-                new Account
-                {
-                    AccountID = 1,
-                    Username = "admin",
-                    PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
-                    Email = "nathannguyen6002@gmail.com",
-                    Role = 0,
-                },
-                new Account
-                {
-                    AccountID = 2,
-                    Username = "staff",
-                    PasswordHash = "fa980dbf4533c98fa5ed792374bea691610dfaabc62558182f4cc814ef0d69db",
-                    Email = "24521186@gm.uit.edu.vn",
-                    Role = 1,
-                }
-            );
+            modelBuilder.Entity<UuDai_SachDieuKien>()
+                .HasOne<PhienBanSach>().WithMany().HasForeignKey(dk => dk.ISBN)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<UuDai_SachDieuKien>()
+                .HasOne<UuDai>().WithMany().HasForeignKey(dk => dk.MaUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<UuDai_SachTang>()
+                .HasOne<PhienBanSach>().WithMany().HasForeignKey(dk => dk.ISBN)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<UuDai_SachTang>()
+                .HasOne<UuDai>().WithMany().HasForeignKey(dk => dk.MaUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Category>().HasData(
-                new Category { CategoryID = 1, CategoryName = "Truyện tranh" },
-                new Category { CategoryID = 2, CategoryName = "Giáo trình" },
-                new Category { CategoryID = 3, CategoryName = "Kỹ năng sống" },
-                new Category { CategoryID = 4, CategoryName = "Văn học" },
-                new Category { CategoryID = 5, CategoryName = "Kinh tế" }
-            );
+            modelBuilder.Entity<HoaDon>()
+                .HasOne<KhachHang>().WithMany().HasForeignKey(h => h.MaKhachHang)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Supplier>().HasData(
-                new Supplier
-                {
-                    SupplierID = 1,
-                    SupplierName = "NXB Kim Đồng",
-                    Address = "55 Quang Trung, Hà Nội",
-                    Email = "cskh@nxbkimdong.com.vn",
-                    Phonenumber = "1900571595"
-                },
-                new Supplier
-                {
-                    SupplierID = 2,
-                    SupplierName = "NXB Trẻ",
-                    Address = "161B Lý Chính Thắng, Quận 3, TP.HCM",
-                    Email = "hopthu@nxbtre.com.vn",
-                    Phonenumber = "02839316289"
-                }
-            );
+            modelBuilder.Entity<CT_HoaDon>()
+                .HasOne<HoaDon>().WithMany().HasForeignKey(h => h.MaHoaDon)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CT_HoaDon>()
+                .HasOne<PhienBanSach>().WithMany().HasForeignKey(h => h.ISBN)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HoaDon_UuDai>()
+                .HasOne<HoaDon>().WithMany().HasForeignKey(h => h.MaHoaDon)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HoaDon_UuDai>()
+                .HasOne<UuDai>().WithMany().HasForeignKey(h => h.MaUuDai)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HoaDon_UuDai>()
+                .HasOne<PhienBanSach>().WithMany().HasForeignKey(h => h.ISBN)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Stock>().HasData(
-                new Stock
-                {
-                    StockID = 1,
-                    StockName = "Dãy A",
-                    Priority = 0,
-                    Description = "Kệ chính, đối diện cửa ra vào"
-                },
-                new Stock
-                {
-                    StockID = 2,
-                    StockName = "Kho tổng 1",
-                    Priority = 1,
-                    Description = "Kho tầng 1, lưu trữ hàng mới nhập về"
-                },
-                new Stock
-                {
-                    StockID = 3,
-                    StockName = "Kho tổng 2",
-                    Priority = 1,
-                    Description = "Kho tầng 2, lưu trữ hàng tồn kho, chưa xả được"
-                }
-            );
+            modelBuilder.Entity<PhieuThuTien>()
+                .HasOne<KhachHang>().WithMany().HasForeignKey(k => k.MaKhachHang)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Book>().HasData(
-                new Book
-                {
-                    BookID = 1,
-                    ISBN = "978-604-2-27297-1",
-                    Title = "Conan Tập 100",
-                    Author = "Aoyama Gosho",
-                    Publisher = "NXB Kim Đồng",
-                    Edition = 1,
-                    CategoryID = 1,
-                    Price = 25000m,
-                    ListPrice = 25000m,
-                    ImportedPrice = 18000m, // Giá vốn tham chiếu
-                    StockQuantity = 100,
-                    IsDeleted = false,
-                    CreatedBy = 1 // Admin tạo
-                },
-                new Book
-                {
-                    BookID = 2,
-                    ISBN = "978-604-1-18321-4",
-                    Title = "Lập trình C#",
-                    Author = "Nguyễn Hữu Hùng",
-                    Publisher = "NXB Trẻ",
-                    Edition = 5,
-                    CategoryID = 2,
-                    Price = 120000m,
-                    ListPrice = 120000m,
-                    ImportedPrice = 85000m,
-                    StockQuantity = 20,
-                    IsDeleted = false,
-                    CreatedBy = 1
-                }
-            );
+            modelBuilder.Entity<CT_BC_Sach>()
+                .HasOne<BC_Sach>().WithMany().HasForeignKey(b => b.MaBaoCaoSach)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CT_BC_Sach>()
+                .HasOne<PhienBanSach>().WithMany().HasForeignKey(b => b.ISBN)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Customer>().HasData(
-            new Customer
-            {
-                CustomerID = 1,
-                CustomerName = "Nguyễn Gia Hưng",
-                Gender = 0,
-                PhoneNumber = "0901234567",
-                Address = "Cần Thơ",
-                TotalDebt = 0,
-                TotalPurchaseValue = 0,
-                TotalOrders = 0,
-                AccountID = null // vãng lai lãi vang
-            }
-        );
+            modelBuilder.Entity<CT_BC_KhachHang>()
+               .HasOne<BC_KhachHang>().WithMany().HasForeignKey(b => b.MaBaoCaoKhachHang)
+               .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CT_BC_KhachHang>()
+               .HasOne<KhachHang>().WithMany().HasForeignKey(b => b.MaKhachHang)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<NguoiDung>()
+               .HasOne<NhomNguoiDung>().WithMany().HasForeignKey(n => n.MaNhomNguoiDung)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PhanQuyen>()
+               .HasOne<NhomNguoiDung>().WithMany().HasForeignKey(p => p.MaNhomNguoiDung)
+               .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PhanQuyen>()
+               .HasOne<ChucNang>().WithMany().HasForeignKey(p => p.MaChucNang)
+               .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
