@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Data;
 using System.Net.Http;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Bookstore.WPF
 {
@@ -29,27 +28,14 @@ namespace Bookstore.WPF
             });
             //var login = new LoginView();
             //login.Show();
-
+            // Thử DashboardView
+            //var test = new test();
+            //test.Show();
+            var mainView = new MainView();
+            mainView.Show();
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();
             //admin.Show();
-            //var window = new Window
-            //{
-            //    Content = new TraCuuSach(),
-            //    Title = "Tra cứu sách",
-            //    WindowState = WindowState.Maximized
-            //};
-            //window.Show();
-
-            var window = new Window
-            {
-                Content = new CustomerView(),
-                Title = "Khách Hàng",
-                WindowState = WindowState.Maximized,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            };
-            window.Show();
-
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)
