@@ -43,7 +43,7 @@ namespace Bookstore.WPF
 
             var window = new Window
             {
-                Content = new CustomerView(),
+                Content = new TraCuuSach(),
                 Title = "Khách Hàng",
                 WindowState = WindowState.Maximized,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
