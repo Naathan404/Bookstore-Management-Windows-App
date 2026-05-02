@@ -9,7 +9,7 @@ namespace Bookstore.API.Models
         [Key]
         public int MaPhieuNhapSach { get; set; }
         public DateTime NgayTao { get; set; }
-        public int NguoiTao { get; set; }
+        public string NguoiTao { get; set; } = string.Empty;
         public int MaNhaCungCap { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal TongTien { get; set; }
         public int GetID() => MaPhieuNhapSach;

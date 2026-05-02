@@ -8,7 +8,7 @@ namespace Bookstore.API.Models
         [Key]
         public int MaUuDai { get; set; }
         public DateTime NgayTao { get; set; }
-        public int NguoiTao { get; set; }
+        public string NguoiTao { get; set; } = string.Empty;
         public int MaLoaiUuDai { get; set; }
         public string TenUuDai { get; set; } = string.Empty;
         public string MoTa { get; set; }  = string.Empty;

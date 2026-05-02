@@ -1,5 +1,4 @@
-﻿using Bookstore.WPF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Bookstore.WPF.Views
 {
     /// <summary>
-    /// Interaction logic for StaffView.xaml
+    /// Interaction logic for SupplierView.xaml
     /// </summary>
-    public partial class StaffView : Window
+    public partial class SupplierView : UserControl
     {
-        public StaffView()
+        public SupplierView()
         {
             InitializeComponent();
-            this.DataContext = new StaffViewModel();
         }
     }
 }

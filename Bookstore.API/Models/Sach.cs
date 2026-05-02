@@ -11,5 +11,7 @@ namespace Bookstore.API.Models
         public int MaTheLoai { get; set; }
         public string MoTa { get; set; } = string.Empty;
         public int GetID() => MaSach;
+
+        public string ImageUrl { get; set; } = "https://placehold.co/200x300/eeeeee/333333?text=No+Cover";
     }
 }
