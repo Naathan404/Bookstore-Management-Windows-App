@@ -3,9 +3,9 @@ using Bookstore.API.Models;
 
 namespace Bookstore.API.Controllers
 {
-    public class PromotionsController : BaseController<Promotion>
+    public class PromotionsController : BaseController<UuDai, int>
     {
-        public PromotionsController(IGenericRepository<Promotion> repo) : base(repo)
+        public PromotionsController(IGenericRepository<UuDai, int> repo) : base(repo)
         {
         }
     }
