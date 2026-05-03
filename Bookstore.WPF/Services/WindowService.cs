@@ -9,14 +9,14 @@ public class WindowService : IWindowService
     {
         Window window = null;
 
-        if (typeof(TViewModel) == typeof(AdminViewModel))
-        {
-            window = new AdminView();
-        }
-        else if (typeof(TViewModel) == typeof(StaffViewModel))
-        {
-            window = new StaffView();
-        }
+        //if (typeof(TViewModel) == typeof(AdminViewModel))
+        //{
+        //    window = new AdminView();
+        //}
+        //else if (typeof(TViewModel) == typeof(StaffViewModel))
+        //{
+        //    window = new StaffView();
+        //}
 
         if (window != null)
         {
