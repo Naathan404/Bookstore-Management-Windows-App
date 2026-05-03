@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoffeeShop.Helper
+namespace Bookstore.API.Utils
 {
     public static class HashHelper
     {

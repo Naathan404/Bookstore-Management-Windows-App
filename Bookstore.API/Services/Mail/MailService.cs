@@ -1,5 +1,4 @@
-﻿using MailKit;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 
@@ -16,8 +15,8 @@ namespace Bookstore.API.Services
         public MailService(IConfiguration config)
         {
             _config = config;
-            _senderPasswd =  _config["EmailSettings:SenderPassword"];
-            _fromEmail = _config["EmailSettings:FromEmail"];
+            _senderPasswd =  _config["EmailSettings:Password"];
+            _fromEmail = _config["EmailSettings:Email"];
         }
         public async Task SendEmailAsync(string toEmail, string subject, string body, string filePath = "")
         {

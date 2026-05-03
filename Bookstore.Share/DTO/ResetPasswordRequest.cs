@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookstore.Share.DTORequests
+namespace Bookstore.Share.DTO
 {
     public class ResetPasswordRequest
     {

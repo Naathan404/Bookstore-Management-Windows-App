@@ -1,27 +1,92 @@
 ﻿using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    public class SidebarViewModel : BaseViewModel // Bắt buộc kế thừa BaseViewModel
+    public class SidebarViewModel : BaseViewModel
     {
         private Action<object> _handleChangeView;
 
-        #region Properties (Biến hiển thị UI)
-        public string HomeTabName { get; set; }
 
-        public Visibility IsDashboardVisible { get; set; }
-        public Visibility IsBanHangVisible { get; set; }
-        public Visibility IsTraCuuSachVisible { get; set; }
-        public Visibility IsKhachHangVisible { get; set; }
-        public Visibility IsNhapKhoVisible { get; set; }
-        public Visibility IsNhaCungCapVisible { get; set; }
-        public Visibility IsUuDaiVisible { get; set; }
-        public Visibility IsBaoCaoVisible { get; set; }
-        public Visibility IsTaiKhoanVisible { get; set; }
-        public Visibility IsCaiDatVisible { get; set; }
+        #region Properties
+        private string _homeTabName;
+        public string HomeTabName
+        {
+            get => _homeTabName;
+            set { _homeTabName = value; OnPropertyChanged(); }
+        }
 
+        private Visibility _isDashboardVisible;
+        public Visibility IsDashboardVisible
+        {
+            get => _isDashboardVisible;
+            set { _isDashboardVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isSaleVisible;
+        public Visibility IsSaleVisible
+        {
+            get => _isSaleVisible;
+            set { _isSaleVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isProductVisible;
+        public Visibility IsProductVisible
+        {
+            get => _isProductVisible;
+            set { _isProductVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isCustomerVisible;
+        public Visibility IsCustomerVisible
+        {
+            get => _isCustomerVisible;
+            set { _isCustomerVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isImportVisible;
+        public Visibility IsImportVisible
+        {
+            get => _isImportVisible;
+            set { _isImportVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isSupplierVisible;
+        public Visibility IsSupplierVisible
+        {
+            get => _isSupplierVisible;
+            set { _isSupplierVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isPromotionVisible;
+        public Visibility IsPromotionVisible
+        {
+            get => _isPromotionVisible;
+            set { _isPromotionVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isReportVisible;
+        public Visibility IsReportVisible
+        {
+            get => _isReportVisible;
+            set { _isReportVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isAccountVisible;
+        public Visibility IsAccountVisible
+        {
+            get => _isAccountVisible;
+            set { _isAccountVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isSettingVisible;
+        public Visibility IsSettingVisible
+        {
+            get => _isSettingVisible;
+            set { _isSettingVisible = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Commands (Lệnh điều hướng)
@@ -39,51 +104,67 @@ namespace Bookstore.WPF.ViewModels
         public ICommand LogoutCommand { get; set; }
         #endregion
 
-        public SidebarViewModel() { }
-        public SidebarViewModel(List<string> listQuyen, Action<object> changeViewAction)
+        public SidebarViewModel(Action<object> changeViewAction)
         {
             _handleChangeView = changeViewAction;
+            var listQuyen = AppState.CurrentPermissions;
+
+            string debugstring = string.Empty;
+            foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
+            MessageBox.Show(debugstring);
 
             // Đọc phân quyền từ api
             // ==========================================
-            IsDashboardVisible = listQuyen.Contains("CN_DASHBOARD") ? Visibility.Visible : Visibility.Collapsed;
-            if (listQuyen.Contains("CN_DASHBOARD"))
-                HomeTabName = "Dashboard";
+            IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
+            if (listQuyen.Contains("DashboardView"))
+                HomeTabName = "Trang chủ";
             else
                 HomeTabName = "Bán hàng";
-            IsBanHangVisible = listQuyen.Contains("CN_BANHANG") ? Visibility.Visible : Visibility.Collapsed;
-            IsTraCuuSachVisible = listQuyen.Contains("CN_TRACUU") ? Visibility.Visible : Visibility.Collapsed;
-            IsKhachHangVisible = listQuyen.Contains("CN_KHACHHANG") ? Visibility.Visible : Visibility.Collapsed;
-            IsNhapKhoVisible = listQuyen.Contains("CN_NHAPKHO") ? Visibility.Visible : Visibility.Collapsed;
-            IsNhaCungCapVisible = listQuyen.Contains("CN_NHACUNGCAP") ? Visibility.Visible : Visibility.Collapsed;
-            IsUuDaiVisible = listQuyen.Contains("CN_UUDAI") ? Visibility.Visible : Visibility.Collapsed;
-            IsBaoCaoVisible = listQuyen.Contains("CN_BAOCAO") ? Visibility.Visible : Visibility.Collapsed;
-            IsTaiKhoanVisible = listQuyen.Contains("CN_TAIKHOAN") ? Visibility.Visible : Visibility.Collapsed;
-            IsCaiDatVisible = listQuyen.Contains("CN_CAIDAT") ? Visibility.Visible : Visibility.Collapsed;
+            IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
+            IsSaleVisible = listQuyen.Contains("SaleView") ? Visibility.Visible : Visibility.Collapsed;
+            IsProductVisible = listQuyen.Contains("ProductView") ? Visibility.Visible : Visibility.Collapsed;
+            IsCustomerVisible = listQuyen.Contains("CustomerView") ? Visibility.Visible : Visibility.Collapsed;
+            IsImportVisible = listQuyen.Contains("ImportView") ? Visibility.Visible : Visibility.Collapsed;
+            IsSupplierVisible = listQuyen.Contains("SupplierView") ? Visibility.Visible : Visibility.Collapsed;
+            IsPromotionVisible = listQuyen.Contains("PromotionView") ? Visibility.Visible : Visibility.Collapsed;
+            IsReportVisible = listQuyen.Contains("ReportView") ? Visibility.Visible : Visibility.Collapsed;
+            IsAccountVisible = listQuyen.Contains("AccountView") ? Visibility.Visible : Visibility.Collapsed;
+            IsSettingVisible = listQuyen.Contains("SettingView") ? Visibility.Visible : Visibility.Collapsed;
 
             // Command
             // ==========================================
-            //ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(new DashboardViewModel()));
-            //ShowBanHangCommand = new RelayCommand<object>((p) => _handleChangeView(new BanHangViewModel()));
-            //ShowTraCuuSachCommand = new RelayCommand<object>((p) => _handleChangeView(new TraCuuSachViewModel()));
-            //ShowKhachHangCommand = new RelayCommand<object>((p) => _handleChangeView(new KhachHangViewModel()));
-            //ShowNhapKhoCommand = new RelayCommand<object>((p) => _handleChangeView(new NhapKhoViewModel()));
-            //ShowNhaCungCapCommand = new RelayCommand<object>((p) => _handleChangeView(new NhaCungCapViewModel()));
-            //ShowUuDaiCommand = new RelayCommand<object>((p) => _handleChangeView(new UuDaiViewModel()));
-            //ShowBaoCaoCommand = new RelayCommand<object>((p) => _handleChangeView(new BaoCaoViewModel()));
-            //ShowTaiKhoanCommand = new RelayCommand<object>((p) => _handleChangeView(new TaiKhoanViewModel()));
-            //ShowCaiDatCommand = new RelayCommand<object>((p) => _handleChangeView(new CaiDatViewModel()));
+            if (listQuyen.Contains("DashboardView"))
+                ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(new DashboardViewModel()));
+
+            if (listQuyen.Contains("SaleView"))
+                ShowBanHangCommand = new RelayCommand<object>((p) => _handleChangeView(new SaleViewModel()));
+            if (listQuyen.Contains("ProductView"))
+                ShowTraCuuSachCommand = new RelayCommand<object>((p) => _handleChangeView(new ProductViewModel()));
+            if (listQuyen.Contains("CustomerView"))
+                ShowKhachHangCommand = new RelayCommand<object>((p) => _handleChangeView(new CustomerViewModel()));
+            if (listQuyen.Contains("ImportView"))
+                ShowNhapKhoCommand = new RelayCommand<object>((p) => _handleChangeView(new ImportViewModel()));
+            if (listQuyen.Contains("SupplierView"))
+                ShowNhaCungCapCommand = new RelayCommand<object>((p) => _handleChangeView(new SupplierViewModel()));
+            if (listQuyen.Contains("PromotionView"))
+                ShowUuDaiCommand = new RelayCommand<object>((p) => _handleChangeView(new PromotionViewModel()));
+            if (listQuyen.Contains("ReportView"))
+                ShowBaoCaoCommand = new RelayCommand<object>((p) => _handleChangeView(new ReportViewModel()));
+            if (listQuyen.Contains("AccountView"))
+                ShowTaiKhoanCommand = new RelayCommand<object>((p) => _handleChangeView(new AccountViewModel()));
+            if (listQuyen.Contains("SettingView"))
+                ShowCaiDatCommand = new RelayCommand<object>((p) => _handleChangeView(new SettingViewModel()));
 
             // Đăng xuất
             LogoutCommand = new RelayCommand<object>((p) =>
             {
-                // Gọi API Logout (nếu có)
+                // Gọi API Logout \\
 
                 // Mở lại màn hình Login
                 var loginWindow = new Bookstore.WPF.Views.LoginView();
                 loginWindow.Show();
 
-                // Đóng Window chính (MainWindow)
+                // Đóng Window chính
                 Application.Current.MainWindow.Close();
             });
         }

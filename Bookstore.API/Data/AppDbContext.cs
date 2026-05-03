@@ -1,9 +1,5 @@
 ﻿using Bookstore.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Identity.Client;
-using System.Security.Policy;
-using System.Security.Principal;
 
 namespace Bookstore.API.Data
 {
@@ -183,14 +179,21 @@ namespace Bookstore.API.Data
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<NguoiDung>()
-               .HasOne<NhomNguoiDung>().WithMany().HasForeignKey(n => n.MaNhomNguoiDung)
+               .HasOne(n => n.NhomNguoiDung)                     
+               .WithMany(nhom => nhom.NguoiDungs)                
+               .HasForeignKey(n => n.MaNhomNguoiDung)
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhanQuyen>()
-               .HasOne<NhomNguoiDung>().WithMany().HasForeignKey(p => p.MaNhomNguoiDung)
+               .HasOne(p => p.NhomNguoiDung)
+               .WithMany(nhom => nhom.PhanQuyens)
+               .HasForeignKey(p => p.MaNhomNguoiDung)
                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<PhanQuyen>()
-               .HasOne<ChucNang>().WithMany().HasForeignKey(p => p.MaChucNang)
+               .HasOne(p => p.ChucNang)
+               .WithMany(c => c.PhanQuyens)
+               .HasForeignKey(p => p.MaChucNang)
                .OnDelete(DeleteBehavior.Restrict);
 
 
@@ -254,8 +257,8 @@ namespace Bookstore.API.Data
                     MaNhomNguoiDung = 1,
                     HoTen = "Nguyễn Chí Nguyên",
                     GioiTinh = "Nam",
-                    ChucVu = "Giám đốc",
-                    Email = "admin@sahara.com",
+                    ChucVu = "Quản trị viên",
+                    Email = "24521186@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 3, 10),
                     NgayVaoLam = new DateOnly(2025, 1, 1)
@@ -268,7 +271,7 @@ namespace Bookstore.API.Data
                     HoTen = "Nguyễn Gia Hưng",
                     GioiTinh = "Nam",
                     ChucVu = "Quản lý Cửa hàng",
-                    Email = "hungng@sahara.com",
+                    Email = "24520604@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 1, 11),
                     NgayVaoLam = new DateOnly(2025, 2, 1)
@@ -282,7 +285,7 @@ namespace Bookstore.API.Data
                     HoTen = "Lê Hoàng Quân",
                     GioiTinh = "Nam",
                     ChucVu = "Quản lý Cửa hàng",
-                    Email = "quanlh@sahara.com",
+                    Email = "24521432@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 1, 11),
                     NgayVaoLam = new DateOnly(2025, 2, 1)
@@ -296,7 +299,7 @@ namespace Bookstore.API.Data
                     HoTen = "Phạm Hoàng Sơn",
                     GioiTinh = "Nam",
                     ChucVu = "Quản lý Cửa hàng",
-                    Email = "sonph@sahara.com",
+                    Email = "24521536@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 1, 11),
                     NgayVaoLam = new DateOnly(2025, 2, 1)
@@ -310,7 +313,7 @@ namespace Bookstore.API.Data
                     HoTen = "Nguyễn Lưu Văn Phú",
                     GioiTinh = "Nam",
                     ChucVu = "Nhân viên Bán hàng",
-                    Email = "phunlv@sahara.com",
+                    Email = "24521360@g.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2000, 10, 20),
                     NgayVaoLam = new DateOnly(2025, 6, 1)

@@ -16,7 +16,12 @@ namespace Bookstore.API.Models
         public string Email { get; set; } = string.Empty;
         public string ChucVu { get; set; } = string.Empty;
 
+        public string? MaOTP { get; set; } = string.Empty;
+        public DateTime? HanOTP { get; set; } = DateTime.Now;
+
         public bool DangLamViec { get; set; }
         public string GetID() => TenDangNhap;
+        
+        public virtual NhomNguoiDung NhomNguoiDung { get; set; }
     }
 }
