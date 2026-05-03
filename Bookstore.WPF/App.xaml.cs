@@ -17,8 +17,6 @@ namespace Bookstore.WPF
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            //var login = new LoginView();
-            //login.Show();
             await Task.Run(async () => {
                 try
                 {
@@ -27,8 +25,8 @@ namespace Bookstore.WPF
                 }
                 catch {}
             });
-            //var login = new LoginView();
-            //login.Show();
+            var login = new LoginView();
+            login.Show();
 
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();
@@ -41,14 +39,14 @@ namespace Bookstore.WPF
             //};
             //window.Show();
 
-            var window = new Window
-            {
-                Content = new ProductView(),
-                Title = "Khách Hàng",
-                WindowState = WindowState.Maximized,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            };
-            window.Show();
+            //var window = new Window
+            //{
+            //    Content = new ProductView(),
+            //    Title = "Khách Hàng",
+            //    WindowState = WindowState.Maximized,
+            //    WindowStartupLocation = WindowStartupLocation.CenterScreen
+            //};
+            //window.Show();
 
         }
 
