@@ -12,6 +12,6 @@ namespace Bookstore.API.Models
         public string MoTa { get; set; } = string.Empty;
         public int GetID() => MaSach;
 
-        public string ImageUrl { get; set; } = "https://placehold.co/200x300/eeeeee/333333?text=No+Cover";
+        public string ImageUrl { get; set; } = "/Resources/Images/Books/default_book_cover.jpg";
     }
 }
