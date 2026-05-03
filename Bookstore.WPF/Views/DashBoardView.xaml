@@ -8,9 +8,9 @@
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
              xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"             
-             d:DataContext="{d:DesignInstance Type=vm:BookGenreSaleChart, IsDesignTimeCreatable=True}"             
+             d:DataContext="{d:DesignInstance Type=vm:DashBoardViewModel, IsDesignTimeCreatable=True}"             
              mc:Ignorable="d" 
-             d:DesignHeight="1732" d:DesignWidth="1640"
+             d:DesignHeight="1750" d:DesignWidth="1640"
              Background="#f4f7fe">
 
     <UserControl.Resources>
@@ -153,15 +153,16 @@
 
                 <!-- Header Section -->
                 <Border Grid.Row="0" 
-        Margin="20,10,20,10" 
+        Margin="40,15,20,0" 
         Padding="20,15" 
         CornerRadius="15" 
         Background="White" 
-        Effect="{StaticResource CardShadowEffect}">
+        Effect="{StaticResource CardShadowEffect}"
+        VerticalAlignment="Top">
 
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Height="75">
                         <!-- Icon: Đã chỉnh lại kích thước và căn giữa -->
-                        <materialDesign:PackIcon Kind="hOME" 
+                        <materialDesign:PackIcon Kind="Home" 
                                  Width="47" 
                                  Height="57"
                                  Foreground="#4318FF" 
@@ -230,9 +231,9 @@
                        Foreground="#9AA1B2" 
                        FontSize="14" 
                        Margin="0,0,0,2"/>
-                                        <TextBlock Text="123.000.000đ" 
+                                        <TextBlock Text="{Binding Sale, StringFormat='{}{0:#,0} VND'}" 
                        Foreground="#283556" 
-                       FontSize="24" 
+                       FontSize="15" 
                        FontWeight="Bold" Width="201"/>
 
                                     </StackPanel>
@@ -263,13 +264,13 @@
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="Lợi nhuận ngày"  Foreground="#9AA1B2" FontSize="14" Margin="0,0,0,2" Height="18"/>
-                                        <TextBlock Text="12.000.000đ" Foreground="#283556" FontSize="24" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Profit, StringFormat='{}{0:#,0} VND'}" Foreground="#283556" FontSize="15" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="+15%" Foreground="#05CD99" FontSize="12" FontWeight="Bold"/>
+                                            <TextBlock Grid.Column="0" Text="{Binding ProfitPercent, StringFormat='{}{0:+#,0;-#,0;0}%'}" Foreground="#05CD99" FontSize="12" FontWeight="Bold"/>
                                             <TextBlock Grid.Column="1" Text="so với tháng trước" Foreground="#9AA1B2" FontSize="12" Margin="3,0,0,0"/>
                                         </Grid>
 
@@ -299,7 +300,7 @@
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="Chi phí ngày" Foreground="#9AA1B2" FontSize="14" Margin="0,0,0,2"/>
-                                        <TextBlock Text="120.500.000đ" Foreground="#283556" FontSize="24" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Expense, StringFormat='{}{0:#,0} VND'}" Foreground="#283556" FontSize="15" FontWeight="Bold"/>
 
                                     </StackPanel>
                                 </Grid>
@@ -334,7 +335,7 @@
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="Khách hàng mới" Foreground="#9AA1B2" FontSize="14" Margin="0,0,0,2"/>
-                                        <TextBlock x:Name="CustNumTxtBox" Text="2.100" Foreground="#283556" FontSize="24" FontWeight="Bold" />
+                                        <TextBlock x:Name="CustNumTxtBox" Text="{Binding CustNum, StringFormat='{}{0:#,0}'}" Foreground="#283556" FontSize="20" FontWeight="Bold" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -365,7 +366,7 @@
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="Lượng hoá đơn hôm nay" Foreground="#9AA1B2" FontSize="14" Margin="0,0,0,2"/>
-                                        <TextBlock Text="500" Foreground="#283556" FontSize="24" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding ReceiptNum, StringFormat='{}{0:#,0}'}" Foreground="#283556" FontSize="20" FontWeight="Bold"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -383,16 +384,22 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Chart 1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     <Grid Grid.Column="1">
-                                        <Grid.DataContext>
-                                            <vm:BookGenreSaleChart/>
-                                        </Grid.DataContext>
 
-                                        <lvc:PieChart Series="{Binding Data}" Margin="408,24,50,24" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                                        <lvc:PieChart SeriesSource="{Binding Data}" Width="300" Height="250">
                                             <lvc:PieChart.SeriesTemplate>
                                                 <DataTemplate>
-                                                    <lvc:XamlPieSeries SeriesName="{Binding Name}" Values="{Binding Values}" Pushout="{Binding Pushout}"/>
+                                                    <lvc:XamlPieSeries
+                    SeriesName="{Binding Name}"
+                    Values="{Binding Values}"/>
                                                 </DataTemplate>
                                             </lvc:PieChart.SeriesTemplate>
+                                            <lvc:PieChart.Title>
+                                                <lvc:XamlDrawnLabelVisual
+                Paint="#000"
+                TextSize="25"
+                Padding="15"/>
+                                            </lvc:PieChart.Title>
                                         </lvc:PieChart>
                                     </Grid>
                                 </Grid>
@@ -407,15 +414,24 @@
                                     <TextBlock Grid.Column="0" Text="Chart 1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     <Grid Grid.Column="1">
                                         <Grid.DataContext>
-                                            <vm:BookGenreSaleChart/>
+                                            <vm:DashBoardViewModel/>
                                         </Grid.DataContext>
 
-                                        <lvc:PieChart Series="{Binding Data}" Margin="408,24,50,24" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                                        <lvc:PieChart SeriesSource="{Binding Data}" Width="300" Height="250">
                                             <lvc:PieChart.SeriesTemplate>
                                                 <DataTemplate>
-                                                    <lvc:XamlPieSeries SeriesName="{Binding Name}" Values="{Binding Values}" Pushout="{Binding Pushout}"/>
+                                                    <lvc:XamlPieSeries
+                    SeriesName="{Binding Name}"
+                    Values="{Binding Values}"/>
                                                 </DataTemplate>
                                             </lvc:PieChart.SeriesTemplate>
+                                            <lvc:PieChart.Title>
+                                                <lvc:XamlDrawnLabelVisual
+                Paint="#000"
+                TextSize="25"
+                Padding="15"/>
+                                            </lvc:PieChart.Title>
                                         </lvc:PieChart>
                                     </Grid>
                                 </Grid>
@@ -432,33 +448,68 @@
 
                                 <!-- ItemsControl tự động tạo danh sách dựa trên dữ liệu -->
                                 <ItemsControl Grid.Row="1" ItemsSource="{Binding TopBooks}">
-                                    <!-- Định nghĩa bố cục nằm ngang (5 cột) -->
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <UniformGrid Columns="5"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
 
-                                    <!-- Định nghĩa giao diện cho mỗi cuốn sách -->
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid HorizontalAlignment="Center" Margin="5">
-                                                <!-- Số thứ tự: Sử dụng một Converter hoặc thuộc tính Rank trong Model -->
-                                                <d:TextBlock Text="{Binding Rank}" 
-                                   FontSize="110" FontWeight="Black" 
-                                   Foreground="#2B3674" 
-                                   Opacity="0.4"
-                                   VerticalAlignment="Center" HorizontalAlignment="Left"
-                                   Margin="-15,0,0,0"/>
+                                            <!-- Đặt tên cho Grid để dùng trong Trigger -->
+                                            <Grid x:Name="ItemContainer" HorizontalAlignment="Center" Margin="5" Background="Transparent">
+                                                <TextBlock Text="{Binding Rank}" 
+                           FontSize="110" FontWeight="Black" 
+                           Foreground="#2B3674" 
+                           Opacity="0.4"
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           Margin="-15,0,0,0"/>
 
-                                                <!-- Bìa sách: Lấy từ ImageSource trong dữ liệu -->
-                                                <Border Width="110" Height="150" CornerRadius="12" Margin="30,0,0,0" >
-
+                                                <!-- Border chứa ảnh sách -->
+                                                <Border x:Name="BookBorder" 
+                        Width="110" Height="150" 
+                        CornerRadius="12" Margin="30,0,0,0"
+                        RenderTransformOrigin="0.5,0.5">
+                                                    <!-- Gốc tọa độ ở giữa để phóng to đều -->
+                                                    <Border.RenderTransform>
+                                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                    </Border.RenderTransform>
                                                     <Border.Background>
-                                                        <d:ImageBrush ImageSource="{Binding BookImage}" Stretch="UniformToFill"/>
+                                                        <ImageBrush ImageSource="{Binding BookImage}" Stretch="UniformToFill"/>
                                                     </Border.Background>
                                                 </Border>
                                             </Grid>
+
+                                            <DataTemplate.Triggers>
+                                                <!-- Khi chuột di vào Grid ItemContainer -->
+                                                <Trigger Property="IsMouseOver" Value="True" SourceName="ItemContainer">
+                                                    <Setter TargetName="BookBorder" Property="Panel.ZIndex" Value="1"/>
+                                                    <Trigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation Storyboard.TargetName="BookBorder" 
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="1.2" Duration="0:0:0.2"/>
+                                                                <DoubleAnimation Storyboard.TargetName="BookBorder" 
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="1.2" Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.EnterActions>
+                                                    <Trigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation Storyboard.TargetName="BookBorder" 
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="1" Duration="0:0:0.2"/>
+                                                                <DoubleAnimation Storyboard.TargetName="BookBorder" 
+                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="1" Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.ExitActions>
+                                                </Trigger>
+                                            </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -521,7 +572,7 @@
                                         </DockPanel>
 
                                         <DataGrid Grid.Row="1" 
-                  ItemsSource="{Binding Items}" 
+                  ItemsSource="{Binding InventoryItems}" 
                   AutoGenerateColumns="False" 
                   Background="Transparent" 
                   BorderThickness="0" 
@@ -600,7 +651,7 @@
                                         </Grid.RowDefinitions>
 
                                         <DockPanel Margin="0,0,0,20">
-                                            <TextBlock Text="Export Items" FontSize="22" FontWeight="Bold" Foreground="#1B2559"/>
+                                            <TextBlock Text="CẢNH BÁO TỒN KHO" FontSize="22" FontWeight="Bold" Foreground="#1B2559"/>
                                             <Button Content="..." HorizontalAlignment="Right" FontWeight="Bold" Width="40">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
@@ -640,7 +691,7 @@ CornerRadius="5">
                                         </DockPanel>
 
                                         <DataGrid Grid.Row="1" 
-ItemsSource="{Binding Items}" 
+ItemsSource="{Binding StockWarnings}" 
 AutoGenerateColumns="False" 
 Background="Transparent" 
 BorderThickness="0" 
@@ -680,17 +731,9 @@ HeadersVisibility="Column">
                                                         </Style>
                                                     </DataGridTextColumn.ElementStyle>
                                                 </DataGridTextColumn>
-                                                <DataGridTextColumn Header="DATE" Binding="{Binding Date}" Width="*" IsReadOnly="True">
-                                                    <DataGridTextColumn.ElementStyle>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="#1B2559"/>
-                                                            <Setter Property="FontWeight" Value="Bold"/>
-                                                            <Setter Property="VerticalAlignment" Value="Center"/>
-                                                        </Style>
-                                                    </DataGridTextColumn.ElementStyle>
-                                                </DataGridTextColumn>
 
-                                                <DataGridTextColumn Header="NUMBER" Binding="{Binding Number}" Width="*" IsReadOnly="True">
+
+                                                <DataGridTextColumn Header="NUMBER" Binding="{Binding RemainingQuantity}" Width="*" IsReadOnly="True">
                                                     <DataGridTextColumn.ElementStyle>
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="#1B2559"/>
@@ -851,7 +894,7 @@ HeadersVisibility="Column">
                                         </Grid.RowDefinitions>
 
                                         <DockPanel Margin="0,0,0,20">
-                                            <TextBlock Text="PHIẾU THU HÔM NAY" FontSize="22" FontWeight="Bold" Foreground="#1B2559"/>
+                                            <TextBlock Text="PHIẾU THU HÔM NAY" FontFamily="Roboto" FontSize="22" FontWeight="Bold" Foreground="#1B2559"/>
                                             <Button Content="..." HorizontalAlignment="Right" FontWeight="Bold" Width="40">
                                                 <Button.Style>
                                                     <Style TargetType="Button">

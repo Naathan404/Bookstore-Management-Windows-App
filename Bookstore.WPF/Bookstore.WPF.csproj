@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\book1.png" />
+    <None Remove="Resources\Images\book2.png" />
+    <None Remove="Resources\Images\book3.png" />
+    <None Remove="Resources\Images\book4.png" />
+    <None Remove="Resources\Images\book5.png" />
     <None Remove="Resources\Images\Login\bg0.png" />
     <None Remove="Resources\Images\Login\bg1_1.png" />
     <None Remove="Resources\Images\Login\bg1_2.png" />
@@ -22,6 +27,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\Images\book1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\book2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\book3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\book4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\book5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resources\Images\your_avatar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

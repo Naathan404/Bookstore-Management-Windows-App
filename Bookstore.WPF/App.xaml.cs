@@ -5,6 +5,8 @@ using System.Configuration;
 using System.Data;
 using System.Net.Http;
 using System.Windows;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
 
 namespace Bookstore.WPF
 {
@@ -26,13 +28,21 @@ namespace Bookstore.WPF
                 }
                 catch {}
             });
+
+
+            LiveCharts.Configure(config =>
+                config.AddSkiaSharp()
+                      .AddDefaultMappers()
+                      .AddLightTheme()
+            );
+
             //var login = new LoginView();
             //login.Show();
             // Thử DashboardView
-            //var test = new test();
-            //test.Show();
-            var mainView = new MainView();
-            mainView.Show();
+            var test = new test();
+            test.Show();
+            //var mainView = new MainView();
+            //mainView.Show();
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();
             //admin.Show();
@@ -43,6 +53,8 @@ namespace Bookstore.WPF
             // nữa mà có slash sceen thì đặt ở đây nha :333 
 
         }
+
+        
     }
 
 }
