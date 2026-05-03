@@ -178,14 +178,14 @@ public class LoginViewModel : BaseViewModel
                         if (result != null)
                         {
                             IsErrorLogVisible = Visibility.Hidden;
-                            if(result.Role == 0)        // admin
-                            {
-                                _windowService.ShowWindow<AdminViewModel>();
-                            }
-                            else if(result.Role == 1)
-                            {
-                                _windowService.ShowWindow<StaffViewModel>();
-                            }
+                            //if(result.Role == 0)        // admin
+                            //{
+                            //    _windowService.ShowWindow<AdminViewModel>();
+                            //}
+                            //else if(result.Role == 1)
+                            //{
+                            //    _windowService.ShowWindow<StaffViewModel>();
+                            //}
                             _windowService.CloseWindow<LoginViewModel>();
 
                         }

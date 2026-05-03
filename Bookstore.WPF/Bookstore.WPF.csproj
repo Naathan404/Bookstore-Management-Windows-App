@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\PromotionViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Images\Login\bg0.png" />
     <None Remove="Resources\Images\Login\bg1_1.png" />
     <None Remove="Resources\Images\Login\bg1_2.png" />
@@ -22,6 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="ViewModels\PromotionViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\Books\default_book_cover.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\your_avatar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
