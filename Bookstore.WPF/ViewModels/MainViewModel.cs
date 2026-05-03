@@ -27,28 +27,22 @@ namespace Bookstore.WPF.ViewModels
 
             SetDefaultView(listQuyen);
         }
-
         private void SetDefaultView(List<string> listQuyen)
         {
-            //if (listQuyen.Contains("CN_DASHBOARD"))
-            //    CurrentView = new DashboardViewModel();
+            if (listQuyen == null || listQuyen.Count == 0)
+            {
+                CurrentView = null; 
+                return;
+            }
 
-            //else if (listQuyen.Contains("CN_BANHANG"))
-            //    CurrentView = new BanHangViewModel();
-
-            //else if (listQuyen.Contains("CN_TRACUU"))
-            //    CurrentView = new TraCuuSachViewModel();
-
-            //else if (listQuyen.Contains("CN_KHACHHANG"))
-            //    CurrentView = new KhachHangViewModel();
-
-            //else if (listQuyen.Contains("CN_NHAPKHO"))
-            //    CurrentView = new NhapKhoViewModel();
-
-            //else
-            //    CurrentView = null;
+            if (listQuyen.Contains("CN_DASHBOARD"))
+                CurrentView = new DashboardViewModel();
+            else if (listQuyen.Contains("CN_BANHANG"))
+                CurrentView = new SaleViewModel();
+            else if (listQuyen.Contains("CN_TRACUU"))
+                CurrentView = new ProductViewModel();
+            // bổ sung thêm 
         }
-
         private void ChangeView(object newViewModel)
         {
             CurrentView = newViewModel;

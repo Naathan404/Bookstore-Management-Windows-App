@@ -25,8 +25,8 @@ namespace Bookstore.WPF
                 }
                 catch {}
             });
-            var login = new LoginView();
-            login.Show();
+            //var login = new LoginView();
+            //login.Show();
 
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();

@@ -254,8 +254,8 @@ namespace Bookstore.API.Data
                     MaNhomNguoiDung = 1,
                     HoTen = "Nguyễn Chí Nguyên",
                     GioiTinh = "Nam",
-                    ChucVu = "Giám đốc",
-                    Email = "admin@sahara.com",
+                    ChucVu = "Quản trị viên",
+                    Email = "24521186@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 3, 10),
                     NgayVaoLam = new DateOnly(2025, 1, 1)
@@ -268,7 +268,7 @@ namespace Bookstore.API.Data
                     HoTen = "Nguyễn Gia Hưng",
                     GioiTinh = "Nam",
                     ChucVu = "Quản lý Cửa hàng",
-                    Email = "hungng@sahara.com",
+                    Email = "24520604@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 1, 11),
                     NgayVaoLam = new DateOnly(2025, 2, 1)
@@ -282,7 +282,7 @@ namespace Bookstore.API.Data
                     HoTen = "Lê Hoàng Quân",
                     GioiTinh = "Nam",
                     ChucVu = "Quản lý Cửa hàng",
-                    Email = "quanlh@sahara.com",
+                    Email = "24521432@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 1, 11),
                     NgayVaoLam = new DateOnly(2025, 2, 1)
@@ -296,7 +296,7 @@ namespace Bookstore.API.Data
                     HoTen = "Phạm Hoàng Sơn",
                     GioiTinh = "Nam",
                     ChucVu = "Quản lý Cửa hàng",
-                    Email = "sonph@sahara.com",
+                    Email = "24521536@gm.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2006, 1, 11),
                     NgayVaoLam = new DateOnly(2025, 2, 1)
@@ -310,7 +310,7 @@ namespace Bookstore.API.Data
                     HoTen = "Nguyễn Lưu Văn Phú",
                     GioiTinh = "Nam",
                     ChucVu = "Nhân viên Bán hàng",
-                    Email = "phunlv@sahara.com",
+                    Email = "24521360@g.uit.edu.vn",
                     DangLamViec = true,
                     NgaySinh = new DateOnly(2000, 10, 20),
                     NgayVaoLam = new DateOnly(2025, 6, 1)

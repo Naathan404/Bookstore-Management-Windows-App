@@ -1,12 +1,11 @@
-﻿
-namespace Bookstore.API.Helpers
+﻿namespace Bookstore.API.Utils
 {
     public static class OTPGenerator
     {
         public static string GenerateOTPCode(int len = 5)
         {
             string code;
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            string chars = "0123456789";
             Random random = new Random();
             // Dung Enumerable.Repeat(_chuoi, _solan) de lap lai chuoi ky tu 5 lan. => No se tao ra 5 chuoi giong het nhau
             // LinQ Select se duyệt qua từng chuỗi trong 5 chuỗi được tạo ra. Mỗi chuỗi nó sẽ chọn ngẫu nhiên một ký tự từ chuỗi chars.

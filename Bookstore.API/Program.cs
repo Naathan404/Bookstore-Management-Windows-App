@@ -3,8 +3,6 @@ using Bookstore.API.Interfaces;
 using Bookstore.API.Models;
 using Bookstore.API.Repositories;
 using Bookstore.API.Services;
-using Bookstore.API.Services.Auth;
-using Bookstore.API.Services.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +26,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
 
-builder.Services.AddScoped<IAuthService, AuthService>(); //Auth
 builder.Services.AddScoped<IMailService, MailService>(); // Mail
 
 //builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
@@ -53,6 +50,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 var app = builder.Build();
+
+// warm up db
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        context.NguoiDung.Select(u => u.TenDangNhap).FirstOrDefault();
+    }
+    catch (Exception ex)
+    {
+        
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bookstore.WPF.ViewModels
 {
-    internal class PromotionViewModel
+    internal class DashboardViewModel
     {
     }
 }
