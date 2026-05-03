@@ -3,6 +3,6 @@ using System.Windows;
 
 public interface IWindowService
 {
-    void ShowWindow<TViewModel>(List<string> listQuyen) where TViewModel : BaseViewModel;
+    void ShowWindow<TViewModel>() where TViewModel : BaseViewModel;
     void CloseWindow<TViewModel>() where TViewModel : BaseViewModel;
 }

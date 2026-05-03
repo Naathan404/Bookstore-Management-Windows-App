@@ -21,7 +21,7 @@
                 <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.05" ShadowDepth="0"/>
             </Border.Effect>
 
-            <local:SidebarView />
+            <local:SidebarView DataContext="{Binding SidebarVM}" />
         </Border>
         
         <!--cột phải-->

@@ -5,7 +5,7 @@ using System.Windows;
 
 public class WindowService : IWindowService
 {
-    public void ShowWindow<TViewModel>(List<string> listQuyen = null) where TViewModel : BaseViewModel
+    public void ShowWindow<TViewModel>() where TViewModel : BaseViewModel
     {
         Window window = null;
 

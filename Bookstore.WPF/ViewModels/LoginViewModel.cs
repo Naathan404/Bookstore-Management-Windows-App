@@ -140,13 +140,14 @@ namespace Bookstore.WPF.ViewModels
                     if (responseUser != null)
                     {
                         IsErrorLogVisible = Visibility.Hidden;
+                        AppState.CurrentUser = responseUser.User;
                         AppState.CurrentPermissions = responseUser.User.PermissionList;
-                        _windowService.ShowWindow<MainViewModel>(AppState.CurrentPermissions);
+                        _windowService.ShowWindow<MainViewModel>();
                         
                         // debug
-                        string debugstring = string.Empty;
-                        foreach(var s in AppState.CurrentPermissions) debugstring += s.ToString();
-                        MessageBox.Show(debugstring);
+                        //string debugstring = string.Empty;
+                        //foreach(var s in AppState.CurrentPermissions) debugstring += s.ToString();
+                        //MessageBox.Show(debugstring);
                         //
 
                         _windowService.CloseWindow<LoginViewModel>();

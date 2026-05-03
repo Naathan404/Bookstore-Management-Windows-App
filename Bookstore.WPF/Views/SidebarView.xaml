@@ -52,7 +52,7 @@
         </Grid.RowDefinitions>
 
         <!-- header -->
-        <TextBlock Grid.Row="0" Text="{Binding RoleName}" 
+        <TextBlock Grid.Row="0" Text="{Binding HomeTabName}" 
                    Foreground="#2B3674" FontSize="22" FontWeight="Black" 
                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
@@ -72,7 +72,7 @@
 
                 <!-- 2. BÁN HÀNG -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsBanHangVisible}"
+                             Visibility="{Binding IsSaleVisible}"
                              Command="{Binding ShowBanHangCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="CashRegister" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -82,7 +82,7 @@
 
                 <!-- 3. TRA CỨU SÁCH -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsTraCuuSachVisible}"
+                             Visibility="{Binding IsProductVisible}"
                              Command="{Binding ShowTraCuuSachCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="BookSearch" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -92,7 +92,7 @@
 
                 <!-- 4. KHÁCH HÀNG -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsKhachHangVisible}"
+                             Visibility="{Binding IsCustomerVisible}"
                              Command="{Binding ShowKhachHangCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="AccountGroup" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -102,7 +102,7 @@
 
                 <!-- 5. NHẬP KHO -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsNhapKhoVisible}"
+                             Visibility="{Binding IsImportVisible}"
                              Command="{Binding ShowNhapKhoCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Warehouse" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -112,7 +112,7 @@
 
                 <!-- 6. NHÀ CUNG CẤP -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsNhaCungCapVisible}"
+                             Visibility="{Binding IsSupplierVisible}"
                              Command="{Binding ShowNhaCungCapCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="TruckDelivery" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -122,7 +122,7 @@
 
                 <!-- 7. ƯU ĐÃI -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu" 
-                             Visibility="{Binding IsUuDaiVisible}"
+                             Visibility="{Binding IsPromotionVisible}"
                              Command="{Binding ShowUuDaiCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="TicketPercent" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -132,7 +132,7 @@
 
                 <!-- 8. BÁO CÁO -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsBaoCaoVisible}"
+                             Visibility="{Binding IsReportVisible}"
                              Command="{Binding ShowBaoCaoCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="ChartBar" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -142,7 +142,7 @@
 
                 <!-- 9. TÀI KHOẢN -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsTaiKhoanVisible}"
+                             Visibility="{Binding IsAccountVisible}"
                              Command="{Binding ShowTaiKhoanCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="ShieldAccount" Width="22" Height="22" Margin="0,0,15,0"/>
@@ -152,7 +152,7 @@
 
                 <!-- 10. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsCaiDatVisible}"
+                             Visibility="{Binding IsSettingVisible}"
                              Command="{Binding ShowCaiDatCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Cog" Width="22" Height="22" Margin="0,0,15,0"/>

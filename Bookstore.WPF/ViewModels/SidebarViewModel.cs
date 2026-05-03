@@ -1,27 +1,92 @@
 ﻿using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    public class SidebarViewModel : BaseViewModel // Bắt buộc kế thừa BaseViewModel
+    public class SidebarViewModel : BaseViewModel
     {
         private Action<object> _handleChangeView;
 
-        #region Properties (Biến hiển thị UI)
-        public string HomeTabName { get; set; }
 
-        public Visibility IsDashboardVisible { get; set; }
-        public Visibility IsSaleVisible { get; set; }
-        public Visibility IsProductVisible { get; set; }
-        public Visibility IsCustomerVisible { get; set; }
-        public Visibility IsImportVisible { get; set; }
-        public Visibility IsSupplierVisible { get; set; }
-        public Visibility IsPromotionVisible { get; set; }
-        public Visibility IsReportVisible { get; set; }
-        public Visibility IsAccountVisible { get; set; }
-        public Visibility IsSettingVisible { get; set; }
+        #region Properties
+        private string _homeTabName;
+        public string HomeTabName
+        {
+            get => _homeTabName;
+            set { _homeTabName = value; OnPropertyChanged(); }
+        }
 
+        private Visibility _isDashboardVisible;
+        public Visibility IsDashboardVisible
+        {
+            get => _isDashboardVisible;
+            set { _isDashboardVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isSaleVisible;
+        public Visibility IsSaleVisible
+        {
+            get => _isSaleVisible;
+            set { _isSaleVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isProductVisible;
+        public Visibility IsProductVisible
+        {
+            get => _isProductVisible;
+            set { _isProductVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isCustomerVisible;
+        public Visibility IsCustomerVisible
+        {
+            get => _isCustomerVisible;
+            set { _isCustomerVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isImportVisible;
+        public Visibility IsImportVisible
+        {
+            get => _isImportVisible;
+            set { _isImportVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isSupplierVisible;
+        public Visibility IsSupplierVisible
+        {
+            get => _isSupplierVisible;
+            set { _isSupplierVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isPromotionVisible;
+        public Visibility IsPromotionVisible
+        {
+            get => _isPromotionVisible;
+            set { _isPromotionVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isReportVisible;
+        public Visibility IsReportVisible
+        {
+            get => _isReportVisible;
+            set { _isReportVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isAccountVisible;
+        public Visibility IsAccountVisible
+        {
+            get => _isAccountVisible;
+            set { _isAccountVisible = value; OnPropertyChanged(); }
+        }
+
+        private Visibility _isSettingVisible;
+        public Visibility IsSettingVisible
+        {
+            get => _isSettingVisible;
+            set { _isSettingVisible = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Commands (Lệnh điều hướng)
@@ -39,15 +104,19 @@ namespace Bookstore.WPF.ViewModels
         public ICommand LogoutCommand { get; set; }
         #endregion
 
-        public SidebarViewModel() { }
-        public SidebarViewModel(List<string> listQuyen, Action<object> changeViewAction)
+        public SidebarViewModel(Action<object> changeViewAction)
         {
             _handleChangeView = changeViewAction;
+            var listQuyen = AppState.CurrentPermissions;
+
+            string debugstring = string.Empty;
+            foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
+            MessageBox.Show(debugstring);
 
             // Đọc phân quyền từ api
             // ==========================================
-            IsDashboardVisible = listQuyen.Contains("CN_DASHBOARD") ? Visibility.Visible : Visibility.Collapsed;
-            if (listQuyen.Contains("CN_DASHBOARD"))
+            IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
+            if (listQuyen.Contains("DashboardView"))
                 HomeTabName = "Trang chủ";
             else
                 HomeTabName = "Bán hàng";
@@ -83,19 +152,19 @@ namespace Bookstore.WPF.ViewModels
                 ShowBaoCaoCommand = new RelayCommand<object>((p) => _handleChangeView(new ReportViewModel()));
             if (listQuyen.Contains("AccountView"))
                 ShowTaiKhoanCommand = new RelayCommand<object>((p) => _handleChangeView(new AccountViewModel()));
-            if (listQuyen.Contains("Setting"))
+            if (listQuyen.Contains("SettingView"))
                 ShowCaiDatCommand = new RelayCommand<object>((p) => _handleChangeView(new SettingViewModel()));
 
             // Đăng xuất
             LogoutCommand = new RelayCommand<object>((p) =>
             {
-                // Gọi API Logout (nếu có)
+                // Gọi API Logout \\
 
                 // Mở lại màn hình Login
                 var loginWindow = new Bookstore.WPF.Views.LoginView();
                 loginWindow.Show();
 
-                // Đóng Window chính (MainWindow)
+                // Đóng Window chính
                 Application.Current.MainWindow.Close();
             });
         }

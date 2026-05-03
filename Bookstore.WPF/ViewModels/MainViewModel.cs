@@ -1,4 +1,5 @@
 ﻿using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,21 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        public SidebarViewModel SidebarVM { get; set; }
-        public MainViewModel(List<string> listQuyen)
+        private SidebarViewModel _sidebarVM;
+        public SidebarViewModel SidebarVM
         {
-            SidebarVM = new SidebarViewModel(listQuyen, ChangeView);
+            get => _sidebarVM;
+            set
+            {
+                _sidebarVM = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public MainViewModel()
+        {
+            List<string> listQuyen = AppState.CurrentPermissions;
+            SidebarVM = new SidebarViewModel(ChangeView);
             CurrentView = new DashboardViewModel();
             SetDefaultView(listQuyen);
         }
