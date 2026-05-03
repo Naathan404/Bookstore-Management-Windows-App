@@ -11,17 +11,28 @@ namespace Bookstore.API.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Sach> Sach { get; set; }
-        public DbSet<PhienBanSach> PhienBanSach { get; set; }
-        public DbSet<NhaXuatBan> NhaXuatBan { get; set; }
+        public DbSet<NguoiDung> NguoiDung { get; set; }
+        public DbSet<NhomNguoiDung> NhomNguoiDung { get; set; }
+        public DbSet<ChucNang> ChucNang { get; set; }
+        public DbSet<PhanQuyen> PhanQuyen { get; set; }
+        public DbSet<ThamSo> ThamSo { get; set; }
+
+        //
+        public DbSet<KhachHang> KhachHang { get; set; }
+        public DbSet<LoaiKhachHang> LoaiKhachHang { get; set;  }
+        //
         public DbSet<TacGia> TacGia { get; set; }
-        public DbSet<TacGia_Sach> TacGia_Sach { get; set; }
         public DbSet<TheLoai> TheLoai { get; set; }
+        public DbSet<NhaXuatBan> NhaXuatBan { get; set; }
+        public DbSet<Sach> Sach { get; set; }
+        public DbSet<TacGia_Sach> TacGia_Sach { get; set; }
+        public DbSet<PhienBanSach> PhienBanSach { get; set; }
+        //
         public DbSet<NhaCungCap> NhaCungCap { get; set; }
         public DbSet<PhieuNhapSach> PhieuNhapSach { get; set; }
         public DbSet<CT_PhieuNhapSach> CT_PhieuNhapSach { get; set; }
-        public DbSet<KhachHang> KhachHang { get; set; }
-        public DbSet<LoaiKhachHang> LoaiKhachHang { get; set;  }
+
+        //
         public DbSet<UuDai> UuDai { get; set; }
         public DbSet<LoaiUuDai> LoaiUuDai { get; set; }
         public DbSet<CTUD_HoaDon_Giam> CTUD_HoaDon_Giam { get; set; }
@@ -30,19 +41,18 @@ namespace Bookstore.API.Data
         public DbSet<CTUD_Sach_Qua> CTUD_Sach_Qua { get; set; }
         public DbSet<UuDai_SachDieuKien> UuDai_SachDieuKien { get; set; }
         public DbSet<UuDai_SachTang> UuDai_SachTang { get; set; }
+
+        //
         public DbSet<HoaDon> HoaDon { get; set; }
         public DbSet<CT_HoaDon> CT_HoaDon { get; set; }
         public DbSet<HoaDon_UuDai> HoaDon_Uudai { get; set;  }
         public DbSet<PhieuThuTien> PhieuThuTien { get; set; }
+
+        //
         public DbSet<BC_Sach> BC_Sach { get; set; }
         public DbSet<CT_BC_Sach> CT_BC_Sach { get; set; }
         public DbSet<BC_KhachHang> BC_KhachHang { get; set; }
         public DbSet<CT_BC_KhachHang> CT_BC_KhachHang { get;set; }
-        public DbSet<NguoiDung> NguoiDung { get; set; }
-        public DbSet<NhomNguoiDung> NhomNguoiDung { get; set; }
-        public DbSet<ChucNang> ChucNang { get; set; }
-        public DbSet<PhanQuyen> PhanQuyen { get; set; }
-        public DbSet<ThamSo> ThamSo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -532,8 +542,127 @@ namespace Bookstore.API.Data
             );
 
 
-            // 8. PHIÊN BẢN SÁCH
+            // BẢNG PHIÊN BẢN SÁCH 
             modelBuilder.Entity<PhienBanSach>().HasData(
+                // 
+                new PhienBanSach { ISBN = "978-0132350884", MaSach = 1, MaNhaXuatBan = 10, NamXuatBan = 2008, LanTaiBan = 1, HinhThucBia = "Bìa mềm", GiaNiemYet = 450000m, DonGiaBan = 450000m, TonKho = 50, TongSoDaBan = 15 },
+                new PhienBanSach { ISBN = "978-0201485677", MaSach = 2, MaNhaXuatBan = 10, NamXuatBan = 2018, LanTaiBan = 2, HinhThucBia = "Bìa cứng", GiaNiemYet = 550000m, DonGiaBan = 520000m, TonKho = 30, TongSoDaBan = 5 },
+                new PhienBanSach { ISBN = "978-0201633610", MaSach = 3, MaNhaXuatBan = 10, NamXuatBan = 1994, LanTaiBan = 5, HinhThucBia = "Bìa cứng", GiaNiemYet = 600000m, DonGiaBan = 600000m, TonKho = 20, TongSoDaBan = 2 },
+                new PhienBanSach { ISBN = "978-0137081073", MaSach = 4, MaNhaXuatBan = 10, NamXuatBan = 2011, LanTaiBan = 1, HinhThucBia = "Bìa mềm", GiaNiemYet = 350000m, DonGiaBan = 350000m, TonKho = 40, TongSoDaBan = 12 },
+                new PhienBanSach { ISBN = "978-604-MEME-01", MaSach = 5, MaNhaXuatBan = 7, NamXuatBan = 2024, LanTaiBan = 1, HinhThucBia = "Bìa mềm", GiaNiemYet = 3000m, DonGiaBan = 3000m, TonKho = 300, TongSoDaBan = 0 }, // 300 bài code bán 3 ngàn đồng!
+
+                //
+                new PhienBanSach { ISBN = "978-604-1-09887-1", MaSach = 6, MaNhaXuatBan = 1, NamXuatBan = 2019, LanTaiBan = 15, HinhThucBia = "Bìa mềm", GiaNiemYet = 110000m, DonGiaBan = 110000m, TonKho = 100, TongSoDaBan = 50 },
+                new PhienBanSach { ISBN = "978-604-1-09887-2", MaSach = 6, MaNhaXuatBan = 1, NamXuatBan = 2020, LanTaiBan = 1, HinhThucBia = "Bìa cứng kỷ niệm", GiaNiemYet = 250000m, DonGiaBan = 220000m, TonKho = 15, TongSoDaBan = 10 }, // Cảnh báo tồn kho thấp!
+                new PhienBanSach { ISBN = "978-604-1-12345-6", MaSach = 7, MaNhaXuatBan = 1, NamXuatBan = 2015, LanTaiBan = 10, HinhThucBia = "Bìa mềm", GiaNiemYet = 85000m, DonGiaBan = 85000m, TonKho = 80, TongSoDaBan = 30 },
+
+                // 
+                new PhienBanSach { ISBN = "978-604-6-12301-2", MaSach = 8, MaNhaXuatBan = 6, NamXuatBan = 2018, LanTaiBan = 5, HinhThucBia = "Bìa mềm", GiaNiemYet = 75000m, DonGiaBan = 75000m, TonKho = 45, TongSoDaBan = 10 },
+                new PhienBanSach { ISBN = "978-604-6-12302-9", MaSach = 9, MaNhaXuatBan = 6, NamXuatBan = 2017, LanTaiBan = 8, HinhThucBia = "Bìa mềm", GiaNiemYet = 60000m, DonGiaBan = 60000m, TonKho = 60, TongSoDaBan = 25 },
+                new PhienBanSach { ISBN = "978-604-1-15555-6", MaSach = 10, MaNhaXuatBan = 1, NamXuatBan = 2010, LanTaiBan = 12, HinhThucBia = "Bìa mềm", GiaNiemYet = 90000m, DonGiaBan = 90000m, TonKho = 55, TongSoDaBan = 40 },
+
+                // 
+                new PhienBanSach { ISBN = "978-604-56-7890-1", MaSach = 11, MaNhaXuatBan = 8, NamXuatBan = 2021, LanTaiBan = 5, HinhThucBia = "Bìa mềm", GiaNiemYet = 150000m, DonGiaBan = 145000m, TonKho = 70, TongSoDaBan = 20 },
+                new PhienBanSach { ISBN = "978-604-56-7891-8", MaSach = 12, MaNhaXuatBan = 8, NamXuatBan = 2022, LanTaiBan = 3, HinhThucBia = "Bìa mềm", GiaNiemYet = 180000m, DonGiaBan = 175000m, TonKho = 40, TongSoDaBan = 15 },
+                new PhienBanSach { ISBN = "978-604-1-23456-7", MaSach = 13, MaNhaXuatBan = 1, NamXuatBan = 2020, LanTaiBan = 20, HinhThucBia = "Bìa mềm", GiaNiemYet = 79000m, DonGiaBan = 79000m, TonKho = 200, TongSoDaBan = 150 },
+                new PhienBanSach { ISBN = "978-604-1-34567-8", MaSach = 14, MaNhaXuatBan = 1, NamXuatBan = 2018, LanTaiBan = 10, HinhThucBia = "Bìa mềm", GiaNiemYet = 135000m, DonGiaBan = 130000m, TonKho = 90, TongSoDaBan = 60 },
+                new PhienBanSach { ISBN = "978-604-1-45678-9", MaSach = 15, MaNhaXuatBan = 1, NamXuatBan = 2019, LanTaiBan = 8, HinhThucBia = "Bìa mềm", GiaNiemYet = 140000m, DonGiaBan = 135000m, TonKho = 85, TongSoDaBan = 55 },
+
+                // 
+                new PhienBanSach { ISBN = "978-604-2-11111-1", MaSach = 16, MaNhaXuatBan = 3, NamXuatBan = 2023, LanTaiBan = 30, HinhThucBia = "Bìa mềm", GiaNiemYet = 20000m, DonGiaBan = 20000m, TonKho = 500, TongSoDaBan = 200 },
+                new PhienBanSach { ISBN = "978-604-2-11111-2", MaSach = 17, MaNhaXuatBan = 3, NamXuatBan = 2023, LanTaiBan = 30, HinhThucBia = "Bìa mềm", GiaNiemYet = 20000m, DonGiaBan = 20000m, TonKho = 480, TongSoDaBan = 190 },
+                new PhienBanSach { ISBN = "978-604-2-22222-1", MaSach = 18, MaNhaXuatBan = 3, NamXuatBan = 2022, LanTaiBan = 25, HinhThucBia = "Bìa mềm", GiaNiemYet = 22000m, DonGiaBan = 22000m, TonKho = 300, TongSoDaBan = 100 },
+                new PhienBanSach { ISBN = "978-604-2-22222-2", MaSach = 19, MaNhaXuatBan = 3, NamXuatBan = 2022, LanTaiBan = 25, HinhThucBia = "Bìa mềm", GiaNiemYet = 22000m, DonGiaBan = 22000m, TonKho = 290, TongSoDaBan = 95 },
+
+                // 
+                new PhienBanSach { ISBN = "978-604-4-33333-1", MaSach = 20, MaNhaXuatBan = 4, NamXuatBan = 2021, LanTaiBan = 15, HinhThucBia = "Bìa mềm", GiaNiemYet = 85000m, DonGiaBan = 80000m, TonKho = 150, TongSoDaBan = 80 },
+                new PhienBanSach { ISBN = "978-604-4-33333-2", MaSach = 21, MaNhaXuatBan = 4, NamXuatBan = 2020, LanTaiBan = 10, HinhThucBia = "Bìa mềm", GiaNiemYet = 75000m, DonGiaBan = 70000m, TonKho = 120, TongSoDaBan = 50 },
+                new PhienBanSach { ISBN = "978-604-4-33333-3", MaSach = 22, MaNhaXuatBan = 4, NamXuatBan = 2019, LanTaiBan = 8, HinhThucBia = "Bìa mềm", GiaNiemYet = 95000m, DonGiaBan = 90000m, TonKho = 60, TongSoDaBan = 30 },
+                new PhienBanSach { ISBN = "978-604-4-33333-4", MaSach = 23, MaNhaXuatBan = 4, NamXuatBan = 2022, LanTaiBan = 2, HinhThucBia = "Bìa mềm", GiaNiemYet = 120000m, DonGiaBan = 115000m, TonKho = 80, TongSoDaBan = 20 },
+                new PhienBanSach { ISBN = "978-604-1-55555-1", MaSach = 24, MaNhaXuatBan = 1, NamXuatBan = 2017, LanTaiBan = 12, HinhThucBia = "Bìa mềm", GiaNiemYet = 85000m, DonGiaBan = 85000m, TonKho = 100, TongSoDaBan = 150 },
+                new PhienBanSach { ISBN = "978-604-1-55555-2", MaSach = 25, MaNhaXuatBan = 1, NamXuatBan = 2016, LanTaiBan = 15, HinhThucBia = "Bìa mềm", GiaNiemYet = 75000m, DonGiaBan = 75000m, TonKho = 90, TongSoDaBan = 140 }
+            );
+
+
+            // BẢNG NHÀ CUNG CẤP
+            modelBuilder.Entity<NhaCungCap>().HasData(
+                new NhaCungCap
+                {
+                    MaNhaCungCap = 1,
+                    TenNhaCungCap = "Công ty CP Phát hành sách FAHASA",
+                    DiaChi = "387-389 Hai Bà Trưng, Quận 3, TP.HCM",
+                    MaSoThue = "0300435133",
+                    SoDienThoai = "1900636467",
+                    Email = "info@fahasa.com",
+                    NganHang = "Vietcombank",
+                    SoTaiKhoan = "0071000123456"
+                },
+                new NhaCungCap
+                {
+                    MaNhaCungCap = 2,
+                    TenNhaCungCap = "Nhà sách Phương Nam",
+                    DiaChi = "212 Nguyễn Trãi, Quận 1, TP.HCM",
+                    MaSoThue = "0302221113",
+                    SoDienThoai = "1900555555",
+                    Email = "contact@phuongnam.com",
+                    NganHang = "Techcombank",
+                    SoTaiKhoan = "1901234567890"
+                }
+            );
+
+            // BẢNG PHIẾU NHẬP SÁCH
+            modelBuilder.Entity<PhieuNhapSach>().HasData(
+                // Phiếu nhập từ FAHASA (Tổng tiền: 22,000,000)
+                new PhieuNhapSach
+                {
+                    MaPhieuNhapSach = 1,
+                    NgayTao = new DateTime(2024, 3, 1, 9, 0, 0),
+                    NguoiTao = "admin", 
+                    MaNhaCungCap = 1,
+                    TongTien = 22000000m
+                },
+
+                // Phiếu nhập từ Phương Nam (Tổng tiền: 3,000,000)
+                new PhieuNhapSach
+                {
+                    MaPhieuNhapSach = 2,
+                    NgayTao = new DateTime(2024, 4, 15, 14, 30, 0),
+                    NguoiTao = "hungng",
+                    MaNhaCungCap = 2,
+                    TongTien = 3000000m
+                }
+            );
+
+            // BẢNG CHI TIẾT PHIẾU NHẬP SÁCH
+            modelBuilder.Entity<CT_PhieuNhapSach>().HasData(
+                // ---- Chi tiết cho Phiếu Nhập 1 ----
+                // Nhập 50 cuốn Clean Code x 300k = 15,000,000
+                new CT_PhieuNhapSach
+                {
+                    MaPhieuNhapSach = 1,
+                    ISBN = "978-0132350884",
+                    SoLuong = 50,
+                    DonGiaNhap = 300000m
+                },
+                // Nhập 100 cuốn Mắt Biếc x 70k = 7,000,000
+                // (15tr + 7tr = 22tr
+                new CT_PhieuNhapSach
+                {
+                    MaPhieuNhapSach = 1,
+                    ISBN = "978-604-1-09887-1",
+                    SoLuong = 100,
+                    DonGiaNhap = 70000m
+                },
+
+                // ---- Chi tiết cho Phiếu Nhập 2 ----
+                // Nhập 200 cuốn Doraemon x 15k = 3,000,000 
+                new CT_PhieuNhapSach
+                {
+                    MaPhieuNhapSach = 2,
+                    ISBN = "978-604-2-11111-1",
+                    SoLuong = 200,
+                    DonGiaNhap = 15000m
+                }
             );
         }
     }
