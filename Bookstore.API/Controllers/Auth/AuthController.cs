@@ -24,19 +24,30 @@ namespace Bookstore.API.Controllers.Auth
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var hashPw = HashHelper.SHA256_Encode(HashHelper.Base64_Encode(request.Password));
+            //var user = await _context.NguoiDung
+            //    .FirstOrDefaultAsync(u => u.TenDangNhap == request.Username && u.MatKhau == hashPw);
+
             var user = await _context.NguoiDung
-                .FirstOrDefaultAsync(u => u.TenDangNhap == request.Username && u.MatKhau == hashPw);
+                        .Include(u => u.NhomNguoiDung)
+                            .ThenInclude(u => u.PhanQuyens)
+                                .ThenInclude(pq => pq.ChucNang)
+                    .FirstOrDefaultAsync(u => u.TenDangNhap == request.Username && u.MatKhau == hashPw);
 
             if (user == null)
             {
                 return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác" });
             }
 
+            var listQuyen = user.NhomNguoiDung?.PhanQuyens
+                .Select(pq => pq.ChucNang.TenManHinh)
+                .ToList() ?? new List<string>();
+
             // đăng nhập thành công
             var userInfo = new
             {
                 Username = user.TenDangNhap,
-                TenNguoiDung = user.HoTen
+                Name = user.HoTen,
+                PermissionList = listQuyen
             };
 
             return Ok(new

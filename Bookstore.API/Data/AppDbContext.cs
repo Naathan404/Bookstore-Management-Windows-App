@@ -1,9 +1,5 @@
 ﻿using Bookstore.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Identity.Client;
-using System.Security.Policy;
-using System.Security.Principal;
 
 namespace Bookstore.API.Data
 {
@@ -183,14 +179,21 @@ namespace Bookstore.API.Data
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<NguoiDung>()
-               .HasOne<NhomNguoiDung>().WithMany().HasForeignKey(n => n.MaNhomNguoiDung)
+               .HasOne(n => n.NhomNguoiDung)                     
+               .WithMany(nhom => nhom.NguoiDungs)                
+               .HasForeignKey(n => n.MaNhomNguoiDung)
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhanQuyen>()
-               .HasOne<NhomNguoiDung>().WithMany().HasForeignKey(p => p.MaNhomNguoiDung)
+               .HasOne(p => p.NhomNguoiDung)
+               .WithMany(nhom => nhom.PhanQuyens)
+               .HasForeignKey(p => p.MaNhomNguoiDung)
                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<PhanQuyen>()
-               .HasOne<ChucNang>().WithMany().HasForeignKey(p => p.MaChucNang)
+               .HasOne(p => p.ChucNang)
+               .WithMany(c => c.PhanQuyens)
+               .HasForeignKey(p => p.MaChucNang)
                .OnDelete(DeleteBehavior.Restrict);
 
 

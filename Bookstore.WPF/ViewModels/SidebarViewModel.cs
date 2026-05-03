@@ -48,41 +48,42 @@ namespace Bookstore.WPF.ViewModels
             // ==========================================
             IsDashboardVisible = listQuyen.Contains("CN_DASHBOARD") ? Visibility.Visible : Visibility.Collapsed;
             if (listQuyen.Contains("CN_DASHBOARD"))
-                HomeTabName = "Dashboard";
+                HomeTabName = "Trang chủ";
             else
                 HomeTabName = "Bán hàng";
-            IsSaleVisible = listQuyen.Contains("CN_BANHANG") ? Visibility.Visible : Visibility.Collapsed;
-            IsProductVisible = listQuyen.Contains("CN_TRACUU") ? Visibility.Visible : Visibility.Collapsed;
-            IsCustomerVisible = listQuyen.Contains("CN_KHACHHANG") ? Visibility.Visible : Visibility.Collapsed;
-            IsImportVisible = listQuyen.Contains("CN_NHAPKHO") ? Visibility.Visible : Visibility.Collapsed;
-            IsSupplierVisible = listQuyen.Contains("CN_NHACUNGCAP") ? Visibility.Visible : Visibility.Collapsed;
-            IsPromotionVisible = listQuyen.Contains("CN_UUDAI") ? Visibility.Visible : Visibility.Collapsed;
-            IsReportVisible = listQuyen.Contains("CN_BAOCAO") ? Visibility.Visible : Visibility.Collapsed;
-            IsAccountVisible = listQuyen.Contains("CN_TAIKHOAN") ? Visibility.Visible : Visibility.Collapsed;
-            IsSettingVisible = listQuyen.Contains("CN_CAIDAT") ? Visibility.Visible : Visibility.Collapsed;
+            IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
+            IsSaleVisible = listQuyen.Contains("SaleView") ? Visibility.Visible : Visibility.Collapsed;
+            IsProductVisible = listQuyen.Contains("ProductView") ? Visibility.Visible : Visibility.Collapsed;
+            IsCustomerVisible = listQuyen.Contains("CustomerView") ? Visibility.Visible : Visibility.Collapsed;
+            IsImportVisible = listQuyen.Contains("ImportView") ? Visibility.Visible : Visibility.Collapsed;
+            IsSupplierVisible = listQuyen.Contains("SupplierView") ? Visibility.Visible : Visibility.Collapsed;
+            IsPromotionVisible = listQuyen.Contains("PromotionView") ? Visibility.Visible : Visibility.Collapsed;
+            IsReportVisible = listQuyen.Contains("ReportView") ? Visibility.Visible : Visibility.Collapsed;
+            IsAccountVisible = listQuyen.Contains("AccountView") ? Visibility.Visible : Visibility.Collapsed;
+            IsSettingVisible = listQuyen.Contains("SettingView") ? Visibility.Visible : Visibility.Collapsed;
 
             // Command
             // ==========================================
-            //if (listQuyen.Contains("CN_DASHBOARD"))
-            //    ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(new DashboardViewModel()));
+            if (listQuyen.Contains("DashboardView"))
+                ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(new DashboardViewModel()));
 
-            if (listQuyen.Contains("CN_BANHANG"))
+            if (listQuyen.Contains("SaleView"))
                 ShowBanHangCommand = new RelayCommand<object>((p) => _handleChangeView(new SaleViewModel()));
-            if (listQuyen.Contains("CN_TRACUU"))
+            if (listQuyen.Contains("ProductView"))
                 ShowTraCuuSachCommand = new RelayCommand<object>((p) => _handleChangeView(new ProductViewModel()));
-            if (listQuyen.Contains("CN_KHACHHANG"))
+            if (listQuyen.Contains("CustomerView"))
                 ShowKhachHangCommand = new RelayCommand<object>((p) => _handleChangeView(new CustomerViewModel()));
-            if (listQuyen.Contains("CN_NHAPKHO"))
+            if (listQuyen.Contains("ImportView"))
                 ShowNhapKhoCommand = new RelayCommand<object>((p) => _handleChangeView(new ImportViewModel()));
-            if (listQuyen.Contains("CN_NHACUNGCAP"))
+            if (listQuyen.Contains("SupplierView"))
                 ShowNhaCungCapCommand = new RelayCommand<object>((p) => _handleChangeView(new SupplierViewModel()));
-            if (listQuyen.Contains("CN_UUDAI"))
+            if (listQuyen.Contains("PromotionView"))
                 ShowUuDaiCommand = new RelayCommand<object>((p) => _handleChangeView(new PromotionViewModel()));
-            if (listQuyen.Contains("CN_BAOCAO"))
+            if (listQuyen.Contains("ReportView"))
                 ShowBaoCaoCommand = new RelayCommand<object>((p) => _handleChangeView(new ReportViewModel()));
-            if (listQuyen.Contains("CN_TAIKHOAN"))
+            if (listQuyen.Contains("AccountView"))
                 ShowTaiKhoanCommand = new RelayCommand<object>((p) => _handleChangeView(new AccountViewModel()));
-            if (listQuyen.Contains("CN_CAIDAT"))
+            if (listQuyen.Contains("Setting"))
                 ShowCaiDatCommand = new RelayCommand<object>((p) => _handleChangeView(new SettingViewModel()));
 
             // Đăng xuất

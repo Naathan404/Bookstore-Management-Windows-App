@@ -1,5 +1,6 @@
 ﻿using Bookstore.Share.DTO;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -139,9 +140,16 @@ namespace Bookstore.WPF.ViewModels
                     if (responseUser != null)
                     {
                         IsErrorLogVisible = Visibility.Hidden;
-                        _windowService.CloseWindow<LoginViewModel>();
-                        _windowService.ShowWindow<MainViewModel>();
+                        AppState.CurrentPermissions = responseUser.User.PermissionList;
+                        _windowService.ShowWindow<MainViewModel>(AppState.CurrentPermissions);
                         
+                        // debug
+                        string debugstring = string.Empty;
+                        foreach(var s in AppState.CurrentPermissions) debugstring += s.ToString();
+                        MessageBox.Show(debugstring);
+                        //
+
+                        _windowService.CloseWindow<LoginViewModel>();
                     }
                     else
                     {

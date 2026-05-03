@@ -10,5 +10,8 @@ namespace Bookstore.API.Models
         public required string TenChucNang { get; set; }
         public string TenManHinh { get; set; } = string.Empty;
         public int GetID() => MaChucNang;
+
+
+        public virtual ICollection<PhanQuyen> PhanQuyens { get; set; }
     }
 }

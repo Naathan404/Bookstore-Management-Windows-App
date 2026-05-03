@@ -6,7 +6,7 @@ namespace Bookstore.WPF.Utils
     {
         public static UserInfo CurrentUser { get; set; }
 
-       
+        public static List<string> CurrentPermissions { get; set; } = new List<string>();
         public static bool IsLoggedIn()
         {
             return CurrentUser != null;

@@ -16,6 +16,7 @@ namespace Bookstore.Share.DTO
     {
         public string Username { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public List<string> PermissionList { get; set; } = new List<string>();
     }
 
     public class LoginResponse

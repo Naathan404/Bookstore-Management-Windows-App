@@ -21,5 +21,7 @@ namespace Bookstore.API.Models
 
         public bool DangLamViec { get; set; }
         public string GetID() => TenDangNhap;
+        
+        public virtual NhomNguoiDung NhomNguoiDung { get; set; }
     }
 }

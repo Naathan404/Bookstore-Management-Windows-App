@@ -5,19 +5,14 @@ using System.Windows;
 
 public class WindowService : IWindowService
 {
-    public void ShowWindow<TViewModel>(List<string>  listQuyen) where TViewModel : BaseViewModel
+    public void ShowWindow<TViewModel>(List<string> listQuyen = null) where TViewModel : BaseViewModel
     {
         Window window = null;
 
-        //if (typeof(TViewModel) == typeof(AdminViewModel))
-        //{
-        //    window = new AdminView();
-        //}
-        //else if (typeof(TViewModel) == typeof(StaffViewModel))
-        //{
-        //    window = new StaffView();
-        //}
-
+        if (typeof(TViewModel) == typeof(MainViewModel))
+        {
+            window = new MainView();
+        }
         if (window != null)
         {
             window.Show();
