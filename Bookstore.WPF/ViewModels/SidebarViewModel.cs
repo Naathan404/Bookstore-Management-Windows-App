@@ -104,6 +104,78 @@ namespace Bookstore.WPF.ViewModels
         public ICommand LogoutCommand { get; set; }
         #endregion
 
+        #region Checked 
+        private bool _isDashboardChecked;
+        public bool IsDashboardChecked
+        {
+            get => _isDashboardChecked;
+            set { _isDashboardChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isSaleChecked;
+        public bool IsSaleChecked
+        {
+            get => _isSaleChecked;
+            set { _isSaleChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isProductChecked;
+        public bool IsProductChecked
+        {
+            get => _isProductChecked;
+            set { _isProductChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isCustomerChecked;
+        public bool IsCustomerChecked
+        {
+            get => _isCustomerChecked;
+            set { _isCustomerChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isImportChecked;
+        public bool IsImportChecked
+        {
+            get => _isImportChecked;
+            set { _isImportChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isSupplierChecked;
+        public bool IsSupplierChecked
+        {
+            get => _isSupplierChecked;
+            set { _isSupplierChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isPromotionChecked;
+        public bool IsPromotionChecked
+        {
+            get => _isPromotionChecked;
+            set { _isPromotionChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isReportChecked;
+        public bool IsReportChecked
+        {
+            get => _isReportChecked;
+            set { _isReportChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isAccountChecked;
+        public bool IsAccountChecked
+        {
+            get => _isAccountChecked;
+            set { _isAccountChecked = value; OnPropertyChanged(); }
+        }
+
+        private bool _isSettingChecked;
+        public bool IsSettingChecked
+        {
+            get => _isSettingChecked;
+            set { _isSettingChecked = value; OnPropertyChanged(); }
+        }
+        #endregion
+
         public SidebarViewModel(Action<object> changeViewAction)
         {
             _handleChangeView = changeViewAction;
@@ -113,13 +185,10 @@ namespace Bookstore.WPF.ViewModels
             foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
             MessageBox.Show(debugstring);
 
+            HomeTabName = AppState.CurrentUser.Username;
             // Đọc phân quyền từ api
             // ==========================================
             IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
-            if (listQuyen.Contains("DashboardView"))
-                HomeTabName = "Trang chủ";
-            else
-                HomeTabName = "Bán hàng";
             IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
             IsSaleVisible = listQuyen.Contains("SaleView") ? Visibility.Visible : Visibility.Collapsed;
             IsProductVisible = listQuyen.Contains("ProductView") ? Visibility.Visible : Visibility.Collapsed;
@@ -158,15 +227,33 @@ namespace Bookstore.WPF.ViewModels
             // Đăng xuất
             LogoutCommand = new RelayCommand<object>((p) =>
             {
-                // Gọi API Logout \\
+                Bookstore.WPF.Utils.AppState.Logout();
 
-                // Mở lại màn hình Login
                 var loginWindow = new Bookstore.WPF.Views.LoginView();
                 loginWindow.Show();
 
-                // Đóng Window chính
-                Application.Current.MainWindow.Close();
+                foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
+                {
+                    if (window is Bookstore.WPF.Views.MainView)
+                    {
+                        window.Close();
+                        break;
+                    }
+                }
             });
+
+
+            // Tự động Highlight Tab đầu tiên dựa theo danh sách quyền
+            if (listQuyen.Contains("DashboardView")) IsDashboardChecked = true;
+            else if (listQuyen.Contains("SaleView")) IsSaleChecked = true;
+            else if (listQuyen.Contains("ProductView")) IsProductChecked = true;
+            else if (listQuyen.Contains("CustomerView")) IsCustomerChecked = true;
+            else if (listQuyen.Contains("ImportView")) IsImportChecked = true;
+            else if (listQuyen.Contains("SupplierView")) IsSupplierChecked = true;
+            else if (listQuyen.Contains("PromotionView")) IsPromotionChecked = true;
+            else if (listQuyen.Contains("ReportView")) IsReportChecked = true;
+            else if (listQuyen.Contains("AccountView")) IsAccountChecked = true;
+            else if (listQuyen.Contains("SettingView")) IsSettingChecked = true;
         }
     }
 }
