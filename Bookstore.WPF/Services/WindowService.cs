@@ -9,15 +9,10 @@ public class WindowService : IWindowService
     {
         Window window = null;
 
-        if (typeof(TViewModel) == typeof(AdminViewModel))
+        if (typeof(TViewModel) == typeof(MainViewModel))
         {
-            window = new AdminView();
+            window = new MainView();
         }
-        else if (typeof(TViewModel) == typeof(StaffViewModel))
-        {
-            window = new StaffView();
-        }
-
         if (window != null)
         {
             window.Show();

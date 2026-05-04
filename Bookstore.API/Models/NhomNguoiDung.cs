@@ -1,0 +1,16 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bookstore.API.Models
+{
+    public class NhomNguoiDung : IEntity<int>
+        //NHOM NGUOI DUNG
+    {
+        [Key]
+        public int MaNhomNguoiDung { get; set; }
+        public string TenNhomNguoiDung { get; set; } = string.Empty;
+        public int GetID() => MaNhomNguoiDung;
+
+        public virtual ICollection<NguoiDung> NguoiDungs { get; set; }
+        public virtual ICollection<PhanQuyen> PhanQuyens { get; set; }
+    }
+}

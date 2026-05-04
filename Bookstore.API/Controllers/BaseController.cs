@@ -7,24 +7,24 @@ namespace Bookstore.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseController<T> : ControllerBase where T : class, IEntity
+    public class BaseController<TEntity, TKey> : ControllerBase where TEntity : class, IEntity<TKey>
     {
         // generic
-        protected readonly IGenericRepository<T> _repository;
-        public BaseController(IGenericRepository<T> repo)
+        protected readonly IGenericRepository<TEntity, TKey> _repository;
+        public BaseController(IGenericRepository<TEntity, TKey> repo)
         {
             _repository = repo;
         }
 
         [HttpGet] // get all
-        public async Task<ActionResult<IEnumerable<T>>> GetAll()
+        public async Task<ActionResult<IEnumerable<TEntity>>> GetAll()
         {
             var items = await _repository.GetAllAsync();
             return Ok(items);
         }
 
         [HttpGet("{id}")] // get by id
-        public async Task<ActionResult<T>> GetByID(int id)
+        public async Task<ActionResult<TEntity>> GetByID(TKey id)
         {
             var item = await _repository.GetByIDAsync(id);
             if (item == null) return NotFound();
@@ -32,7 +32,7 @@ namespace Bookstore.API.Controllers
         }
 
         [HttpPost] // add new item
-        public async Task<ActionResult<T>> Add(T item)
+        public async Task<ActionResult<TEntity>> Add(TEntity item)
         {
             await _repository.AddAsync(item);
             await _repository.SaveChangesAsync();
@@ -41,9 +41,10 @@ namespace Bookstore.API.Controllers
         }
 
         [HttpPut("{id}")] // update by id
-        public async Task<ActionResult<T>> Update(int id, T item)
+        public async Task<ActionResult<TEntity>> Update(TKey id, TEntity item)
         {
-            if(id != item.GetID()) return BadRequest();
+            if (!EqualityComparer<TKey>.Default.Equals(id, item.GetID()))
+                return BadRequest();
             _repository.Update(item);
 
             try
@@ -60,7 +61,7 @@ namespace Bookstore.API.Controllers
         }
 
         [HttpDelete("{id}")] // remove by id
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(TKey id)
         {
             var item = await _repository.GetByIDAsync(id);
             if(item == null) return NotFound();

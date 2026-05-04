@@ -1,4 +1,5 @@
 ﻿using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,35 +21,40 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        public SidebarViewModel SidebarVM { get; set; }
-        public MainViewModel(List<string> listQuyen)
+        private SidebarViewModel _sidebarVM;
+        public SidebarViewModel SidebarVM
         {
-            SidebarVM = new SidebarViewModel(listQuyen, ChangeView);
+            get => _sidebarVM;
+            set
+            {
+                _sidebarVM = value;
+                OnPropertyChanged();
+            }
+        }
 
+        public MainViewModel()
+        {
+            List<string> listQuyen = AppState.CurrentPermissions;
+            SidebarVM = new SidebarViewModel(ChangeView);
+            CurrentView = new DashboardViewModel();
             SetDefaultView(listQuyen);
         }
-
         private void SetDefaultView(List<string> listQuyen)
         {
-            //if (listQuyen.Contains("CN_DASHBOARD"))
-            //    CurrentView = new DashboardViewModel();
+            if (listQuyen == null || listQuyen.Count == 0)
+            {
+                CurrentView = null; 
+                return;
+            }
 
-            //else if (listQuyen.Contains("CN_BANHANG"))
-            //    CurrentView = new BanHangViewModel();
-
-            //else if (listQuyen.Contains("CN_TRACUU"))
-            //    CurrentView = new TraCuuSachViewModel();
-
-            //else if (listQuyen.Contains("CN_KHACHHANG"))
-            //    CurrentView = new KhachHangViewModel();
-
-            //else if (listQuyen.Contains("CN_NHAPKHO"))
-            //    CurrentView = new NhapKhoViewModel();
-
-            //else
-            //    CurrentView = null;
+            if (listQuyen.Contains("DashboardView"))
+                CurrentView = new DashboardViewModel();
+            else if (listQuyen.Contains("SaleView"))
+                CurrentView = new SaleViewModel();
+            else if (listQuyen.Contains("ProductView"))
+                CurrentView = new ProductViewModel();
+            // bổ sung thêm 
         }
-
         private void ChangeView(object newViewModel)
         {
             CurrentView = newViewModel;
