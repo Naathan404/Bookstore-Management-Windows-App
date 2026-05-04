@@ -37,8 +37,6 @@ namespace Bookstore.WPF
             //var login = new LoginView();
             //login.Show();
             // Thử DashboardView
-            var test = new test();
-            test.Show();
             //var mainView = new MainView();
             //mainView.Show();
             //var admin = new AdminView();
