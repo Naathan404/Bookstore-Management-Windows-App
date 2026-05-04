@@ -19,12 +19,12 @@ namespace Bookstore.WPF.Views
     /// <summary>
     /// Interaction logic for DashBoardView.xaml
     /// </summary>
-    public partial class DashBoardView : UserControl
+    public partial class DashboardView : UserControl
     {
-        public DashBoardView()
+        public DashboardView()
         {
             InitializeComponent();
-            DataContext = new DashBoardViewModel(); 
+            DataContext = new DashboardViewModel(); 
         }
     }
 }

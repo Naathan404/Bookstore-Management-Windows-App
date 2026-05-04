@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="test" Height="4000" Width="4000">
     <Grid>
-        <local:DashBoardView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <local:DashboardView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         
     </Grid>
 </Window>
