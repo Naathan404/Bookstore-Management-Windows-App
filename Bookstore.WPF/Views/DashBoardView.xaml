@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Bookstore.WPF.Views.DashBoardView"
+﻿<UserControl x:Class="Bookstore.WPF.Views.DashboardView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,7 @@
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
              xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"             
-             d:DataContext="{d:DesignInstance Type=vm:DashBoardViewModel, IsDesignTimeCreatable=True}"             
+             d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel, IsDesignTimeCreatable=True}"             
              mc:Ignorable="d" 
              d:DesignHeight="1750" d:DesignWidth="1640"
              Background="#f4f7fe">
@@ -414,7 +414,7 @@
                                     <TextBlock Grid.Column="0" Text="Chart 1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     <Grid Grid.Column="1">
                                         <Grid.DataContext>
-                                            <vm:DashBoardViewModel/>
+                                            <vm:DashboardViewModel/>
                                         </Grid.DataContext>
 
 
