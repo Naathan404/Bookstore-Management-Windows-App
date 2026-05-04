@@ -17,13 +17,7 @@ namespace Bookstore.WPF.ViewModels
         public ObservableCollection<Receipt> Items { get; set; }
         public ObservableCollection<InventoryItem> InventoryItems { get; set; }
         public ObservableCollection<StockWarning> StockWarnings { get; set; }
-        public PieData[] Data { get; set; } = [
-            new("Mary", 10),
-            new("John", 20),
-            new("Alice", 30),
-            new("Bob", 40),
-            new("Charlie", 50)
-        ];
+        public ObservableCollection<PieData> Data { get; set; }
         public ISeries[] PieSeries { get; set; }
         public float Profit { get; set; } = 1000000; // Lợi nhuận mẫu
         public float ProfitPercent { get; set; } = 15; // Tỷ lệ phần trăm lợi nhuận mẫu
@@ -34,25 +28,25 @@ namespace Bookstore.WPF.ViewModels
 
         public DashBoardViewModel()
         {
-            
-
-            // Chuyển đổi từ danh sách Data sang mảng ISeries của LiveCharts2
-            PieSeries = new ISeries[]
+            // Dữ liệu mẫu cho biểu đồ (sử dụng Data cho SeriesSource trong XAML)
+            Data = new ObservableCollection<PieData>
             {
-            new PieSeries<double> { Values = new double[] { 40 }, Name = "Fiction" },
-            new PieSeries<double> { Values = new double[] { 30 }, Name = "Non-Fiction" },
-            new PieSeries<double> { Values = new double[] { 20 }, Name = "Science" },
-            new PieSeries<double> { Values = new double[] { 10 }, Name = "History" }
+                new PieData { Name = "Mary", Values = new double[] { 10 } },
+                new PieData { Name = "John", Values = new double[] { 20 } },
+                new PieData { Name = "Alice", Values = new double[] { 30 } },
+                new PieData { Name = "Bob", Values = new double[] { 40 } },
+                new PieData { Name = "Charlie", Values = new double[] { 50 } }
             };
 
             // Dữ liệu mẫu cho Top 5 sách bán chạy
             TopBooks = new ObservableCollection<Book>
             {
-                new Book { Rank = 1, BookImage = "D:\\UIT\\SE104\\Bookstore-Management-Windows-App\\Bookstore.WPF\\Resources\\Images\\book1.png" },
-                new Book { Rank = 2, BookImage = "D:\\UIT\\SE104\\Bookstore-Management-Windows-App\\Bookstore.WPF\\Resources\\Images\\book2.png" },
-                new Book { Rank = 3, BookImage = "D:\\UIT\\SE104\\Bookstore-Management-Windows-App\\Bookstore.WPF\\Resources\\Images\\book3.png" },
-                new Book { Rank = 4, BookImage = "D:\\UIT\\SE104\\Bookstore-Management-Windows-App\\Bookstore.WPF\\Resources\\Images\\book4.png" },
-                new Book { Rank = 5, BookImage = "D:\\UIT\\SE104\\Bookstore-Management-Windows-App\\Bookstore.WPF\\Resources\\Images\\book5.png" }
+                // Use pack URIs so images load from app resources (project must include these files as Resource/Content)
+                new Book { Rank = 1, BookImage = "/Bookstore.WPF;component/Resources/Images/book1.png" },
+                new Book { Rank = 2, BookImage = "/Bookstore.WPF;component/Resources/Images/book2.png" },
+                new Book { Rank = 3, BookImage = "/Bookstore.WPF;component/Resources/Images/book3.png" },
+                new Book { Rank = 4, BookImage = "/Bookstore.WPF;component/Resources/Images/book4.png" },
+                new Book { Rank = 5, BookImage = "/Bookstore.WPF;component/Resources/Images/book5.png" }
             };
 
             // Dữ liệu mẫu cho bảng hóa đơn
@@ -74,23 +68,27 @@ namespace Bookstore.WPF.ViewModels
             // Dữ liệu mẫu cho cảnh báo tồn kho
             StockWarnings = new ObservableCollection<StockWarning>
             {
-                new StockWarning { Name = "Book D",BrandName = "Brand X", RemainingQuantity = 5 },
-                new StockWarning { Name = "Book E",BrandName = "Brand X", RemainingQuantity = 2 },
-                new StockWarning { Name = "Book F",BrandName = "Brand Y", RemainingQuantity = 0 }
+                new StockWarning { Name = "Book D", BrandName = "Brand X", RemainingQuantity = 5 },
+                new StockWarning { Name = "Book E", BrandName = "Brand X", RemainingQuantity = 2 },
+                new StockWarning { Name = "Book F", BrandName = "Brand Y", RemainingQuantity = 0 }
             };
         }
     }
-    public class PieData(string name, double value)
-    {
-        public string Name { get; set; } = name;
-        public double[] Values { get; set; } = new double[] { value };
-    }
-    public class BookGenreSale
+
+    public class PieData
     {
         public string Name { get; set; }
         public double[] Values { get; set; }
-        public double Pushout { get; set; }
+
+        public PieData() { }
+
+        public PieData(string name, double value)
+        {
+            Name = name;
+            Values = new double[] { value };
+        }
     }
+    
 
     public class Book
     {
