@@ -42,22 +42,22 @@ namespace Bookstore.WPF
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();
             //admin.Show();
-            //var window = new Window
-            //{
-            //    Content = new TraCuuSach(),
-            //    Title = "Tra cứu sách",
-            //    WindowState = WindowState.Maximized
-            //};
-            //window.Show();
+            var window = new Window
+            {
+                Content = new CustomerView(),
+                Title = "KHÁCH HÀNG",
+                WindowState = WindowState.Maximized
+            };
+            window.Show();
 
-            //var window = new Window
-            //{
-            //    Content = new ProductView(),
-            //    Title = "Khách Hàng",
-            //    WindowState = WindowState.Maximized,
-            //    WindowStartupLocation = WindowStartupLocation.CenterScreen
-            //};
-            //window.Show();
+            var window = new Window
+            {
+                Content = new ProductView(),
+                Title = "Tra Cứu",
+                WindowState = WindowState.Maximized,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            window.Show();
 
         }
 
