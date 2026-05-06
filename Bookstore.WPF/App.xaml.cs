@@ -50,15 +50,6 @@ namespace Bookstore.WPF
             };
             window.Show();
 
-            var window = new Window
-            {
-                Content = new ProductView(),
-                Title = "Tra Cứu",
-                WindowState = WindowState.Maximized,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            };
-            window.Show();
-
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)

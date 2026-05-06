@@ -11,7 +11,7 @@ using LiveChartsCore.SkiaSharpView;
 
 namespace Bookstore.WPF.ViewModels
 {
-    public class DashBoardViewModel : BaseViewModel
+    public class DashboardViewModel : BaseViewModel
     {
         public ObservableCollection<Book> TopBooks { get; set; }
         public ObservableCollection<Receipt> Items { get; set; }
@@ -26,7 +26,7 @@ namespace Bookstore.WPF.ViewModels
         public float Expense { get; set; } = 4000000; // Chi phí mẫu
         public int ReceiptNum { get; set; } = 150; // Số lượng hóa đơn mẫu
 
-        public DashBoardViewModel()
+        public DashboardViewModel()
         {
             // Dữ liệu mẫu cho biểu đồ (sử dụng Data cho SeriesSource trong XAML)
             Data = new ObservableCollection<PieData>
