@@ -1,4 +1,5 @@
 ﻿using Bookstore.API.Data;
+using Bookstore.API.Models;
 using Bookstore.Share.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ namespace Bookstore.API.Controllers
 
         // GET: api/Sach
         [HttpGet]
-        public async Task<IActionResult> GetAllSach()
+        public async Task<IActionResult> GetAllPhienBanSach()
         {
             try
             {
@@ -105,5 +106,86 @@ namespace Bookstore.API.Controllers
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
         }
+
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateSach(int id, [FromBody] SachDTO request)
+        //{
+        //    try
+        //    {
+        //        // 1. Cập nhật bảng Phiên bản (Luôn luôn cho phép)
+        //        var pb = await _context.PhienBanSach.FirstOrDefaultAsync(p => p.MaPhienBan == id);
+        //        if (pb == null) return NotFound();
+
+        //        pb.ISBN = request.ISBN;
+        //        pb.GiaNiemYet = request.GiaNiemYet;
+        //        pb.DonGiaBan = request.DonGiaBan;
+        //        pb.NamXuatBan = request.NamXuatBan;
+        //        pb.NhaXuatBan = request.NhaXuatBan;
+        //        pb.HinhThucBia = request.HinhThucBia;
+
+        //        // 2. Cập nhật bảng Tác phẩm (Chỉ khi người dùng mở khóa công tắc)
+        //        // Dựa vào việc request gửi lên có thay đổi thông tin Sach hay không
+        //        var sach = await _context.Sach.FindAsync(pb.MaSach);
+        //        if (sach != null)
+        //        {
+        //            sach.TenSach = request.TenSach;
+        //            sach.MoTa = request.MoTa;
+        //            sach.ImageUrl = request.HinhAnh;
+
+        //            var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
+        //            if (theLoai != null) sach.MaTheLoai = theLoai.MaTheLoai;
+        //        }
+
+        //        await _context.SaveChangesAsync();
+        //        return Ok(new { message = "Cập nhật thành công!" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> CreateSach([FromBody] SachDTO request)
+        //{
+        //    using var transaction = await _context.Database.BeginTransactionAsync();
+        //    try
+        //    {
+        //        // Tạo gốc
+        //        var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
+        //        var sachMoi = new Sach
+        //        {
+        //            TenSach = request.TenSach,
+        //            MaTheLoai = theLoai?.MaTheLoai ?? 1,
+        //            MoTa = request.MoTa,
+        //            ImageUrl = request.HinhAnh
+        //        };
+        //        _context.Sach.Add(sachMoi);
+        //        await _context.SaveChangesAsync();
+
+        //        // Tạo Phiên bản đầu tiên 
+        //        var phienBanMoi = new PhienBanSach
+        //        {
+        //            MaSach = sachMoi.MaSach,
+        //            ISBN = request.ISBN,
+        //            GiaNiemYet = request.GiaNiemYet,
+        //            DonGiaBan = request.DonGiaBan,
+        //            TonKho = request.SoLuongTonKho,
+        //            NamXuatBan = request.NamXuatBan,
+        //            MaNhaXuatBan = request.NhaXuatBan,
+        //            HinhThucBia = request.HinhThucBia
+        //        };
+        //        _context.PhienBanSach.Add(phienBanMoi);
+        //        await _context.SaveChangesAsync();
+
+        //        await transaction.CommitAsync();
+        //        return Ok(new { message = "Thêm sách thành công!" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await transaction.RollbackAsync();
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
     }
 }

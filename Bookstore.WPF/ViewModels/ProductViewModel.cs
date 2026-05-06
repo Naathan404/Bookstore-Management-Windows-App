@@ -16,6 +16,10 @@ namespace Bookstore.WPF.ViewModels
         #region Collections
         private ObservableCollection<BookItem> _allBooks;
         private ObservableCollection<BookItem> _filteredBooks;
+        public ObservableCollection<string> ListNhaCungCap { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> ListNhaXuatBan { get; set; } = new ObservableCollection<string>();
+
+        public ObservableCollection<string> ListHinhThucBia { get; set; }
 
         // Danh sách sách hiển thị trên 1 trang
         public ObservableCollection<BookItem> PagedBooks { get; set; }
@@ -26,13 +30,13 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region Properties - Tìm Kiếm
-        private string _searchTenSach;
+        private string _searchTenSach = string.Empty;
         public string SearchTenSach { get => _searchTenSach; set { _searchTenSach = value; OnPropertyChanged(); PerformSearch(); } }
 
-        private string _searchTacGia;
+        private string _searchTacGia = string.Empty;
         public string SearchTacGia { get => _searchTacGia; set { _searchTacGia = value; OnPropertyChanged(); PerformSearch(); } }
 
-        private string _selectedTheLoai;
+        private string _selectedTheLoai = string.Empty;
         public string SelectedTheLoai { get => _selectedTheLoai; set { _selectedTheLoai = value; OnPropertyChanged(); PerformSearch(); } }
 
         // NOTE Để bổ sung các properties còn thíu
@@ -73,6 +77,18 @@ namespace Bookstore.WPF.ViewModels
                 OnPropertyChanged(nameof(IsAddingNew));
             }
         }
+
+        private bool _isViewByVersion = true;
+        public bool IsViewByVersion
+        {
+            get => _isViewByVersion;
+            set
+            {
+                _isViewByVersion = value;
+                OnPropertyChanged();
+                _ = LoadDataAsync();
+            }
+        }
         #endregion
 
         #region Commands
@@ -99,10 +115,22 @@ namespace Bookstore.WPF.ViewModels
             PageNumbers = new ObservableCollection<int>();
             ListTheLoai = new ObservableCollection<string>();
 
+            ListHinhThucBia = new ObservableCollection<string>
+            {
+                "Bìa mềm",
+                "Bìa cứng",
+                "Bìa gập",
+                "Bìa rời",
+                "Bìa da",
+                "Khác"
+            };
+
             //LoadSampleData();
             InitCommands();
 
             _ = LoadTheLoaiAsync();
+            _ = LoadNhaXuatBanAsync();
+            //_ = LoadNhaCungCapAsync();
             _ = LoadDataAsync();
         }
 
@@ -362,6 +390,30 @@ namespace Bookstore.WPF.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Lỗi tải thể loại: {ex.Message}");
+            }
+        }
+
+        private async Task LoadNhaXuatBanAsync()
+        {
+            var data = await ApiClient.GetAsync<List<string>>("api/NhaXuatBan");
+            if (data != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => {
+                    ListNhaXuatBan.Clear();
+                    foreach (var item in data) ListNhaXuatBan.Add(item);
+                });
+            }
+        }
+
+        private async Task LoadNhaCungCapAsync()
+        {
+            var data = await ApiClient.GetAsync<List<string>>("api/NhaCungCap");
+            if (data != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => {
+                    ListNhaCungCap.Clear();
+                    foreach (var item in data) ListNhaCungCap.Add(item);
+                });
             }
         }
     }
