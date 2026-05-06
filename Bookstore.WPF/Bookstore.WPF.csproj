@@ -14,6 +14,31 @@
     <None Remove="Resources\Images\book3.png" />
     <None Remove="Resources\Images\book4.png" />
     <None Remove="Resources\Images\book5.png" />
+    <None Remove="Resources\Images\Books\300baicode.jpg" />
+    <None Remove="Resources\Images\Books\canhdongbattan.jpg" />
+    <None Remove="Resources\Images\Books\caphecungtony.jpg" />
+    <None Remove="Resources\Images\Books\chipheo.jpg" />
+    <None Remove="Resources\Images\Books\cleancode.jpg" />
+    <None Remove="Resources\Images\Books\cleancoder.jpg" />
+    <None Remove="Resources\Images\Books\conan1.jpg" />
+    <None Remove="Resources\Images\Books\conan2.jpg" />
+    <None Remove="Resources\Images\Books\dacnhantam.jpg" />
+    <None Remove="Resources\Images\Books\designpatterns.jpg" />
+    <None Remove="Resources\Images\Books\doraemon1.jpg" />
+    <None Remove="Resources\Images\Books\doraemon2.jpg" />
+    <None Remove="Resources\Images\Books\gian.jpg" />
+    <None Remove="Resources\Images\Books\harrypotter1.jpg" />
+    <None Remove="Resources\Images\Books\harrypotter2.jpg" />
+    <None Remove="Resources\Images\Books\kafka.jpg" />
+    <None Remove="Resources\Images\Books\matbiec.jpg" />
+    <None Remove="Resources\Images\Books\nhagiakim.jpg" />
+    <None Remove="Resources\Images\Books\quangganhlo.jpg" />
+    <None Remove="Resources\Images\Books\refactoring.jpg" />
+    <None Remove="Resources\Images\Books\rungnauy.jpg" />
+    <None Remove="Resources\Images\Books\sodo.jpg" />
+    <None Remove="Resources\Images\Books\thienac.jpeg" />
+    <None Remove="Resources\Images\Books\trenduongbang.jpg" />
+    <None Remove="Resources\Images\Books\vetuoitho.jpg" />
     <None Remove="Resources\Images\Login\bg0.png" />
     <None Remove="Resources\Images\Login\bg1_1.png" />
     <None Remove="Resources\Images\Login\bg1_2.png" />
@@ -42,7 +67,82 @@
     <Content Include="Resources\Images\book5.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Images\Books\300baicode.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\canhdongbattan.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\caphecungtony.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\chipheo.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\cleancode.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\cleancoder.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\conan1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\conan2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\dacnhantam.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Books\default_book_cover.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\designpatterns.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\doraemon1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\doraemon2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\gian.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\harrypotter1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\harrypotter2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\kafka.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\matbiec.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\nhagiakim.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\quangganhlo.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\refactoring.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\rungnauy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\sodo.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\thienac.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\trenduongbang.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\vetuoitho.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\your_avatar.png">
