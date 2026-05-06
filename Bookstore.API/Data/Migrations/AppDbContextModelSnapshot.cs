@@ -45,6 +45,32 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaBaoCaoKhachHang");
 
                     b.ToTable("BC_KhachHang");
+
+                    b.HasData(
+                        new
+                        {
+                            MaBaoCaoKhachHang = 1,
+                            Nam = 2024,
+                            Thang = 3,
+                            TongDoanhThu = 0m,
+                            TongNo = 0m
+                        },
+                        new
+                        {
+                            MaBaoCaoKhachHang = 2,
+                            Nam = 2024,
+                            Thang = 4,
+                            TongDoanhThu = 0m,
+                            TongNo = 0m
+                        },
+                        new
+                        {
+                            MaBaoCaoKhachHang = 3,
+                            Nam = 2024,
+                            Thang = 5,
+                            TongDoanhThu = 1890000m,
+                            TongNo = 150000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.BC_Sach", b =>
@@ -70,6 +96,32 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaBaoCaoSach");
 
                     b.ToTable("BC_Sach");
+
+                    b.HasData(
+                        new
+                        {
+                            MaBaoCaoSach = 1,
+                            Nam = 2024,
+                            Thang = 3,
+                            TongChiPhi = 22000000m,
+                            TongDoanhThu = 0m
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 2,
+                            Nam = 2024,
+                            Thang = 4,
+                            TongChiPhi = 3000000m,
+                            TongDoanhThu = 0m
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 3,
+                            Nam = 2024,
+                            Thang = 5,
+                            TongChiPhi = 0m,
+                            TongDoanhThu = 1890000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CTUD_HoaDon_Giam", b =>
@@ -103,6 +155,18 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaUuDai");
 
                     b.ToTable("CTUD_HoaDon_Giam");
+
+                    b.HasData(
+                        new
+                        {
+                            MaCT = 1,
+                            GiamToiDa = 100m,
+                            MaUuDai = 1,
+                            SoTienGiam = 0m,
+                            SoTienToiDa = 999999999m,
+                            SoTienToiThieu = 500000m,
+                            TiLeGiam = 0.10000000149011612
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CTUD_HoaDon_Qua", b =>
@@ -127,6 +191,15 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaUuDai");
 
                     b.ToTable("CTUD_HoaDon_Qua");
+
+                    b.HasData(
+                        new
+                        {
+                            MaCT = 1,
+                            MaUuDai = 2,
+                            SoTienToiDa = 999999999m,
+                            SoTienToiThieu = 1000000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CTUD_Sach_Giam", b =>
@@ -154,6 +227,16 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaUuDai");
 
                     b.ToTable("CTUD_Sach_Giam");
+
+                    b.HasData(
+                        new
+                        {
+                            MaCT = 1,
+                            GiamToiDa = 20000m,
+                            MaUuDai = 3,
+                            SoTienGiam = 20000m,
+                            TiLeGiam = 0.0
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CTUD_Sach_Qua", b =>
@@ -172,6 +255,13 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaUuDai");
 
                     b.ToTable("CTUD_Sach_Qua");
+
+                    b.HasData(
+                        new
+                        {
+                            MaCT = 1,
+                            MaUuDai = 4
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CT_BC_KhachHang", b =>
@@ -208,6 +298,44 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaKhachHang");
 
                     b.ToTable("CT_BC_KhachHang");
+
+                    b.HasData(
+                        new
+                        {
+                            MaBaoCaoKhachHang = 3,
+                            MaKhachHang = 1,
+                            DaTra = 0m,
+                            DoanhThu = 90000m,
+                            NoCuoi = 0m,
+                            NoDau = 0m,
+                            NoPhatSinh = 0m,
+                            SoHoaDon = 1,
+                            TiLeDoanhThu = 4.76f
+                        },
+                        new
+                        {
+                            MaBaoCaoKhachHang = 3,
+                            MaKhachHang = 2,
+                            DaTra = 100000m,
+                            DoanhThu = 900000m,
+                            NoCuoi = 150000m,
+                            NoDau = 0m,
+                            NoPhatSinh = 250000m,
+                            SoHoaDon = 1,
+                            TiLeDoanhThu = 47.62f
+                        },
+                        new
+                        {
+                            MaBaoCaoKhachHang = 3,
+                            MaKhachHang = 3,
+                            DaTra = 0m,
+                            DoanhThu = 900000m,
+                            NoCuoi = 0m,
+                            NoDau = 0m,
+                            NoPhatSinh = 0m,
+                            SoHoaDon = 1,
+                            TiLeDoanhThu = 47.62f
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CT_BC_Sach", b =>
@@ -241,6 +369,96 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("ISBN");
 
                     b.ToTable("CT_BC_Sach");
+
+                    b.HasData(
+                        new
+                        {
+                            MaBaoCaoSach = 1,
+                            ISBN = "978-0132350884",
+                            ChiPhiNhap = 15000000m,
+                            DoanhThu = 0m,
+                            TonCuoi = 50,
+                            TonDau = 0,
+                            TongNhap = 50,
+                            TongXuat = 0
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 1,
+                            ISBN = "978-604-1-09887-1",
+                            ChiPhiNhap = 7000000m,
+                            DoanhThu = 0m,
+                            TonCuoi = 100,
+                            TonDau = 0,
+                            TongNhap = 100,
+                            TongXuat = 0
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 2,
+                            ISBN = "978-0132350884",
+                            ChiPhiNhap = 0m,
+                            DoanhThu = 0m,
+                            TonCuoi = 50,
+                            TonDau = 50,
+                            TongNhap = 0,
+                            TongXuat = 0
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 2,
+                            ISBN = "978-604-1-09887-1",
+                            ChiPhiNhap = 0m,
+                            DoanhThu = 0m,
+                            TonCuoi = 100,
+                            TonDau = 100,
+                            TongNhap = 0,
+                            TongXuat = 0
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 2,
+                            ISBN = "978-604-2-11111-1",
+                            ChiPhiNhap = 3000000m,
+                            DoanhThu = 0m,
+                            TonCuoi = 200,
+                            TonDau = 0,
+                            TongNhap = 200,
+                            TongXuat = 0
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 3,
+                            ISBN = "978-0132350884",
+                            ChiPhiNhap = 0m,
+                            DoanhThu = 900000m,
+                            TonCuoi = 48,
+                            TonDau = 50,
+                            TongNhap = 0,
+                            TongXuat = 2
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 3,
+                            ISBN = "978-604-1-09887-1",
+                            ChiPhiNhap = 0m,
+                            DoanhThu = 90000m,
+                            TonCuoi = 99,
+                            TonDau = 100,
+                            TongNhap = 0,
+                            TongXuat = 1
+                        },
+                        new
+                        {
+                            MaBaoCaoSach = 3,
+                            ISBN = "978-604-2-11111-1",
+                            ChiPhiNhap = 0m,
+                            DoanhThu = 100000m,
+                            TonCuoi = 195,
+                            TonDau = 200,
+                            TongNhap = 0,
+                            TongXuat = 5
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CT_HoaDon", b =>
@@ -262,6 +480,36 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("ISBN");
 
                     b.ToTable("CT_HoaDon");
+
+                    b.HasData(
+                        new
+                        {
+                            MaHoaDon = 1,
+                            ISBN = "978-604-1-09887-1",
+                            DonGia = 110000m,
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            MaHoaDon = 2,
+                            ISBN = "978-0132350884",
+                            DonGia = 450000m,
+                            SoLuong = 2
+                        },
+                        new
+                        {
+                            MaHoaDon = 3,
+                            ISBN = "978-604-2-11111-1",
+                            DonGia = 20000m,
+                            SoLuong = 5
+                        },
+                        new
+                        {
+                            MaHoaDon = 3,
+                            ISBN = "978-604-56-7890-1",
+                            DonGia = 150000m,
+                            SoLuong = 6
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CT_PhieuNhapSach", b =>
@@ -283,6 +531,29 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("ISBN");
 
                     b.ToTable("CT_PhieuNhapSach");
+
+                    b.HasData(
+                        new
+                        {
+                            MaPhieuNhapSach = 1,
+                            ISBN = "978-0132350884",
+                            DonGiaNhap = 300000m,
+                            SoLuong = 50
+                        },
+                        new
+                        {
+                            MaPhieuNhapSach = 1,
+                            ISBN = "978-604-1-09887-1",
+                            DonGiaNhap = 70000m,
+                            SoLuong = 100
+                        },
+                        new
+                        {
+                            MaPhieuNhapSach = 2,
+                            ISBN = "978-604-2-11111-1",
+                            DonGiaNhap = 15000m,
+                            SoLuong = 200
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.ChucNang", b =>
@@ -304,6 +575,68 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaChucNang");
 
                     b.ToTable("ChucNang");
+
+                    b.HasData(
+                        new
+                        {
+                            MaChucNang = 1,
+                            TenChucNang = "Trang chủ",
+                            TenManHinh = "DashboardView"
+                        },
+                        new
+                        {
+                            MaChucNang = 2,
+                            TenChucNang = "Bán hàng",
+                            TenManHinh = "SaleView"
+                        },
+                        new
+                        {
+                            MaChucNang = 3,
+                            TenChucNang = "Tra cứu sách",
+                            TenManHinh = "ProductView"
+                        },
+                        new
+                        {
+                            MaChucNang = 4,
+                            TenChucNang = "Khách hàng",
+                            TenManHinh = "CustomerView"
+                        },
+                        new
+                        {
+                            MaChucNang = 5,
+                            TenChucNang = "Nhập kho",
+                            TenManHinh = "ImportView"
+                        },
+                        new
+                        {
+                            MaChucNang = 6,
+                            TenChucNang = "Nhà cung cấp",
+                            TenManHinh = "SupplierView"
+                        },
+                        new
+                        {
+                            MaChucNang = 7,
+                            TenChucNang = "Ưu đãi",
+                            TenManHinh = "PromotionView"
+                        },
+                        new
+                        {
+                            MaChucNang = 8,
+                            TenChucNang = "Báo cáo",
+                            TenManHinh = "ReportView"
+                        },
+                        new
+                        {
+                            MaChucNang = 9,
+                            TenChucNang = "Tài khoản",
+                            TenManHinh = "AccountView"
+                        },
+                        new
+                        {
+                            MaChucNang = 10,
+                            TenChucNang = "Cài đặt",
+                            TenManHinh = "SettingView"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.HoaDon", b =>
@@ -323,8 +656,9 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NguoiTao")
-                        .HasColumnType("int");
+                    b.Property<string>("NguoiTao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("SoTienTra")
                         .HasColumnType("decimal(18,2)");
@@ -343,6 +677,44 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaKhachHang");
 
                     b.ToTable("HoaDon");
+
+                    b.HasData(
+                        new
+                        {
+                            MaHoaDon = 1,
+                            GiamGia = 20000m,
+                            MaKhachHang = 1,
+                            NgayTao = new DateTime(2024, 5, 1, 8, 30, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "phunlv",
+                            SoTienTra = 90000m,
+                            Thue = 0m,
+                            TongTien = 90000m,
+                            TongTienTamTinh = 110000m
+                        },
+                        new
+                        {
+                            MaHoaDon = 2,
+                            GiamGia = 0m,
+                            MaKhachHang = 2,
+                            NgayTao = new DateTime(2024, 5, 2, 14, 15, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "phunlv",
+                            SoTienTra = 650000m,
+                            Thue = 0m,
+                            TongTien = 900000m,
+                            TongTienTamTinh = 900000m
+                        },
+                        new
+                        {
+                            MaHoaDon = 3,
+                            GiamGia = 100000m,
+                            MaKhachHang = 3,
+                            NgayTao = new DateTime(2024, 5, 3, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "phunlv",
+                            SoTienTra = 900000m,
+                            Thue = 0m,
+                            TongTien = 900000m,
+                            TongTienTamTinh = 1000000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.HoaDon_UuDai", b =>
@@ -354,7 +726,6 @@ namespace Bookstore.API.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaCT_HoaDon_UuDai"));
 
                     b.Property<string>("ISBN")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MaHoaDon")
@@ -375,6 +746,31 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaUuDai");
 
                     b.ToTable("HoaDon_Uudai");
+
+                    b.HasData(
+                        new
+                        {
+                            MaCT_HoaDon_UuDai = 1,
+                            ISBN = "978-604-1-09887-1",
+                            MaHoaDon = 1,
+                            MaUuDai = 3,
+                            SoTienGiam = 20000m
+                        },
+                        new
+                        {
+                            MaCT_HoaDon_UuDai = 2,
+                            ISBN = "978-604-MEME-01",
+                            MaHoaDon = 2,
+                            MaUuDai = 4,
+                            SoTienGiam = 0m
+                        },
+                        new
+                        {
+                            MaCT_HoaDon_UuDai = 3,
+                            MaHoaDon = 3,
+                            MaUuDai = 1,
+                            SoTienGiam = 100000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.KhachHang", b =>
@@ -401,7 +797,7 @@ namespace Bookstore.API.Data.Migrations
 
                     b.Property<string>("MaSoThue")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("NgaySinh")
                         .HasColumnType("date");
@@ -433,13 +829,76 @@ namespace Bookstore.API.Data.Migrations
 
                     b.HasIndex("MaLoaiKhachHang");
 
-                    b.HasIndex("MaSoThue")
-                        .IsUnique();
-
                     b.HasIndex("SoDienThoai")
                         .IsUnique();
 
                     b.ToTable("KhachHang");
+
+                    b.HasData(
+                        new
+                        {
+                            MaKhachHang = 1,
+                            DiaChi = "",
+                            Email = "",
+                            GioiTinh = 0,
+                            MaLoaiKhachHang = 1,
+                            MaSoThue = "",
+                            NgaySinh = new DateOnly(1990, 1, 1),
+                            NgayTao = new DateTime(2024, 1, 1, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            SoDienThoai = "",
+                            TenKhachHang = "Khách Vãng Lai",
+                            TienNo = 0m,
+                            TongDonDaMua = 0,
+                            TongTienDaMua = 0m
+                        },
+                        new
+                        {
+                            MaKhachHang = 2,
+                            DiaChi = "Ký túc xá khu B",
+                            Email = "vanphu@gmail.com",
+                            GioiTinh = 0,
+                            MaLoaiKhachHang = 1,
+                            MaSoThue = "",
+                            NgaySinh = new DateOnly(1998, 5, 20),
+                            NgayTao = new DateTime(2024, 2, 15, 9, 30, 0, 0, DateTimeKind.Unspecified),
+                            SoDienThoai = "0987654321",
+                            TenKhachHang = "Nguyễn Lưu Văn Phú",
+                            TienNo = 250000m,
+                            TongDonDaMua = 5,
+                            TongTienDaMua = 1250000m
+                        },
+                        new
+                        {
+                            MaKhachHang = 3,
+                            DiaChi = "Khu công nghệ cao, TP. Thủ Đức",
+                            Email = "contact@sahara.vn",
+                            GioiTinh = 0,
+                            MaLoaiKhachHang = 2,
+                            MaSoThue = "0312345678",
+                            NgaySinh = new DateOnly(2020, 10, 10),
+                            NgayTao = new DateTime(2024, 3, 10, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            SoDienThoai = "02838383838",
+                            TenKhachHang = "Công ty TNHH Phần mềm Sahara",
+                            TienNo = 0m,
+                            TongDonDaMua = 12,
+                            TongTienDaMua = 15000000m
+                        },
+                        new
+                        {
+                            MaKhachHang = 4,
+                            DiaChi = "Linh Trung, TP. Thủ Đức",
+                            Email = "mai.nguyen@uit.edu.vn",
+                            GioiTinh = 0,
+                            MaLoaiKhachHang = 1,
+                            MaSoThue = "",
+                            NgaySinh = new DateOnly(2002, 8, 12),
+                            NgayTao = new DateTime(2024, 4, 1, 10, 15, 0, 0, DateTimeKind.Unspecified),
+                            SoDienThoai = "0912345678",
+                            TenKhachHang = "Lê Thành Nghĩa",
+                            TienNo = 980000m,
+                            TongDonDaMua = 3,
+                            TongTienDaMua = 1800000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.LoaiKhachHang", b =>
@@ -463,6 +922,22 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaLoaiKhachHang");
 
                     b.ToTable("LoaiKhachHang");
+
+                    b.HasData(
+                        new
+                        {
+                            MaLoaiKhachHang = 1,
+                            NoToiDa = 1000000m,
+                            TenLoaiKhachHang = "Cá nhân",
+                            TiLeTraToiThieu = 0.5
+                        },
+                        new
+                        {
+                            MaLoaiKhachHang = 2,
+                            NoToiDa = 5000000m,
+                            TenLoaiKhachHang = "Doanh nghiệp",
+                            TiLeTraToiThieu = 0.25
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.LoaiUuDai", b =>
@@ -483,6 +958,32 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaLoaiUuDai");
 
                     b.ToTable("LoaiUuDai");
+
+                    b.HasData(
+                        new
+                        {
+                            MaLoaiUuDai = 1,
+                            ApDungToiDa = 1,
+                            TenLoaiUuDai = "Giảm giá Hóa đơn"
+                        },
+                        new
+                        {
+                            MaLoaiUuDai = 2,
+                            ApDungToiDa = 1,
+                            TenLoaiUuDai = "Tặng quà theo Hóa đơn"
+                        },
+                        new
+                        {
+                            MaLoaiUuDai = 3,
+                            ApDungToiDa = 5,
+                            TenLoaiUuDai = "Giảm giá trực tiếp trên Sách"
+                        },
+                        new
+                        {
+                            MaLoaiUuDai = 4,
+                            ApDungToiDa = 5,
+                            TenLoaiUuDai = "Tặng sách khi mua Sách"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.NguoiDung", b =>
@@ -505,12 +1006,18 @@ namespace Bookstore.API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("HanOTP")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("HoTen")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaNhomNguoiDung")
                         .HasColumnType("int");
+
+                    b.Property<string>("MaOTP")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MatKhau")
                         .IsRequired()
@@ -530,15 +1037,92 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaNhomNguoiDung");
 
                     b.ToTable("NguoiDung");
+
+                    b.HasData(
+                        new
+                        {
+                            TenDangNhap = "admin",
+                            ChucVu = "Quản trị viên",
+                            DangLamViec = true,
+                            Email = "24521186@gm.uit.edu.vn",
+                            GioiTinh = "Nam",
+                            HanOTP = new DateTime(2026, 5, 3, 16, 49, 40, 631, DateTimeKind.Local).AddTicks(8556),
+                            HoTen = "Nguyễn Chí Nguyên",
+                            MaNhomNguoiDung = 1,
+                            MaOTP = "",
+                            MatKhau = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676",
+                            NgaySinh = new DateOnly(2006, 3, 10),
+                            NgayVaoLam = new DateOnly(2025, 1, 1)
+                        },
+                        new
+                        {
+                            TenDangNhap = "hungng",
+                            ChucVu = "Quản lý Cửa hàng",
+                            DangLamViec = true,
+                            Email = "24520604@gm.uit.edu.vn",
+                            GioiTinh = "Nam",
+                            HanOTP = new DateTime(2026, 5, 3, 16, 49, 40, 631, DateTimeKind.Local).AddTicks(8570),
+                            HoTen = "Nguyễn Gia Hưng",
+                            MaNhomNguoiDung = 3,
+                            MaOTP = "",
+                            MatKhau = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676",
+                            NgaySinh = new DateOnly(2006, 1, 11),
+                            NgayVaoLam = new DateOnly(2025, 2, 1)
+                        },
+                        new
+                        {
+                            TenDangNhap = "quanlh",
+                            ChucVu = "Quản lý Cửa hàng",
+                            DangLamViec = true,
+                            Email = "24521432@gm.uit.edu.vn",
+                            GioiTinh = "Nam",
+                            HanOTP = new DateTime(2026, 5, 3, 16, 49, 40, 631, DateTimeKind.Local).AddTicks(8571),
+                            HoTen = "Lê Hoàng Quân",
+                            MaNhomNguoiDung = 3,
+                            MaOTP = "",
+                            MatKhau = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676",
+                            NgaySinh = new DateOnly(2006, 1, 11),
+                            NgayVaoLam = new DateOnly(2025, 2, 1)
+                        },
+                        new
+                        {
+                            TenDangNhap = "sonph",
+                            ChucVu = "Quản lý Cửa hàng",
+                            DangLamViec = true,
+                            Email = "24521536@gm.uit.edu.vn",
+                            GioiTinh = "Nam",
+                            HanOTP = new DateTime(2026, 5, 3, 16, 49, 40, 631, DateTimeKind.Local).AddTicks(8573),
+                            HoTen = "Phạm Hoàng Sơn",
+                            MaNhomNguoiDung = 3,
+                            MaOTP = "",
+                            MatKhau = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676",
+                            NgaySinh = new DateOnly(2006, 1, 11),
+                            NgayVaoLam = new DateOnly(2025, 2, 1)
+                        },
+                        new
+                        {
+                            TenDangNhap = "phunlv",
+                            ChucVu = "Nhân viên Bán hàng",
+                            DangLamViec = true,
+                            Email = "24521360@g.uit.edu.vn",
+                            GioiTinh = "Nam",
+                            HanOTP = new DateTime(2026, 5, 3, 16, 49, 40, 631, DateTimeKind.Local).AddTicks(8574),
+                            HoTen = "Nguyễn Lưu Văn Phú",
+                            MaNhomNguoiDung = 2,
+                            MaOTP = "",
+                            MatKhau = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676",
+                            NgaySinh = new DateOnly(2000, 10, 20),
+                            NgayVaoLam = new DateOnly(2025, 6, 1)
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.NhaCungCap", b =>
                 {
-                    b.Property<int>("NhaNhaCungCap")
+                    b.Property<int>("MaNhaCungCap")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NhaNhaCungCap"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaNhaCungCap"));
 
                     b.Property<string>("DiaChi")
                         .IsRequired()
@@ -568,7 +1152,7 @@ namespace Bookstore.API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("NhaNhaCungCap");
+                    b.HasKey("MaNhaCungCap");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -580,6 +1164,30 @@ namespace Bookstore.API.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("NhaCungCap");
+
+                    b.HasData(
+                        new
+                        {
+                            MaNhaCungCap = 1,
+                            DiaChi = "387-389 Hai Bà Trưng, Quận 3, TP.HCM",
+                            Email = "info@fahasa.com",
+                            MaSoThue = "0300435133",
+                            NganHang = "Vietcombank",
+                            SoDienThoai = "1900636467",
+                            SoTaiKhoan = "0071000123456",
+                            TenNhaCungCap = "Công ty CP Phát hành sách FAHASA"
+                        },
+                        new
+                        {
+                            MaNhaCungCap = 2,
+                            DiaChi = "212 Nguyễn Trãi, Quận 1, TP.HCM",
+                            Email = "contact@phuongnam.com",
+                            MaSoThue = "0302221113",
+                            NganHang = "Techcombank",
+                            SoDienThoai = "1900555555",
+                            SoTaiKhoan = "1901234567890",
+                            TenNhaCungCap = "Nhà sách Phương Nam"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.NhaXuatBan", b =>
@@ -597,6 +1205,58 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaNhaXuatBan");
 
                     b.ToTable("NhaXuatBan");
+
+                    b.HasData(
+                        new
+                        {
+                            MaNhaXuatBan = 1,
+                            TenNhaXuatBan = "NXB Trẻ"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 2,
+                            TenNhaXuatBan = "NXB Đại học Quốc gia TPHCM"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 3,
+                            TenNhaXuatBan = "NXB Kim Đồng"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 4,
+                            TenNhaXuatBan = "NXB Tổng hợp TPHCM"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 5,
+                            TenNhaXuatBan = "NXB Giáo dục Việt Nam"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 6,
+                            TenNhaXuatBan = "NXB Hội Nhà văn"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 7,
+                            TenNhaXuatBan = "NXB Thông tin và Truyền thông"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 8,
+                            TenNhaXuatBan = "NXB Phụ Nữ"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 9,
+                            TenNhaXuatBan = "O'Reilly Media"
+                        },
+                        new
+                        {
+                            MaNhaXuatBan = 10,
+                            TenNhaXuatBan = "Pearson Education"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.NhomNguoiDung", b =>
@@ -614,6 +1274,23 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaNhomNguoiDung");
 
                     b.ToTable("NhomNguoiDung");
+
+                    b.HasData(
+                        new
+                        {
+                            MaNhomNguoiDung = 1,
+                            TenNhomNguoiDung = "ADMIN"
+                        },
+                        new
+                        {
+                            MaNhomNguoiDung = 2,
+                            TenNhomNguoiDung = "NHÂN VIÊN"
+                        },
+                        new
+                        {
+                            MaNhomNguoiDung = 3,
+                            TenNhomNguoiDung = "QUẢN LÝ"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhanQuyen", b =>
@@ -629,6 +1306,108 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaNhomNguoiDung");
 
                     b.ToTable("PhanQuyen");
+
+                    b.HasData(
+                        new
+                        {
+                            MaChucNang = 1,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 2,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 3,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 4,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 5,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 6,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 7,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 8,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 9,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 10,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 1,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 3,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 4,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 5,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 6,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 7,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 8,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 2,
+                            MaNhomNguoiDung = 2
+                        },
+                        new
+                        {
+                            MaChucNang = 3,
+                            MaNhomNguoiDung = 2
+                        },
+                        new
+                        {
+                            MaChucNang = 4,
+                            MaNhomNguoiDung = 2
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhienBanSach", b =>
@@ -671,6 +1450,346 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaSach");
 
                     b.ToTable("PhienBanSach");
+
+                    b.HasData(
+                        new
+                        {
+                            ISBN = "978-0132350884",
+                            DonGiaBan = 450000m,
+                            GiaNiemYet = 450000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 1,
+                            MaNhaXuatBan = 10,
+                            MaSach = 1,
+                            NamXuatBan = 2008,
+                            TonKho = 50,
+                            TongSoDaBan = 15
+                        },
+                        new
+                        {
+                            ISBN = "978-0201485677",
+                            DonGiaBan = 520000m,
+                            GiaNiemYet = 550000m,
+                            HinhThucBia = "Bìa cứng",
+                            LanTaiBan = 2,
+                            MaNhaXuatBan = 10,
+                            MaSach = 2,
+                            NamXuatBan = 2018,
+                            TonKho = 30,
+                            TongSoDaBan = 5
+                        },
+                        new
+                        {
+                            ISBN = "978-0201633610",
+                            DonGiaBan = 600000m,
+                            GiaNiemYet = 600000m,
+                            HinhThucBia = "Bìa cứng",
+                            LanTaiBan = 5,
+                            MaNhaXuatBan = 10,
+                            MaSach = 3,
+                            NamXuatBan = 1994,
+                            TonKho = 20,
+                            TongSoDaBan = 2
+                        },
+                        new
+                        {
+                            ISBN = "978-0137081073",
+                            DonGiaBan = 350000m,
+                            GiaNiemYet = 350000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 1,
+                            MaNhaXuatBan = 10,
+                            MaSach = 4,
+                            NamXuatBan = 2011,
+                            TonKho = 40,
+                            TongSoDaBan = 12
+                        },
+                        new
+                        {
+                            ISBN = "978-604-MEME-01",
+                            DonGiaBan = 3000m,
+                            GiaNiemYet = 3000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 1,
+                            MaNhaXuatBan = 7,
+                            MaSach = 5,
+                            NamXuatBan = 2024,
+                            TonKho = 300,
+                            TongSoDaBan = 0
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-09887-1",
+                            DonGiaBan = 110000m,
+                            GiaNiemYet = 110000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 15,
+                            MaNhaXuatBan = 1,
+                            MaSach = 6,
+                            NamXuatBan = 2019,
+                            TonKho = 100,
+                            TongSoDaBan = 50
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-09887-2",
+                            DonGiaBan = 220000m,
+                            GiaNiemYet = 250000m,
+                            HinhThucBia = "Bìa cứng kỷ niệm",
+                            LanTaiBan = 1,
+                            MaNhaXuatBan = 1,
+                            MaSach = 6,
+                            NamXuatBan = 2020,
+                            TonKho = 15,
+                            TongSoDaBan = 10
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-12345-6",
+                            DonGiaBan = 85000m,
+                            GiaNiemYet = 85000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 10,
+                            MaNhaXuatBan = 1,
+                            MaSach = 7,
+                            NamXuatBan = 2015,
+                            TonKho = 80,
+                            TongSoDaBan = 30
+                        },
+                        new
+                        {
+                            ISBN = "978-604-6-12301-2",
+                            DonGiaBan = 75000m,
+                            GiaNiemYet = 75000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 5,
+                            MaNhaXuatBan = 6,
+                            MaSach = 8,
+                            NamXuatBan = 2018,
+                            TonKho = 45,
+                            TongSoDaBan = 10
+                        },
+                        new
+                        {
+                            ISBN = "978-604-6-12302-9",
+                            DonGiaBan = 60000m,
+                            GiaNiemYet = 60000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 8,
+                            MaNhaXuatBan = 6,
+                            MaSach = 9,
+                            NamXuatBan = 2017,
+                            TonKho = 60,
+                            TongSoDaBan = 25
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-15555-6",
+                            DonGiaBan = 90000m,
+                            GiaNiemYet = 90000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 12,
+                            MaNhaXuatBan = 1,
+                            MaSach = 10,
+                            NamXuatBan = 2010,
+                            TonKho = 55,
+                            TongSoDaBan = 40
+                        },
+                        new
+                        {
+                            ISBN = "978-604-56-7890-1",
+                            DonGiaBan = 145000m,
+                            GiaNiemYet = 150000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 5,
+                            MaNhaXuatBan = 8,
+                            MaSach = 11,
+                            NamXuatBan = 2021,
+                            TonKho = 70,
+                            TongSoDaBan = 20
+                        },
+                        new
+                        {
+                            ISBN = "978-604-56-7891-8",
+                            DonGiaBan = 175000m,
+                            GiaNiemYet = 180000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 3,
+                            MaNhaXuatBan = 8,
+                            MaSach = 12,
+                            NamXuatBan = 2022,
+                            TonKho = 40,
+                            TongSoDaBan = 15
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-23456-7",
+                            DonGiaBan = 79000m,
+                            GiaNiemYet = 79000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 20,
+                            MaNhaXuatBan = 1,
+                            MaSach = 13,
+                            NamXuatBan = 2020,
+                            TonKho = 200,
+                            TongSoDaBan = 150
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-34567-8",
+                            DonGiaBan = 130000m,
+                            GiaNiemYet = 135000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 10,
+                            MaNhaXuatBan = 1,
+                            MaSach = 14,
+                            NamXuatBan = 2018,
+                            TonKho = 90,
+                            TongSoDaBan = 60
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-45678-9",
+                            DonGiaBan = 135000m,
+                            GiaNiemYet = 140000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 8,
+                            MaNhaXuatBan = 1,
+                            MaSach = 15,
+                            NamXuatBan = 2019,
+                            TonKho = 85,
+                            TongSoDaBan = 55
+                        },
+                        new
+                        {
+                            ISBN = "978-604-2-11111-1",
+                            DonGiaBan = 20000m,
+                            GiaNiemYet = 20000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 30,
+                            MaNhaXuatBan = 3,
+                            MaSach = 16,
+                            NamXuatBan = 2023,
+                            TonKho = 500,
+                            TongSoDaBan = 200
+                        },
+                        new
+                        {
+                            ISBN = "978-604-2-11111-2",
+                            DonGiaBan = 20000m,
+                            GiaNiemYet = 20000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 30,
+                            MaNhaXuatBan = 3,
+                            MaSach = 17,
+                            NamXuatBan = 2023,
+                            TonKho = 480,
+                            TongSoDaBan = 190
+                        },
+                        new
+                        {
+                            ISBN = "978-604-2-22222-1",
+                            DonGiaBan = 22000m,
+                            GiaNiemYet = 22000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 25,
+                            MaNhaXuatBan = 3,
+                            MaSach = 18,
+                            NamXuatBan = 2022,
+                            TonKho = 300,
+                            TongSoDaBan = 100
+                        },
+                        new
+                        {
+                            ISBN = "978-604-2-22222-2",
+                            DonGiaBan = 22000m,
+                            GiaNiemYet = 22000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 25,
+                            MaNhaXuatBan = 3,
+                            MaSach = 19,
+                            NamXuatBan = 2022,
+                            TonKho = 290,
+                            TongSoDaBan = 95
+                        },
+                        new
+                        {
+                            ISBN = "978-604-4-33333-1",
+                            DonGiaBan = 80000m,
+                            GiaNiemYet = 85000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 15,
+                            MaNhaXuatBan = 4,
+                            MaSach = 20,
+                            NamXuatBan = 2021,
+                            TonKho = 150,
+                            TongSoDaBan = 80
+                        },
+                        new
+                        {
+                            ISBN = "978-604-4-33333-2",
+                            DonGiaBan = 70000m,
+                            GiaNiemYet = 75000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 10,
+                            MaNhaXuatBan = 4,
+                            MaSach = 21,
+                            NamXuatBan = 2020,
+                            TonKho = 120,
+                            TongSoDaBan = 50
+                        },
+                        new
+                        {
+                            ISBN = "978-604-4-33333-3",
+                            DonGiaBan = 90000m,
+                            GiaNiemYet = 95000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 8,
+                            MaNhaXuatBan = 4,
+                            MaSach = 22,
+                            NamXuatBan = 2019,
+                            TonKho = 60,
+                            TongSoDaBan = 30
+                        },
+                        new
+                        {
+                            ISBN = "978-604-4-33333-4",
+                            DonGiaBan = 115000m,
+                            GiaNiemYet = 120000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 2,
+                            MaNhaXuatBan = 4,
+                            MaSach = 23,
+                            NamXuatBan = 2022,
+                            TonKho = 80,
+                            TongSoDaBan = 20
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-55555-1",
+                            DonGiaBan = 85000m,
+                            GiaNiemYet = 85000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 12,
+                            MaNhaXuatBan = 1,
+                            MaSach = 24,
+                            NamXuatBan = 2017,
+                            TonKho = 100,
+                            TongSoDaBan = 150
+                        },
+                        new
+                        {
+                            ISBN = "978-604-1-55555-2",
+                            DonGiaBan = 75000m,
+                            GiaNiemYet = 75000m,
+                            HinhThucBia = "Bìa mềm",
+                            LanTaiBan = 15,
+                            MaNhaXuatBan = 1,
+                            MaSach = 25,
+                            NamXuatBan = 2016,
+                            TonKho = 90,
+                            TongSoDaBan = 140
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhieuNhapSach", b =>
@@ -687,8 +1806,9 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NguoiTao")
-                        .HasColumnType("int");
+                    b.Property<string>("NguoiTao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TongTien")
                         .HasColumnType("decimal(18,2)");
@@ -698,6 +1818,24 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaNhaCungCap");
 
                     b.ToTable("PhieuNhapSach");
+
+                    b.HasData(
+                        new
+                        {
+                            MaPhieuNhapSach = 1,
+                            MaNhaCungCap = 1,
+                            NgayTao = new DateTime(2024, 3, 1, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "admin",
+                            TongTien = 22000000m
+                        },
+                        new
+                        {
+                            MaPhieuNhapSach = 2,
+                            MaNhaCungCap = 2,
+                            NgayTao = new DateTime(2024, 4, 15, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "hungng",
+                            TongTien = 3000000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhieuThuTien", b =>
@@ -714,8 +1852,9 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NguoiTao")
-                        .HasColumnType("int");
+                    b.Property<string>("NguoiTao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("SoTienThu")
                         .HasColumnType("decimal(18,2)");
@@ -725,6 +1864,16 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaKhachHang");
 
                     b.ToTable("PhieuThuTien");
+
+                    b.HasData(
+                        new
+                        {
+                            MaPhieuThuTien = 1,
+                            MaKhachHang = 2,
+                            NgayTao = new DateTime(2024, 5, 5, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "phunlv",
+                            SoTienThu = 100000m
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.Sach", b =>
@@ -734,6 +1883,10 @@ namespace Bookstore.API.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaSach"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaTheLoai")
                         .HasColumnType("int");
@@ -751,6 +1904,208 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaTheLoai");
 
                     b.ToTable("Sach");
+
+                    b.HasData(
+                        new
+                        {
+                            MaSach = 1,
+                            ImageUrl = "/Assets/Images/cleancode.jpg",
+                            MaTheLoai = 1,
+                            MoTa = "Sách gối đầu giường của mọi Dev",
+                            TenSach = "Clean Code"
+                        },
+                        new
+                        {
+                            MaSach = 2,
+                            ImageUrl = "/Assets/Images/refactoring.jpg",
+                            MaTheLoai = 1,
+                            MoTa = "Cải thiện thiết kế code cũ",
+                            TenSach = "Refactoring"
+                        },
+                        new
+                        {
+                            MaSach = 3,
+                            ImageUrl = "/Assets/Images/designpatterns.jpg",
+                            MaTheLoai = 1,
+                            MoTa = "Các mẫu thiết kế chuẩn GOF",
+                            TenSach = "Design Patterns"
+                        },
+                        new
+                        {
+                            MaSach = 4,
+                            ImageUrl = "/Assets/Images/cleancoder.jpg",
+                            MaTheLoai = 1,
+                            MoTa = "Quy tắc hành nghề coder chuyên nghiệp",
+                            TenSach = "The Clean Coder"
+                        },
+                        new
+                        {
+                            MaSach = 5,
+                            ImageUrl = "/Assets/Images/300baicode.jpg",
+                            MaTheLoai = 1,
+                            MoTa = "Học xong code bao lương 3 ngàn đô",
+                            TenSach = "300 Bài Code Thiếu Nhi"
+                        },
+                        new
+                        {
+                            MaSach = 6,
+                            ImageUrl = "/Assets/Images/matbiec.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Truyện dài cực hay, tình yêu đau đớn của Ngạn",
+                            TenSach = "Mắt Biếc"
+                        },
+                        new
+                        {
+                            MaSach = 7,
+                            ImageUrl = "/Assets/Images/vetuoitho.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Ký ức tuổi thơ dữ dội",
+                            TenSach = "Cho Tôi Xin Một Vé Đi Tuổi Thơ"
+                        },
+                        new
+                        {
+                            MaSach = 8,
+                            ImageUrl = "/Assets/Images/sodo.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Hành trình thăng tiến của Xuân Tóc Đỏ",
+                            TenSach = "Số Đỏ"
+                        },
+                        new
+                        {
+                            MaSach = 9,
+                            ImageUrl = "/Assets/Images/chipheo.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Tuyển tập truyện ngắn Nam Cao",
+                            TenSach = "Chí Phèo"
+                        },
+                        new
+                        {
+                            MaSach = 10,
+                            ImageUrl = "/Assets/Images/canhdongbattan.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Nỗi đau trên miền sông nước",
+                            TenSach = "Cánh Đồng Bất Tận"
+                        },
+                        new
+                        {
+                            MaSach = 11,
+                            ImageUrl = "/Assets/Images/rungnauy.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Tiểu thuyết nổi tiếng của Haruki Murakami",
+                            TenSach = "Rừng Na Uy"
+                        },
+                        new
+                        {
+                            MaSach = 12,
+                            ImageUrl = "/Assets/Images/kafka.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Chuyến phiêu lưu kỳ bí",
+                            TenSach = "Kafka Bên Bờ Biển"
+                        },
+                        new
+                        {
+                            MaSach = 13,
+                            ImageUrl = "/Assets/Images/nhagiakim.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Hành trình đi tìm kho báu của Santiago",
+                            TenSach = "Nhà Giả Kim"
+                        },
+                        new
+                        {
+                            MaSach = 14,
+                            ImageUrl = "/Assets/Images/harrypotter1.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Khởi đầu thế giới phép thuật",
+                            TenSach = "Harry Potter và Hòn Đá Phù Thủy"
+                        },
+                        new
+                        {
+                            MaSach = 15,
+                            ImageUrl = "/Assets/Images/harrypotter2.jpg",
+                            MaTheLoai = 2,
+                            MoTa = "Năm học thứ hai tại Hogwarts",
+                            TenSach = "Harry Potter và Phòng Chứa Bí Mật"
+                        },
+                        new
+                        {
+                            MaSach = 16,
+                            ImageUrl = "/Assets/Images/doraemon1.jpg",
+                            MaTheLoai = 6,
+                            MoTa = "Mèo máy đến từ tương lai",
+                            TenSach = "Doraemon Tập 1"
+                        },
+                        new
+                        {
+                            MaSach = 17,
+                            ImageUrl = "/Assets/Images/doraemon2.jpg",
+                            MaTheLoai = 6,
+                            MoTa = "Những bảo bối thần kỳ",
+                            TenSach = "Doraemon Tập 2"
+                        },
+                        new
+                        {
+                            MaSach = 18,
+                            ImageUrl = "/Assets/Images/conan1.jpg",
+                            MaTheLoai = 6,
+                            MoTa = "Sự khởi đầu của thám tử teo nhỏ",
+                            TenSach = "Conan Tập 1"
+                        },
+                        new
+                        {
+                            MaSach = 19,
+                            ImageUrl = "/Assets/Images/conan2.jpg",
+                            MaTheLoai = 6,
+                            MoTa = "Vụ án mới",
+                            TenSach = "Conan Tập 2"
+                        },
+                        new
+                        {
+                            MaSach = 20,
+                            ImageUrl = "/Assets/Images/dacnhantam.jpg",
+                            MaTheLoai = 4,
+                            MoTa = "Sách kỹ năng giao tiếp hay nhất",
+                            TenSach = "Đắc Nhân Tâm"
+                        },
+                        new
+                        {
+                            MaSach = 21,
+                            ImageUrl = "/Assets/Images/quangganhlo.jpg",
+                            MaTheLoai = 4,
+                            MoTa = "Nghệ thuật sống hạnh phúc",
+                            TenSach = "Quẳng Gánh Lo Đi Và Vui Sống"
+                        },
+                        new
+                        {
+                            MaSach = 22,
+                            ImageUrl = "/Assets/Images/gian.jpg",
+                            MaTheLoai = 4,
+                            MoTa = "Làm chủ cảm xúc",
+                            TenSach = "Giận"
+                        },
+                        new
+                        {
+                            MaSach = 23,
+                            ImageUrl = "/Assets/Images/thienac.jpg",
+                            MaTheLoai = 4,
+                            MoTa = "Tâm lý học trên mạng xã hội",
+                            TenSach = "Thiện, Ác và Smartphone"
+                        },
+                        new
+                        {
+                            MaSach = 24,
+                            ImageUrl = "/Assets/Images/trenduongbang.jpg",
+                            MaTheLoai = 3,
+                            MoTa = "Khởi nghiệp và kinh doanh",
+                            TenSach = "Trên Đường Băng"
+                        },
+                        new
+                        {
+                            MaSach = 25,
+                            ImageUrl = "/Assets/Images/caphecungtony.jpg",
+                            MaTheLoai = 3,
+                            MoTa = "Chuyện đời chuyện nghề",
+                            TenSach = "Cà Phê Cùng Tony"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.TacGia", b =>
@@ -768,6 +2123,93 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaTacGia");
 
                     b.ToTable("TacGia");
+
+                    b.HasData(
+                        new
+                        {
+                            MaTacGia = 1,
+                            TenTacGia = "Robert C. Martin"
+                        },
+                        new
+                        {
+                            MaTacGia = 2,
+                            TenTacGia = "Martin Fowler"
+                        },
+                        new
+                        {
+                            MaTacGia = 3,
+                            TenTacGia = "Erich Gamma"
+                        },
+                        new
+                        {
+                            MaTacGia = 4,
+                            TenTacGia = "Nguyễn Nhật Ánh"
+                        },
+                        new
+                        {
+                            MaTacGia = 5,
+                            TenTacGia = "Vũ Trọng Phụng"
+                        },
+                        new
+                        {
+                            MaTacGia = 6,
+                            TenTacGia = "Nam Cao"
+                        },
+                        new
+                        {
+                            MaTacGia = 7,
+                            TenTacGia = "Nguyễn Ngọc Tư"
+                        },
+                        new
+                        {
+                            MaTacGia = 8,
+                            TenTacGia = "Haruki Murakami"
+                        },
+                        new
+                        {
+                            MaTacGia = 9,
+                            TenTacGia = "Paulo Coelho"
+                        },
+                        new
+                        {
+                            MaTacGia = 10,
+                            TenTacGia = "J.K. Rowling"
+                        },
+                        new
+                        {
+                            MaTacGia = 11,
+                            TenTacGia = "Fujiko F. Fujio"
+                        },
+                        new
+                        {
+                            MaTacGia = 12,
+                            TenTacGia = "Aoyama Gosho"
+                        },
+                        new
+                        {
+                            MaTacGia = 13,
+                            TenTacGia = "Dale Carnegie"
+                        },
+                        new
+                        {
+                            MaTacGia = 14,
+                            TenTacGia = "Thích Nhất Hạnh"
+                        },
+                        new
+                        {
+                            MaTacGia = 15,
+                            TenTacGia = "Nguyễn Hiến Lê"
+                        },
+                        new
+                        {
+                            MaTacGia = 16,
+                            TenTacGia = "Đặng Hoàng Giang"
+                        },
+                        new
+                        {
+                            MaTacGia = 17,
+                            TenTacGia = "Tony Buổi Sáng"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.TacGia_Sach", b =>
@@ -783,6 +2225,133 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaSach");
 
                     b.ToTable("TacGia_Sach");
+
+                    b.HasData(
+                        new
+                        {
+                            MaTacGia = 1,
+                            MaSach = 1
+                        },
+                        new
+                        {
+                            MaTacGia = 2,
+                            MaSach = 2
+                        },
+                        new
+                        {
+                            MaTacGia = 3,
+                            MaSach = 3
+                        },
+                        new
+                        {
+                            MaTacGia = 1,
+                            MaSach = 4
+                        },
+                        new
+                        {
+                            MaTacGia = 1,
+                            MaSach = 5
+                        },
+                        new
+                        {
+                            MaTacGia = 4,
+                            MaSach = 6
+                        },
+                        new
+                        {
+                            MaTacGia = 4,
+                            MaSach = 7
+                        },
+                        new
+                        {
+                            MaTacGia = 5,
+                            MaSach = 8
+                        },
+                        new
+                        {
+                            MaTacGia = 6,
+                            MaSach = 9
+                        },
+                        new
+                        {
+                            MaTacGia = 7,
+                            MaSach = 10
+                        },
+                        new
+                        {
+                            MaTacGia = 8,
+                            MaSach = 11
+                        },
+                        new
+                        {
+                            MaTacGia = 8,
+                            MaSach = 12
+                        },
+                        new
+                        {
+                            MaTacGia = 9,
+                            MaSach = 13
+                        },
+                        new
+                        {
+                            MaTacGia = 10,
+                            MaSach = 14
+                        },
+                        new
+                        {
+                            MaTacGia = 10,
+                            MaSach = 15
+                        },
+                        new
+                        {
+                            MaTacGia = 11,
+                            MaSach = 16
+                        },
+                        new
+                        {
+                            MaTacGia = 11,
+                            MaSach = 17
+                        },
+                        new
+                        {
+                            MaTacGia = 12,
+                            MaSach = 18
+                        },
+                        new
+                        {
+                            MaTacGia = 12,
+                            MaSach = 19
+                        },
+                        new
+                        {
+                            MaTacGia = 13,
+                            MaSach = 20
+                        },
+                        new
+                        {
+                            MaTacGia = 13,
+                            MaSach = 21
+                        },
+                        new
+                        {
+                            MaTacGia = 14,
+                            MaSach = 22
+                        },
+                        new
+                        {
+                            MaTacGia = 16,
+                            MaSach = 23
+                        },
+                        new
+                        {
+                            MaTacGia = 17,
+                            MaSach = 24
+                        },
+                        new
+                        {
+                            MaTacGia = 17,
+                            MaSach = 25
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.ThamSo", b =>
@@ -796,6 +2365,58 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("TenThamSo");
 
                     b.ToTable("ThamSo");
+
+                    b.HasData(
+                        new
+                        {
+                            TenThamSo = "TiLeTinhdonGiaBan",
+                            GiaTri = 110
+                        },
+                        new
+                        {
+                            TenThamSo = "SoLuongNhapToiThieu",
+                            GiaTri = 150
+                        },
+                        new
+                        {
+                            TenThamSo = "SoLuongTonToiDaCoTheNhap",
+                            GiaTri = 300
+                        },
+                        new
+                        {
+                            TenThamSo = "SoLuongUuDaiToiThieu",
+                            GiaTri = 1
+                        },
+                        new
+                        {
+                            TenThamSo = "SoLuongUuDaiToiDa",
+                            GiaTri = 200
+                        },
+                        new
+                        {
+                            TenThamSo = "CoKhoangachCacKhoangGia",
+                            GiaTri = 1
+                        },
+                        new
+                        {
+                            TenThamSo = "ChoPhepKetThucUuDai",
+                            GiaTri = 1
+                        },
+                        new
+                        {
+                            TenThamSo = "SoLuongTonToiThieu",
+                            GiaTri = 20
+                        },
+                        new
+                        {
+                            TenThamSo = "ThueVAT",
+                            GiaTri = 8
+                        },
+                        new
+                        {
+                            TenThamSo = "TienThuLonHonNo",
+                            GiaTri = 1
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.TheLoai", b =>
@@ -813,6 +2434,58 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaTheLoai");
 
                     b.ToTable("TheLoai");
+
+                    b.HasData(
+                        new
+                        {
+                            MaTheLoai = 1,
+                            TenTheLoai = "Công nghệ thông tin"
+                        },
+                        new
+                        {
+                            MaTheLoai = 2,
+                            TenTheLoai = "Văn học nghệ thuật"
+                        },
+                        new
+                        {
+                            MaTheLoai = 3,
+                            TenTheLoai = "Kinh tế - Quản trị"
+                        },
+                        new
+                        {
+                            MaTheLoai = 4,
+                            TenTheLoai = "Tâm lý - Kỹ năng sống"
+                        },
+                        new
+                        {
+                            MaTheLoai = 5,
+                            TenTheLoai = "Thiếu nhi"
+                        },
+                        new
+                        {
+                            MaTheLoai = 6,
+                            TenTheLoai = "Truyện tranh"
+                        },
+                        new
+                        {
+                            MaTheLoai = 7,
+                            TenTheLoai = "Ngoại ngữ"
+                        },
+                        new
+                        {
+                            MaTheLoai = 8,
+                            TenTheLoai = "Lịch sử - Địa lý"
+                        },
+                        new
+                        {
+                            MaTheLoai = 9,
+                            TenTheLoai = "Khoa học - Kỹ thuật"
+                        },
+                        new
+                        {
+                            MaTheLoai = 10,
+                            TenTheLoai = "Sách giáo khoa - Tham khảo"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.UuDai", b =>
@@ -845,8 +2518,9 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NguoiTao")
-                        .HasColumnType("int");
+                    b.Property<string>("NguoiTao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SoLuongDaDung")
                         .HasColumnType("int");
@@ -865,6 +2539,68 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaLoaiUuDai");
 
                     b.ToTable("UuDai");
+
+                    b.HasData(
+                        new
+                        {
+                            MaUuDai = 1,
+                            CoTheSuDung = true,
+                            MaLoaiKhachHang = 1,
+                            MaLoaiUuDai = 1,
+                            MoTa = "Chương trình kích cầu",
+                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "admin",
+                            SoLuongDaDung = 0,
+                            SoLuongToiDa = 1000,
+                            TenUuDai = "Giảm 10% Hóa đơn > 500k"
+                        },
+                        new
+                        {
+                            MaUuDai = 2,
+                            CoTheSuDung = true,
+                            MaLoaiKhachHang = 2,
+                            MaLoaiUuDai = 2,
+                            MoTa = "Tri ân khách VIP",
+                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "quanlh",
+                            SoLuongDaDung = 0,
+                            SoLuongToiDa = 50,
+                            TenUuDai = "Hóa đơn 1Tr tặng Đắc Nhân Tâm"
+                        },
+                        new
+                        {
+                            MaUuDai = 3,
+                            CoTheSuDung = true,
+                            MaLoaiKhachHang = 1,
+                            MaLoaiUuDai = 3,
+                            MoTa = "Sale sách Hot",
+                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "hungng",
+                            SoLuongDaDung = 0,
+                            SoLuongToiDa = 200,
+                            TenUuDai = "Giảm 20k Mắt Biếc"
+                        },
+                        new
+                        {
+                            MaUuDai = 4,
+                            CoTheSuDung = true,
+                            MaLoaiKhachHang = 1,
+                            MaLoaiUuDai = 4,
+                            MoTa = "Đồng hành cùng IT",
+                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NguoiTao = "sonph",
+                            SoLuongDaDung = 0,
+                            SoLuongToiDa = 100,
+                            TenUuDai = "Combo Dev: Mua 2 tặng 1"
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.UuDai_SachDieuKien", b =>
@@ -883,6 +2619,20 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("ISBN");
 
                     b.ToTable("UuDai_SachDieuKien");
+
+                    b.HasData(
+                        new
+                        {
+                            MaUuDai = 3,
+                            ISBN = "978-604-1-09887-1",
+                            SoLuongMua = 1
+                        },
+                        new
+                        {
+                            MaUuDai = 4,
+                            ISBN = "978-0132350884",
+                            SoLuongMua = 2
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.UuDai_SachTang", b =>
@@ -901,6 +2651,20 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("ISBN");
 
                     b.ToTable("UuDai_SachTang");
+
+                    b.HasData(
+                        new
+                        {
+                            MaUuDai = 2,
+                            ISBN = "978-604-4-33333-1",
+                            SoLuongTang = 1
+                        },
+                        new
+                        {
+                            MaUuDai = 4,
+                            ISBN = "978-604-MEME-01",
+                            SoLuongTang = 1
+                        });
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CTUD_HoaDon_Giam", b =>
@@ -1013,8 +2777,7 @@ namespace Bookstore.API.Data.Migrations
                     b.HasOne("Bookstore.API.Models.PhienBanSach", null)
                         .WithMany()
                         .HasForeignKey("ISBN")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Bookstore.API.Models.HoaDon", null)
                         .WithMany()
@@ -1040,26 +2803,32 @@ namespace Bookstore.API.Data.Migrations
 
             modelBuilder.Entity("Bookstore.API.Models.NguoiDung", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.NhomNguoiDung", null)
-                        .WithMany()
+                    b.HasOne("Bookstore.API.Models.NhomNguoiDung", "NhomNguoiDung")
+                        .WithMany("NguoiDungs")
                         .HasForeignKey("MaNhomNguoiDung")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("NhomNguoiDung");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhanQuyen", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.ChucNang", null)
-                        .WithMany()
+                    b.HasOne("Bookstore.API.Models.ChucNang", "ChucNang")
+                        .WithMany("PhanQuyens")
                         .HasForeignKey("MaChucNang")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.NhomNguoiDung", null)
-                        .WithMany()
+                    b.HasOne("Bookstore.API.Models.NhomNguoiDung", "NhomNguoiDung")
+                        .WithMany("PhanQuyens")
                         .HasForeignKey("MaNhomNguoiDung")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ChucNang");
+
+                    b.Navigation("NhomNguoiDung");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhienBanSach", b =>
@@ -1162,6 +2931,18 @@ namespace Bookstore.API.Data.Migrations
                         .HasForeignKey("MaUuDai")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Bookstore.API.Models.ChucNang", b =>
+                {
+                    b.Navigation("PhanQuyens");
+                });
+
+            modelBuilder.Entity("Bookstore.API.Models.NhomNguoiDung", b =>
+                {
+                    b.Navigation("NguoiDungs");
+
+                    b.Navigation("PhanQuyens");
                 });
 #pragma warning restore 612, 618
         }

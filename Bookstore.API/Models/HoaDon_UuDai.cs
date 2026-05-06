@@ -10,7 +10,7 @@ namespace Bookstore.API.Models
         public int MaCT_HoaDon_UuDai { get; set; }
         public int MaHoaDon { get; set; }
         public int MaUuDai { get; set; }
-        public required string ISBN { get; set; }
+        public string? ISBN { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal SoTienGiam { get; set; }
         public int GetID() => MaCT_HoaDon_UuDai;
 

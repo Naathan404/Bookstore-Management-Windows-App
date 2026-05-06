@@ -11,5 +11,7 @@ namespace Bookstore.API.Models
         public int MaTheLoai { get; set; }
         public string MoTa { get; set; } = string.Empty;
         public int GetID() => MaSach;
+
+        public string ImageUrl { get; set; } = "/Resources/Images/Books/default_book_cover.jpg";
     }
 }

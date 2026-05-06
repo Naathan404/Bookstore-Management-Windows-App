@@ -3,33 +3,71 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Bookstore.WPF.Views"
+        xmlns:views="clr-namespace:Bookstore.WPF.Views"
+        xmlns:viewmodels="clr-namespace:Bookstore.WPF.ViewModels"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Sahara Bookstore - Quản lý Nhà Sách" Height="768" Width="1366"
         WindowStartupLocation="CenterScreen"
         Background="#F4F7FE">
 
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:SaleViewModel}">
+            <views:SaleView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:SupplierViewModel}">
+            <views:SupplierView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:ProductViewModel}">
+            <views:ProductView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:CustomerViewModel}">
+            <views:CustomerView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:ImportViewModel}">
+            <views:ImportView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:PromotionViewModel}">
+            <views:PromotionView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:ReportViewModel }">
+            <views:ReportView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:AccountViewModel}">
+            <views:AccountView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:SettingViewModel}">
+            <views:SettingView />
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <!--cột trái-->
-        <Border Grid.Column="0" Background="White">
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.05" ShadowDepth="0"/>
-            </Border.Effect>
 
-            <local:SidebarView />
-        </Border>
         
         <!--cột phải-->
-        <Border Grid.Column="1" Margin="20" Background="White" CornerRadius="15">
+        <Border Grid.Column="1" Margin="5" Background="White" CornerRadius="15">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.02" ShadowDepth="5"/>
             </Border.Effect>
 
+            <ContentControl Content="{Binding CurrentView}" Margin="10"/>
+            <!--
             <Grid>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <materialDesign:PackIcon Kind="BookEducationOutline" Width="100" Height="100" 
@@ -40,6 +78,16 @@
                                FontSize="16" Foreground="#A3AED0" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                 </StackPanel>
             </Grid>
+            -->
+        </Border>
+
+        <!--cột trái-->
+        <Border Grid.Column="0" Margin="0 5 0 5" Background="White">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.05" ShadowDepth="0"/>
+            </Border.Effect>
+
+            <views:SidebarView DataContext="{Binding SidebarVM}" />
         </Border>
     </Grid>
 </Window>
