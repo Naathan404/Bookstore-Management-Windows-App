@@ -1,15 +1,13 @@
 ﻿using Bookstore.Share.DTOs;
 using Bookstore.WPF.Services;
-using Bookstore.WPF.Utils;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Windows;
 using System.Windows.Input;
+using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -37,7 +35,8 @@ namespace Bookstore.WPF.ViewModels
         private string _selectedTheLoai;
         public string SelectedTheLoai { get => _selectedTheLoai; set { _selectedTheLoai = value; OnPropertyChanged(); PerformSearch(); } }
 
-        // Thêm các property cho Giá và Số lượng tương tự nếu cần...
+        // NOTE Để bổ sung các properties còn thíu
+
         #endregion
 
         #region Properties - Phân Trang
@@ -65,6 +64,15 @@ namespace Bookstore.WPF.ViewModels
         public BookItem EditingBook { get => _editingBook; set { _editingBook = value; OnPropertyChanged(); } }
 
         private bool _isAddingNew;
+        public bool IsAddingNew
+        {
+            get { return _isAddingNew; }
+            set
+            {
+                _isAddingNew = value;
+                OnPropertyChanged(nameof(IsAddingNew));
+            }
+        }
         #endregion
 
         #region Commands
@@ -108,6 +116,7 @@ namespace Bookstore.WPF.ViewModels
                 _isAddingNew = true;
                 EditingBook = new BookItem { HinhAnh = "/Resources/Images/Books/default_book_cover.jpg", GiaNiemYet = 0, DonGiaBan = 0, SoLuongTonKho = 0, TongDaBan = 0 };
                 IsPopupVisible = Visibility.Visible;
+                IsAddingNew = true;
             });
 
             //OpenEditPopupCommand = new RelayCommand<BookItem>((book) =>
@@ -142,8 +151,6 @@ namespace Bookstore.WPF.ViewModels
                 PopupIcon = PackIconKind.BookEdit;
                 _isAddingNew = false;
 
-                // PHÉP MÀU LÀ Ở ĐÂY:
-                // Tui tạo một object EditingBook mới và copy data từ dòng DataGrid sang.
                 EditingBook = new BookItem
                 {
                     Id = book.Id,
@@ -155,16 +162,21 @@ namespace Bookstore.WPF.ViewModels
                     DonGiaBan = book.DonGiaBan,
                     SoLuongTonKho = book.SoLuongTonKho,
                     TongDaBan = book.TongDaBan,
-                    HinhAnh = book.HinhAnh
+                    HinhAnh = book.HinhAnh,
+                    ISBN = book.ISBN,
+                    NamXuatBan = book.NamXuatBan,
+                    NhaXuatBan = book.NhaXuatBan,
+                    HinhThucBia = book.HinhThucBia
                 };
 
                 // Mở popup lên
                 IsPopupVisible = Visibility.Visible;
+                IsAddingNew = false;
             });
 
             ClosePopupCommand = new RelayCommand<object>((p) => IsPopupVisible = Visibility.Collapsed);
 
-            SaveBookCommand = new RelayCommand<object>((p) =>
+            SaveBookCommand = new RelayCommand<object>(async (p) =>
             {
                 if (string.IsNullOrWhiteSpace(EditingBook.TenSach))
                 {
@@ -172,28 +184,36 @@ namespace Bookstore.WPF.ViewModels
                     return;
                 }
 
-                if (_isAddingNew)
+                try
                 {
-                    EditingBook.Id = _allBooks.Count > 0 ? _allBooks.Max(b => b.Id) + 1 : 1;
-                    _allBooks.Insert(0, EditingBook); // Thêm lên đầu
-                }
-                else
-                {
-                    var bookInDb = _allBooks.FirstOrDefault(b => b.Id == EditingBook.Id);
-                    if (bookInDb != null)
+                    bool isSuccess = false;
+
+                    if (_isAddingNew)
                     {
-                        bookInDb.TenSach = EditingBook.TenSach;
-                        bookInDb.TacGia = EditingBook.TacGia;
-                        bookInDb.TheLoai = EditingBook.TheLoai;
-                        bookInDb.MoTa = EditingBook.MoTa;
-                        bookInDb.GiaNiemYet = EditingBook.GiaNiemYet;
-                        bookInDb.DonGiaBan = EditingBook.DonGiaBan;
-                        bookInDb.HinhAnh = EditingBook.HinhAnh;
+                        // API POST 
+                        isSuccess = await ApiClient.PostAndCheckSuccessAsync("api/Sach", EditingBook);
+                    }
+                    else
+                    {
+                        // API PUT 
+                        isSuccess = await ApiClient.PutAndCheckSuccessAsync($"api/Sach/{EditingBook.Id}", EditingBook);
+                    }
+
+                    if (isSuccess)
+                    {
+                        MessageBox.Show("Lưu thông tin sách thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        IsPopupVisible = Visibility.Collapsed;
+                        _ = LoadDataAsync();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Lưu thất bại! Hãy kiểm tra lại API hoặc kết nối.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
-
-                IsPopupVisible = Visibility.Collapsed;
-                PerformSearch();
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi kết nối: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             });
 
             DeleteBookCommand = new RelayCommand<BookItem>((book) =>
@@ -278,57 +298,43 @@ namespace Bookstore.WPF.ViewModels
         {
             try
             {
-                // cal api
-                using (var client = new HttpClient())
+                // Nhờ ApiClient, gọi API giờ chỉ còn đúng 1 dòng này!
+                var danhSachTuApi = await ApiClient.GetAsync<List<SachDTO>>("api/Sach");
+
+                if (danhSachTuApi != null)
                 {
-                    // ⚠️ QUAN TRỌNG: Sửa lại cái cổng (port) 7123 này cho khớp với port của Backend ông đang chạy
-                    client.BaseAddress = new Uri("https://localhost:7001/");
-
-                    // Gọi API GET: api/Sach (Hoặc api/Sach/method-syntax nếu ông xài hàm dưới)
-                    var danhSachTuApi = await client.GetFromJsonAsync<List<SachDTO>>("api/Sach");
-
-                    if (danhSachTuApi != null)
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        // Vì ObservableCollection thay đổi giao diện, đôi khi tải ngầm cần đưa về luồng chính (UI Thread)
-                        Application.Current.Dispatcher.Invoke(() =>
+                        _allBooks.Clear();
+                        int stt = 1;
+                        foreach (var item in danhSachTuApi)
                         {
-                            _allBooks.Clear(); // Dọn dẹp rác cũ
-
-                            int stt = 1;
-                            foreach (var item in danhSachTuApi)
+                            _allBooks.Add(new BookItem
                             {
-                                _allBooks.Add(new BookItem
-                                {
-                                    Id = item.Id,
-                                    STT = stt++,
-                                    TenSach = item.TenSach,
-                                    TacGia = item.TacGia,
-                                    TheLoai = item.TheLoai,
-                                    MoTa = item.MoTa,
-                                    SoLuongTonKho = item.SoLuongTonKho,
-                                    TongDaBan = item.TongDaBan,
-                                    GiaNiemYet = item.GiaNiemYet,
-                                    DonGiaBan = item.DonGiaBan,
-                                    // Nếu API không có hình, fallback về hình mặc định để UI không bị trống
-                                    HinhAnh = string.IsNullOrEmpty(item.HinhAnh) ? "/Resources/Images/Books/default_book_cover.jpg" : item.HinhAnh
-                                });
-                            }
-
-                            // Kéo data xong thì gọi hàm này để chia trang và render lên UI
-                            PerformSearch();
-                        });
-                    }
+                                Id = item.Id,
+                                STT = stt++,
+                                TenSach = item.TenSach,
+                                TacGia = item.TacGia,
+                                TheLoai = item.TheLoai,
+                                MoTa = item.MoTa,
+                                SoLuongTonKho = item.SoLuongTonKho,
+                                TongDaBan = item.TongDaBan,
+                                GiaNiemYet = item.GiaNiemYet,
+                                DonGiaBan = item.DonGiaBan,
+                                HinhAnh = string.IsNullOrEmpty(item.HinhAnh) ? "/Resources/Images/Books/default_book_cover.jpg" : item.HinhAnh,
+                                ISBN = item.ISBN,
+                                NamXuatBan = item.NamXuatBan,
+                                NhaXuatBan = item.NhaXuatBan,
+                                HinhThucBia = item.HinhThucBia
+                            });
+                        }
+                        PerformSearch();
+                    });
                 }
-            }
-            catch (HttpRequestException httpEx)
-            {
-                MessageBox.Show($"Không thể kết nối đến Backend. Ông đã bật project API chưa?\nChi tiết: {httpEx.Message}",
-                                "Lỗi kết nối", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải dữ liệu sách: {ex.Message}",
-                                "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Lỗi khi tải dữ liệu sách: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -336,44 +342,30 @@ namespace Bookstore.WPF.ViewModels
         {
             try
             {
-                using (var client = new HttpClient())
+                var danhSachTheLoai = await ApiClient.GetAsync<List<string>>("api/TheLoai");
+
+                if (danhSachTheLoai != null)
                 {
-                    // ⚠️ Nhớ đổi port 7123 này giống với port API của ông nha
-                    client.BaseAddress = new Uri("https://localhost:7001/");
-
-                    // Gọi API lấy mảng string các tên thể loại
-                    var danhSachTheLoai = await client.GetFromJsonAsync<List<string>>("api/TheLoai");
-
-                    if (danhSachTheLoai != null)
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
+                        ListTheLoai.Clear();
+                        ListTheLoai.Add("Tất cả");
+
+                        foreach (var tl in danhSachTheLoai)
                         {
-                            ListTheLoai.Clear();
-
-                            // Thêm phần tử "Tất cả" lên đầu tiên để dùng cho bộ lọc Tìm kiếm
-                            ListTheLoai.Add("Tất cả");
-
-                            // Đổ dữ liệu từ DB vào
-                            foreach (var tl in danhSachTheLoai)
-                            {
-                                ListTheLoai.Add(tl);
-                            }
-
-                            // Reset lại giá trị hiển thị mặc định
-                            SelectedTheLoai = "Tất cả";
-                        });
-                    }
+                            ListTheLoai.Add(tl);
+                        }
+                        SelectedTheLoai = "Tất cả";
+                    });
                 }
             }
             catch (Exception ex)
             {
-                // Có thể in ra Console hoặc để trống để app không bị crash nếu API lỗi
                 System.Diagnostics.Debug.WriteLine($"Lỗi tải thể loại: {ex.Message}");
             }
         }
     }
 
-    // Class Model: Kế thừa BaseViewModel để tự động update UI khi đổi hình ảnh, chữ,...
     public class BookItem : BaseViewModel
     {
         public int Id { get; set; }
@@ -382,6 +374,10 @@ namespace Bookstore.WPF.ViewModels
         private string _tenSach;
         public string TenSach { get => _tenSach; set { _tenSach = value; OnPropertyChanged(); } }
 
+        public string ISBN { get; set; }
+        public int NamXuatBan { get; set; }
+        public string NhaXuatBan { get; set; }
+        public string HinhThucBia { get; set; }
         public string TacGia { get; set; }
         public string TheLoai { get; set; }
         public string MoTa { get; set; }

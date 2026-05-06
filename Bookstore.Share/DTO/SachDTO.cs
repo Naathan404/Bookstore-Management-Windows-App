@@ -17,5 +17,9 @@ namespace Bookstore.Share.DTOs
         public decimal GiaNiemYet { get; set; }
         public decimal DonGiaBan { get; set; }
         public string HinhAnh { get; set; }
+
+        public int NamXuatBan { get; set; }
+        public string NhaXuatBan { get; set; }
+        public string HinhThucBia { get; set; }
     }
 }

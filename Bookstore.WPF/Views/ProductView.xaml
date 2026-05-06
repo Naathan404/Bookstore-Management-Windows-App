@@ -110,9 +110,9 @@
                  VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,-100,-100" IsHitTestVisible="False"/>
 
         <!-- NỘI DUNG CHÍNH -->
-        <Grid Margin="20">
+        <Grid Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="90"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -135,7 +135,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Đã Bind Command OpenAddPopupCommand -->
+                        <!-- nút trên header -->
                         <Button Style="{StaticResource MainGradientButton}"
                                 Width="100" Margin="0,0,10,0" Command="{Binding OpenAddPopupCommand}">
                             <StackPanel Orientation="Horizontal">
@@ -191,7 +191,7 @@
                     <Border Grid.Column="2" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:PackIcon Kind="Tag" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
-                            <!-- Đã Bind ItemsSource và SelectedItem -->
+                            <!-- cbb thể loại -->
                             <ComboBox Background="Transparent" BorderThickness="0"
                                       VerticalAlignment="Center" FontSize="13" Foreground="#2B3674"
                                       materialDesign:HintAssist.Hint="Thể loại" Width="Auto"
@@ -199,7 +199,7 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Giữ lại giao diện các TextBox lộc khác (Chưa cần bind logic phức tạp lúc này) -->
+                    <!-- các TextBox c -->
                     <Border Grid.Column="3" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:PackIcon Kind="CurrencyUsd" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
@@ -230,7 +230,7 @@
 
             <!-- Card 3: Danh sách sách -->
             <Border Grid.Row="2" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
-                <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding PagedBooks}"
+                <DataGrid Grid.Row="1" CanUserSortColumns="False" AutoGenerateColumns="False" ItemsSource="{Binding PagedBooks}"
                               SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
                               HeadersVisibility="Column" BorderThickness="0" RowHeight="52"
                               FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
@@ -289,7 +289,7 @@
                     </DataGrid.Resources>
 
                     <DataGrid.Columns>
-                        <!-- Cột STT (Căn giữa) -->
+                        <!-- Cột STT-->
                         <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="50" HeaderStyle="{StaticResource CenterHeaderStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -301,7 +301,7 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <!-- Cột Tên Sách (Width="*" để lấp đầy khoảng trống) -->
+                        <!-- Cột Tên Sách-->
                         <DataGridTextColumn Header="Tên sách" Binding="{Binding TenSach}" Width="Auto">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -313,7 +313,7 @@
                         </DataGridTextColumn>
 
                         <!-- Cột Tác Giả -->
-                        <DataGridTextColumn Header="Tác giả" Binding="{Binding TacGia}" Width="140">
+                        <DataGridTextColumn Header="Tác giả" Binding="{Binding TacGia}" Width="150">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -402,7 +402,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Cột Tồn Kho (Căn giữa) -->
+                        <!-- Cột Tồn Kho  -->
                         <DataGridTextColumn Header="Tồn kho" Binding="{Binding SoLuongTonKho}" Width="80" HeaderStyle="{StaticResource CenterHeaderStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -418,7 +418,7 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <!-- Cột Đã Bán (Căn giữa) -->
+                        <!-- Cột Đã Bán  -->
                         <DataGridTextColumn Header="Đã bán" Binding="{Binding TongDaBan}" Width="80" HeaderStyle="{StaticResource CenterHeaderStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -430,7 +430,7 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <!-- Cột Giá Niêm Yết (Căn phải) -->
+                        <!-- Cột Giá Niêm Yết -->
                         <DataGridTextColumn Header="Giá Niêm Yết" Binding="{Binding GiaNiemYet, StringFormat={}{0:N0} đ}" Width="100" HeaderStyle="{StaticResource RightHeaderStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -440,8 +440,8 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <!-- Cột Đơn Giá (Căn phải) -->
-                        <DataGridTextColumn Header="Đơn giá" Binding="{Binding DonGiaBan, StringFormat={}{0:N0} đ}" Width="90" HeaderStyle="{StaticResource RightHeaderStyle}">
+                        <!-- Cột Đơn Giá -->
+                        <DataGridTextColumn Header="Đơn giá" Binding="{Binding DonGiaBan, StringFormat={}{0:N0} đ}" Width="100" HeaderStyle="{StaticResource RightHeaderStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -452,8 +452,8 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <!-- Cột Nút Hành Động (Căn giữa) -->
-                        <DataGridTemplateColumn Header="Thao tác" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                        <!-- Cột Nút Hành Động -->
+                        <DataGridTemplateColumn Header="Thao tác" Width="120" HeaderStyle="{StaticResource CenterHeaderStyle}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -489,7 +489,7 @@
                 </DataGrid>
             </Border>
 
-            <!-- Card 4: Pagination (Đã Bind MVVM toàn bộ) -->
+            <!-- Card 4: Pagination -->
             <Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" Margin="0,0,4,0">
@@ -526,7 +526,7 @@
             </Border>
         </Grid>
 
-        <!-- ==================== POPUP THÊM/SỬA SÁCH ==================== -->
+<!-- ==================== POPUP THÊM/SỬA SÁCH (UX REDESIGN) ==================== -->
         <Grid Background="#80000000" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="1000"
               Visibility="{Binding IsPopupVisible}">
 
@@ -536,127 +536,262 @@
                 </Border.InputBindings>
             </Border>
 
-            <Border Width="620" Background="White" CornerRadius="20" BorderBrush="#E2E8F0" BorderThickness="1"
+            <!-- Tăng Width lên 680 để Form rộng rãi và cân đối hơn cho 2 Tab -->
+            <Border Width="680" Height="520" Background="White" CornerRadius="20" BorderBrush="#E2E8F0" BorderThickness="1"
                     HorizontalAlignment="Center" VerticalAlignment="Center" Padding="25">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <!-- Header -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,14">
-                        <materialDesign:PackIcon Kind="{Binding PopupIcon}" Width="24" Height="24" Foreground="#4318FF" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding PopupTitle}" FontSize="18" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                        <materialDesign:PackIcon Kind="{Binding PopupIcon}" Width="26" Height="26" Foreground="#4318FF" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding PopupTitle}" FontSize="20" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                     </StackPanel>
 
-                    <!-- Hình ảnh -->
-                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,14">
-                        <Border Width="140" Height="180" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}"/>
-                            </Border.InputBindings>
-                            <Grid>
-                                <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <!-- KHU VỰC CHIA TAB -->
+                    <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="0,0,0,20">
+                        <TabControl.Resources>
+                            <!-- Style cực xịn cho Nút chuyển Tab -->
+                            <Style TargetType="TabItem">
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Foreground" Value="#A3AED0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="Margin" Value="0,0,15,15"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="#4318FF"/>
+                                        <Setter Property="BorderBrush" Value="#4318FF"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="#4318FF"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabControl.Resources>
+
+                        <!-- ================= TAB 1: THÔNG TIN TÁC PHẨM ================= -->
+                        <TabItem Header="1. THÔNG TIN TÁC PHẨM">
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.Row="0" Margin="0,0,0,15" Padding="12,10" Background="#F8FAFC" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                            <TextBlock Text="Thông tin gốc của tác phẩm" FontWeight="Bold" FontSize="13" Foreground="#2B3674"/>
+
+                                            <TextBlock FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="Mặc định bị khóa để tránh sửa nhầm. Bật công tắc bên phải nếu bạn thực sự muốn sửa."/>
+                                                        <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                        <Setter Property="FontWeight" Value="Normal"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsChecked, ElementName=toggleEditMaster}" Value="True">
+                                                                <Setter Property="Text" Value="⚠️ CẢNH BÁO: Đổi tên/tác giả ở đây sẽ làm thay đổi TẤT CẢ các phiên bản của sách này!"/>
+                                                                <Setter Property="Foreground" Value="#EF4444"/>
+                                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+
+                                        <ToggleButton x:Name="toggleEditMaster" Grid.Column="1" VerticalAlignment="Center" Cursor="Hand"
+                                                      IsChecked="{Binding IsAddingNew, Mode=OneWay}"
+                                                      ToolTip="Mở khóa chỉnh sửa">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ToggleButton">
+                                                                <Border x:Name="border" Background="#E5E7EB" Width="44" Height="24" CornerRadius="12" Padding="2">
+                                                                    <Ellipse x:Name="knob" Fill="White" Width="20" Height="20" HorizontalAlignment="Left">
+                                                                        <Ellipse.Effect>
+                                                                            <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.2"/>
+                                                                        </Ellipse.Effect>
+                                                                    </Ellipse>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsChecked" Value="True">
+                                                                        <Setter TargetName="border" Property="Background" Value="#EF4444"/>
+                                                                        <Setter TargetName="knob" Property="HorizontalAlignment" Value="Right"/>
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+                                    </Grid>
+                                </Border>
+
+                                <Grid Grid.Row="1" Margin="0,0,0,10" IsEnabled="{Binding IsChecked, ElementName=toggleEditMaster}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Width="140" Height="190" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
+                                        <Border.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}"/>
+                                        </Border.InputBindings>
+                                        <Grid>
+                                            <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <Border Background="#99000000" VerticalAlignment="Bottom" Height="30">
+                                                <TextBlock Text="Đổi ảnh" Foreground="White" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="2">
+                                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46" Margin="0,0,0,15">
+                                            <Grid>
+                                                <TextBlock Text="Tên tác phẩm *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                <TextBox Text="{Binding EditingBook.TenSach}" FontSize="14" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                            </Grid>
+                                        </Border>
+
+                                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46" Margin="0,0,0,15">
+                                            <Grid>
+                                                <TextBlock Text="Tác giả" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                <TextBox Text="{Binding EditingBook.TacGia}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                            </Grid>
+                                        </Border>
+
+                                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                            <Grid>
+                                                <TextBlock Text="Thể loại" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                <ComboBox ItemsSource="{Binding ListTheLoai}" SelectedItem="{Binding EditingBook.TheLoai}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="6,0,6,2" Height="28"/>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Border Grid.Row="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="80" IsEnabled="{Binding IsChecked, ElementName=toggleEditMaster}">
+                                    <Grid>
+                                        <TextBlock Text="Mô tả nội dung" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                        <TextBox Text="{Binding EditingBook.MoTa}" FontSize="13" Foreground="#4B5563" BorderThickness="0" Background="Transparent" Margin="10,20,10,6" Padding="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Stretch"/>
+                                    </Grid>
+                                </Border>
                             </Grid>
-                        </Border>
-                    </StackPanel>
+                        </TabItem>
 
-                    <!-- Tên sách + Tác giả -->
-                    <Grid Grid.Row="3" Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="14"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                        <!-- ================= TAB 2: CẤU HÌNH BÁN HÀNG ================= -->
+                        <TabItem Header="2. PHIÊN BẢN &amp; BÁN HÀNG">
+                            <StackPanel Margin="0,10,0,0">
+                                
+                                <!-- Dòng 1: ISBN + Năm XB -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Mã ISBN (Khóa chính)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.ISBN}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Năm xuất bản" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.NamXuatBan}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
 
-                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="44">
-                            <Grid>
-                                <TextBlock Text="Tên sách *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding EditingBook.TenSach}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
-                            </Grid>
-                        </Border>
+                                <!-- Dòng 2: Nhà xuất bản + Hình thức bìa -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Nhà xuất bản" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.NhaXuatBan}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Hình thức bìa" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <!-- Có thể thay TextBox này bằng ComboBox (Cứng/Mềm) nếu cần -->
+                                            <TextBox Text="{Binding EditingBook.HinhThucBia}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
 
-                        <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="44">
-                            <Grid>
-                                <TextBlock Text="Tác giả" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding EditingBook.TacGia}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
-                            </Grid>
-                        </Border>
-                    </Grid>
+                                <!-- Dòng 3: Giá bán -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.GiaNiemYet}" FontSize="14" FontWeight="SemiBold" Foreground="#4318FF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.DonGiaBan}" FontSize="14" FontWeight="SemiBold" Foreground="#10B981" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
 
-                    <!-- Thể loại -->
-                    <Border Grid.Row="4" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="44" Margin="0,0,0,10">
-                        <Grid>
-                            <TextBlock Text="Thể loại" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                            <ComboBox ItemsSource="{Binding ListTheLoai}" SelectedItem="{Binding EditingBook.TheLoai}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="6,0,6,2" Height="28"/>
-                        </Grid>
-                    </Border>
-
-                    <!-- Mô tả -->
-                    <Border Grid.Row="5" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="56" Margin="0,0,0,10">
-                        <Grid>
-                            <TextBlock Text="Mô tả" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                            <TextBox Text="{Binding EditingBook.MoTa}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" Margin="10,18,10,6" Padding="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Stretch"/>
-                        </Grid>
-                    </Border>
-
-                    <!-- KHÓA Số lượng tồn + Đã bán -->
-                    <Grid Grid.Row="6" Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="14"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="44">
-                            <Grid>
-                                <TextBlock Text="Số lượng tồn" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding EditingBook.SoLuongTonKho}" IsReadOnly="True" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Center"/>
-                            </Grid>
-                        </Border>
-
-                        <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="44">
-                            <Grid>
-                                <TextBlock Text="Đã bán" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding EditingBook.TongDaBan}" IsReadOnly="True" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Center"/>
-                            </Grid>
-                        </Border>
-                    </Grid>
-
-                    <!-- Giá Niêm Yết + Đơn giá bán -->
-                    <Grid Grid.Row="7" Margin="0,0,0,16">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="14"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="44">
-                            <Grid>
-                                <TextBlock Text="Giá Niêm Yết (VNĐ) *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding EditingBook.GiaNiemYet}" FontSize="13" FontWeight="SemiBold" Foreground="#4318FF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
-                            </Grid>
-                        </Border>
-
-                        <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="44">
-                            <Grid>
-                                <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding EditingBook.DonGiaBan}" FontSize="13" FontWeight="SemiBold" Foreground="#10B981" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
-                            </Grid>
-                        </Border>
-                    </Grid>
+                                <!-- Dòng 4: Tồn kho & Đã bán -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border CornerRadius="10" Background="#F3F4F6" BorderBrush="#E5E7EB" BorderThickness="1" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Số lượng tồn (Hệ thống tự tính)" FontSize="10" Foreground="#9CA3AF" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.SoLuongTonKho}" IsReadOnly="True" FontSize="13" FontWeight="Bold" Foreground="#9CA3AF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Column="2" CornerRadius="10" Background="#F3F4F6" BorderBrush="#E5E7EB" BorderThickness="1" Height="46">
+                                        <Grid>
+                                            <TextBlock Text="Đã bán (Hệ thống tự tính)" FontSize="10" Foreground="#9CA3AF" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.TongDaBan}" IsReadOnly="True" FontSize="13" FontWeight="Bold" Foreground="#9CA3AF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
 
                     <!-- Buttons -->
-                    <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="QUAY LẠI" Command="{Binding ClosePopupCommand}" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="2" CornerRadius="10">
@@ -665,7 +800,7 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
-                        <Button Content="LƯU" Command="{Binding SaveBookCommand}" Width="120" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
+                        <Button Content="LƯU THÔNG TIN" Command="{Binding SaveBookCommand}" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="#10B981" CornerRadius="10">
