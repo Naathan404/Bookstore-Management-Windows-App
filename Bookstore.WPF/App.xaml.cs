@@ -42,13 +42,13 @@ namespace Bookstore.WPF
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();
             //admin.Show();
-            //var window = new Window
-            //{
-            //    Content = new TraCuuSach(),
-            //    Title = "Tra cứu sách",
-            //    WindowState = WindowState.Maximized
-            //};
-            //window.Show();
+            var window = new Window
+            {
+                Content = new CustomerView(),
+                Title = "KHÁCH HÀNG",
+                WindowState = WindowState.Maximized
+            };
+            window.Show();
 
             var window = new Window
             {
