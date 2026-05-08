@@ -9,7 +9,7 @@ namespace Bookstore.Share.DTOResponses
 {
     public class ImportResponse
     {
-        public int MaPhieu { get; set; }
+        public int MaPhieuNhap { get; set; }
         public DateTime NgayTao { get; set; }
         public string NguoiTao { get; set; } = string.Empty;
         public string TenNguoiTao { get; set; } = string.Empty;
