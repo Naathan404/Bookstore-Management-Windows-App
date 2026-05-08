@@ -82,8 +82,10 @@ namespace Bookstore.API.Data
                 .HasOne<Sach>().WithMany().HasForeignKey(p => p.MaSach)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PhienBanSach>()
-                .HasOne<NhaXuatBan>().WithMany().HasForeignKey(p => p.MaNhaXuatBan)
-                .OnDelete(DeleteBehavior.Restrict);
+                            .HasOne(p => p.NhaXuatBan)
+                            .WithMany()
+                            .HasForeignKey(p => p.MaNhaXuatBan)
+                            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TacGia_Sach>()
                 .HasOne<TacGia>().WithMany().HasForeignKey(t => t.MaTacGia)
@@ -479,39 +481,39 @@ namespace Bookstore.API.Data
             // BẢNG SÁCH, à tui seed sẵn 25 cuốn á
             modelBuilder.Entity<Sach>().HasData(
                 // NHÓM IT
-                new Sach { MaSach = 1, TenSach = "Clean Code", MaTheLoai = 1, MoTa = "Sách gối đầu giường của mọi Dev", ImageUrl = "/Assets/Images/cleancode.jpg" },
-                new Sach { MaSach = 2, TenSach = "Refactoring", MaTheLoai = 1, MoTa = "Cải thiện thiết kế code cũ", ImageUrl = "/Assets/Images/refactoring.jpg" },
-                new Sach { MaSach = 3, TenSach = "Design Patterns", MaTheLoai = 1, MoTa = "Các mẫu thiết kế chuẩn GOF", ImageUrl = "/Assets/Images/designpatterns.jpg" },
-                new Sach { MaSach = 4, TenSach = "The Clean Coder", MaTheLoai = 1, MoTa = "Quy tắc hành nghề coder chuyên nghiệp", ImageUrl = "/Assets/Images/cleancoder.jpg" },
-                new Sach { MaSach = 5, TenSach = "300 Bài Code Thiếu Nhi", MaTheLoai = 1, MoTa = "Học xong code bao lương 3 ngàn đô", ImageUrl = "/Assets/Images/300baicode.jpg" },
+                new Sach { MaSach = 1, TenSach = "Clean Code", MaTheLoai = 1, MoTa = "Sách gối đầu giường của mọi Dev", ImageUrl = "/Resources/Images/Books/cleancode.jpg" },
+                new Sach { MaSach = 2, TenSach = "Refactoring", MaTheLoai = 1, MoTa = "Cải thiện thiết kế code cũ", ImageUrl = "/Resources/Images/Books/refactoring.jpg" },
+                new Sach { MaSach = 3, TenSach = "Design Patterns", MaTheLoai = 1, MoTa = "Các mẫu thiết kế chuẩn GOF", ImageUrl = "/Resources/Images/Books/designpatterns.jpg" },
+                new Sach { MaSach = 4, TenSach = "The Clean Coder", MaTheLoai = 1, MoTa = "Quy tắc hành nghề coder chuyên nghiệp", ImageUrl = "/Resources/Images/Books/cleancoder.jpg" },
+                new Sach { MaSach = 5, TenSach = "300 Bài Code Thiếu Nhi", MaTheLoai = 1, MoTa = "Học xong code bao lương 3 ngàn đô", ImageUrl = "/Resources/Images/Books/300baicode.png" },
 
                 // NHÓM VĂN HỌC VIỆT NAM 
-                new Sach { MaSach = 6, TenSach = "Mắt Biếc", MaTheLoai = 2, MoTa = "Truyện dài cực hay, tình yêu đau đớn của Ngạn", ImageUrl = "/Assets/Images/matbiec.jpg" },
-                new Sach { MaSach = 7, TenSach = "Cho Tôi Xin Một Vé Đi Tuổi Thơ", MaTheLoai = 2, MoTa = "Ký ức tuổi thơ dữ dội", ImageUrl = "/Assets/Images/vetuoitho.jpg" },
-                new Sach { MaSach = 8, TenSach = "Số Đỏ", MaTheLoai = 2, MoTa = "Hành trình thăng tiến của Xuân Tóc Đỏ", ImageUrl = "/Assets/Images/sodo.jpg" },
-                new Sach { MaSach = 9, TenSach = "Chí Phèo", MaTheLoai = 2, MoTa = "Tuyển tập truyện ngắn Nam Cao", ImageUrl = "/Assets/Images/chipheo.jpg" },
-                new Sach { MaSach = 10, TenSach = "Cánh Đồng Bất Tận", MaTheLoai = 2, MoTa = "Nỗi đau trên miền sông nước", ImageUrl = "/Assets/Images/canhdongbattan.jpg" },
+                new Sach { MaSach = 6, TenSach = "Mắt Biếc", MaTheLoai = 2, MoTa = "Truyện dài cực hay, tình yêu đau đớn của Ngạn", ImageUrl = "/Resources/Images/Books/matbiec.jpg" },
+                new Sach { MaSach = 7, TenSach = "Cho Tôi Xin Một Vé Đi Tuổi Thơ", MaTheLoai = 2, MoTa = "Ký ức tuổi thơ dữ dội", ImageUrl = "/Resources/Images/Books/vetuoitho.jpg" },
+                new Sach { MaSach = 8, TenSach = "Số Đỏ", MaTheLoai = 2, MoTa = "Hành trình thăng tiến của Xuân Tóc Đỏ", ImageUrl = "/Resources/Images/Books/sodo.jpg" },
+                new Sach { MaSach = 9, TenSach = "Chí Phèo", MaTheLoai = 2, MoTa = "Tuyển tập truyện ngắn Nam Cao", ImageUrl = "/Resources/Images/Books/chipheo.jpg" },
+                new Sach { MaSach = 10, TenSach = "Cánh Đồng Bất Tận", MaTheLoai = 2, MoTa = "Nỗi đau trên miền sông nước", ImageUrl = "/Resources/Images/Books/canhdongbattan.jpg" },
 
                 // NHÓM VĂN HỌC NƯỚC NGOÀI
-                new Sach { MaSach = 11, TenSach = "Rừng Na Uy", MaTheLoai = 2, MoTa = "Tiểu thuyết nổi tiếng của Haruki Murakami", ImageUrl = "/Assets/Images/rungnauy.jpg" },
-                new Sach { MaSach = 12, TenSach = "Kafka Bên Bờ Biển", MaTheLoai = 2, MoTa = "Chuyến phiêu lưu kỳ bí", ImageUrl = "/Assets/Images/kafka.jpg" },
-                new Sach { MaSach = 13, TenSach = "Nhà Giả Kim", MaTheLoai = 2, MoTa = "Hành trình đi tìm kho báu của Santiago", ImageUrl = "/Assets/Images/nhagiakim.jpg" },
-                new Sach { MaSach = 14, TenSach = "Harry Potter và Hòn Đá Phù Thủy", MaTheLoai = 2, MoTa = "Khởi đầu thế giới phép thuật", ImageUrl = "/Assets/Images/harrypotter1.jpg" },
-                new Sach { MaSach = 15, TenSach = "Harry Potter và Phòng Chứa Bí Mật", MaTheLoai = 2, MoTa = "Năm học thứ hai tại Hogwarts", ImageUrl = "/Assets/Images/harrypotter2.jpg" },
+                new Sach { MaSach = 11, TenSach = "Rừng Na Uy", MaTheLoai = 2, MoTa = "Tiểu thuyết nổi tiếng của Haruki Murakami", ImageUrl = "/Resources/Images/Books/rungnauy.jpg" },
+                new Sach { MaSach = 12, TenSach = "Kafka Bên Bờ Biển", MaTheLoai = 2, MoTa = "Chuyến phiêu lưu kỳ bí", ImageUrl = "/Resources/Images/Books/kafka.jpg" },
+                new Sach { MaSach = 13, TenSach = "Nhà Giả Kim", MaTheLoai = 2, MoTa = "Hành trình đi tìm kho báu của Santiago", ImageUrl = "/Resources/Images/Books/nhagiakim.jpg" },
+                new Sach { MaSach = 14, TenSach = "Harry Potter và Hòn Đá Phù Thủy", MaTheLoai = 2, MoTa = "Khởi đầu thế giới phép thuật", ImageUrl = "/Resources/Images/Books/harrypotter1.jpg" },
+                new Sach { MaSach = 15, TenSach = "Harry Potter và Phòng Chứa Bí Mật", MaTheLoai = 2, MoTa = "Năm học thứ hai tại Hogwarts", ImageUrl = "/Resources/Images/Books/harrypotter2.jpg" },
 
                 // NHÓM TRUYỆN TRANH
-                new Sach { MaSach = 16, TenSach = "Doraemon Tập 1", MaTheLoai = 6, MoTa = "Mèo máy đến từ tương lai", ImageUrl = "/Assets/Images/doraemon1.jpg" },
-                new Sach { MaSach = 17, TenSach = "Doraemon Tập 2", MaTheLoai = 6, MoTa = "Những bảo bối thần kỳ", ImageUrl = "/Assets/Images/doraemon2.jpg" },
-                new Sach { MaSach = 18, TenSach = "Conan Tập 1", MaTheLoai = 6, MoTa = "Sự khởi đầu của thám tử teo nhỏ", ImageUrl = "/Assets/Images/conan1.jpg" },
-                new Sach { MaSach = 19, TenSach = "Conan Tập 2", MaTheLoai = 6, MoTa = "Vụ án mới", ImageUrl = "/Assets/Images/conan2.jpg" },
+                new Sach { MaSach = 16, TenSach = "Doraemon Tập 1", MaTheLoai = 6, MoTa = "Mèo máy đến từ tương lai", ImageUrl = "/Resources/Images/Books/doraemon1.jpg" },
+                new Sach { MaSach = 17, TenSach = "Doraemon Tập 2", MaTheLoai = 6, MoTa = "Những bảo bối thần kỳ", ImageUrl = "/Resources/Images/Books/doraemon2.jpg" },
+                new Sach { MaSach = 18, TenSach = "Conan Tập 1", MaTheLoai = 6, MoTa = "Sự khởi đầu của thám tử teo nhỏ", ImageUrl = "/Resources/Images/Books/conan1.jpg" },
+                new Sach { MaSach = 19, TenSach = "Conan Tập 2", MaTheLoai = 6, MoTa = "Vụ án mới", ImageUrl = "/Resources/Images/Books/conan2.png" },
 
                 // NHÓM KỸ NĂNG, TÂM LÝ, KINH TẾ 
-                new Sach { MaSach = 20, TenSach = "Đắc Nhân Tâm", MaTheLoai = 4, MoTa = "Sách kỹ năng giao tiếp hay nhất", ImageUrl = "/Assets/Images/dacnhantam.jpg" },
-                new Sach { MaSach = 21, TenSach = "Quẳng Gánh Lo Đi Và Vui Sống", MaTheLoai = 4, MoTa = "Nghệ thuật sống hạnh phúc", ImageUrl = "/Assets/Images/quangganhlo.jpg" },
-                new Sach { MaSach = 22, TenSach = "Giận", MaTheLoai = 4, MoTa = "Làm chủ cảm xúc", ImageUrl = "/Assets/Images/gian.jpg" },
-                new Sach { MaSach = 23, TenSach = "Thiện, Ác và Smartphone", MaTheLoai = 4, MoTa = "Tâm lý học trên mạng xã hội", ImageUrl = "/Assets/Images/thienac.jpg" },
-                new Sach { MaSach = 24, TenSach = "Trên Đường Băng", MaTheLoai = 3, MoTa = "Khởi nghiệp và kinh doanh", ImageUrl = "/Assets/Images/trenduongbang.jpg" },
-                new Sach { MaSach = 25, TenSach = "Cà Phê Cùng Tony", MaTheLoai = 3, MoTa = "Chuyện đời chuyện nghề", ImageUrl = "/Assets/Images/caphecungtony.jpg" }
+                new Sach { MaSach = 20, TenSach = "Đắc Nhân Tâm", MaTheLoai = 4, MoTa = "Sách kỹ năng giao tiếp hay nhất", ImageUrl = "/Resources/Images/Books/dacnhantam.jpg" },
+                new Sach { MaSach = 21, TenSach = "Quẳng Gánh Lo Đi Và Vui Sống", MaTheLoai = 4, MoTa = "Nghệ thuật sống hạnh phúc", ImageUrl = "/Resources/Images/Books/quangganhlo.jpg" },
+                new Sach { MaSach = 22, TenSach = "Giận", MaTheLoai = 4, MoTa = "Làm chủ cảm xúc", ImageUrl = "/Resources/Images/Books/gian.jpg" },
+                new Sach { MaSach = 23, TenSach = "Thiện, Ác và Smartphone", MaTheLoai = 4, MoTa = "Tâm lý học trên mạng xã hội", ImageUrl = "/Resources/Images/Books/thienac.jpg" },
+                new Sach { MaSach = 24, TenSach = "Trên Đường Băng", MaTheLoai = 3, MoTa = "Khởi nghiệp và kinh doanh", ImageUrl = "/Resources/Images/Books/trenduongbang.jpg" },
+                new Sach { MaSach = 25, TenSach = "Cà Phê Cùng Tony", MaTheLoai = 3, MoTa = "Chuyện đời chuyện nghề", ImageUrl = "/Resources/Images/Books/caphecungtony.jpg" }
             );
             /// bảng TG_SACH
             modelBuilder.Entity<TacGia_Sach>().HasData(

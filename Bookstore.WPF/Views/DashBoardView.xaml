@@ -14,7 +14,7 @@
              Background="#f4f7fe">
 
     <UserControl.Resources>
-        <DropShadowEffect x:Key="CardShadowEffect" BlurRadius="20" ShadowDepth="0" Opacity="0.08" Color="#4318FF"/>
+        <DropShadowEffect x:Key="CardShadowEffect" BlurRadius="20" ShadowDepth="0" Opacity="0.08" Color="#4318FF" RenderingBias="Performance"/>
 
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
@@ -22,7 +22,7 @@
             <Setter Property="Padding" Value="20"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748"/>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748" RenderingBias="Performance"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -33,7 +33,7 @@
             <Setter Property="Padding" Value="20"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748"/>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748" RenderingBias="Performance"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -641,7 +641,7 @@
                             <Border Grid.Column="1" Background="White" CornerRadius="20" Margin="20,0,0,0">
                                 <Border Background="White" CornerRadius="20" Padding="20" Margin="0,0,0,-510">
                                     <Border.Effect>
-                                        <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748"/>
+                                        <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748" RenderingBias="Performance"/>
                                     </Border.Effect>
 
                                     <Grid>
@@ -884,7 +884,7 @@ HeadersVisibility="Column">
                             <Border Grid.Column="1" Background="White" CornerRadius="20" Margin="20,0,19,0">
                                 <Border Background="White" CornerRadius="20" Padding="20">
                                     <Border.Effect>
-                                        <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748"/>
+                                        <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1" Color="#2D3748" RenderingBias="Performance"/>
                                     </Border.Effect>
 
                                     <Grid>

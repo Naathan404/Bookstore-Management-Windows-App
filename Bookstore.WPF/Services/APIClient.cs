@@ -14,6 +14,36 @@ namespace Bookstore.WPF.Services
             _httpClient.BaseAddress = new Uri("https://localhost:7001/");
         }
 
+        /// <summary>
+        /// GET API
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="endpoint"></param>
+        /// <returns></returns>
+        public static async Task<TResponse> GetAsync<TResponse>(string endpoint)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(endpoint);
+                if (response.IsSuccessStatusCode)
+                    return await response.Content.ReadFromJsonAsync<TResponse>();
+                return default;
+            }
+            catch (Exception)
+            {
+                // Bắt lỗi kết nối
+                return default;
+            }
+        }
+
+        /// <summary>
+        /// POST API
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="endpoint"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static async Task<TResponse> PostAsync<TRequest, TResponse>(string endpoint, TRequest data)
         {
             var response = await _httpClient.PostAsJsonAsync(endpoint, data);
@@ -22,16 +52,49 @@ namespace Bookstore.WPF.Services
             return default;
         }
 
+        /// <summary>
+        /// POST and check RESULT
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <param name="endpoint"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static async Task<bool> PostAndCheckSuccessAsync<TRequest>(string endpoint, TRequest data)
         {
-            var response = await _httpClient.PostAsJsonAsync(endpoint, data);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(endpoint, data);
+                return response.IsSuccessStatusCode;
+            }
+            catch { return false; }
         }
 
+        /// <summary>
+        /// POST no body
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <returns></returns>
         public static async Task<bool> PostNoBodyAsync(string endpoint)
         {
             var response = await _httpClient.PostAsync(endpoint, null);
             return response.IsSuccessStatusCode;
+        }
+
+        /// <summary>
+        /// PUT API
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <param name="endpoint"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static async Task<bool> PutAndCheckSuccessAsync<TRequest>(string endpoint, TRequest data)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync(endpoint, data);
+                return response.IsSuccessStatusCode;
+            }
+            catch { return false; }
         }
     }
 }

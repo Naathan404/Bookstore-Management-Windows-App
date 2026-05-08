@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260506143707_UpdateImagePath")]
+    partial class UpdateImagePath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -523,22 +526,12 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<decimal>("DonGiaNhap")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("PhienBanSachISBN")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("PhieuNhapSachMaPhieuNhapSach")
-                        .HasColumnType("int");
-
                     b.Property<int>("SoLuong")
                         .HasColumnType("int");
 
                     b.HasKey("MaPhieuNhapSach", "ISBN");
 
                     b.HasIndex("ISBN");
-
-                    b.HasIndex("PhienBanSachISBN");
-
-                    b.HasIndex("PhieuNhapSachMaPhieuNhapSach");
 
                     b.ToTable("CT_PhieuNhapSach");
 
@@ -1447,9 +1440,6 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<int>("NamXuatBan")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SachMaSach")
-                        .HasColumnType("int");
-
                     b.Property<int>("TonKho")
                         .HasColumnType("int");
 
@@ -1461,8 +1451,6 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaNhaXuatBan");
 
                     b.HasIndex("MaSach");
-
-                    b.HasIndex("SachMaSach");
 
                     b.ToTable("PhienBanSach");
 
@@ -1823,7 +1811,7 @@ namespace Bookstore.API.Data.Migrations
 
                     b.Property<string>("NguoiTao")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TongTien")
                         .HasColumnType("decimal(18,2)");
@@ -1831,8 +1819,6 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaPhieuNhapSach");
 
                     b.HasIndex("MaNhaCungCap");
-
-                    b.HasIndex("NguoiTao");
 
                     b.ToTable("PhieuNhapSach");
 
@@ -2778,18 +2764,6 @@ namespace Bookstore.API.Data.Migrations
                         .HasForeignKey("MaPhieuNhapSach")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Bookstore.API.Models.PhienBanSach", "PhienBanSach")
-                        .WithMany()
-                        .HasForeignKey("PhienBanSachISBN");
-
-                    b.HasOne("Bookstore.API.Models.PhieuNhapSach", "PhieuNhapSach")
-                        .WithMany("CT_PhieuNhapSach")
-                        .HasForeignKey("PhieuNhapSachMaPhieuNhapSach");
-
-                    b.Navigation("PhienBanSach");
-
-                    b.Navigation("PhieuNhapSach");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.HoaDon", b =>
@@ -2873,31 +2847,15 @@ namespace Bookstore.API.Data.Migrations
                         .HasForeignKey("MaSach")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Bookstore.API.Models.Sach", "Sach")
-                        .WithMany()
-                        .HasForeignKey("SachMaSach");
-
-                    b.Navigation("Sach");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhieuNhapSach", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.NhaCungCap", "NhaCungCap")
+                    b.HasOne("Bookstore.API.Models.NhaCungCap", null)
                         .WithMany()
                         .HasForeignKey("MaNhaCungCap")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Bookstore.API.Models.NguoiDung", "NguoiDung")
-                        .WithMany()
-                        .HasForeignKey("NguoiTao")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("NguoiDung");
-
-                    b.Navigation("NhaCungCap");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.PhieuThuTien", b =>
@@ -2988,11 +2946,6 @@ namespace Bookstore.API.Data.Migrations
                     b.Navigation("NguoiDungs");
 
                     b.Navigation("PhanQuyens");
-                });
-
-            modelBuilder.Entity("Bookstore.API.Models.PhieuNhapSach", b =>
-                {
-                    b.Navigation("CT_PhieuNhapSach");
                 });
 #pragma warning restore 612, 618
         }

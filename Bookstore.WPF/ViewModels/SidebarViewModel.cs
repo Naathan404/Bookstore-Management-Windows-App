@@ -89,6 +89,19 @@ namespace Bookstore.WPF.ViewModels
         }
         #endregion
 
+        #region Cache View models
+        private DashboardViewModel _dashboardViewModel;
+        private SaleViewModel _saleViewModel;
+        private ProductViewModel _productViewModel;
+        private CustomerViewModel _customerViewModel;
+        private ImportViewModel _importViewModel;
+        private SupplierViewModel _supplierViewModel;
+        private PromotionViewModel _promotionViewModel;
+        private ReportViewModel _reportViewModel;
+        private AccountViewModel _accountViewModel;
+        private SettingViewModel _settingViewModel;
+        #endregion
+
         #region Commands (Lệnh điều hướng)
         //
         public ICommand ShowDashboardCommand { get; set; }
@@ -102,6 +115,8 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ShowTaiKhoanCommand { get; set; }
         public ICommand ShowCaiDatCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
+
+
         #endregion
 
         #region Checked 
@@ -203,26 +218,73 @@ namespace Bookstore.WPF.ViewModels
             // Command
             // ==========================================
             if (listQuyen.Contains("DashboardView"))
-                ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(new DashboardViewModel()));
+            {
+                _dashboardViewModel = new DashboardViewModel();
+                ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(_dashboardViewModel));
+
+            }
+
+            // Command 
+            // ==========================================
+            if (listQuyen.Contains("DashboardView"))
+            {
+                _dashboardViewModel = new DashboardViewModel();
+                ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(_dashboardViewModel));
+            }
 
             if (listQuyen.Contains("SaleView"))
-                ShowBanHangCommand = new RelayCommand<object>((p) => _handleChangeView(new SaleViewModel()));
+            {
+                _saleViewModel = new SaleViewModel();
+                ShowBanHangCommand = new RelayCommand<object>((p) => _handleChangeView(_saleViewModel));
+            }
+
             if (listQuyen.Contains("ProductView"))
-                ShowTraCuuSachCommand = new RelayCommand<object>((p) => _handleChangeView(new ProductViewModel()));
+            {
+                _productViewModel = new ProductViewModel();
+                ShowTraCuuSachCommand = new RelayCommand<object>((p) => _handleChangeView(_productViewModel));
+            }
+
             if (listQuyen.Contains("CustomerView"))
-                ShowKhachHangCommand = new RelayCommand<object>((p) => _handleChangeView(new CustomerViewModel()));
+            {
+                _customerViewModel = new CustomerViewModel();
+                ShowKhachHangCommand = new RelayCommand<object>((p) => _handleChangeView(_customerViewModel));
+            }
+
             if (listQuyen.Contains("ImportView"))
-                ShowNhapKhoCommand = new RelayCommand<object>((p) => _handleChangeView(new ImportViewModel()));
+            {
+                _importViewModel = new ImportViewModel();
+                ShowNhapKhoCommand = new RelayCommand<object>((p) => _handleChangeView(_importViewModel));
+            }
+
             if (listQuyen.Contains("SupplierView"))
-                ShowNhaCungCapCommand = new RelayCommand<object>((p) => _handleChangeView(new SupplierViewModel()));
+            {
+                _supplierViewModel = new SupplierViewModel();
+                ShowNhaCungCapCommand = new RelayCommand<object>((p) => _handleChangeView(_supplierViewModel));
+            }
+
             if (listQuyen.Contains("PromotionView"))
-                ShowUuDaiCommand = new RelayCommand<object>((p) => _handleChangeView(new PromotionViewModel()));
+            {
+                _promotionViewModel = new PromotionViewModel();
+                ShowUuDaiCommand = new RelayCommand<object>((p) => _handleChangeView(_promotionViewModel));
+            }
+
             if (listQuyen.Contains("ReportView"))
-                ShowBaoCaoCommand = new RelayCommand<object>((p) => _handleChangeView(new ReportViewModel()));
+            {
+                _reportViewModel = new ReportViewModel();
+                ShowBaoCaoCommand = new RelayCommand<object>((p) => _handleChangeView(_reportViewModel));
+            }
+
             if (listQuyen.Contains("AccountView"))
-                ShowTaiKhoanCommand = new RelayCommand<object>((p) => _handleChangeView(new AccountViewModel()));
+            {
+                _accountViewModel = new AccountViewModel();
+                ShowTaiKhoanCommand = new RelayCommand<object>((p) => _handleChangeView(_accountViewModel));
+            }
+
             if (listQuyen.Contains("SettingView"))
-                ShowCaiDatCommand = new RelayCommand<object>((p) => _handleChangeView(new SettingViewModel()));
+            {
+                _settingViewModel = new SettingViewModel();
+                ShowCaiDatCommand = new RelayCommand<object>((p) => _handleChangeView(_settingViewModel));
+            }
 
             // Đăng xuất
             LogoutCommand = new RelayCommand<object>((p) =>

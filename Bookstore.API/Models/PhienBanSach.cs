@@ -25,5 +25,6 @@ namespace Bookstore.API.Models
 
         [ForeignKey("MaSach")]
         public virtual Sach? Sach { get; set; }
+        public virtual NhaXuatBan NhaXuatBan { get; set; }
     }
 }

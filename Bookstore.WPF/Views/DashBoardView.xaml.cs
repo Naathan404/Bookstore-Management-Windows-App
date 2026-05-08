@@ -24,7 +24,7 @@ namespace Bookstore.WPF.Views
         public DashboardView()
         {
             InitializeComponent();
-            DataContext = new DashboardViewModel(); 
+            //DataContext = new DashboardViewModel(); 
         }
     }
 }
