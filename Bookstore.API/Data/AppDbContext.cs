@@ -93,7 +93,10 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhieuNhapSach>()
-                .HasOne<NhaCungCap>().WithMany().HasForeignKey(n => n.MaNhaCungCap)
+                .HasOne(p => p.NhaCungCap).WithMany().HasForeignKey(n => n.MaNhaCungCap)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PhieuNhapSach>()
+                .HasOne(p => p.NguoiDung).WithMany().HasForeignKey(n => n.NguoiTao)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_PhieuNhapSach>()

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Bookstore.API.Models
 {
     public class PhienBanSach : IEntity<string>
-        // PHIENBANSACH
+    // PHIENBANSACH
     {
         [Key]
-        public required string ISBN { get; set; } // Khóa chính là chuỗi nên không dùng IEntity (nếu IEntity ép kiểu int)
+        public required string ISBN { get; set; }
 
         public int MaSach { get; set; }
         public int MaNhaXuatBan { get; set; }
@@ -22,5 +22,8 @@ namespace Bookstore.API.Models
         public int TonKho { get; set; }
         public int TongSoDaBan { get; set; }
         public string GetID() => ISBN;
+
+        [ForeignKey("MaSach")]
+        public virtual Sach? Sach { get; set; }
     }
 }

@@ -11,5 +11,11 @@ namespace Bookstore.API.Models
         public required string ISBN { get; set; }
         public int SoLuong { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal DonGiaNhap { get; set; }
+
+        [ForeignKey("MaPhieuNhapSach")]
+        public virtual PhieuNhapSach? PhieuNhapSach { get; set; }
+
+        [ForeignKey("ISBN")]
+        public virtual PhienBanSach? PhienBanSach { get; set; }
     }
 }

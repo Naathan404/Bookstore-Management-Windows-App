@@ -13,5 +13,12 @@ namespace Bookstore.API.Models
         public int MaNhaCungCap { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal TongTien { get; set; }
         public int GetID() => MaPhieuNhapSach;
+
+        [ForeignKey("MaNhaCungCap")]
+        public virtual NhaCungCap? NhaCungCap { get; set; }
+
+        [ForeignKey("NguoiTao")]
+        public virtual NguoiDung? NguoiDung { get; set; }
+        public virtual ICollection<CT_PhieuNhapSach> CT_PhieuNhapSach { get; set; } = new List<CT_PhieuNhapSach>();
     }
 }
