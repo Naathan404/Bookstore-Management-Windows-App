@@ -23,7 +23,6 @@ namespace Bookstore.API.Models
         public int TongSoDaBan { get; set; }
         public string GetID() => ISBN;
 
-
         public virtual NhaXuatBan NhaXuatBan { get; set; }
     }
 }
