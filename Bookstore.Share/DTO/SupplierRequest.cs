@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Share.DTO
 {
-    public class SupplierDTO
+    public class SupplierRequest
     {
         public string TenNhaCungCap { get; set; } = string.Empty;
         public string DiaChi { get; set; } = string.Empty;

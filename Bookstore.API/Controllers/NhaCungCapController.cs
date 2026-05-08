@@ -22,9 +22,9 @@ namespace Bookstore.API.Controllers
             _context = context;
         }
 
-        private static Expression<Func<NhaCungCap, SupplierDTO>> MapToDTO()
+        private static Expression<Func<NhaCungCap, SupplierRequest>> MapToDTO()
         {
-            return n => new SupplierDTO
+            return n => new SupplierRequest
             {
                 TenNhaCungCap = n.TenNhaCungCap,
                 DiaChi = n.DiaChi,
@@ -36,7 +36,7 @@ namespace Bookstore.API.Controllers
             };
         }
 
-        private async Task<(bool IsValid, string Message)> CheckUnique(int idToIgnore, SupplierDTO newSupplier)
+        private async Task<(bool IsValid, string Message)> CheckUnique(int idToIgnore, SupplierRequest newSupplier)
         {
             if (await _context.NhaCungCap
                 .AnyAsync(x => x.SoDienThoai == newSupplier.SoDienThoai && x.MaNhaCungCap != idToIgnore))
@@ -88,7 +88,7 @@ namespace Bookstore.API.Controllers
         //TÌM KIẾM NHÀ CUNG CẤP THEO THAM SỐ GẦN ĐÚNG
         //GET: api/NhaCungCap?ten=...&maSoThue=...
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SupplierDTO>>> GetNhaCungCap(
+        public async Task<ActionResult<IEnumerable<NhaCungCap>>> GetNhaCungCap(
             [FromQuery] string? ten,
             [FromQuery] string? maSoThue,
             [FromQuery] string? soDienThoai,
@@ -116,9 +116,7 @@ namespace Bookstore.API.Controllers
                 query = query.Where(ncc => ncc.Email.Contains(email));
             }
 
-            var result = await query
-                .Select(MapToDTO())
-                .ToListAsync();
+            var result = await query.ToListAsync();
 
             return Ok(result);
         }
@@ -126,11 +124,10 @@ namespace Bookstore.API.Controllers
         //LẤY THÔNG TIN NHÀ CUNG CẤP
         //GET: api/NhaCungCap/1
         [HttpGet("{id}")]
-        public async Task<ActionResult<SupplierDTO>> GetById(int id)
+        public async Task<ActionResult<NhaCungCap>> GetById(int id)
         {
             var nhaCungCap = await _context.NhaCungCap
                 .Where(ncc => ncc.MaNhaCungCap == id)
-                .Select(MapToDTO())
                 .FirstOrDefaultAsync();
             if (nhaCungCap == null)
             {
@@ -145,7 +142,7 @@ namespace Bookstore.API.Controllers
         //CẬP NHẬT THÔNG TIN NHÀ CUNG CẤP
         // PUT: api/NhaCungCap/1
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateNhaCungCap(int id, [FromBody] SupplierDTO newNhaCungCap)
+        public async Task<IActionResult> UpdateNhaCungCap(int id, [FromBody] SupplierRequest newNhaCungCap)
         {
             var oldNhaCungCap = await _context.NhaCungCap.FindAsync(id);
             if (oldNhaCungCap == null)
@@ -183,7 +180,7 @@ namespace Bookstore.API.Controllers
         // TẠO NHÀ CUNG CẤP MỚI
         // POST: api/NhaCungCap
         [HttpPost]
-        public async Task<IActionResult> CreateNewSupplier([FromBody] SupplierDTO supplier)
+        public async Task<IActionResult> CreateNewSupplier([FromBody] SupplierRequest supplier)
         {
             var validation = await CheckUnique(-1, supplier); // Không loại trừ
             if (!validation.IsValid)
