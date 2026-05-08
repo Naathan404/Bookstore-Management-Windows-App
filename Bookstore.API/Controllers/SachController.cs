@@ -68,82 +68,80 @@ namespace Bookstore.API.Controllers
         }
 
         // PUT: api/Sach/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSach(int id, [FromBody] SachDTO request)
-        {
-            try
-            {
-                // Tìm cuốn sách gốc trong DB
-                var sach = await _context.Sach.FirstOrDefaultAsync(s => s.MaSach == id);
-                if (sach == null)
-                    return NotFound("Không tìm thấy sách!");
-
-                var theLoai = await _context.TheLoai.FirstOrDefaultAsync(t => t.TenTheLoai == request.TheLoai);
-                if (theLoai != null)
-                {
-                    sach.MaTheLoai = theLoai.MaTheLoai;
-                }
-
-                //Cập nhật bảng Sach
-                sach.TenSach = request.TenSach;
-                sach.MoTa = request.MoTa;
-                sach.ImageUrl = request.HinhAnh;
-
-                // Tìm và cập nhật bảng PhienBanSach
-                var phienBan = await _context.PhienBanSach.FirstOrDefaultAsync(p => p.MaSach == id);
-                if (phienBan != null)
-                {
-                    phienBan.GiaNiemYet = request.GiaNiemYet;
-                    phienBan.DonGiaBan = request.DonGiaBan;
-                }
-
-                // Lưu xuống Database
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Cập nhật thành công!" });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Lỗi server: {ex.Message}");
-            }
-        }
-
         //[HttpPut("{id}")]
         //public async Task<IActionResult> UpdateSach(int id, [FromBody] SachDTO request)
         //{
         //    try
         //    {
-        //        // 1. Cập nhật bảng Phiên bản (Luôn luôn cho phép)
-        //        var pb = await _context.PhienBanSach.FirstOrDefaultAsync(p => p.MaPhienBan == id);
-        //        if (pb == null) return NotFound();
+        //        // Tìm cuốn sách gốc trong DB
+        //        var sach = await _context.Sach.FirstOrDefaultAsync(s => s.MaSach == id);
+        //        if (sach == null)
+        //            return NotFound("Không tìm thấy sách!");
 
-        //        pb.ISBN = request.ISBN;
-        //        pb.GiaNiemYet = request.GiaNiemYet;
-        //        pb.DonGiaBan = request.DonGiaBan;
-        //        pb.NamXuatBan = request.NamXuatBan;
-        //        pb.NhaXuatBan = request.NhaXuatBan;
-        //        pb.HinhThucBia = request.HinhThucBia;
-
-        //        // 2. Cập nhật bảng Tác phẩm (Chỉ khi người dùng mở khóa công tắc)
-        //        // Dựa vào việc request gửi lên có thay đổi thông tin Sach hay không
-        //        var sach = await _context.Sach.FindAsync(pb.MaSach);
-        //        if (sach != null)
+        //        var theLoai = await _context.TheLoai.FirstOrDefaultAsync(t => t.TenTheLoai == request.TheLoai);
+        //        if (theLoai != null)
         //        {
-        //            sach.TenSach = request.TenSach;
-        //            sach.MoTa = request.MoTa;
-        //            sach.ImageUrl = request.HinhAnh;
-
-        //            var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
-        //            if (theLoai != null) sach.MaTheLoai = theLoai.MaTheLoai;
+        //            sach.MaTheLoai = theLoai.MaTheLoai;
         //        }
 
+        //        //Cập nhật bảng Sach
+        //        sach.TenSach = request.TenSach;
+        //        sach.MoTa = request.MoTa;
+        //        sach.ImageUrl = request.HinhAnh;
+
+        //        // Tìm và cập nhật bảng PhienBanSach
+        //        var phienBan = await _context.PhienBanSach.FirstOrDefaultAsync(p => p.MaSach == id);
+        //        if (phienBan != null)
+        //        {
+        //            phienBan.GiaNiemYet = request.GiaNiemYet;
+        //            phienBan.DonGiaBan = request.DonGiaBan;
+        //        }
+
+        //        // Lưu xuống Database
         //        await _context.SaveChangesAsync();
         //        return Ok(new { message = "Cập nhật thành công!" });
         //    }
         //    catch (Exception ex)
         //    {
-        //        return StatusCode(500, ex.Message);
+        //        return StatusCode(500, $"Lỗi server: {ex.Message}");
         //    }
         //}
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateSach(string id, [FromBody] SachDTO request)
+        {
+            try
+            {
+                // Cập nhật bảng Phiên bản
+                var pb = await _context.PhienBanSach.Include(nxb => nxb.NhaXuatBan).FirstOrDefaultAsync(p => p.ISBN == id);
+                if (pb == null) return NotFound();
+
+                pb.ISBN = request.ISBN;
+                pb.GiaNiemYet = request.GiaNiemYet;
+                pb.DonGiaBan = request.DonGiaBan;
+                pb.NamXuatBan = request.NamXuatBan;
+                pb.HinhThucBia = request.HinhThucBia;
+
+                // Cập nhật bảng Tác phẩm
+                var sach = await _context.Sach.FindAsync(pb.MaSach);
+                if (sach != null)
+                {
+                    sach.TenSach = request.TenSach;
+                    sach.MoTa = request.MoTa;
+                    sach.ImageUrl = request.HinhAnh;
+
+                    var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
+                    if (theLoai != null) sach.MaTheLoai = theLoai.MaTheLoai;
+                }
+
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Cập nhật thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         //[HttpPost]
         //public async Task<IActionResult> CreateSach([FromBody] SachDTO request)
@@ -187,5 +185,56 @@ namespace Bookstore.API.Controllers
         //        return StatusCode(500, ex.Message);
         //    }
         //}
+
+        [HttpPost]
+        public async Task<IActionResult> CreateSach([FromBody] SachDTO request)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // XỬ LÝ NHÀ XUẤT BẢN ĐỂ LẤY MÃ
+                int maNXB;
+                var nxbTonTai = await _context.NhaXuatBan
+                                              .FirstOrDefaultAsync(n => n.TenNhaXuatBan == request.NhaXuatBan);
+
+                if (nxbTonTai == null)
+                {
+                    // Nếu chưa có NXB này, tạo mới để lấy MaNhaXuatBan tự tăng
+                    var nxbMoi = new NhaXuatBan { TenNhaXuatBan = request.NhaXuatBan };
+                    _context.NhaXuatBan.Add(nxbMoi);
+                    await _context.SaveChangesAsync();
+                    maNXB = nxbMoi.MaNhaXuatBan; // Lấy ID vừa sinh ra
+                }
+                else
+                {
+                    maNXB = nxbTonTai.MaNhaXuatBan; // Lấy ID đã có
+                }
+
+                // --- BƯỚC 2: TẠO TÁC PHẨM (Bảng Sach) ---
+                // (Giữ nguyên logic cũ để tạo Sach...)
+                var sachMoi = new Sach { TenSach = request.TenSach };
+                _context.Sach.Add(sachMoi);
+                await _context.SaveChangesAsync();
+
+                // --- BƯỚC 3: TẠO PHIÊN BẢN (Bảng PhienBanSach) ---
+                var phienBanMoi = new PhienBanSach
+                {
+                    MaSach = sachMoi.MaSach,
+                    ISBN = request.ISBN,
+                    MaNhaXuatBan = maNXB, // GÁN KHÓA NGOẠI VÀO ĐÂY
+                                          // ... các trường khác
+                };
+                _context.PhienBanSach.Add(phienBanMoi);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return Ok(new { message = "Thành công!" });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
