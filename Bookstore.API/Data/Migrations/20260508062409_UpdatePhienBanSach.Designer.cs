@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508062409_UpdatePhienBanSach")]
+    partial class UpdatePhienBanSach
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1056,7 +1059,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521186@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 6, 21, 37, 7, 89, DateTimeKind.Local).AddTicks(8721),
+                            HanOTP = new DateTime(2026, 5, 8, 13, 24, 8, 631, DateTimeKind.Local).AddTicks(6510),
                             HoTen = "Nguyễn Chí Nguyên",
                             MaNhomNguoiDung = 1,
                             MaOTP = "",
@@ -1071,7 +1074,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24520604@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 6, 21, 37, 7, 89, DateTimeKind.Local).AddTicks(8733),
+                            HanOTP = new DateTime(2026, 5, 8, 13, 24, 8, 631, DateTimeKind.Local).AddTicks(6525),
                             HoTen = "Nguyễn Gia Hưng",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1086,7 +1089,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521432@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 6, 21, 37, 7, 89, DateTimeKind.Local).AddTicks(8735),
+                            HanOTP = new DateTime(2026, 5, 8, 13, 24, 8, 631, DateTimeKind.Local).AddTicks(6531),
                             HoTen = "Lê Hoàng Quân",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1101,7 +1104,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521536@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 6, 21, 37, 7, 89, DateTimeKind.Local).AddTicks(8736),
+                            HanOTP = new DateTime(2026, 5, 8, 13, 24, 8, 631, DateTimeKind.Local).AddTicks(6601),
                             HoTen = "Phạm Hoàng Sơn",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1116,7 +1119,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521360@g.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 6, 21, 37, 7, 89, DateTimeKind.Local).AddTicks(8738),
+                            HanOTP = new DateTime(2026, 5, 8, 13, 24, 8, 631, DateTimeKind.Local).AddTicks(6607),
                             HoTen = "Nguyễn Lưu Văn Phú",
                             MaNhomNguoiDung = 2,
                             MaOTP = "",
@@ -1926,7 +1929,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 1,
-                            ImageUrl = "/Resources/Images/Books/cleancode.jpg",
+                            ImageUrl = "/Assets/Images/cleancode.jpg",
                             MaTheLoai = 1,
                             MoTa = "Sách gối đầu giường của mọi Dev",
                             TenSach = "Clean Code"
@@ -1934,7 +1937,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 2,
-                            ImageUrl = "/Resources/Images/Books/refactoring.jpg",
+                            ImageUrl = "/Assets/Images/refactoring.jpg",
                             MaTheLoai = 1,
                             MoTa = "Cải thiện thiết kế code cũ",
                             TenSach = "Refactoring"
@@ -1942,7 +1945,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 3,
-                            ImageUrl = "/Resources/Images/Books/designpatterns.jpg",
+                            ImageUrl = "/Assets/Images/designpatterns.jpg",
                             MaTheLoai = 1,
                             MoTa = "Các mẫu thiết kế chuẩn GOF",
                             TenSach = "Design Patterns"
@@ -1950,7 +1953,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 4,
-                            ImageUrl = "/Resources/Images/Books/cleancoder.jpg",
+                            ImageUrl = "/Assets/Images/cleancoder.jpg",
                             MaTheLoai = 1,
                             MoTa = "Quy tắc hành nghề coder chuyên nghiệp",
                             TenSach = "The Clean Coder"
@@ -1958,7 +1961,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 5,
-                            ImageUrl = "/Resources/Images/Books/300baicode.png",
+                            ImageUrl = "/Assets/Images/300baicode.jpg",
                             MaTheLoai = 1,
                             MoTa = "Học xong code bao lương 3 ngàn đô",
                             TenSach = "300 Bài Code Thiếu Nhi"
@@ -1966,7 +1969,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 6,
-                            ImageUrl = "/Resources/Images/Books/matbiec.jpg",
+                            ImageUrl = "/Assets/Images/matbiec.jpg",
                             MaTheLoai = 2,
                             MoTa = "Truyện dài cực hay, tình yêu đau đớn của Ngạn",
                             TenSach = "Mắt Biếc"
@@ -1974,7 +1977,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 7,
-                            ImageUrl = "/Resources/Images/Books/vetuoitho.jpg",
+                            ImageUrl = "/Assets/Images/vetuoitho.jpg",
                             MaTheLoai = 2,
                             MoTa = "Ký ức tuổi thơ dữ dội",
                             TenSach = "Cho Tôi Xin Một Vé Đi Tuổi Thơ"
@@ -1982,7 +1985,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 8,
-                            ImageUrl = "/Resources/Images/Books/sodo.jpg",
+                            ImageUrl = "/Assets/Images/sodo.jpg",
                             MaTheLoai = 2,
                             MoTa = "Hành trình thăng tiến của Xuân Tóc Đỏ",
                             TenSach = "Số Đỏ"
@@ -1990,7 +1993,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 9,
-                            ImageUrl = "/Resources/Images/Books/chipheo.jpg",
+                            ImageUrl = "/Assets/Images/chipheo.jpg",
                             MaTheLoai = 2,
                             MoTa = "Tuyển tập truyện ngắn Nam Cao",
                             TenSach = "Chí Phèo"
@@ -1998,7 +2001,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 10,
-                            ImageUrl = "/Resources/Images/Books/canhdongbattan.jpg",
+                            ImageUrl = "/Assets/Images/canhdongbattan.jpg",
                             MaTheLoai = 2,
                             MoTa = "Nỗi đau trên miền sông nước",
                             TenSach = "Cánh Đồng Bất Tận"
@@ -2006,7 +2009,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 11,
-                            ImageUrl = "/Resources/Images/Books/rungnauy.jpg",
+                            ImageUrl = "/Assets/Images/rungnauy.jpg",
                             MaTheLoai = 2,
                             MoTa = "Tiểu thuyết nổi tiếng của Haruki Murakami",
                             TenSach = "Rừng Na Uy"
@@ -2014,7 +2017,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 12,
-                            ImageUrl = "/Resources/Images/Books/kafka.jpg",
+                            ImageUrl = "/Assets/Images/kafka.jpg",
                             MaTheLoai = 2,
                             MoTa = "Chuyến phiêu lưu kỳ bí",
                             TenSach = "Kafka Bên Bờ Biển"
@@ -2022,7 +2025,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 13,
-                            ImageUrl = "/Resources/Images/Books/nhagiakim.jpg",
+                            ImageUrl = "/Assets/Images/nhagiakim.jpg",
                             MaTheLoai = 2,
                             MoTa = "Hành trình đi tìm kho báu của Santiago",
                             TenSach = "Nhà Giả Kim"
@@ -2030,7 +2033,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 14,
-                            ImageUrl = "/Resources/Images/Books/harrypotter1.jpg",
+                            ImageUrl = "/Assets/Images/harrypotter1.jpg",
                             MaTheLoai = 2,
                             MoTa = "Khởi đầu thế giới phép thuật",
                             TenSach = "Harry Potter và Hòn Đá Phù Thủy"
@@ -2038,7 +2041,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 15,
-                            ImageUrl = "/Resources/Images/Books/harrypotter2.jpg",
+                            ImageUrl = "/Assets/Images/harrypotter2.jpg",
                             MaTheLoai = 2,
                             MoTa = "Năm học thứ hai tại Hogwarts",
                             TenSach = "Harry Potter và Phòng Chứa Bí Mật"
@@ -2046,7 +2049,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 16,
-                            ImageUrl = "/Resources/Images/Books/doraemon1.jpg",
+                            ImageUrl = "/Assets/Images/doraemon1.jpg",
                             MaTheLoai = 6,
                             MoTa = "Mèo máy đến từ tương lai",
                             TenSach = "Doraemon Tập 1"
@@ -2054,7 +2057,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 17,
-                            ImageUrl = "/Resources/Images/Books/doraemon2.jpg",
+                            ImageUrl = "/Assets/Images/doraemon2.jpg",
                             MaTheLoai = 6,
                             MoTa = "Những bảo bối thần kỳ",
                             TenSach = "Doraemon Tập 2"
@@ -2062,7 +2065,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 18,
-                            ImageUrl = "/Resources/Images/Books/conan1.jpg",
+                            ImageUrl = "/Assets/Images/conan1.jpg",
                             MaTheLoai = 6,
                             MoTa = "Sự khởi đầu của thám tử teo nhỏ",
                             TenSach = "Conan Tập 1"
@@ -2070,7 +2073,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 19,
-                            ImageUrl = "/Resources/Images/Books/conan2.png",
+                            ImageUrl = "/Assets/Images/conan2.jpg",
                             MaTheLoai = 6,
                             MoTa = "Vụ án mới",
                             TenSach = "Conan Tập 2"
@@ -2078,7 +2081,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 20,
-                            ImageUrl = "/Resources/Images/Books/dacnhantam.jpg",
+                            ImageUrl = "/Assets/Images/dacnhantam.jpg",
                             MaTheLoai = 4,
                             MoTa = "Sách kỹ năng giao tiếp hay nhất",
                             TenSach = "Đắc Nhân Tâm"
@@ -2086,7 +2089,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 21,
-                            ImageUrl = "/Resources/Images/Books/quangganhlo.jpg",
+                            ImageUrl = "/Assets/Images/quangganhlo.jpg",
                             MaTheLoai = 4,
                             MoTa = "Nghệ thuật sống hạnh phúc",
                             TenSach = "Quẳng Gánh Lo Đi Và Vui Sống"
@@ -2094,7 +2097,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 22,
-                            ImageUrl = "/Resources/Images/Books/gian.jpg",
+                            ImageUrl = "/Assets/Images/gian.jpg",
                             MaTheLoai = 4,
                             MoTa = "Làm chủ cảm xúc",
                             TenSach = "Giận"
@@ -2102,7 +2105,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 23,
-                            ImageUrl = "/Resources/Images/Books/thienac.jpg",
+                            ImageUrl = "/Assets/Images/thienac.jpg",
                             MaTheLoai = 4,
                             MoTa = "Tâm lý học trên mạng xã hội",
                             TenSach = "Thiện, Ác và Smartphone"
@@ -2110,7 +2113,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 24,
-                            ImageUrl = "/Resources/Images/Books/trenduongbang.jpg",
+                            ImageUrl = "/Assets/Images/trenduongbang.jpg",
                             MaTheLoai = 3,
                             MoTa = "Khởi nghiệp và kinh doanh",
                             TenSach = "Trên Đường Băng"
@@ -2118,7 +2121,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaSach = 25,
-                            ImageUrl = "/Resources/Images/Books/caphecungtony.jpg",
+                            ImageUrl = "/Assets/Images/caphecungtony.jpg",
                             MaTheLoai = 3,
                             MoTa = "Chuyện đời chuyện nghề",
                             TenSach = "Cà Phê Cùng Tony"
