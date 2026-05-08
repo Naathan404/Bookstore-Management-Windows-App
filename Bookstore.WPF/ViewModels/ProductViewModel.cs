@@ -2,6 +2,7 @@
 using Bookstore.WPF.Services;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -18,6 +19,7 @@ namespace Bookstore.WPF.ViewModels
         private ObservableCollection<BookItem> _filteredBooks;
         public ObservableCollection<string> ListNhaCungCap { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> ListNhaXuatBan { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<BookItem> ListTacPhamGoc { get; set; } = new ObservableCollection<BookItem>();
 
         public ObservableCollection<string> ListHinhThucBia { get; set; }
 
@@ -31,13 +33,64 @@ namespace Bookstore.WPF.ViewModels
 
         #region Properties - Tìm Kiếm
         private string _searchTenSach = string.Empty;
-        public string SearchTenSach { get => _searchTenSach; set { _searchTenSach = value; OnPropertyChanged(); PerformSearch(); } }
+        public string SearchTenSach 
+        { 
+            get => _searchTenSach; 
+            set 
+            { 
+                _searchTenSach = value; 
+                OnPropertyChanged(); 
+                PerformSearch(); 
+            } 
+        }
 
         private string _searchTacGia = string.Empty;
-        public string SearchTacGia { get => _searchTacGia; set { _searchTacGia = value; OnPropertyChanged(); PerformSearch(); } }
+        public string SearchTacGia 
+        { 
+            get => _searchTacGia; 
+            set 
+            { _searchTacGia = value; 
+                OnPropertyChanged(); 
+                PerformSearch(); 
+            } 
+        }
 
         private string _selectedTheLoai = string.Empty;
-        public string SelectedTheLoai { get => _selectedTheLoai; set { _selectedTheLoai = value; OnPropertyChanged(); PerformSearch(); } }
+        public string SelectedTheLoai 
+        { 
+            get => _selectedTheLoai; 
+            set 
+            { 
+                _selectedTheLoai = value; 
+                OnPropertyChanged();
+                PerformSearch(); 
+            } 
+        }
+
+        private string _searchTonKho;
+        public string SearchTonKho
+        {
+            get => _searchTonKho;
+            set 
+            { 
+                _searchTonKho = value; 
+                OnPropertyChanged();
+                PerformSearch();
+            }
+        }
+
+        // filter lọc theo mức giá
+        private int _selectedPriceRangeIndex = 0; // Mặc định là 0 (Tất cả mức giá)
+        public int SelectedPriceRangeIndex
+        {
+            get => _selectedPriceRangeIndex;
+            set
+            {
+                _selectedPriceRangeIndex = value;
+                OnPropertyChanged();
+                PerformSearch();
+            }
+        }
 
         // NOTE Để bổ sung các properties còn thíu
 
@@ -62,6 +115,51 @@ namespace Bookstore.WPF.ViewModels
 
         private PackIconKind _popupIcon;
         public PackIconKind PopupIcon { get => _popupIcon; set { _popupIcon = value; OnPropertyChanged(); } }
+
+        private bool _isNewProduct = true;
+        public bool IsNewProduct
+        {
+            get => _isNewProduct;
+            set
+            {
+                _isNewProduct = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsOldProduct));
+
+                if (value)
+                {
+                    SelectedTacPhamGoc = null;
+                }
+            }
+        }
+
+        public bool IsOldProduct
+        {
+            get => !_isNewProduct;
+            set
+            {
+                IsNewProduct = !value;
+            }
+        }
+        private BookItem _selectedTacPhamGoc;
+        public BookItem SelectedTacPhamGoc
+        {
+            get => _selectedTacPhamGoc;
+            set
+            {
+                _selectedTacPhamGoc = value;
+                OnPropertyChanged();
+
+                if (value != null && EditingBook != null)
+                {
+                    EditingBook.TenSach = value.TenSach;
+                    EditingBook.TacGia = value.TacGia;
+                    EditingBook.TheLoai = value.TheLoai;
+                    EditingBook.MoTa = value.MoTa;
+                    EditingBook.HinhAnh = value.HinhAnh;
+                }
+            }
+        }
 
         // Biến chứa dữ liệu sách đang được thêm hoặc sửa
         private BookItem _editingBook;
@@ -89,6 +187,8 @@ namespace Bookstore.WPF.ViewModels
                 _ = LoadDataAsync();
             }
         }
+
+
         #endregion
 
         #region Commands
@@ -98,6 +198,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand SaveBookCommand { get; set; }
         public ICommand DeleteBookCommand { get; set; }
         public ICommand ChangeImageCommand { get; set; }
+        public ICommand ClearFilterCommand { get; set; }
 
         // Phân trang Commands
         public ICommand FirstPageCommand { get; set; }
@@ -142,6 +243,10 @@ namespace Bookstore.WPF.ViewModels
                 PopupTitle = "THÊM SÁCH MỚI";
                 PopupIcon = PackIconKind.BookPlus;
                 _isAddingNew = true;
+
+                IsNewProduct = true;
+                SelectedTacPhamGoc = null;
+
                 EditingBook = new BookItem { HinhAnh = "/Resources/Images/Books/default_book_cover.jpg", GiaNiemYet = 0, DonGiaBan = 0, SoLuongTonKho = 0, TongDaBan = 0 };
                 IsPopupVisible = Visibility.Visible;
                 IsAddingNew = true;
@@ -206,6 +311,13 @@ namespace Bookstore.WPF.ViewModels
 
             SaveBookCommand = new RelayCommand<object>(async (p) =>
             {
+                if (IsOldProduct && SelectedTacPhamGoc == null)
+                {
+                    MessageBox.Show("Vui lòng CHỌN đúng một tác phẩm có sẵn từ danh sách, hoặc chuyển sang chế độ 'Tạo tác phẩm mới'!",
+                                    "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 if (string.IsNullOrWhiteSpace(EditingBook.TenSach))
                 {
                     MessageBox.Show("Vui lòng nhập tên sách!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -264,6 +376,17 @@ namespace Bookstore.WPF.ViewModels
                     EditingBook.HinhAnh = openFileDialog.FileName;
                 }
             });
+            
+
+            ClearFilterCommand = new RelayCommand<object>((p) => {
+                SearchTenSach = string.Empty;
+                SearchTacGia = string.Empty;
+                SelectedTheLoai = null;
+                SelectedPriceRangeIndex = 0;
+                SearchTonKho = string.Empty;
+
+                PerformSearch();
+            });
 
             // Phân trang commands
             FirstPageCommand = new RelayCommand<object>((p) => GoToPage(1));
@@ -276,15 +399,44 @@ namespace Bookstore.WPF.ViewModels
         private void PerformSearch()
         {
             var result = _allBooks.AsEnumerable();
-
+            
+            // lọc tên sách
             if (!string.IsNullOrWhiteSpace(SearchTenSach))
                 result = result.Where(b => b.TenSach.ToLower().Contains(SearchTenSach.ToLower()));
 
+            // lọc tên tác giả
             if (!string.IsNullOrWhiteSpace(SearchTacGia))
                 result = result.Where(b => b.TacGia.ToLower().Contains(SearchTacGia.ToLower()));
 
+            // lọc theo thể loại
             if (SelectedTheLoai != "Tất cả" && !string.IsNullOrEmpty(SelectedTheLoai))
                 result = result.Where(b => b.TheLoai == SelectedTheLoai);
+
+            // lọc theo khoảng giá
+            switch (SelectedPriceRangeIndex)
+            {
+                case 1: // Dưới 50.000đ
+                    result = result.Where(x => x.DonGiaBan < 50000);
+                    break;
+                case 2: // 50.000đ - 100.000đ
+                    result = result.Where(x => x.DonGiaBan >= 50000 && x.DonGiaBan <= 100000);
+                    break;
+                case 3: // 100.000đ - 200.000đ
+                    result = result.Where(x => x.DonGiaBan > 100000 && x.DonGiaBan <= 200000);
+                    break;
+                case 4: // Trên 200.000đ
+                    result = result.Where(x => x.DonGiaBan > 200000);
+                    break;
+                case 0: // Tất cả mức giá -> Không làm gì cả
+                default:
+                    break;
+            }
+
+            // lọc theo tồn kho
+            if (!string.IsNullOrWhiteSpace(SearchTonKho) && int.TryParse(SearchTonKho, out int tonKho))
+            {
+                result = result.Where(x => x.SoLuongTonKho <= tonKho);
+            }
 
             _filteredBooks.Clear();
             int stt = 1;
@@ -294,7 +446,9 @@ namespace Bookstore.WPF.ViewModels
                 _filteredBooks.Add(b);
             }
 
-            CurrentPage = 1;
+            //_filteredBooks = new ObservableCollection<BookItem>(result);
+
+            //CurrentPage = 1;
             UpdatePagination();
         }
 
@@ -357,6 +511,10 @@ namespace Bookstore.WPF.ViewModels
                             });
                         }
                         PerformSearch();
+
+                        ListTacPhamGoc.Clear();
+                        var uniqueBooks = _allBooks.GroupBy(x => x.TenSach).Select(g => g.First()).ToList();
+                        foreach (var b in uniqueBooks) ListTacPhamGoc.Add(b);
                     });
                 }
             }
@@ -426,19 +584,25 @@ namespace Bookstore.WPF.ViewModels
         private string _tenSach;
         public string TenSach { get => _tenSach; set { _tenSach = value; OnPropertyChanged(); } }
 
+        private string _tacGia;
+        public string TacGia { get => _tacGia; set { _tacGia = value; OnPropertyChanged(); } }
+
+        private string _theLoai;
+        public string TheLoai { get => _theLoai; set { _theLoai = value; OnPropertyChanged(); } }
+
+        private string _moTa;
+        public string MoTa { get => _moTa; set { _moTa = value; OnPropertyChanged(); } }
+
+        private string _hinhAnh;
+        public string HinhAnh { get => _hinhAnh; set { _hinhAnh = value; OnPropertyChanged(); } }
+
         public string ISBN { get; set; }
         public int NamXuatBan { get; set; }
         public string NhaXuatBan { get; set; }
         public string HinhThucBia { get; set; }
-        public string TacGia { get; set; }
-        public string TheLoai { get; set; }
-        public string MoTa { get; set; }
         public int SoLuongTonKho { get; set; }
         public int TongDaBan { get; set; }
         public decimal GiaNiemYet { get; set; }
         public decimal DonGiaBan { get; set; }
-
-        private string _hinhAnh;
-        public string HinhAnh { get => _hinhAnh; set { _hinhAnh = value; OnPropertyChanged(); } }
     }
 }

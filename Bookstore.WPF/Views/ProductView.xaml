@@ -23,8 +23,6 @@
             <GradientStop Color="#5B3CFF" Offset="1"/>
         </LinearGradientBrush>
 
-        <!-- Đã xóa các DropShadowEffect ở đây để chống lag -->
-
         <!-- Styles -->
         <Style x:Key="MainGradientButton" TargetType="Button">
             <Setter Property="Height" Value="36"/>
@@ -32,7 +30,6 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <!-- Đã xóa Effect -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -156,9 +153,6 @@
                                     <ControlTemplate TargetType="ToggleButton">
                                         <Border x:Name="border" Width="42" Height="24" CornerRadius="12" Background="#10B981">
                                             <Ellipse x:Name="knob" Width="18" Height="18" Fill="White" HorizontalAlignment="Right" Margin="3">
-                                                <Ellipse.Effect>
-                                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.3"/>
-                                                </Ellipse.Effect>
                                             </Ellipse>
                                         </Border>
                                         <ControlTemplate.Triggers>
@@ -203,73 +197,141 @@
 
             <!-- Card 2: Search Filters -->
             <Border Grid.Row="1" Margin="0,0,0,12" Padding="20" CornerRadius="16"
-                    Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <Border Grid.Column="0" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="Book" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
-                            <TextBox Text="{Binding SearchTenSach, UpdateSourceTrigger=PropertyChanged}"
-                                     Background="Transparent" BorderThickness="0"
-                                     VerticalAlignment="Center" FontSize="13" Foreground="#2B3674"
-                                     materialDesign:HintAssist.Hint="Tên sách..." Width="Auto"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="Book" Width="16" Height="16" Foreground="#A3AED0" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding SearchTenSach, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0 0 5 0"
+                                 Background="Transparent" BorderThickness="0"
+                                 VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                 FontSize="13" Foreground="#2B3674"
+                                 materialDesign:HintAssist.Hint="Tên sách..."/>
+                        </Grid>
                     </Border>
 
                     <Border Grid.Column="1" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="Account" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
-                            <TextBox Text="{Binding SearchTacGia, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0"
-                                     VerticalAlignment="Center" FontSize="13" Foreground="#2B3674"
-                                     materialDesign:HintAssist.Hint="Tác giả..." Width="Auto"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="Account" Width="16" Height="16" Foreground="#A3AED0" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding SearchTacGia, UpdateSourceTrigger=PropertyChanged}" 
+                                     Margin="0 0 5 0"
+                                 Background="Transparent" BorderThickness="0"
+                                 VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                 FontSize="13" Foreground="#2B3674"
+                                 materialDesign:HintAssist.Hint="Tác giả..."/>
+                        </Grid>
                     </Border>
 
                     <Border Grid.Column="2" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="Tag" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
-                            <!-- cbb thể loại -->
-                            <ComboBox Background="Transparent" BorderThickness="0"
-                                      VerticalAlignment="Center" FontSize="13" Foreground="#2B3674"
-                                      materialDesign:HintAssist.Hint="Thể loại" Width="Auto"
-                                      ItemsSource="{Binding ListTheLoai}" SelectedItem="{Binding SelectedTheLoai}"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="Tag" Width="16" Height="16" Foreground="#A3AED0" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <ComboBox Grid.Column="1" Background="Transparent" BorderThickness="0"
+                                      Margin="0 0 5 0"
+                                  VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                  FontSize="13" Foreground="#2B3674"
+                                  materialDesign:HintAssist.Hint="Thể loại"
+                                  ItemsSource="{Binding ListTheLoai}" SelectedItem="{Binding SelectedTheLoai}">
+                                <ComboBox.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+
+                                        <Style.Triggers>
+                                            <Trigger Property="Orientation" Value="Vertical">
+                                                <Setter Property="Width" Value="6"/>
+                                                <Setter Property="MaxWidth" Value="6"/>
+                                                <Setter Property="Margin" Value="0,0,2,0"/>
+                                            </Trigger>
+
+                                            <Trigger Property="Orientation" Value="Horizontal">
+                                                <Setter Property="Height" Value="6"/>
+                                                <Setter Property="MaxHeight" Value="6"/>
+                                                <Setter Property="Margin" Value="0,0,0,2"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.Resources>
+                            </ComboBox>
+                        </Grid>
                     </Border>
 
-                    <!-- các TextBox c -->
                     <Border Grid.Column="3" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="CurrencyUsd" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
-                            <TextBox Background="Transparent" BorderThickness="0" VerticalAlignment="Center" FontSize="13" Foreground="#2B3674" materialDesign:HintAssist.Hint="Giá niêm yết..." Width="Auto"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Grid.Column="4" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="Cash" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
-                            <TextBox Background="Transparent" BorderThickness="0" VerticalAlignment="Center" FontSize="13" Foreground="#2B3674" materialDesign:HintAssist.Hint="Đơn giá bán..." Width="Auto"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Grid.Column="5" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="PackageVariant" Width="16" Height="16" Foreground="#A3AED0" Margin="10,0,6,0"/>
-                            <TextBox Background="Transparent" BorderThickness="0" VerticalAlignment="Center" FontSize="13" Foreground="#2B3674" materialDesign:HintAssist.Hint="Số lượng tồn..." Width="Auto"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="CashSync" Width="18" Height="18" Foreground="#A3AED0" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <ComboBox Grid.Column="1" Background="Transparent" BorderThickness="0" 
+                                  VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                  FontSize="13" Foreground="#2B3674"
+                                  materialDesign:HintAssist.Hint="Khoảng giá"
+                                  SelectedIndex="{Binding SelectedPriceRangeIndex}"
+                                      Margin="0 0 5 0">
+                                <ComboBoxItem Content="Tất cả mức giá"/>
+                                <ComboBoxItem Content="Dưới 50.000đ"/>
+                                <ComboBoxItem Content="50.000đ - 100.000đ"/>
+                                <ComboBoxItem Content="100.000đ - 200.000đ"/>
+                                <ComboBoxItem Content="Trên 200.000đ"/>
+                            </ComboBox>
+                        </Grid>
                     </Border>
 
-                    <Button Grid.Column="6" Style="{StaticResource MainGradientButton}" Width="110">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Magnify" Width="16" Height="16" Foreground="White" Margin="0,0,6,0"/>
-                            <TextBlock Text="TÌM KIẾM"/>
-                        </StackPanel>
+                    <Border Grid.Column="4" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="PackageVariant" Width="16" Height="16" Foreground="#A3AED0" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding SearchTonKho, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0 0 5 0"
+                                 Background="Transparent" BorderThickness="0" 
+                                 VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                 FontSize="13" Foreground="#2B3674" 
+                                 materialDesign:HintAssist.Hint="Tồn kho..."/>
+                        </Grid>
+                    </Border>
+
+                    <Button Grid.Column="5" Width="42" Height="42" 
+                        ToolTip="Xóa tất cả bộ lọc"
+                        Command="{Binding ClearFilterCommand}"
+                        Background="#FEE2E2" BorderThickness="0" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                    <materialDesign:PackIcon Kind="FilterOff" Width="20" Height="20" 
+                                                         Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
                     </Button>
                 </Grid>
             </Border>
@@ -289,6 +351,27 @@
 
                     <DataGrid.Resources>
                         <!-- Style Mặc định cho Header-->
+                        <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+                            <Style.Triggers>
+                                <Trigger Property="Orientation" Value="Vertical">
+                                    <Setter Property="LayoutTransform">
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleX="0.4"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Margin" Value="0,0,2,0"/>
+                                </Trigger>
+
+                                <Trigger Property="Orientation" Value="Horizontal">
+                                    <Setter Property="LayoutTransform">
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleY="0.4"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Margin" Value="0,0,0,2"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="Background" Value="#F8FAFC"/>
                             <Setter Property="Foreground" Value="#2B3674"/>
@@ -298,7 +381,7 @@
                             <Setter Property="BorderBrush" Value="#E2E8F0"/>
                             <Setter Property="BorderThickness" Value="0,0,0,2"/>
                             <Setter Property="Padding" Value="12,0"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                         </Style>
 
@@ -590,7 +673,6 @@
                 </Border.InputBindings>
             </Border>
 
-            <!-- Tăng Width lên 680 để Form rộng rãi và cân đối hơn cho 2 Tab -->
             <Border Width="680" Height="520" Background="White" CornerRadius="20" BorderBrush="#E2E8F0" BorderThickness="1"
                     HorizontalAlignment="Center" VerticalAlignment="Center" Padding="25">
                 <Grid>
@@ -609,6 +691,27 @@
                     <!-- KHU VỰC CHIA TAB -->
                     <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="0,0,0,20">
                         <TabControl.Resources>
+                            <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+                                <Style.Triggers>
+                                    <Trigger Property="Orientation" Value="Vertical">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <ScaleTransform ScaleX="0.4"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Margin" Value="0,0,2,0"/>
+                                    </Trigger>
+
+                                    <Trigger Property="Orientation" Value="Horizontal">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <ScaleTransform ScaleY="0.4"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Margin" Value="0,0,0,2"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
                             <!-- Style cực xịn cho Nút chuyển Tab -->
                             <Style TargetType="TabItem">
                                 <Setter Property="FontSize" Value="14"/>
@@ -633,126 +736,100 @@
                         </TabControl.Resources>
 
                         <!-- ================= TAB 1: THÔNG TIN TÁC PHẨM ================= -->
-                        <TabItem Header="1. THÔNG TIN TÁC PHẨM">
-                            <Grid Margin="0,10,0,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                        <TabItem Header="1. THÔNG TIN ĐẦU SÁCH">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                                <Grid Margin="0,0,15,10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <Border Grid.Row="0" Margin="0,0,0,15" Padding="12,10" Background="#F8FAFC" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5,0,20" HorizontalAlignment="Center">
+                                        <RadioButton Content="Đầu sách mới" IsChecked="{Binding IsNewProduct}" 
+                             Margin="0,0,30,0" FontSize="14" Foreground="#2B3674" FontWeight="SemiBold" Cursor="Hand"/>
+                                        <RadioButton Content="Sách đã có" IsChecked="{Binding IsOldProduct}" 
+                             FontSize="14" Foreground="#2B3674" FontWeight="SemiBold" Cursor="Hand"/>
+                                    </StackPanel>
 
-                                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                                            <TextBlock Text="Thông tin gốc của tác phẩm" FontWeight="Bold" FontSize="13" Foreground="#2B3674"/>
-
-                                            <TextBlock FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Text" Value="Mặc định bị khóa để tránh sửa nhầm. Bật công tắc bên phải nếu bạn thực sự muốn sửa."/>
-                                                        <Setter Property="Foreground" Value="#9CA3AF"/>
-                                                        <Setter Property="FontWeight" Value="Normal"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsChecked, ElementName=toggleEditMaster}" Value="True">
-                                                                <Setter Property="Text" Value="⚠️ CẢNH BÁO: Đổi tên/tác giả ở đây sẽ làm thay đổi TẤT CẢ các phiên bản của sách này!"/>
-                                                                <Setter Property="Foreground" Value="#EF4444"/>
-                                                                <Setter Property="FontWeight" Value="SemiBold"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </StackPanel>
-
-                                        <ToggleButton x:Name="toggleEditMaster" Grid.Column="1" VerticalAlignment="Center" Cursor="Hand"
-                                                      IsChecked="{Binding IsAddingNew, Mode=OneWay}"
-                                                      ToolTip="Mở khóa chỉnh sửa">
-                                            <ToggleButton.Style>
-                                                <Style TargetType="ToggleButton">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="ToggleButton">
-                                                                <Border x:Name="border" Background="#E5E7EB" Width="44" Height="24" CornerRadius="12" Padding="2">
-                                                                    <Ellipse x:Name="knob" Fill="White" Width="20" Height="20" HorizontalAlignment="Left">
-                                                                        <Ellipse.Effect>
-                                                                            <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.2"/>
-                                                                        </Ellipse.Effect>
-                                                                    </Ellipse>
-                                                                </Border>
-                                                                <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsChecked" Value="True">
-                                                                        <Setter TargetName="border" Property="Background" Value="#EF4444"/>
-                                                                        <Setter TargetName="knob" Property="HorizontalAlignment" Value="Right"/>
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </ToggleButton.Style>
-                                        </ToggleButton>
-                                    </Grid>
-                                </Border>
-
-                                <Grid Grid.Row="1" Margin="0,0,0,10" IsEnabled="{Binding IsChecked, ElementName=toggleEditMaster}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="150"/>
-                                        <ColumnDefinition Width="20"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Border Grid.Column="0" Width="140" Height="190" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
-                                        <Border.InputBindings>
-                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}"/>
-                                        </Border.InputBindings>
+                                    <Border Grid.Row="1" Margin="0,0,0,20" CornerRadius="10" Background="#F8FAFC" BorderBrush="#4318FF" BorderThickness="1.5" Padding="15">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsOldProduct}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
                                         <Grid>
-                                            <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            <Border Background="#99000000" VerticalAlignment="Bottom" Height="30">
-                                                <TextBlock Text="Đổi ảnh" Foreground="White" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                                            </Border>
+                                            <TextBlock Text="Tìm tác phẩm gốc để thêm phiên bản mới *" FontSize="11" Foreground="#4318FF" FontWeight="Bold" Margin="4,-8,0,0" VerticalAlignment="Top"/>
+                                            <ComboBox ItemsSource="{Binding ListTacPhamGoc}" 
+                              SelectedItem="{Binding SelectedTacPhamGoc}"
+                              DisplayMemberPath="TenSach" 
+                              IsEditable="True"
+                              materialDesign:HintAssist.Hint="Nhập tên sách để tìm nhanh..."
+                              FontSize="14" Foreground="#2B3674" Background="Transparent" BorderThickness="0"
+                              Margin="0,10,0,0"/>
                                         </Grid>
                                     </Border>
 
-                                    <StackPanel Grid.Column="2">
-                                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46" Margin="0,0,0,15">
+                                    <Grid Grid.Row="2" IsEnabled="{Binding IsNewProduct}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0" Width="140" Height="190" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
+                                            <Border.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}"/>
+                                            </Border.InputBindings>
                                             <Grid>
-                                                <TextBlock Text="Tên tác phẩm *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingBook.TenSach}" FontSize="14" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                                <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill"/>
+                                                <Border Background="#99000000" VerticalAlignment="Bottom" Height="30">
+                                                    <TextBlock Text="Đổi ảnh" Foreground="White" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                                </Border>
                                             </Grid>
                                         </Border>
 
-                                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46" Margin="0,0,0,15">
-                                            <Grid>
-                                                <TextBlock Text="Tác giả" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingBook.TacGia}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
-                                            <Grid>
-                                                <TextBlock Text="Thể loại" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding ListTheLoai}" SelectedItem="{Binding EditingBook.TheLoai}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="6,0,6,2" Height="28"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-                                </Grid>
-
-                                <Border Grid.Row="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="80" IsEnabled="{Binding IsChecked, ElementName=toggleEditMaster}">
-                                    <Grid>
-                                        <TextBlock Text="Mô tả nội dung" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                        <TextBox Text="{Binding EditingBook.MoTa}" FontSize="13" Foreground="#4B5563" BorderThickness="0" Background="Transparent" Margin="10,20,10,6" Padding="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Stretch"/>
+                                        <StackPanel Grid.Column="2">
+                                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46" Margin="0,0,0,15">
+                                                <Grid>
+                                                    <TextBlock Text="Tên tác phẩm *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.TenSach}" FontSize="14" FontWeight="Bold" Foreground="#2B3674" BorderThickness="0" Margin="10,0,10,6" VerticalAlignment="Bottom"/>
+                                                </Grid>
+                                            </Border>
+                                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46" Margin="0,0,0,15">
+                                                <Grid>
+                                                    <TextBlock Text="Tác giả" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.TacGia}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="10,0,10,6" VerticalAlignment="Bottom"/>
+                                                </Grid>
+                                            </Border>
+                                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                                <Grid>
+                                                    <TextBlock Text="Thể loại" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <ComboBox ItemsSource="{Binding ListTheLoai}" SelectedItem="{Binding EditingBook.TheLoai}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="6,0,6,2" VerticalAlignment="Bottom"/>
+                                                </Grid>
+                                            </Border>
+                                        </StackPanel>
                                     </Grid>
-                                </Border>
-                            </Grid>
+
+                                    <Border Grid.Row="3" Margin="0,15,0,0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" MinHeight="100" IsEnabled="{Binding IsNewProduct}">
+                                        <Grid>
+                                            <TextBlock Text="Mô tả nội dung" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingBook.MoTa}" FontSize="13" Foreground="#4B5563" BorderThickness="0" 
+                             Margin="10,22,10,10" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </ScrollViewer>
                         </TabItem>
 
                         <!-- ================= TAB 2: CẤU HÌNH BÁN HÀNG ================= -->
-                        <TabItem Header="2. PHIÊN BẢN &amp; BÁN HÀNG">
+                        <TabItem Header="2. CHI TIẾT SÁCH PHIÊN BẢN SÁCH">
                             <StackPanel Margin="0,10,0,0">
                                 
                                 <!-- Dòng 1: ISBN + Năm XB -->
@@ -764,7 +841,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
                                         <Grid>
-                                            <TextBlock Text="Mã ISBN (Khóa chính)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBlock Text="Mã ISBN" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
                                             <TextBox Text="{Binding EditingBook.ISBN}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
                                         </Grid>
                                     </Border>
