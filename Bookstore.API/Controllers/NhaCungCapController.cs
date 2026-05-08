@@ -75,6 +75,7 @@ namespace Bookstore.API.Controllers
         }
 
         // LẤY TÊN CÁC NHÀ CUNG CẤP
+        //GET: api/NhaCungCap/names
         [HttpGet("names")]
         public async Task<IActionResult> GetAllNhaCungCap()
         {
@@ -85,6 +86,7 @@ namespace Bookstore.API.Controllers
         }
 
         //TÌM KIẾM NHÀ CUNG CẤP THEO THAM SỐ GẦN ĐÚNG
+        //GET: api/NhaCungCap?ten=...&maSoThue=...
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SupplierDTO>>> GetNhaCungCap(
             [FromQuery] string? ten,
@@ -122,6 +124,7 @@ namespace Bookstore.API.Controllers
         }
 
         //LẤY THÔNG TIN NHÀ CUNG CẤP
+        //GET: api/NhaCungCap/1
         [HttpGet("{id}")]
         public async Task<ActionResult<SupplierDTO>> GetById(int id)
         {
@@ -214,6 +217,7 @@ namespace Bookstore.API.Controllers
 
 
         // XÓA NHÀ CUNG CẤP KHÔNG CÓ NHẬP SÁCH
+        //DELETE: api/NhaCungCap/1
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSupplier(int id)
         {
