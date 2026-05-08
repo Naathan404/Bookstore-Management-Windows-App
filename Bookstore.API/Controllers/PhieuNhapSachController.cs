@@ -22,7 +22,7 @@ namespace Bookstore.API.Controllers
         {
             return p => new ImportResponse
             {
-                MaPhieu = p.MaPhieuNhapSach,
+                MaPhieuNhap = p.MaPhieuNhapSach,
                 NgayTao = p.NgayTao,
                 NguoiTao = p.NguoiTao,
                 TenNguoiTao = p.NguoiDung != null ? p.NguoiDung.HoTen : "Không xác định",
