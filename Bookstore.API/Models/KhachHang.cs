@@ -21,5 +21,8 @@ namespace Bookstore.API.Models
         public int TongDonDaMua { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal TienNo { get; set; }
         public int GetID() => MaKhachHang;
+
+        [ForeignKey("MaLoaiKhachHang")]
+        public virtual LoaiKhachHang? LoaiKhachHang { get; set; }
     }
 }

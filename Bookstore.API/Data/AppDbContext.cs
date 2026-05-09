@@ -109,7 +109,7 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<KhachHang>()
-                .HasOne<LoaiKhachHang>().WithMany().HasForeignKey(k => k.MaLoaiKhachHang)
+                .HasOne(k => k.LoaiKhachHang).WithMany().HasForeignKey(k => k.MaLoaiKhachHang)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UuDai>()
