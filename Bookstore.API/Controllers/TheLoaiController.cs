@@ -1,4 +1,5 @@
 ﻿using Bookstore.API.Data;
+using Bookstore.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,21 @@ namespace Bookstore.API.Controllers
             {
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
+        }
+
+        public class TheLoaiCreateDTO { public string TenTheLoai { get; set; } }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] TheLoaiCreateDTO request)
+        {
+            if (await _context.TheLoai.AnyAsync(t => t.TenTheLoai.ToLower() == request.TenTheLoai.ToLower()))
+                return BadRequest("Thể loại đã tồn tại.");
+
+            var newTheLoai = new TheLoai { TenTheLoai = request.TenTheLoai };
+            _context.TheLoai.Add(newTheLoai);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Thêm thành công" });
         }
     }
 }

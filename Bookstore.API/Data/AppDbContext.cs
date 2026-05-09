@@ -79,7 +79,7 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhienBanSach>()
-                .HasOne<Sach>().WithMany().HasForeignKey(p => p.MaSach)
+                .HasOne(s => s.Sach).WithMany().HasForeignKey(p => p.MaSach)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PhienBanSach>()
                             .HasOne(p => p.NhaXuatBan)
