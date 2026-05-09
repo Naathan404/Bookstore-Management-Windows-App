@@ -87,7 +87,7 @@
                 <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.05" ShadowDepth="0"/>
             </Border.Effect>
 
-            <views:SidebarView DataContext="{Binding SidebarVM}" />
+            <views:SidebarView DataContext="{Binding SidebarVM}" Loaded="SidebarView_Loaded" />
         </Border>
     </Grid>
 </Window>
