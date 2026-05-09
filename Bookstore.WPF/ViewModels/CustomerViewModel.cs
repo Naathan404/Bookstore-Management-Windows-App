@@ -3,6 +3,7 @@ using Bookstore.WPF.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
 
@@ -177,7 +178,7 @@ namespace Bookstore.WPF.ViewModels
             PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
 
             // Khởi chạy dữ liệu ban đầu
-            KhoiTaoDuLieu();
+            _ = KhoiTaoDuLieuAsync();
         }
 
         #endregion
@@ -372,15 +373,28 @@ namespace Bookstore.WPF.ViewModels
                 resultList.Skip((TrangHienTai - 1) * _soDongTrenTrang).Take(_soDongTrenTrang));
         }
 
-        private void KhoiTaoDuLieu()
+        private async Task KhoiTaoDuLieuAsync()
         {
-            _danhSachKhachHangGoc = new ObservableCollection<CustomerResponse>
+            try
             {
-                new() { MaKhachHang = "KH001", TenKhachHang = "Nguyễn Văn A", SoDienThoai = "0912345678", Email = "vana@gmail.com", DiaChi = "Hà Nội", CongNo = 1500000, LoaiKhach = "Cá nhân", GioiTinh = "Nam", NgaySinh = new DateTime(1990, 5, 15) },
-                new() { MaKhachHang = "KH002", TenKhachHang = "Trần Thị B", SoDienThoai = "0987654321", Email = "thib@gmail.com", DiaChi = "TP.HCM", CongNo = 0, LoaiKhach = "Cá nhân", GioiTinh = "Nữ", NgaySinh = new DateTime(1995, 8, 20) },
-                // Thêm các dữ liệu khác...
-            };
-            ApplyFilter();
+                var result = await ApiClient.GetAsync<List<CustomerResponse>>("api/KhachHang");
+
+                if (result != null && result.Any())
+                {
+                    _danhSachKhachHangGoc = new ObservableCollection<CustomerResponse>(result);
+                }
+                else
+                {
+                    _danhSachKhachHangGoc = new ObservableCollection<CustomerResponse>();
+                }
+                ApplyFilter();
+            }
+            catch (Exception ex)
+            {
+                // ApiClient có thể đã bắt lỗi, nhưng cứ bọc try-catch ở View để hiện thông báo cho người dùng
+                MessageBox.Show($"Có lỗi xảy ra khi lấy danh sách khách hàng: {ex.Message}",
+                                "Lỗi tải dữ liệu", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #endregion
