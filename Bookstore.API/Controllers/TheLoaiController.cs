@@ -16,8 +16,8 @@ namespace Bookstore.API.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTheLoai()
+        [HttpGet("names")]
+        public async Task<IActionResult> GetAllTheLoaiNames()
         {
             try
             {
@@ -31,6 +31,15 @@ namespace Bookstore.API.Controllers
             {
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var list = await _context.TheLoai
+                .Select(t => new { Id = t.MaTheLoai, Name = t.TenTheLoai })
+                .ToListAsync();
+            return Ok(list);
         }
 
         public class TheLoaiCreateDTO { public string TenTheLoai { get; set; } }

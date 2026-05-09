@@ -40,6 +40,10 @@
             <views:PromotionView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewmodels:CategoryViewModel}">
+            <views:CategoryView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type viewmodels:ReportViewModel }">
             <views:ReportView />
         </DataTemplate>

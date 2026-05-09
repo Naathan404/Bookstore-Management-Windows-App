@@ -714,7 +714,7 @@ namespace Bookstore.WPF.ViewModels
         {
             try
             {
-                var danhSachTheLoai = await ApiClient.GetAsync<List<string>>("api/TheLoai");
+                var danhSachTheLoai = await ApiClient.GetAsync<List<string>>("api/TheLoai/names");
 
                 if (danhSachTheLoai != null)
                 {

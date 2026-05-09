@@ -1220,7 +1220,7 @@
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                                <TextBlock Text="Mở khóa sửa" Foreground="#991B1B" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                
                                                 <ToggleButton IsChecked="{Binding IsEditMasterEnabled}" Cursor="Hand">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="ToggleButton">

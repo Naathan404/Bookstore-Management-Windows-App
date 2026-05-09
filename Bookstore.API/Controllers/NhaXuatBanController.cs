@@ -17,13 +17,22 @@ namespace Bookstore.API.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet("names")]
         public async Task<IActionResult> GetAllNhaXuatBan()
         {
             // Lấy danh sách tên NXB từ bảng NhaXuatBan trong DB
             var list = await _context.NhaXuatBan
                                      .Select(nxb => nxb.TenNhaXuatBan)
                                      .ToListAsync();
+            return Ok(list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var list = await _context.NhaXuatBan
+                .Select(n => new { Id = n.MaNhaXuatBan, Name = n.TenNhaXuatBan })
+                .ToListAsync();
             return Ok(list);
         }
 

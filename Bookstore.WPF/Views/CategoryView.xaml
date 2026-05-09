@@ -3,10 +3,279 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Bookstore.WPF.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             Background="#F4F7FE"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <LinearGradientBrush x:Key="GradientButtonBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#4318FF" Offset="0"/>
+            <GradientStop Color="#5B3CFF" Offset="1"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="MainGradientButton" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{StaticResource GradientButtonBrush}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="OutlineButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#4318FF"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" BorderBrush="#4318FF" BorderThickness="1.5" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MiniAddButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Background" Value="#E0E7FF"/>
+            <Setter Property="Foreground" Value="#4318FF"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#C7D2FE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#A5B4FC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FilterBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="42"/>
+        </Style>
+
+        <Style x:Key="CategoryTabItem" TargetType="TabItem">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#A3AED0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,3"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="#4318FF"/>
+                    <Setter Property="BorderBrush" Value="#4318FF"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#4318FF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Margin="0,0,0,20" Padding="20" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="CategoryPlus" Width="32" Height="32" Foreground="#4318FF" Margin="0,0,15,0" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="QUẢN LÝ DANH MỤC HỆ THỐNG" FontSize="20" FontWeight="Bold" Foreground="#2B3674"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+            <TabItem Header="TÁC GIẢ" Style="{StaticResource CategoryTabItem}" FontWeight="Bold">
+                <Grid Margin="0,15,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource FilterBorderStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="Search" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBox Grid.Column="1" Text="{Binding SearchTacGia, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm tác giả..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent" Margin="0 0 10 0"/>
+                            </Grid>
+                        </Border>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddTacGiaCommand}" Content="+ THÊM TÁC GIẢ"/>
+                    </Grid>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredTacGias}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="Tên" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTemplateColumn Header="Thao tác" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource MiniAddButtonStyle}" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                <materialDesign:PackIcon Kind="Edit"/>
+                                            </Button>
+                                            <Button Style="{StaticResource MiniAddButtonStyle}" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="#FEE2E2" Margin="5,0,0,0">
+                                                <materialDesign:PackIcon Kind="Delete" Foreground="Red"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="THỂ LOẠI" Style="{StaticResource CategoryTabItem}" FontWeight="Bold">
+                <Grid Margin="0,15,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource FilterBorderStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="Tag" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBox Grid.Column="1" Text="{Binding SearchTheLoai, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm thể loại..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent"/>
+                            </Grid>
+                        </Border>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddTheLoaiCommand}" Content="+ THÊM THỂ LOẠI"/>
+                    </Grid>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredTheLoais}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="Tên Thể Loại" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTemplateColumn Header="Thao tác" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource MiniAddButtonStyle}" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                <materialDesign:PackIcon Kind="Edit"/>
+                                            </Button>
+                                            <Button Style="{StaticResource MiniAddButtonStyle}" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="#FEE2E2" Margin="5,0,0,0">
+                                                <materialDesign:PackIcon Kind="Delete" Foreground="Red"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="NHÀ XUẤT BẢN" Style="{StaticResource CategoryTabItem}" FontWeight="Bold">
+                <Grid Margin="0,15,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource FilterBorderStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="Domain" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBox Grid.Column="1" Text="{Binding SearchNXB, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm NXB..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent"/>
+                            </Grid>
+                        </Border>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddNXBCommand}" Content="+ THÊM NXB"/>
+                    </Grid>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredNXBs}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="Tên Nhà Xuất Bản" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTemplateColumn Header="Thao tác" Width="100">
+                                <DataGridTemplateColumn.CellTemplate> 
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource MiniAddButtonStyle}" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                <materialDesign:PackIcon Kind="Edit"/>
+                                            </Button>
+                                            <Button Style="{StaticResource MiniAddButtonStyle}" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="#FEE2E2" Margin="5,0,0,0">
+                                                <materialDesign:PackIcon Kind="Delete" Foreground="Red"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate> 
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.RowSpan="2" Panel.ZIndex="1000" Visibility="{Binding IsPopupVisible}" Background="#80000000">
+            <Border Width="380" Height="220" Background="White" CornerRadius="15" VerticalAlignment="Center" Padding="25">
+                <StackPanel>
+                    <TextBlock Text="{Binding PopupTitle}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                    <TextBox Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Nhập tên..." Margin="0,0,0,25"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="HỦY" Command="{Binding ClosePopupCommand}" Style="{StaticResource OutlineButtonStyle}" Width="80" Margin="0,0,10,0"/>
+                        <Button Content="LƯU" Command="{Binding SaveCommand}" Style="{StaticResource MainGradientButton}" Width="100"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
