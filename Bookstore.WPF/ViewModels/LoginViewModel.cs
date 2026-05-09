@@ -133,7 +133,7 @@ namespace Bookstore.WPF.ViewModels
 
                 try
                 {
-                    MessageBox.Show($"{requestData.Password}, {requestData.Username}");
+                    //MessageBox.Show($"{requestData.Password}, {requestData.Username}");
                     /////
                     var responseUser = await ApiClient.PostAsync<LoginRequest, LoginResponse>("api/Auth/login", requestData);
 

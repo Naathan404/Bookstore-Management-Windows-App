@@ -196,9 +196,9 @@ namespace Bookstore.WPF.ViewModels
             _handleChangeView = changeViewAction;
             var listQuyen = AppState.CurrentPermissions;
 
-            string debugstring = string.Empty;
-            foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
-            MessageBox.Show(debugstring);
+            //string debugstring = string.Empty;
+            //foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
+            //MessageBox.Show(debugstring);
 
             HomeTabName = AppState.CurrentUser.Username;
             // Đọc phân quyền từ api

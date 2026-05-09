@@ -35,7 +35,7 @@ namespace Bookstore.API.Controllers
                 //Lấy danh sách Tác giả
                 var queryTacGia = await (from tgs in _context.TacGia_Sach
                                          join tg in _context.TacGia on tgs.MaTacGia equals tg.MaTacGia
-                                         select new { tgs.MaSach, tg.TenTacGia }).ToListAsync();
+                                         select new { tgs.MaSach, tg.MaTacGia, tg.TenTacGia }).ToListAsync();
 
                 // Map dữ liệu thành DTO trả về cho WPF
                 var dtos = listSachInfo.Select(x => new SachDTO
@@ -48,15 +48,23 @@ namespace Bookstore.API.Controllers
                     SoLuongTonKho = x.PBS.TonKho,
                     TongDaBan = x.PBS.TongSoDaBan,
                     GiaNiemYet = x.PBS.GiaNiemYet,
+                    LanTaiBan = x.PBS.LanTaiBan,
                     DonGiaBan = x.PBS.DonGiaBan,
                     HinhAnh = x.Sach.ImageUrl,
                     NamXuatBan = x.PBS.NamXuatBan,
                     NhaXuatBan = x.NXB.TenNhaXuatBan,
                     HinhThucBia = x.PBS.HinhThucBia,
                     // Lọc tìm tác giả của mã sách này, gộp lại thành 1 chuỗi cách nhau bằng dấu phẩy
-                    TacGia = string.Join(", ", queryTacGia
-                                                .Where(t => t.MaSach == x.Sach.MaSach)
-                                                .Select(t => t.TenTacGia))
+                    //TacGia = string.Join(", ", queryTacGia
+                    //                            .Where(t => t.MaSach == x.Sach.MaSach)
+                    //                            .Select(t => t.TenTacGia))
+                    DanhSachTacGia = queryTacGia
+                                        .Where(t => t.MaSach == x.Sach.MaSach)
+                                        .Select(t => new TacGiaDTO
+                                        {
+                                            Id = t.MaTacGia,
+                                            TenTacGia = t.TenTacGia
+                                        }).ToList()
                 }).ToList();
 
                 return Ok(dtos);
@@ -122,13 +130,29 @@ namespace Bookstore.API.Controllers
                 pb.NamXuatBan = request.NamXuatBan;
                 pb.HinhThucBia = request.HinhThucBia;
 
-                // Cập nhật bảng Tác phẩm
+                // Cập nhật bảng Sách
                 var sach = await _context.Sach.FindAsync(pb.MaSach);
                 if (sach != null)
                 {
                     sach.TenSach = request.TenSach;
                     sach.MoTa = request.MoTa;
                     sach.ImageUrl = request.HinhAnh;
+
+                    var oldTacGias = _context.TacGia_Sach.Where(t => t.MaSach == sach.MaSach);
+                    _context.TacGia_Sach.RemoveRange(oldTacGias);
+
+                    // Thêm lại danh sách tác giả mới
+                    if (request.DanhSachTacGia != null && request.DanhSachTacGia.Any())
+                    {
+                        foreach (var tg in request.DanhSachTacGia)
+                        {
+                            _context.TacGia_Sach.Add(new TacGia_Sach
+                            {
+                                MaSach = sach.MaSach,
+                                MaTacGia = tg.Id
+                            });
+                        }
+                    }
 
                     var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
                     if (theLoai != null) sach.MaTheLoai = theLoai.MaTheLoai;
@@ -143,48 +167,6 @@ namespace Bookstore.API.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateSach([FromBody] SachDTO request)
-        //{
-        //    using var transaction = await _context.Database.BeginTransactionAsync();
-        //    try
-        //    {
-        //        // Tạo gốc
-        //        var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
-        //        var sachMoi = new Sach
-        //        {
-        //            TenSach = request.TenSach,
-        //            MaTheLoai = theLoai?.MaTheLoai ?? 1,
-        //            MoTa = request.MoTa,
-        //            ImageUrl = request.HinhAnh
-        //        };
-        //        _context.Sach.Add(sachMoi);
-        //        await _context.SaveChangesAsync();
-
-        //        // Tạo Phiên bản đầu tiên 
-        //        var phienBanMoi = new PhienBanSach
-        //        {
-        //            MaSach = sachMoi.MaSach,
-        //            ISBN = request.ISBN,
-        //            GiaNiemYet = request.GiaNiemYet,
-        //            DonGiaBan = request.DonGiaBan,
-        //            TonKho = request.SoLuongTonKho,
-        //            NamXuatBan = request.NamXuatBan,
-        //            MaNhaXuatBan = request.NhaXuatBan,
-        //            HinhThucBia = request.HinhThucBia
-        //        };
-        //        _context.PhienBanSach.Add(phienBanMoi);
-        //        await _context.SaveChangesAsync();
-
-        //        await transaction.CommitAsync();
-        //        return Ok(new { message = "Thêm sách thành công!" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await transaction.RollbackAsync();
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
 
         [HttpPost]
         public async Task<IActionResult> CreateSach([FromBody] SachDTO request)
@@ -192,48 +174,70 @@ namespace Bookstore.API.Controllers
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // XỬ LÝ NHÀ XUẤT BẢN ĐỂ LẤY MÃ
-                int maNXB;
-                var nxbTonTai = await _context.NhaXuatBan
-                                              .FirstOrDefaultAsync(n => n.TenNhaXuatBan == request.NhaXuatBan);
+                int maSachThucTe = request.MaSachGoc;
 
-                if (nxbTonTai == null)
+                // BƯỚC 1: XỬ LÝ ĐẦU SÁCH (Bảng Sach)
+                if (request.IsTacPhamMoi)
                 {
-                    // Nếu chưa có NXB này, tạo mới để lấy MaNhaXuatBan tự tăng
-                    var nxbMoi = new NhaXuatBan { TenNhaXuatBan = request.NhaXuatBan };
-                    _context.NhaXuatBan.Add(nxbMoi);
+                    // Kiểm tra/Tạo Thể loại
+                    var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
+                    if (theLoai == null)
+                    {
+                        theLoai = new TheLoai { TenTheLoai = request.TheLoai };
+                        _context.TheLoai.Add(theLoai);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    var sachMoi = new Sach
+                    {
+                        TenSach = request.TenSach,
+                        MaTheLoai = theLoai.MaTheLoai,
+                        MoTa = request.MoTa,
+                        ImageUrl = request.HinhAnh
+                    };
+                    _context.Sach.Add(sachMoi);
                     await _context.SaveChangesAsync();
-                    maNXB = nxbMoi.MaNhaXuatBan; // Lấy ID vừa sinh ra
-                }
-                else
-                {
-                    maNXB = nxbTonTai.MaNhaXuatBan; // Lấy ID đã có
+                    maSachThucTe = sachMoi.MaSach;
+
+                    // Lưu Tác giả cho đầu sách mới
+                    foreach (var tg in request.DanhSachTacGia)
+                    {
+                        _context.TacGia_Sach.Add(new TacGia_Sach { MaSach = maSachThucTe, MaTacGia = tg.Id });
+                    }
                 }
 
-                // --- BƯỚC 2: TẠO TÁC PHẨM (Bảng Sach) ---
-                // (Giữ nguyên logic cũ để tạo Sach...)
-                var sachMoi = new Sach { TenSach = request.TenSach };
-                _context.Sach.Add(sachMoi);
-                await _context.SaveChangesAsync();
-
-                // --- BƯỚC 3: TẠO PHIÊN BẢN (Bảng PhienBanSach) ---
-                var phienBanMoi = new PhienBanSach
+                // BƯỚC 2: XỬ LÝ NHÀ XUẤT BẢN
+                var nxb = await _context.NhaXuatBan.FirstOrDefaultAsync(n => n.TenNhaXuatBan == request.NhaXuatBan);
+                if (nxb == null)
                 {
-                    MaSach = sachMoi.MaSach,
+                    nxb = new NhaXuatBan { TenNhaXuatBan = request.NhaXuatBan };
+                    _context.NhaXuatBan.Add(nxb);
+                    await _context.SaveChangesAsync();
+                }
+
+                // BƯỚC 3: TẠO PHIÊN BẢN (Bảng PhienBanSach)
+                var phienBan = new PhienBanSach
+                {
                     ISBN = request.ISBN,
-                    MaNhaXuatBan = maNXB, // GÁN KHÓA NGOẠI VÀO ĐÂY
-                                          // ... các trường khác
+                    MaSach = maSachThucTe,
+                    MaNhaXuatBan = nxb.MaNhaXuatBan,
+                    NamXuatBan = request.NamXuatBan,
+                    LanTaiBan = request.LanTaiBan,
+                    HinhThucBia = request.HinhThucBia,
+                    GiaNiemYet = request.GiaNiemYet,
+                    DonGiaBan = request.DonGiaBan,
+                    TonKho = request.SoLuongTonKho
                 };
-                _context.PhienBanSach.Add(phienBanMoi);
+                _context.PhienBanSach.Add(phienBan);
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                return Ok(new { message = "Thành công!" });
+                return Ok(new { message = "Thành công" });
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex.Message);
             }
         }
     }
