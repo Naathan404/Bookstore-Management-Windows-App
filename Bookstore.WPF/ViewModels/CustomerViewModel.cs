@@ -67,6 +67,7 @@ namespace Bookstore.WPF.ViewModels
         }
 
         // 1. Danh sách dùng cho ComboBox ở Popup Thêm/Sửa (Không có "Tất cả")
+        private List<CustomerTierResponse> _danhSachLoaiKhachGocAPI = new();
         private ObservableCollection<string> _danhSachLoaiKhachForm = new();
         public ObservableCollection<string> DanhSachLoaiKhachForm
         {
@@ -244,43 +245,117 @@ namespace Bookstore.WPF.ViewModels
             IsKhachHangPopupOpen = true;
         }
 
-        private void ExecuteXoaKhachHang(CustomerResponse kh)
+        private async void ExecuteXoaKhachHang(CustomerResponse kh)
         {
             if (kh == null) return;
-            if (MessageBox.Show($"Xóa '{kh.TenKhachHang}'?", "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MessageBox.Show($"Bạn có chắc chắn muốn xóa khách hàng '{kh.TenKhachHang}'?", "Xác nhận xóa",
+                MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                _danhSachKhachHangGoc.Remove(_danhSachKhachHangGoc.First(x => x.MaKhachHang == kh.MaKhachHang));
-                ApplyFilter();
+                try
+                {
+                    // API của bạn yêu cầu ID là số nguyên (int)
+                    int id = int.Parse(kh.MaKhachHang);
+
+                    // Gọi API HttpDelete
+                    bool isSuccess = await ApiClient.DeleteAsync($"api/KhachHang/{id}");
+
+                    if (isSuccess)
+                    {
+                        var target = _danhSachKhachHangGoc.FirstOrDefault(x => x.MaKhachHang == kh.MaKhachHang);
+                        if (target != null)
+                        {
+                            _danhSachKhachHangGoc.Remove(target);
+                            ApplyFilter();
+                        }
+                        MessageBox.Show("Xóa khách hàng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Xóa thất bại. Chi tiết: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
-        private void ExecuteLuuKhachHang(object obj)
+        private async void ExecuteLuuKhachHang(object obj)
         {
             if (string.IsNullOrWhiteSpace(KhachHangForm.TenKhachHang) || string.IsNullOrWhiteSpace(KhachHangForm.SoDienThoai))
             {
-                MessageBox.Show("Vui lòng nhập đủ thông tin bắt buộc!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Vui lòng nhập đủ thông tin bắt buộc (Tên, Số điện thoại)!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (_dangSua)
+            try
             {
-                var target = _danhSachKhachHangGoc.First(x => x.MaKhachHang == KhachHangForm.MaKhachHang);
-                target.TenKhachHang = KhachHangForm.TenKhachHang;
-                target.SoDienThoai = KhachHangForm.SoDienThoai;
-                target.Email = KhachHangForm.Email;
-                target.DiaChi = KhachHangForm.DiaChi;
-                target.MaSoThue = KhachHangForm.MaSoThue;
-                target.NgaySinh = KhachHangForm.NgaySinh;
-                target.GioiTinh = KhachHangForm.GioiTinh;
-                target.LoaiKhach = KhachHangForm.LoaiKhach;
-            }
-            else
-            {
-                _danhSachKhachHangGoc.Add(KhachHangForm);
-            }
+                // 1. CHUẨN BỊ PAYLOAD
+                int maLoai = _danhSachLoaiKhachGocAPI.FirstOrDefault(x => x.TenLoaiKhachHang == KhachHangForm.LoaiKhach)?.MaLoaiKhachHang ?? 1;
+                int gioiTinhNum = KhachHangForm.GioiTinh == "Nữ" ? 1 : 0;
 
-            IsKhachHangPopupOpen = false;
-            ApplyFilter();
+                var requestData = new
+                {
+                    MaLoaiKhachHang = maLoai,
+                    TenKhachHang = KhachHangForm.TenKhachHang,
+                    GioiTinh = gioiTinhNum,
+
+                    NgaySinh = KhachHangForm.NgaySinh.ToString("yyyy-MM-dd"),
+
+                    SoDienThoai = KhachHangForm.SoDienThoai,
+                    Email = KhachHangForm.Email ?? string.Empty,
+                    DiaChi = KhachHangForm.DiaChi ?? string.Empty,
+                    MaSoThue = KhachHangForm.MaSoThue ?? string.Empty
+                };
+
+                // 2. GỌI API THEO CHẾ ĐỘ SỬA HOẶC THÊM
+                if (_dangSua)
+                {
+                    int id = int.Parse(KhachHangForm.MaKhachHang);
+                    var response = await ApiClient.PutAsync<object, CustomerResponse>($"api/KhachHang/{id}", requestData);
+
+                    if (response != null)
+                    {
+                        var target = _danhSachKhachHangGoc.First(x => x.MaKhachHang == KhachHangForm.MaKhachHang);
+                        target.TenKhachHang = response.TenKhachHang;
+                        target.SoDienThoai = response.SoDienThoai;
+                        target.Email = response.Email;
+                        target.DiaChi = response.DiaChi;
+                        target.MaSoThue = response.MaSoThue;
+                        target.NgaySinh = response.NgaySinh;
+                        target.GioiTinh = response.GioiTinh;
+                        target.LoaiKhach = response.LoaiKhach;
+
+                        MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cập nhật thất bại. Máy chủ không phản hồi dữ liệu!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return; // Ngăn không cho form đóng
+                    }
+                }
+                else
+                {
+                    var response = await ApiClient.PostAsync<object, CustomerResponse>("api/KhachHang", requestData);
+
+                    if (response != null)
+                    {
+                        _danhSachKhachHangGoc.Insert(0, response);
+                        MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Thêm thất bại. Máy chủ từ chối yêu cầu!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return; // Ngăn không cho form đóng nếu lỗi
+                    }
+                }
+
+                // Chỉ đóng form khi mọi thứ thành công
+                IsKhachHangPopupOpen = false;
+                ApplyFilter();
+            }
+            catch (Exception ex)
+            {
+                // Bắt các lỗi văng ra từ ApiClient (như lỗi trùng số điện thoại)
+                MessageBox.Show($"Lỗi Backend: {ex.Message}", "Lỗi hệ thống", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         // ==================== LOGIC THU TIỀN ====================
@@ -422,8 +497,9 @@ namespace Bookstore.WPF.ViewModels
 
                 if (result != null && result.Any())
                 {
-                    var tenLoaiList = result.Select(x => x.TenLoaiKhachHang).ToList();
+                    _danhSachLoaiKhachGocAPI = result;
 
+                    var tenLoaiList = result.Select(x => x.TenLoaiKhachHang).ToList();
                     DanhSachLoaiKhachForm = new ObservableCollection<string>(tenLoaiList);
 
                     tenLoaiList.Insert(0, "Tất cả");
