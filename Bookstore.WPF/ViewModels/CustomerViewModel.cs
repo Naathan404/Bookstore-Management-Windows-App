@@ -66,6 +66,23 @@ namespace Bookstore.WPF.ViewModels
             set { _locLoaiKhach = value; OnPropertyChanged(); ApplyFilter(); }
         }
 
+        // 1. Danh sách dùng cho ComboBox ở Popup Thêm/Sửa (Không có "Tất cả")
+        private ObservableCollection<string> _danhSachLoaiKhachForm = new();
+        public ObservableCollection<string> DanhSachLoaiKhachForm
+        {
+            get => _danhSachLoaiKhachForm;
+            set { _danhSachLoaiKhachForm = value; OnPropertyChanged(); }
+        }
+
+        // 2. Danh sách dùng cho ComboBox Lọc (Có "Tất cả" ở đầu)
+        private ObservableCollection<string> _danhSachLoaiKhachLoc = new();
+        public ObservableCollection<string> DanhSachLoaiKhachLoc
+        {
+            get => _danhSachLoaiKhachLoc;
+            set { _danhSachLoaiKhachLoc = value; OnPropertyChanged(); }
+        }
+
+
         private string _locCongNo = "Tất cả";
         public string LocCongNo
         {
@@ -177,7 +194,7 @@ namespace Bookstore.WPF.ViewModels
             XoaLocCommand = new RelayCommand<object>(ExecuteXoaLoc);
             PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
 
-            // Khởi chạy dữ liệu ban đầu
+            _ = LoadDanhSachLoaiKhachAsync();
             _ = KhoiTaoDuLieuAsync();
         }
 
@@ -394,6 +411,34 @@ namespace Bookstore.WPF.ViewModels
                 // ApiClient có thể đã bắt lỗi, nhưng cứ bọc try-catch ở View để hiện thông báo cho người dùng
                 MessageBox.Show($"Có lỗi xảy ra khi lấy danh sách khách hàng: {ex.Message}",
                                 "Lỗi tải dữ liệu", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task LoadDanhSachLoaiKhachAsync()
+        {
+            try
+            {
+                var result = await ApiClient.GetAsync<List<CustomerTierResponse>>("api/LoaiKhachHang");
+
+                if (result != null && result.Any())
+                {
+                    var tenLoaiList = result.Select(x => x.TenLoaiKhachHang).ToList();
+
+                    DanhSachLoaiKhachForm = new ObservableCollection<string>(tenLoaiList);
+
+                    tenLoaiList.Insert(0, "Tất cả");
+                    DanhSachLoaiKhachLoc = new ObservableCollection<string>(tenLoaiList);
+                }
+                else
+                {
+                    DanhSachLoaiKhachForm = new ObservableCollection<string> { "Cá nhân", "Doanh nghiệp" };
+                    DanhSachLoaiKhachLoc = new ObservableCollection<string> { "Tất cả", "Cá nhân", "Doanh nghiệp" };
+                }
+            }
+            catch
+            {
+                DanhSachLoaiKhachForm = new ObservableCollection<string> { "Cá nhân", "Doanh nghiệp" };
+                DanhSachLoaiKhachLoc = new ObservableCollection<string> { "Tất cả", "Cá nhân", "Doanh nghiệp" };
             }
         }
 

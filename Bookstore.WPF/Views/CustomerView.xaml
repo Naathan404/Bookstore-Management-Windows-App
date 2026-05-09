@@ -146,21 +146,18 @@
                             <ComboBoxItem Content="Email"/>
                         </ComboBox>
 
-                        <ComboBox x:Name="cboLocLoaiKhach" Width="140" Height="48"
-                                  materialDesign:HintAssist.Hint="Loại KH"
-                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                  FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
-                                  SelectedValue="{Binding LocLoaiKhach}" SelectedValuePath="Content">
-                            <ComboBoxItem Content="Tất cả" IsSelected="True"/>
-                            <ComboBoxItem Content="Cá nhân"/>
-                            <ComboBoxItem Content="Doanh nghiệp"/>
+                        <ComboBox Width="140" Height="48" materialDesign:HintAssist.Hint="Loại KH"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
+                              ItemsSource="{Binding DanhSachLoaiKhachLoc}"
+                              SelectedItem="{Binding LocLoaiKhach, UpdateSourceTrigger=PropertyChanged}">
                         </ComboBox>
 
-                        <ComboBox x:Name="cboLocCongNo" Width="160" Height="48"
-                                  materialDesign:HintAssist.Hint="Công nợ"
+                        <ComboBox Width="160" Height="48" materialDesign:HintAssist.Hint="Công nợ"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
-                                  SelectedValue="{Binding LocCongNo}" SelectedValuePath="Content">
+                                  SelectedValue="{Binding LocCongNo, UpdateSourceTrigger=PropertyChanged}" 
+                                  SelectedValuePath="Content">
                             <ComboBoxItem Content="Tất cả" IsSelected="True"/>
                             <ComboBoxItem Content="Không nợ"/>
                             <ComboBoxItem Content="Dưới 1 triệu"/>
@@ -626,11 +623,10 @@
                                      materialDesign:HintAssist.Hint="Tên khách hàng *"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                             <ComboBox Grid.Column="2" 
-                                      SelectedValue="{Binding KhachHangForm.LoaiKhach}" SelectedValuePath="Content"
-                                      materialDesign:HintAssist.Hint="Loại khách hàng"
-                                      Style="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                <ComboBoxItem Content="Cá nhân" IsSelected="True"/>
-                                <ComboBoxItem Content="Doanh nghiệp"/>
+                                  materialDesign:HintAssist.Hint="Loại khách hàng" 
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                  ItemsSource="{Binding DanhSachLoaiKhachForm}"
+                                  SelectedItem="{Binding KhachHangForm.LoaiKhach}">
                             </ComboBox>
                         </Grid>
 
