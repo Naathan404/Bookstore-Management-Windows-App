@@ -50,6 +50,7 @@ namespace Bookstore.WPF
             //};
             //window.Show();
 
+
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)
