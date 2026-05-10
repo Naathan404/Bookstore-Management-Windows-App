@@ -258,7 +258,12 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("ProductView"))
             {
                 _productViewModel = new ProductViewModel();
-                ShowTraCuuSachCommand = new RelayCommand<object>((p) => _handleChangeView(_productViewModel));
+                ShowTraCuuSachCommand = new RelayCommand<object>(async (p) =>
+                {
+                    await _productViewModel.LoadMasterData();
+
+                    _handleChangeView(_productViewModel);
+                });
             }
 
             if (listQuyen.Contains("CustomerView"))
@@ -289,7 +294,12 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("CategoryView"))
             {
                 _categoryViewModel = new CategoryViewModel();
-                ShowDanhMucCommand = new RelayCommand<object>((p) => _handleChangeView(_categoryViewModel));
+                //ShowDanhMucCommand = new RelayCommand<object>((p) => _handleChangeView(_categoryViewModel));
+                ShowDanhMucCommand = new RelayCommand<object>(async (p) =>
+                {
+                    await _categoryViewModel.LoadAllDataAsync();
+                    _handleChangeView(_categoryViewModel);
+                });
             }
 
             if (listQuyen.Contains("ReportView"))

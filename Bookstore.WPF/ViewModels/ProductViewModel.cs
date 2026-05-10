@@ -318,6 +318,15 @@ namespace Bookstore.WPF.ViewModels
             _ = LoadTacGiaAsync();
         }
 
+        public async Task LoadMasterData()
+        {
+            _ = LoadTheLoaiAsync();
+            _ = LoadNhaXuatBanAsync();
+            //_ = LoadNhaCungCapAsync();
+            _ = LoadDataAsync();
+            _ = LoadTacGiaAsync();
+        }
+
         private void InitCommands()
         {
             OpenAddPopupCommand = new RelayCommand<object>((p) => {
