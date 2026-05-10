@@ -156,64 +156,16 @@
                         <TextBlock Text="TRA CỨU SÁCH" FontSize="24" FontWeight="Bold"
                                    Foreground="#2B3674" VerticalAlignment="Center"/>
                     </StackPanel>
-                    
-                    
+
+
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!--
-                        <StackPanel Orientation="Horizontal" Margin="0,0,30,0" VerticalAlignment="Center">
-                            <TextBlock Text="Đầu sách" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="#A3AED0"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsViewByVersion}" Value="False">
-                                                <Setter Property="Foreground" Value="#4318FF"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-
-                            <ToggleButton x:Name="tgViewMode" IsChecked="{Binding IsViewByVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand">
-                                <ToggleButton.Template>
-                                    <ControlTemplate TargetType="ToggleButton">
-                                        <Border x:Name="border" Width="42" Height="24" CornerRadius="12" Background="#10B981">
-                                            <Ellipse x:Name="knob" Width="18" Height="18" Fill="White" HorizontalAlignment="Right" Margin="3">
-                                            </Ellipse>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter TargetName="border" Property="Background" Value="#E2E8F0"/>
-                                                <Setter TargetName="knob" Property="HorizontalAlignment" Value="Left"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-
-                            <TextBlock Text="Phiên bản" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0,0,0">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="#A3AED0"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsViewByVersion}" Value="True">
-                                                <Setter Property="Foreground" Value="#10B981"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                        -->
-
-
                         <Button Style="{StaticResource MainGradientButton}" Width="100" Margin="0,0,10,0" Command="{Binding OpenAddPopupCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Plus" Width="16" Height="16" Foreground="White" Margin="0,0,6,0"/>
                                 <TextBlock Text="THÊM"/>
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource OutlineButtonStyle}" Width="120">
+                        <Button Style="{StaticResource OutlineButtonStyle}" Width="120" Command="{Binding ExportExcelCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="#4318FF" Margin="0,0,6,0"/>
                                 <TextBlock Text="XUẤT EXCEL"/>
@@ -366,15 +318,16 @@
 
             <!-- Card 3: Danh sách sách -->
             <Border Grid.Row="2" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
-                <DataGrid Grid.Row="1" CanUserSortColumns="False" AutoGenerateColumns="False" ItemsSource="{Binding PagedBooks}"
+                <DataGrid Grid.Row="1" CanUserSortColumns="False" AutoGenerateColumns="False" ItemsSource="{Binding PagedBooks}" 
                               SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
                               HeadersVisibility="Column" BorderThickness="0" MinRowHeight="52"
                               FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
                               Foreground="#2B3674" GridLinesVisibility="Horizontal"
                               HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
-                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserResizeColumns="False"
                               CanUserResizeRows="False" CanUserReorderColumns="False">
 
                     <DataGrid.Resources>
@@ -815,17 +768,17 @@
 
                                     <Grid Grid.Row="2" IsEnabled="{Binding IsNewProduct}">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="180"/>
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Border Grid.Column="0" Width="140" Height="190" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
+                                        <Border Grid.Column="0" Width="180" Height="200" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
                                             <Border.InputBindings>
                                                 <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}"/>
                                             </Border.InputBindings>
                                             <Grid>
-                                                <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill"/>
+                                                <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill" HorizontalAlignment="Center"/>
                                                 <Border Background="#99000000" VerticalAlignment="Bottom" Height="30">
                                                     <TextBlock Text="Đổi ảnh" Foreground="White" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                                 </Border>
@@ -1252,17 +1205,17 @@
                                             </Style>
                                         </Grid.Style>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="180"/>
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Border Grid.Column="0" Width="140" Height="190" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
+                                        <Border Grid.Column="0" Width="180" Height="220" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
                                             <Border.InputBindings>
                                                 <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}"/>
                                             </Border.InputBindings>
                                             <Grid>
-                                                <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill"/>
+                                                <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill" HorizontalAlignment="Center"/>
                                                 <Border Background="#99000000" VerticalAlignment="Bottom" Height="30">
                                                     <TextBlock Text="Đổi ảnh" Foreground="White" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                                 </Border>
@@ -1409,7 +1362,7 @@
 
                                 <!-- Dòng 1: ISBN + Năm XB -->
                                 <Grid Margin="0,0,0,15">
-                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50">
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" IsEnabled="False">
                                         <Grid>
                                                     <TextBlock Text="Mã ISBN *" FontSize="10" Margin="12,4,0,0" VerticalAlignment="Top">
                                                         <TextBlock.Style>

@@ -96,5 +96,20 @@ namespace Bookstore.WPF.Services
             }
             catch { return false; }
         }
+
+        /// <summary>
+        /// DELETE API
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <returns></returns>
+        public static async Task<bool> DeleteAndCheckSuccessAsync(string endpoint)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync(endpoint);
+                return response.IsSuccessStatusCode;
+            }
+            catch { return false; }
+        }
     }
 }

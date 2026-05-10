@@ -51,5 +51,29 @@ namespace Bookstore.API.Controllers
             return Ok(new { message = "Thêm thành công" });
         }
 
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNXB(int id)
+        {
+            try
+            {
+                var tl = await _context.NhaXuatBan.FirstOrDefaultAsync(t => t.MaNhaXuatBan == id);
+                if (tl == null) return NotFound("Không tìm thấy thể loại.");
+
+                bool daBiRangBuoc = await _context.PhienBanSach.AnyAsync(s => s.MaNhaXuatBan == id);
+                if (daBiRangBuoc)
+                    return BadRequest($"Không thể xóa {tl.TenNhaXuatBan} do đã được ghi nhận có ít nhất 01 sách do NXB này cung cấp.");
+
+                _context.NhaXuatBan.Remove(tl);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Xóa thành công" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
+        }
+
     }
 }

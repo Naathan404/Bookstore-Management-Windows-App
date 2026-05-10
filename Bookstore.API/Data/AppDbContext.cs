@@ -77,6 +77,11 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<Sach>()
                 .HasOne<TheLoai>().WithMany().HasForeignKey(s => s.MaTheLoai)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Sach>()
+                .HasOne(p => p.TheLoai)
+                .WithMany()
+                .HasForeignKey(p => p.MaTheLoai)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhienBanSach>()
                 .HasOne(s => s.Sach).WithMany().HasForeignKey(p => p.MaSach)
@@ -88,11 +93,15 @@ namespace Bookstore.API.Data
                             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TacGia_Sach>()
-                .HasOne<TacGia>().WithMany().HasForeignKey(t => t.MaTacGia)
-                .OnDelete(DeleteBehavior.Restrict);
+                            .HasOne(p => p.TacGia)
+                            .WithMany()
+                            .HasForeignKey(p => p.MaTacGia)
+                            .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<TacGia_Sach>()
-                .HasOne<Sach>().WithMany().HasForeignKey(s => s.MaSach)
-                .OnDelete(DeleteBehavior.Restrict);
+                            .HasOne(p => p.Sach)
+                            .WithMany()
+                            .HasForeignKey(p => p.MaSach)
+                            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhieuNhapSach>()
                 .HasOne(p => p.NhaCungCap).WithMany().HasForeignKey(n => n.MaNhaCungCap)

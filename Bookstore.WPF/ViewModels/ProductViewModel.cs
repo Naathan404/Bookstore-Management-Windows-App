@@ -2,13 +2,12 @@
 using Bookstore.WPF.Services;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
-using System.Collections;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Net.Http.Json;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -254,9 +253,12 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region Commands
+        // mở đóng pop up
         public ICommand OpenAddPopupCommand { get; set; }
         public ICommand OpenEditPopupCommand { get; set; }
         public ICommand ClosePopupCommand { get; set; }
+
+        // các thao tác cập nhật
         public ICommand SaveNewBookCommand { get; set; }
         public ICommand SaveEditBookCommand { get; set; }
         public ICommand DeleteBookCommand { get; set; }
@@ -264,9 +266,13 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ClearFilterCommand { get; set; }
         public ICommand RemoveTacGiaCommand { get; set; }
 
+        // nút thêm nhanh các dannh mục
         public ICommand AddNewTacGiaCommand { get; set; }
         public ICommand AddNewTheLoaiCommand { get; set; }
         public ICommand AddNewNXBCommand { get; set; }
+
+        // xuất excel
+        public ICommand ExportExcelCommand { get; set; }
 
 
         // Phân trang Commands
@@ -395,7 +401,7 @@ namespace Bookstore.WPF.ViewModels
                 };
 
                 // Gọi API
-                bool success = await ApiClient.PostAndCheckSuccessAsync("api/Sach", dto);
+                bool success = await ApiClient.PostAndCheckSuccessAsync("api/PhienBanSach", dto);
                 if (success)
                 {
                     MessageBox.Show("Thêm sách thành công!");
@@ -423,12 +429,12 @@ namespace Bookstore.WPF.ViewModels
                     HinhThucBia = EditingBook.HinhThucBia,
                     GiaNiemYet = EditingBook.GiaNiemYet,
                     DonGiaBan = EditingBook.DonGiaBan,
-                    // Gửi thêm tín hiệu xem có cho phép sửa thông tin đầu sách không
+
                     IsTacPhamMoi = IsEditMasterEnabled
                 };
                 dto.DanhSachTacGia = EditingBook.DanhSachTacGia.ToList();
 
-                bool success = await ApiClient.PutAndCheckSuccessAsync($"api/Sach/{dto.ISBN}", dto);
+                bool success = await ApiClient.PutAndCheckSuccessAsync($"api/PhienBanSach/{dto.ISBN}", dto);
                 if (success)
                 {
                     MessageBox.Show("Cập nhật thành công!");
@@ -437,16 +443,39 @@ namespace Bookstore.WPF.ViewModels
                 }
             });
 
-            /// Xóa sách
-            DeleteBookCommand = new RelayCommand<BookItem>((book) =>
+            // --- xóa sách---
+            DeleteBookCommand = new RelayCommand<BookItem>(async (book) =>
             {
                 if (book == null) return;
-                var result = MessageBox.Show($"Bạn có chắc muốn xóa sách {book.TenSach}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                var result = MessageBox.Show(
+                    $"Bạn có chắc chắn muốn xóa sách: {book.TenSach}\n(Mã ISBN: {book.ISBN})?\n\nLưu ý: Hành động này không thể hoàn tác!",
+                    "Xác nhận xóa",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
                 if (result == MessageBoxResult.Yes)
                 {
-                    var bookToRemove = _allBooks.FirstOrDefault(b => b.Id == book.Id);
-                    if (bookToRemove != null) _allBooks.Remove(bookToRemove);
-                    PerformSearch();
+                    // call api
+                    bool isSuccess = await ApiClient.DeleteAndCheckSuccessAsync($"api/PhienBanSach/{book.ISBN}");
+
+                    if (isSuccess)
+                    {
+                        // xóa ở db ok thì xóa trên ui
+                        Application.Current.Dispatcher.Invoke(() => {
+                            var itemInList = _allBooks.FirstOrDefault(b => b.ISBN == book.ISBN);
+                            if (itemInList != null) _allBooks.Remove(itemInList);
+
+                            PerformSearch();
+                        });
+
+                        MessageBox.Show("Đã xóa sách thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        // nneeus api lỗi
+                        MessageBox.Show("Không thể xóa sách này vì đã có dữ liệu liên quan (Hóa đơn hoặc Phiếu nhập)!", "Lỗi hệ thống", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             });
 
@@ -467,7 +496,76 @@ namespace Bookstore.WPF.ViewModels
                 }
             });
 
-            // Trong hàm InitCommands() thêm đoạn này:
+            // xuất excel
+            ExportExcelCommand = new RelayCommand<object>((p) =>
+            {
+                MessageBox.Show("Chức năng đang trong quá trình phát triển. Vui lòng quay lại sau!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                //try
+                //{
+                //    //  Cấu hình hộp thoại lưu file
+                //    SaveFileDialog sfd = new SaveFileDialog()
+                //    {
+                //        Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                //        FileName = $"DanhSachSach_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
+                //    };
+
+                //    if (sfd.ShowDialog() == true)
+                //    {
+                //        // Cấu hình EPPlus (Cần thiết cho bản miễn phí)
+                //        ExcelPackage.LicenseContext = LicenseContext.NonCommercial
+
+                //        using (var package = new ExcelPackage())
+                //        {
+                //            // Tạo một Sheet mới
+                //            var sheet = package.Workbook.Worksheets.Add("Danh Sách Sách");
+
+                //            // Tạo Header
+                //            string[] headers = { "STT", "Mã ISBN", "Tên Sách", "Tác Giả", "Thể Loại", "Giá Bán", "Số Lượng" };
+                //            for (int i = 0; i < headers.Length; i++)
+                //            {
+                //                var cell = sheet.Cells[1, i + 1];
+                //                cell.Value = headers[i];
+                //                cell.Style.Font.Bold = true;
+                //                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                //                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                //                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                //            }
+
+                //            //  Đổ dữ liệu từ FilteredBooks (hoặc _allBooks tùy ông muốn xuất cái nào)
+                //            var dataToExport = PagedBooks.ToList();
+                //            for (int i = 0; i < dataToExport.Count; i++)
+                //            {
+                //                var book = dataToExport[i];
+                //                sheet.Cells[i + 2, 1].Value = i + 1;
+                //                sheet.Cells[i + 2, 2].Value = book.ISBN;
+                //                sheet.Cells[i + 2, 3].Value = book.TenSach;
+                //                sheet.Cells[i + 2, 4].Value = book.TenTacGia;
+                //                sheet.Cells[i + 2, 5].Value = book.TenTheLoai;
+                //                sheet.Cells[i + 2, 6].Value = book.GiaBan;
+                //                sheet.Cells[i + 2, 7].Value = book.SoLuongTon;
+
+                //                // Format số cho đẹp
+                //                sheet.Cells[i + 2, 6].Style.Numberformat.Format = "#,##0";
+                //            }
+
+                //            // Tự động chỉnh độ rộng cột
+                //            sheet.Cells.AutoFitColumns();
+
+                //            //  Lưu file
+                //            File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
+
+                //            MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                //        }
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                //}
+            });
+
+
+            // thêm tác giả
             AddNewTacGiaCommand = new RelayCommand<string>(async (tenTacGiaMoi) =>
             {
                 if (string.IsNullOrWhiteSpace(tenTacGiaMoi))
@@ -659,9 +757,8 @@ namespace Bookstore.WPF.ViewModels
         {
             try
             {
-                // Nhờ ApiClient, gọi API giờ chỉ còn đúng 1 dòng này!
-                var danhSachTuApi = await ApiClient.GetAsync<List<SachDTO>>("api/Sach");
-
+                var danhSachTuApi = await ApiClient.GetAsync<List<SachDTO>>("api/PhienBanSach");
+                var listTacPhamGoc = await ApiClient.GetAsync<List<DauSachResponseDTO>>("api/Sach");
                 if (danhSachTuApi != null)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
@@ -699,8 +796,25 @@ namespace Bookstore.WPF.ViewModels
                         PerformSearch();
 
                         ListTacPhamGoc.Clear();
-                        var uniqueBooks = _allBooks.GroupBy(x => x.TenSach).Select(g => g.First()).ToList();
-                        foreach (var b in uniqueBooks) ListTacPhamGoc.Add(b);
+                        foreach (var b in listTacPhamGoc)
+                        {
+                            var newBook = new BookItem
+                            {
+                                TenSach = b.TenSach,
+                                TheLoai = b.TenTheLoai,
+                                HinhAnh = b.ImageUrl
+                            };
+
+                            if(b.DanhSachTacGia != null)
+                            {
+                                foreach(var tg in b.DanhSachTacGia)
+                                {
+                                    newBook.DanhSachTacGia.Add(tg);                                    
+                                }    
+                            }
+
+                            ListTacPhamGoc.Add(newBook);
+                        }    
                     });
                 }
             }
@@ -760,7 +874,7 @@ namespace Bookstore.WPF.ViewModels
 
         private async Task LoadNhaXuatBanAsync()
         {
-            var data = await ApiClient.GetAsync<List<string>>("api/NhaXuatBan");
+            var data = await ApiClient.GetAsync<List<string>>("api/NhaXuatBan/names");
             if (data != null)
             {
                 Application.Current.Dispatcher.Invoke(() => {

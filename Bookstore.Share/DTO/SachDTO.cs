@@ -25,10 +25,24 @@ namespace Bookstore.Share.DTOs
         public bool IsTacPhamMoi { get; set; }
         public int MaSachGoc { get; set; }
     }
+
+    public class DauSachResponseDTO
+    {
+        public int Id { get; set; }
+        public string TenSach { get; set; }
+        public string TenTheLoai { get; set; }
+        public string MoTa { get; set; }
+        public string ImageUrl { get; set; }
+        public List<TacGiaDTO> DanhSachTacGia { get; set; } = new List<TacGiaDTO>();
+    }
+
+    public class DauSachRequestDTO
+    {
+        public string TenSach { get; set; }
+        public string TenTheLoai { get; set; }
+        public string MoTa { get; set; }
+        public string ImageUrl { get; set; }
+        public List<int> DanhSachTacGia { get; set; } = new List<int>();
+    }
 }
 
-public class TacGiaDTO
-{
-    public int Id { get; set; }
-    public string TenTacGia { get; set; }
-}
