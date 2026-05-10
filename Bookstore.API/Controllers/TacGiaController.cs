@@ -1,4 +1,5 @@
 ﻿using Bookstore.API.Data;
+using Bookstore.API.Models;
 using Bookstore.Share.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -52,5 +53,29 @@ namespace Bookstore.API.Controllers
             tacGiaDto.Id = newTacGia.MaTacGia;
             return CreatedAtAction(nameof(GetAll), new { id = tacGiaDto.Id }, tacGiaDto);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTacGia(int id)
+        {
+            try
+            {
+                var tg = await _context.TacGia.FirstOrDefaultAsync(t => t.MaTacGia == id);
+                if (tg == null) return NotFound("Không tìm thấy tác giả");
+
+                bool daBiRangBuoc = await _context.TacGia_Sach.AnyAsync(t => t.MaTacGia == id);
+                if (daBiRangBuoc)
+                    return BadRequest($"Không thể xóa tác giả {tg.TenTacGia} do đã được ghi nhận là tác giả của ít nhất 01 đầu sách.");
+
+                _context.TacGia.Remove(tg);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Xóa thành công" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
+        }
+
     }
 }

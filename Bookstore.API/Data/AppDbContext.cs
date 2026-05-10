@@ -77,6 +77,11 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<Sach>()
                 .HasOne<TheLoai>().WithMany().HasForeignKey(s => s.MaTheLoai)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Sach>()
+                .HasOne(p => p.TheLoai)
+                .WithMany()
+                .HasForeignKey(p => p.MaTheLoai)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhienBanSach>()
                 .HasOne(s => s.Sach).WithMany().HasForeignKey(p => p.MaSach)
@@ -88,11 +93,15 @@ namespace Bookstore.API.Data
                             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TacGia_Sach>()
-                .HasOne<TacGia>().WithMany().HasForeignKey(t => t.MaTacGia)
-                .OnDelete(DeleteBehavior.Restrict);
+                            .HasOne(p => p.TacGia)
+                            .WithMany()
+                            .HasForeignKey(p => p.MaTacGia)
+                            .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<TacGia_Sach>()
-                .HasOne<Sach>().WithMany().HasForeignKey(s => s.MaSach)
-                .OnDelete(DeleteBehavior.Restrict);
+                            .HasOne(p => p.Sach)
+                            .WithMany()
+                            .HasForeignKey(p => p.MaSach)
+                            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhieuNhapSach>()
                 .HasOne(p => p.NhaCungCap).WithMany().HasForeignKey(n => n.MaNhaCungCap)
@@ -219,9 +228,10 @@ namespace Bookstore.API.Data
                     new ChucNang { MaChucNang = 5, TenChucNang = "Nhập kho", TenManHinh = "ImportView" },
                     new ChucNang { MaChucNang = 6, TenChucNang = "Nhà cung cấp", TenManHinh = "SupplierView" },
                     new ChucNang { MaChucNang = 7, TenChucNang = "Ưu đãi", TenManHinh = "PromotionView" },
-                    new ChucNang { MaChucNang = 8, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
-                    new ChucNang { MaChucNang = 9, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
-                    new ChucNang { MaChucNang = 10, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
+                    new ChucNang { MaChucNang = 8, TenChucNang = "Danh mục", TenManHinh = "CategoryView" },
+                    new ChucNang { MaChucNang = 9, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
+                    new ChucNang { MaChucNang = 10, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
+                    new ChucNang { MaChucNang = 11, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
             );
 
             /// SEED data cho PHÂN QUYỀN
@@ -237,6 +247,7 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 8 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 9 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 10 },
+                new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 11 },
 
                 // QUẢN LÝ không bán hàng, thêm tài khoản và cài đặt
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 1 },
@@ -246,11 +257,13 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 6 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 7 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 8 },
+                new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 9 },
 
                 // NHÂN VIÊN có quyền bán hàng, tra cứu sách, quản lý khách hàng.
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 2 },
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 3 },
-                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 4 }
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 4 },
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 8 }
             );
 
             string defaultHash = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676";

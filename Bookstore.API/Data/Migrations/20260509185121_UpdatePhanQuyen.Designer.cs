@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260509185121_UpdatePhanQuyen")]
+    partial class UpdatePhanQuyen
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1062,7 +1065,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521186@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 10, 13, 23, 43, 696, DateTimeKind.Local).AddTicks(9361),
+                            HanOTP = new DateTime(2026, 5, 10, 1, 51, 20, 534, DateTimeKind.Local).AddTicks(8094),
                             HoTen = "Nguyễn Chí Nguyên",
                             MaNhomNguoiDung = 1,
                             MaOTP = "",
@@ -1077,7 +1080,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24520604@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 10, 13, 23, 43, 696, DateTimeKind.Local).AddTicks(9374),
+                            HanOTP = new DateTime(2026, 5, 10, 1, 51, 20, 534, DateTimeKind.Local).AddTicks(8119),
                             HoTen = "Nguyễn Gia Hưng",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1092,7 +1095,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521432@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 10, 13, 23, 43, 696, DateTimeKind.Local).AddTicks(9375),
+                            HanOTP = new DateTime(2026, 5, 10, 1, 51, 20, 534, DateTimeKind.Local).AddTicks(8121),
                             HoTen = "Lê Hoàng Quân",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1107,7 +1110,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521536@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 10, 13, 23, 43, 696, DateTimeKind.Local).AddTicks(9378),
+                            HanOTP = new DateTime(2026, 5, 10, 1, 51, 20, 534, DateTimeKind.Local).AddTicks(8125),
                             HoTen = "Phạm Hoàng Sơn",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1122,7 +1125,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521360@g.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 10, 13, 23, 43, 696, DateTimeKind.Local).AddTicks(9379),
+                            HanOTP = new DateTime(2026, 5, 10, 1, 51, 20, 534, DateTimeKind.Local).AddTicks(8126),
                             HoTen = "Nguyễn Lưu Văn Phú",
                             MaNhomNguoiDung = 2,
                             MaOTP = "",
@@ -2925,32 +2928,26 @@ namespace Bookstore.API.Data.Migrations
 
             modelBuilder.Entity("Bookstore.API.Models.Sach", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.TheLoai", "TheLoai")
+                    b.HasOne("Bookstore.API.Models.TheLoai", null)
                         .WithMany()
                         .HasForeignKey("MaTheLoai")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("TheLoai");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.TacGia_Sach", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.Sach", "Sach")
+                    b.HasOne("Bookstore.API.Models.Sach", null)
                         .WithMany()
                         .HasForeignKey("MaSach")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.TacGia", "TacGia")
+                    b.HasOne("Bookstore.API.Models.TacGia", null)
                         .WithMany()
                         .HasForeignKey("MaTacGia")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Sach");
-
-                    b.Navigation("TacGia");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.UuDai", b =>

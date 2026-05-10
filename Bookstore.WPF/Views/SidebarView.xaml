@@ -137,7 +137,18 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 8. BÁO CÁO -->
+                <!-- 8. DANH MỤC -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
+                             Visibility="{Binding IsCategoryVisible}"
+                             IsChecked="{Binding IsCategoryChecked}"
+                             Command="{Binding ShowDanhMucCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CategoryPlus" Width="22" Height="22" Margin="0,0,15,0"/>
+                        <TextBlock Text="Danh mục" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </RadioButton>
+
+                <!-- 9. BÁO CÁO -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsReportVisible}"
                              IsChecked="{Binding IsReportChecked}"
@@ -148,7 +159,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 9. TÀI KHOẢN -->
+                <!-- 10. TÀI KHOẢN -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsAccountVisible}"
                              IsChecked="{Binding IsAccountChecked}"
@@ -159,7 +170,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 10. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
+                <!-- 11. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsSettingVisible}"
                              IsChecked="{Binding IsSettingChecked}"
