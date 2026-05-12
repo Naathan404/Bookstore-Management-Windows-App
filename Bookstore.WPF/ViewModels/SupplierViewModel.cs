@@ -8,5 +8,6 @@ namespace Bookstore.WPF.ViewModels
 {
     internal class SupplierViewModel
     {
+
     }
 }
