@@ -26,5 +26,23 @@ namespace Bookstore.WPF.Views
             InitializeComponent();
             //DataContext = new DashboardViewModel(); 
         }
+
+
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.Source = sender;
+
+                var parent = ((Control)sender).Parent as UIElement;
+                if (parent != null)
+                {
+                    parent.RaiseEvent(eventArg);
+                }
+            }
+        }
     }
 }
