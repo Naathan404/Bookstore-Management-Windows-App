@@ -168,24 +168,38 @@
                             </Border>
                         </Grid>
 
-                        <Grid Margin="0,0,0,10">
+                        <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="1.6*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Style="{StaticResource DashboardCardStyle}" Margin="0,0,10,0" Height="350">
+                            <Border Grid.Column="0" Style="{StaticResource DashboardCardStyle}" Margin="0,0,10,0" Height="360">
                                 <StackPanel>
                                     <TextBlock Text="XU HƯỚNG TĂNG TRƯỞNG DOANH THU" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,15"/>
-                                    <lvc:CartesianChart Series="{Binding RevenueSeries}" Height="260"/>
+                                    <lvc:CartesianChart Series="{Binding RevenueSeries}" Height="300"/>
                                 </StackPanel>
                             </Border>
-                            <Border Grid.Column="1" Style="{StaticResource DashboardCardStyle}" Height="350">
+                            <Border Grid.Column="1" Style="{StaticResource DashboardCardStyle}" Height="360" Margin="0 10 0 15">
                                 <StackPanel>
                                     <TextBlock Text="TỶ TRỌNG DOANH THU THEO THỂ LOẠI" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,0"/>
-                                    <lvc:PieChart SeriesSource="{Binding Data}" Height="260" LegendPosition="Bottom"/>
+                                    <lvc:PieChart Series="{Binding Data}" Height="300" LegendPosition="Bottom"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
+
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource DashboardCardStyle}" Height="400">
+                                <StackPanel>
+                                    <TextBlock Text="SO SÁNH DOANH THU &amp; CHI PHÍ" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,15"/>
+                                    <lvc:CartesianChart Series="{Binding ComparisonSeries}" Height="350" LegendPosition="Right"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
 
                         <Border Style="{StaticResource DashboardCardStyle}">
                             <StackPanel>

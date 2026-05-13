@@ -1,122 +1,227 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bookstore.WPF.Services;
-using Bookstore.Share;
-using System.Collections.ObjectModel;
+﻿using Bookstore.WPF.Services;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using System;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
-        public ObservableCollection<Book> TopBooks { get; set; }
-        public ObservableCollection<Receipt> Items { get; set; }
-        public ObservableCollection<InventoryItem> InventoryItems { get; set; }
-        public ObservableCollection<StockWarning> StockWarnings { get; set; }
-        public ObservableCollection<PieData> Data { get; set; }
-        public ISeries[] PieSeries { get; set; }
-        public float Profit { get; set; } = 1000000; // Lợi nhuận mẫu
-        public float ProfitPercent { get; set; } = 15; // Tỷ lệ phần trăm lợi nhuận mẫu
-        public float Sale { get; set; } = 5000000; // Doanh số mẫu
-        public int CustNum { get; set; } = 200; // Số lượng khách hàng mẫu
-        public float Expense { get; set; } = 4000000; // Chi phí mẫu
-        public int ReceiptNum { get; set; } = 150; // Số lượng hóa đơn mẫu
+        // ==========================================
+        // Tab 1
+        private decimal _sale;
+        public decimal Sale // Doanh thu 
+        {
+            get => _sale;
+            set { _sale = value; OnPropertyChanged(nameof(Sale)); }
+        }
+
+        private decimal _profit;
+        public decimal Profit // Lợi nhuận 
+        {
+            get => _profit;
+            set { _profit = value; OnPropertyChanged(nameof(Profit)); }
+        }
+
+        private int _custNum;
+        
+        public int CustNum // Khách mới 
+        {
+            get => _custNum;
+            set { _custNum = value; OnPropertyChanged(nameof(CustNum)); }
+        }
+
+        private int _receiptNum;
+        
+        public int ReceiptNum // Đơn hàng 
+        {
+            get => _receiptNum;
+            set { _receiptNum = value; OnPropertyChanged(nameof(ReceiptNum)); }
+        }
+
+        // ==========================================
+        // BIỂU ĐỒ 
+
+       // Biểu đồ xu hướng doanh thu 
+        private ISeries[] _revenueSeries;
+        public ISeries[] RevenueSeries
+        {
+            get => _revenueSeries;
+            set { _revenueSeries = value; OnPropertyChanged(nameof(RevenueSeries)); }
+        }
+
+        // Biểu đồ tỷ trọng thể loại 
+        //private ISeries[] _data;
+        //public ISeries[] Data
+        //{
+        //    get => _data;
+        //    set { _data = value; OnPropertyChanged(nameof(Data)); }
+        //}
+
+        private ObservableCollection<ISeries> _data;
+        public ObservableCollection<ISeries> Data
+        {
+            get => _data;
+            set { _data = value; OnPropertyChanged(nameof(Data)); }
+        }
+
+        // ==========================================
+        // DANH SÁCH & BẢNG BIỂU 
+
+        // Tab 1: Top 5 sách bán chạy
+        public ObservableCollection<TopBookModel> TopBooks { get; set; }
+
+        // Tab 1: Top Khách hàng VIP
+        public ObservableCollection<CustomerRankingModel> TopCustomers { get; set; }
+
+        // Tab 1: Doanh số nhân viên 
+        public ObservableCollection<StaffRankingModel> TopStaffs { get; set; }
+
+        // Tab 2: Đơn hàng trong ngày 
+        public ObservableCollection<OrderModel> Items { get; set; }
+
+        // Tab 2: Nhập kho trong ngày 
+        public ObservableCollection<ImportModel> ImportItems { get; set; }
+
+        // Tab 2: Phiếu thu tiền trong ngày
+        public ObservableCollection<PaymentModel> PaymentReceipts { get; set; }
+
+        // Tab 2: Cảnh báo tồn kho 
+        public ObservableCollection<StockWarningModel> StockWarnings { get; set; }
+
 
         public DashboardViewModel()
         {
-            // Dữ liệu mẫu cho biểu đồ (sử dụng Data cho SeriesSource trong XAML)
-            Data = new ObservableCollection<PieData>
-            {
-                new PieData { Name = "Mary", Values = new double[] { 10 } },
-                new PieData { Name = "John", Values = new double[] { 20 } },
-                new PieData { Name = "Alice", Values = new double[] { 30 } },
-                new PieData { Name = "Bob", Values = new double[] { 40 } },
-                new PieData { Name = "Charlie", Values = new double[] { 50 } }
-            };
+            // Khởi tạo các List
+            TopBooks = new ObservableCollection<TopBookModel>();
+            TopCustomers = new ObservableCollection<CustomerRankingModel>();
+            TopStaffs = new ObservableCollection<StaffRankingModel>();
+            Items = new ObservableCollection<OrderModel>();
+            ImportItems = new ObservableCollection<ImportModel>();
+            PaymentReceipts = new ObservableCollection<PaymentModel>();
+            StockWarnings = new ObservableCollection<StockWarningModel>();
 
-            // Dữ liệu mẫu cho Top 5 sách bán chạy
-            TopBooks = new ObservableCollection<Book>
-            {
-                // Use pack URIs so images load from app resources (project must include these files as Resource/Content)
-                new Book { Rank = 1, BookImage = "/Bookstore.WPF;component/Resources/Images/book1.png" },
-                new Book { Rank = 2, BookImage = "/Bookstore.WPF;component/Resources/Images/book2.png" },
-                new Book { Rank = 3, BookImage = "/Bookstore.WPF;component/Resources/Images/book3.png" },
-                new Book { Rank = 4, BookImage = "/Bookstore.WPF;component/Resources/Images/book4.png" },
-                new Book { Rank = 5, BookImage = "/Bookstore.WPF;component/Resources/Images/book5.png" }
-            };
-
-            // Dữ liệu mẫu cho bảng hóa đơn
-            Items = new ObservableCollection<Receipt>
-            {
-                new Receipt { ReceiptNum = "001", CustomerName = "John Doe", CasherName = "Jane Smith", Date = "2023-10-01", TotalCost = "500,000đ" },
-                new Receipt { ReceiptNum = "002", CustomerName = "Alice Brown", CasherName = "Tom White", Date = "2023-10-02", TotalCost = "300,000đ" },
-                new Receipt { ReceiptNum = "003", CustomerName = "Charlie Green", CasherName = "Emma Black", Date = "2023-10-03", TotalCost = "700,000đ" }
-            };
-
-            // Dữ liệu mẫu cho thông tin hàng nhập
-            InventoryItems = new ObservableCollection<InventoryItem>
-            {
-                new InventoryItem { Name = "Book A", BrandName = "Brand X", Date = "2023-10-01", Number = 100 },
-                new InventoryItem { Name = "Book B", BrandName = "Brand Y", Date = "2023-10-02", Number = 50 },
-                new InventoryItem { Name = "Book C", BrandName = "Brand Z", Date = "2023-10-03", Number = 75 }
-            };
-
-            // Dữ liệu mẫu cho cảnh báo tồn kho
-            StockWarnings = new ObservableCollection<StockWarning>
-            {
-                new StockWarning { Name = "Book D", BrandName = "Brand X", RemainingQuantity = 5 },
-                new StockWarning { Name = "Book E", BrandName = "Brand X", RemainingQuantity = 2 },
-                new StockWarning { Name = "Book F", BrandName = "Brand Y", RemainingQuantity = 0 }
-            };
+            LoadMockData();
         }
-    }
 
-    public class PieData
-    {
-        public string Name { get; set; }
-        public double[] Values { get; set; }
-
-        public PieData() { }
-
-        public PieData(string name, double value)
+        /// <summary>
+        /// Hàm load dữ liệu giả lập để test UI. 
+        /// Sau này ông thay code query Entity Framework / API vào đây nhé!
+        /// </summary>
+        private void LoadMockData()
         {
-            Name = name;
-            Values = new double[] { value };
+            //  Chỉ số tổng quan
+            Sale = 25450000;
+            Profit = 12500000;
+            CustNum = 45;
+            ReceiptNum = 128;
+
+            // Data Biểu đồ Xu hướng doanh thu (Cartesian Chart)
+            RevenueSeries = new ISeries[]
+            {
+                new LineSeries<double>
+                {
+                    Values = new double[] { 15, 20, 18, 25, 22, 30, 28 },
+                    Name = "Doanh thu (Triệu VNĐ)",
+                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 3 },
+                    Fill = new SolidColorPaint(SKColors.Blue.WithAlpha(50)),
+                    GeometrySize = 10
+                }
+            };
+
+            // (Pie Chart) Thể loại
+            //Data = new ISeries[]
+            //{
+            //    new PieSeries<double> { Values = new double[] { 45 }, Name = "Công nghệ thông tin" },
+            //    new PieSeries<double> { Values = new double[] { 25 }, Name = "Kinh tế - Quản trị" },
+            //    new PieSeries<double> { Values = new double[] { 20 }, Name = "Văn học" },
+            //    new PieSeries<double> { Values = new double[] { 10 }, Name = "Tâm lý - Kỹ năng" }
+            //};
+            Data = new ObservableCollection<ISeries>
+            {
+                new PieSeries<double> { Values = new double[] { 45 }, Name = "Công nghệ thông tin" },
+                new PieSeries<double> { Values = new double[] { 25 }, Name = "Kinh tế - Quản trị" },
+                new PieSeries<double> { Values = new double[] { 20 }, Name = "Văn học" },
+                new PieSeries<double> { Values = new double[] { 10 }, Name = "Tâm lý - Kỹ năng" }
+            };
+
+            // Tab 1: Danh sách Top
+            TopBooks.Add(new TopBookModel { Rank = 1, BookImage = "/Resources/Images/Books/matbiec.jpg" });
+            TopBooks.Add(new TopBookModel { Rank = 2, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
+            TopBooks.Add(new TopBookModel { Rank = 3, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
+            TopBooks.Add(new TopBookModel { Rank = 4, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
+            TopBooks.Add(new TopBookModel { Rank = 5, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
+
+            TopCustomers.Add(new CustomerRankingModel { Name = "Nguyễn Văn A", TotalSpent = 15500000 });
+            TopCustomers.Add(new CustomerRankingModel { Name = "Trần Thị B", TotalSpent = 12200000 });
+            TopCustomers.Add(new CustomerRankingModel { Name = "Lê Hoàng C", TotalSpent = 9800000 });
+
+            TopStaffs.Add(new StaffRankingModel { Name = "Phạm Nhân Viên 1", SalesAmount = 45000000 });
+            TopStaffs.Add(new StaffRankingModel { Name = "Hoàng Nhân Viên 2", SalesAmount = 38500000 });
+
+            //  Tab 2: Vận hành
+            Items.Add(new OrderModel { ReceiptNum = "HD001", CustomerName = "Khách Lẻ", TotalCost = 150000 });
+            Items.Add(new OrderModel { ReceiptNum = "HD002", CustomerName = "Nguyễn Văn A", TotalCost = 1250000 });
+
+            ImportItems.Add(new ImportModel { ImportId = "NK001", SupplierName = "NXB Trẻ", TotalQuantity = 500 });
+            ImportItems.Add(new ImportModel { ImportId = "NK002", SupplierName = "NXB Kim Đồng", TotalQuantity = 300 });
+
+            PaymentReceipts.Add(new PaymentModel { PaymentId = "PT001", Reason = "Thu tiền nợ KH", Amount = 5000000 });
+
+            StockWarnings.Add(new StockWarningModel { Name = "C# căn bản tới nâng cao", RemainingQuantity = 5 });
+            StockWarnings.Add(new StockWarningModel { Name = "Đắc Nhân Tâm", RemainingQuantity = 2 });
         }
     }
-    
 
-    public class Book
+    // ==========================================
+    // CÁC LỚP MODEL DÙNG ĐỂ BINDING CHO DATAGRID
+    // ==========================================
+    public class TopBookModel
     {
         public int Rank { get; set; }
         public string BookImage { get; set; }
     }
 
-    public class Receipt
+    public class CustomerRankingModel
+    {
+        public string Name { get; set; }
+        public decimal TotalSpent { get; set; }
+    }
+
+    public class StaffRankingModel
+    {
+        public string Name { get; set; }
+        public decimal SalesAmount { get; set; }
+    }
+
+    public class OrderModel
     {
         public string ReceiptNum { get; set; }
         public string CustomerName { get; set; }
-        public string CasherName { get; set; }
-        public string Date { get; set; }
-        public string TotalCost { get; set; }
+        public decimal TotalCost { get; set; }
     }
 
-    public class InventoryItem
+    public class ImportModel
     {
-        public string Name { get; set; }
-        public string BrandName { get; set; }
-        public string Date { get; set; }
-        public int Number { get; set; }
+        public string ImportId { get; set; }
+        public string SupplierName { get; set; }
+        public int TotalQuantity { get; set; }
     }
 
-    public class StockWarning
+    public class PaymentModel
+    {
+        public string PaymentId { get; set; }
+        public string Reason { get; set; }
+        public decimal Amount { get; set; }
+    }
+
+    public class StockWarningModel
     {
         public string Name { get; set; }
-        public string BrandName { get; set; }
         public int RemainingQuantity { get; set; }
     }
 }
