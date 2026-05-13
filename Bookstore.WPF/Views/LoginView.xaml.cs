@@ -12,7 +12,7 @@ namespace Bookstore.WPF.Views
         public LoginView()
         {
             InitializeComponent();
-            LoginViewModel viewModel = new LoginViewModel();
+            LoginViewModel viewModel = new LoginViewModel(); 
             this.DataContext = viewModel;
 
             viewModel.OnLoginFailed = () =>

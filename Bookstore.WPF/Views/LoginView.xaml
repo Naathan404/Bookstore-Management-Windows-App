@@ -70,7 +70,7 @@
                 </Grid>
 
                 <!-- Nút Đăng nhập -->
-                <Button Content="ĐĂNG NHẬP" Command="{Binding LoginCommand}"
+                <Button Content="ĐĂNG NHẬP" Command="{Binding LoginCommand}" CommandParameter="Submit"
                         Height="55" FontSize="16" FontWeight="Bold" 
                         Background="#4318FF" BorderBrush="#4318FF" Foreground="White" 
                         materialDesign:ButtonAssist.CornerRadius="15">
@@ -99,7 +99,7 @@
                      Foreground="#2B3674"
                      Height="50" FontSize="14" Margin="0,0,0,40"/>
                 <!--nút gửi mã otp-->
-                <Button Content="GỬI MÃ XÁC NHẬN" Command="{Binding SendOTPCommand}"
+                <Button Content="GỬI MÃ XÁC NHẬN" Command="{Binding SendOTPCommand}" CommandParameter="SendOTP"
                     Height="55" FontSize="16" FontWeight="Bold" 
                     Background="#4318FF" BorderBrush="#4318FF" Foreground="White" 
                     materialDesign:ButtonAssist.CornerRadius="15">
@@ -135,7 +135,7 @@
                         Content="Gửi lại" Foreground="#4318FF" Padding="5,0"/>
                 </StackPanel>
                 <!-- nút xác nhận -->
-                <Button Content="XÁC NHẬN" Command="{Binding VerifyOTPCommand}"
+                <Button Content="XÁC NHẬN" Command="{Binding VerifyOTPCommand}" CommandParameter="ConfirmOTP"
                         Height="55" FontSize="16" FontWeight="Bold" 
                         Background="#4318FF" BorderBrush="#4318FF" Foreground="White" 
                         materialDesign:ButtonAssist.CornerRadius="15">
@@ -172,7 +172,7 @@
                              Foreground="#2B3674"
                              Height="50" FontSize="14" Margin="0,0,0,40"/>
 
-                <Button Content="ĐỔI MẬT KHẨU" Command="{Binding ResetPasswordCommand}"
+                <Button Content="ĐỔI MẬT KHẨU" Command="{Binding ResetPasswordCommand}" CommandParameter="ChangePassword"
                         Height="55" FontSize="16" FontWeight="Bold" 
                         Background="#4318FF" BorderBrush="#4318FF" Foreground="White" 
                         materialDesign:ButtonAssist.CornerRadius="15">

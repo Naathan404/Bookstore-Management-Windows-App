@@ -42,9 +42,17 @@ namespace Bookstore.WPF
             //var admin = new AdminView();
             //admin.DataContext = new AdminViewModel();
             //admin.Show();
+            //var window = new Window
+            //{
+            //    Content = new ImportView(),
+            //    Title = "NHẬP KHẨU",
+            //    WindowState = WindowState.Maximized
+            //};
+            //window.Show();
+
             var window = new Window
             {
-                Content = new ImportView(),
+                Content = new SupplierView(),
                 Title = "NHẬP KHẨU",
                 WindowState = WindowState.Maximized
             };

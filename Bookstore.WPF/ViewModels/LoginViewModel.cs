@@ -105,12 +105,12 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region Commands
-        public ICommand SwitchStateCommand { get; }
-        public ICommand LoginCommand { get; }
-        public ICommand SendOTPCommand { get; }
-        public ICommand VerifyOTPCommand { get; }
-        public ICommand ResetPasswordCommand { get; }
-        public ICommand ResendOTPCommand { get; }
+        public ICommand SwitchStateCommand { get; set; }
+        public ICommand LoginCommand { get; set; }
+        public ICommand SendOTPCommand { get; set; }
+        public ICommand VerifyOTPCommand { get; set; }
+        public ICommand ResetPasswordCommand { get; set; }
+        public ICommand ResendOTPCommand { get; set; }
         #endregion
 
         public LoginViewModel()
