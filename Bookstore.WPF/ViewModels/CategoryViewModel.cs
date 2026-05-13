@@ -144,7 +144,11 @@ namespace Bookstore.WPF.ViewModels
             ClosePopupCommand = new RelayCommand<object>((p) => IsPopupVisible = Visibility.Hidden);
 
             SaveCommand = new RelayCommand<object>(async (p) => {
-                if (string.IsNullOrWhiteSpace(EditingName)) return;
+                if (string.IsNullOrWhiteSpace(EditingName))
+                {
+                    MessageBox.Show("Vui lòng điền thông tin");
+                    return;
+                }    
                 string path = $"api/{_currentEditType}";
                 object payload = _currentEditType switch
                 {
@@ -154,6 +158,7 @@ namespace Bookstore.WPF.ViewModels
                 };
 
                 bool success = _isAddMode ? await ApiClient.PostAndCheckSuccessAsync(path, payload) : await ApiClient.PutAndCheckSuccessAsync($"{path}/{_editingId}", payload);
+                if (success) MessageBox.Show("Cập nhật thành công!");
                 if (success) { IsPopupVisible = Visibility.Hidden; await LoadAllDataAsync(); }
             });
 

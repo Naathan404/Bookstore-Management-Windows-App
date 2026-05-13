@@ -15,6 +15,71 @@
                 <ResourceDictionary Source="/XAMLRes/SharedStyles.xaml">
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
+            <!-- Style Mặc định cho Header-->
+                <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+                    <Style.Triggers>
+                        <Trigger Property="Orientation" Value="Vertical">
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.4"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Margin" Value="0,0,2,0"/>
+                        </Trigger>
+
+                        <Trigger Property="Orientation" Value="Horizontal">
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleY="0.4"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Margin" Value="0,0,0,2"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="#F8FAFC"/>
+                    <Setter Property="Foreground" Value="#2B3674"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="FontSize" Value="13"/>
+                    <Setter Property="Height" Value="44"/>
+                    <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                    <Setter Property="Padding" Value="12,0"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                </Style>
+
+                <!-- Style Header-->
+                <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+
+                <!-- Style Header -->
+                <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                </Style>
+
+                <Style TargetType="DataGridCell">
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    <Setter Property="Padding" Value="12,0"/>
+                    <!-- Đệm lề-->
+                </Style>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#E0E7FF"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F3F4F6"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -64,7 +129,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SearchDauSach, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm đầu sách..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent" Margin="0 0 10 0" Foreground="Black"/>
                             </Grid>
                         </Border>
-                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddDauSachCommand}" Content="+ THÊM ĐẦU SÁCH"/>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddDauSachCommand}" CommandParameter="{Binding}" Content="+ THÊM ĐẦU SÁCH"/>
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredDauSachs}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold" 
@@ -77,74 +142,10 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 CanUserAddRows="False" CanUserDeleteRows="False"
                                 CanUserResizeColumns="False"
-                                CanUserResizeRows="False" CanUserReorderColumns="False">
-                            <DataGrid.Resources>
-                                <!-- Style Mặc định cho Header-->
-                                <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
-                                    <Style.Triggers>
-                                        <Trigger Property="Orientation" Value="Vertical">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,2,0"/>
-                                        </Trigger>
-
-                                        <Trigger Property="Orientation" Value="Horizontal">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleY="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,0,2"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#F8FAFC"/>
-                                    <Setter Property="Foreground" Value="#2B3674"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Height" Value="44"/>
-                                    <Setter Property="BorderBrush" Value="#E2E8F0"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header-->
-                                <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header -->
-                                <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
-                                </Style>
-
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <!-- Đệm lề-->
-                                </Style>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#E0E7FF"/>
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#F3F4F6"/>
-                                            <Setter Property="Cursor" Value="Hand"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.Resources>
+                                CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True">
 
                             <DataGrid.Columns>
                                 <!-- Cột STT-->
@@ -343,7 +344,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SearchTacGia, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm tác giả..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent" Margin="0 0 10 0" Foreground="Black"/>
                             </Grid>
                         </Border>
-                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddTacGiaCommand}" Content="+ THÊM TÁC GIẢ"/>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddTacGiaCommand}" CommandParameter="{Binding}" Content="+ THÊM TÁC GIẢ"/>
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredTacGias}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold" 
@@ -356,74 +357,10 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 CanUserAddRows="False" CanUserDeleteRows="False"
                                 CanUserResizeColumns="False"
-                                CanUserResizeRows="False" CanUserReorderColumns="False">
-                            <DataGrid.Resources>
-                                <!-- Style Mặc định cho Header-->
-                                <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
-                                    <Style.Triggers>
-                                        <Trigger Property="Orientation" Value="Vertical">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,2,0"/>
-                                        </Trigger>
-
-                                        <Trigger Property="Orientation" Value="Horizontal">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleY="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,0,2"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#F8FAFC"/>
-                                    <Setter Property="Foreground" Value="#2B3674"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Height" Value="44"/>
-                                    <Setter Property="BorderBrush" Value="#E2E8F0"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header-->
-                                <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header -->
-                                <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
-                                </Style>
-
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <!-- Đệm lề-->
-                                </Style>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#E0E7FF"/>
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#F3F4F6"/>
-                                            <Setter Property="Cursor" Value="Hand"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.Resources>
+                                CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True">
 
                             <DataGrid.Columns>
                                 <!-- Cột STT-->
@@ -509,7 +446,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SearchTheLoai, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm thể loại..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent" Foreground="Black" Margin="0 0 10 0" />
                             </Grid>
                         </Border>
-                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddTheLoaiCommand}" Content="+ THÊM THỂ LOẠI"/>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="150" Command="{Binding OpenAddTheLoaiCommand}" CommandParameter="{Binding}" Content="+ THÊM THỂ LOẠI"/>
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredTheLoais}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold"
@@ -522,74 +459,10 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 CanUserAddRows="False" CanUserDeleteRows="False"
                                 CanUserResizeColumns="False"
-                                CanUserResizeRows="False" CanUserReorderColumns="False">
-                            <DataGrid.Resources>
-                                <!-- Style Mặc định cho Header-->
-                                <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
-                                    <Style.Triggers>
-                                        <Trigger Property="Orientation" Value="Vertical">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,2,0"/>
-                                        </Trigger>
-
-                                        <Trigger Property="Orientation" Value="Horizontal">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleY="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,0,2"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#F8FAFC"/>
-                                    <Setter Property="Foreground" Value="#2B3674"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Height" Value="44"/>
-                                    <Setter Property="BorderBrush" Value="#E2E8F0"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header-->
-                                <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header -->
-                                <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
-                                </Style>
-
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <!-- Đệm lề-->
-                                </Style>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#E0E7FF"/>
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#F3F4F6"/>
-                                            <Setter Property="Cursor" Value="Hand"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.Resources>
+                                CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="STT" Binding="{Binding Stt}" Width="60" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                     <DataGridTextColumn.ElementStyle>
@@ -673,7 +546,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SearchNXB, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm Nhà xuất bản..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent" Foreground="Black" Margin="0 0 10 0" />
                             </Grid>
                         </Border>
-                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="200" Command="{Binding OpenAddNXBCommand}" Content="+ THÊM NHÀ XUẤT BẢN" FontWeight="Bold"/>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="200" Command="{Binding OpenAddNXBCommand}" CommandParameter="{Binding}" Content="+ THÊM NHÀ XUẤT BẢN" FontWeight="Bold"/>
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredNXBs}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold"
@@ -686,74 +559,11 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 CanUserAddRows="False" CanUserDeleteRows="False"
                                 CanUserResizeColumns="False"
-                                CanUserResizeRows="False" CanUserReorderColumns="False">
-                            <DataGrid.Resources>
-                                <!-- Style Mặc định cho Header-->
-                                <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
-                                    <Style.Triggers>
-                                        <Trigger Property="Orientation" Value="Vertical">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,2,0"/>
-                                        </Trigger>
+                                CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True">
 
-                                        <Trigger Property="Orientation" Value="Horizontal">
-                                            <Setter Property="LayoutTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleY="0.4"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Margin" Value="0,0,0,2"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#F8FAFC"/>
-                                    <Setter Property="Foreground" Value="#2B3674"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Height" Value="44"/>
-                                    <Setter Property="BorderBrush" Value="#E2E8F0"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header-->
-                                <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <!-- Style Header -->
-                                <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
-                                </Style>
-
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                    <Setter Property="Padding" Value="12,0"/>
-                                    <!-- Đệm lề-->
-                                </Style>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#E0E7FF"/>
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#F3F4F6"/>
-                                            <Setter Property="Cursor" Value="Hand"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.Resources>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="STT" Binding="{Binding Stt}" Width="60" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                     <DataGridTextColumn.ElementStyle>
@@ -822,8 +632,8 @@
                     <TextBlock Text="{Binding PopupTitle}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                     <TextBox Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Nhập tên..." Margin="0,0,0,25" FontWeight="SemiBold"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="HỦY" Command="{Binding ClosePopupCommand}" Style="{StaticResource OutlineButtonStyle}" Width="80" Margin="0,0,10,0"/>
-                        <Button Content="LƯU" Command="{Binding SaveCommand}" Style="{StaticResource MainGradientButton}" Width="100"/>
+                        <Button Content="HỦY" Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}" Style="{StaticResource OutlineButtonStyle}" Width="80" Margin="0,0,10,0"/>
+                        <Button Content="LƯU" Command="{Binding SaveCommand}" CommandParameter="{Binding}" Style="{StaticResource MainGradientButton}" Width="100"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -844,7 +654,7 @@
                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
                             <Border Width="200" Height="250" BorderBrush="#E2E8F0" BorderThickness="1.5" CornerRadius="8" Background="#F8FAFC" ClipToBounds="True">
                                 <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick" Command="{Binding SelectImageCommand}"/>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding SelectImageCommand}" CommandParameter="{Binding}"/>
                                 </Border.InputBindings>
                                 <Grid>
                                     <Image Source="{Binding EditingDauSach.ImageUrl}" Stretch="UniformToFill" HorizontalAlignment="Center"/>
@@ -950,8 +760,8 @@
                     </Grid>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button Content="HỦY" Command="{Binding CloseDauSachPopupCommand}" Style="{StaticResource OutlineButtonStyle}" Width="100" Margin="0,0,10,0"/>
-                        <Button Content="LƯU ĐẦU SÁCH" Command="{Binding SaveDauSachCommand}" Style="{StaticResource MainGradientButton}" Width="150"/>
+                        <Button Content="HỦY" Command="{Binding CloseDauSachPopupCommand}" CommandParameter="{Binding}" Style="{StaticResource OutlineButtonStyle}" Width="100" Margin="0,0,10,0"/>
+                        <Button Content="LƯU ĐẦU SÁCH" Command="{Binding SaveDauSachCommand}" CommandParameter="{Binding}" Style="{StaticResource MainGradientButton}" Width="150"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

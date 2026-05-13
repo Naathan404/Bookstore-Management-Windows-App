@@ -159,13 +159,13 @@
 
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource MainGradientButton}" Width="100" Margin="0,0,10,0" Command="{Binding OpenAddPopupCommand}">
+                        <Button Style="{StaticResource MainGradientButton}" CommandParameter="{Binding}" Width="100" Margin="0,0,10,0" Command="{Binding OpenAddPopupCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Plus" Width="16" Height="16" Foreground="White" Margin="0,0,6,0"/>
                                 <TextBlock Text="THÊM"/>
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource OutlineButtonStyle}" Width="120" Command="{Binding ExportExcelCommand}">
+                        <Button Style="{StaticResource OutlineButtonStyle}" CommandParameter="{Binding}" Width="120" Command="{Binding ExportExcelCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="#4318FF" Margin="0,0,6,0"/>
                                 <TextBlock Text="XUẤT EXCEL"/>
@@ -302,7 +302,7 @@
 
                     <Button Grid.Column="5" Width="42" Height="42" 
                         ToolTip="Xóa tất cả bộ lọc"
-                        Command="{Binding ClearFilterCommand}"
+                        Command="{Binding ClearFilterCommand}" CommandParameter="{Binding}"
                         Background="#FEE2E2" BorderThickness="0" Cursor="Hand">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -328,7 +328,10 @@
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               CanUserAddRows="False" CanUserDeleteRows="False"
                               CanUserResizeColumns="False"
-                              CanUserResizeRows="False" CanUserReorderColumns="False">
+                              CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True">
 
                     <DataGrid.Resources>
                         <!-- Style Mặc định cho Header-->
@@ -855,6 +858,7 @@
                                                                 <materialDesign:Chip Content="{Binding TenTacGia}" 
                                                                  IsDeletable="True" 
                                                                  DeleteCommand="{Binding DataContext.RemoveTacGiaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                  
                                                                  DeleteCommandParameter="{Binding}"
                                                                  Background="#EEF2FF" Foreground="#4318FF" 
                                                                  Height="26" FontSize="12" Margin="0,0,6,6"/>
@@ -1049,7 +1053,7 @@
 
                     <!-- Buttons -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
+                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="2" CornerRadius="10">
@@ -1058,7 +1062,7 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
-                        <Button Content="THÊM SÁCH" Command="{Binding SaveNewBookCommand}" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
+                        <Button Content="THÊM SÁCH" Command="{Binding SaveNewBookCommand}" CommandParameter="{Binding}" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="#10B981" CornerRadius="10">
@@ -1504,7 +1508,7 @@
 
                     <!-- Buttons -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
+                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" CommandParameter="Close" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="2" CornerRadius="10">
@@ -1513,7 +1517,7 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
-                        <Button Content="LƯU THÔNG TIN" Command="{Binding SaveEditBookCommand}" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
+                        <Button Content="LƯU THÔNG TIN" Command="{Binding SaveEditBookCommand}" CommandParameter="Save" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="#10B981" CornerRadius="10">
