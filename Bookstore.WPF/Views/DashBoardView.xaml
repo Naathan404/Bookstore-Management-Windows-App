@@ -24,6 +24,7 @@
                 <Setter Property="Margin" Value="0,0,0,15"/>
             </Style>
 
+
             <Style TargetType="DataGrid" x:Key="CleanDataGrid">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -31,7 +32,100 @@
                 <Setter Property="IsReadOnly" Value="True"/>
                 <Setter Property="HeadersVisibility" Value="Column"/>
                 <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-                <Setter Property="HorizontalGridLinesBrush" Value="#F4F7FE"/>
+                <Setter Property="HorizontalGridLinesBrush" Value="#E2E8F0"/>
+                <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#2B3674"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+                <Setter Property="RowBackground" Value="White"/>
+                <Setter Property="CanUserSortColumns" Value="False"/>
+                <Setter Property="SelectionMode" Value="Single"/>
+                <Setter Property="SelectionUnit" Value="FullRow"/>
+                <Setter Property="MinRowHeight" Value="30"/>
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                <Setter Property="CanUserAddRows" Value="False"/>
+                <Setter Property="CanUserDeleteRows" Value="False"/>
+                <Setter Property="CanUserResizeColumns" Value="False"/>
+                <Setter Property="CanUserResizeRows" Value="False"/>
+                <Setter Property="CanUserReorderColumns" Value="False"/>
+                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+                <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
+                <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
+            </Style>
+
+
+            <!-- Style Mặc định cho Header-->
+            <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+                <Style.Triggers>
+                    <Trigger Property="Orientation" Value="Vertical">
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="0.4"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Margin" Value="0,0,2,0"/>
+                    </Trigger>
+
+                    <Trigger Property="Orientation" Value="Horizontal">
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleY="0.4"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Margin" Value="0,0,0,2"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="DataGridColumnHeader">
+                <Setter Property="Background" Value="#F8FAFC"/>
+                <Setter Property="Foreground" Value="#2B3674"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="Height" Value="44"/>
+                <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                <Setter Property="Padding" Value="12,0"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="TextBlock" x:Key="CellText">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="#A3AED0"/>
+            </Style>
+
+            <!-- Style Header-->
+            <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <!-- Style Header -->
+            <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            </Style>
+
+            <Style TargetType="DataGridCell">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Setter Property="Padding" Value="12,0"/>
+                <!-- Đệm lề-->
+            </Style>
+            <Style TargetType="DataGridRow">
+                <Setter Property="Background" Value="Transparent"/>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="#E0E7FF"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#F3F4F6"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -52,26 +146,6 @@
         <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
             <TabItem Header="THỐNG KÊ KINH DOANH" Style="{StaticResource CategoryTabItem}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0 0 0 0">
-                    <ScrollViewer.Resources>
-                        <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
-                            <Setter Property="MinWidth" Value="0"/>
-                            <Setter Property="MinHeight" Value="0"/>
-
-                            <Style.Triggers>
-                                <Trigger Property="Orientation" Value="Vertical">
-                                    <Setter Property="Width" Value="6"/>
-                                    <Setter Property="MaxWidth" Value="6"/>
-                                    <Setter Property="Margin" Value="0,0,2,0"/>
-                                </Trigger>
-
-                                <Trigger Property="Orientation" Value="Horizontal">
-                                    <Setter Property="Height" Value="6"/>
-                                    <Setter Property="MaxHeight" Value="6"/>
-                                    <Setter Property="Margin" Value="0,0,0,2"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ScrollViewer.Resources>
                     <StackPanel Margin="0,15,5,0">
 
                         <Grid Margin="0,0,0,0">
@@ -118,7 +192,7 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
-<!--
+                            <!--
                             <Border Style="{StaticResource DashboardCardStyle}" Margin="0,0,10,15">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -308,11 +382,53 @@
                                 <materialDesign:PackIcon Kind="CartOutline" Foreground="#4318FF" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="CÁC ĐƠN HÀNG TRONG NGÀY" FontSize="15" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding Items}" MaxHeight="250" PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="False" Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding Items}" 
+                              SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
+                              HeadersVisibility="Column" BorderThickness="0" MinRowHeight="30"
+                              FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
+                              Foreground="#2B3674" GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
+                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserResizeColumns="False"
+                              CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True" 
+                                      PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="MÃ HĐ" Binding="{Binding ReceiptNum}" Width="80"/>
-                                    <DataGridTextColumn Header="KHÁCH HÀNG" Binding="{Binding CustomerName}" Width="*"/>
-                                    <DataGridTextColumn Header="TỔNG TIỀN" Binding="{Binding TotalCost, StringFormat='{}{0:#,0} đ'}" Width="110"/>
+                                    <DataGridTextColumn Header="Mã HĐ" Binding="{Binding DisplayID}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Khách hàng" Binding="{Binding CustomerName}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="TextWrapping" Value="Wrap"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Tổng tiền" Binding="{Binding TotalCost, StringFormat='{}{0:#,0} đ'}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="0 0 10 0"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -324,11 +440,63 @@
                                 <materialDesign:PackIcon Kind="PackageVariantClosed" Foreground="#4318FF" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="CÁC NHẬP KHO TRONG NGÀY" FontSize="15" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding ImportItems}" MaxHeight="250" PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="False" Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding ImportItems}" 
+                              SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
+                              HeadersVisibility="Column" BorderThickness="0" MinRowHeight="30"
+                              FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
+                              Foreground="#2B3674" GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
+                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserResizeColumns="False"
+                              CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True" 
+                                      PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="MÃ PHIẾU" Binding="{Binding ImportId}" Width="100"/>
-                                    <DataGridTextColumn Header="NHÀ CUNG CẤP" Binding="{Binding SupplierName}" Width="*"/>
-                                    <DataGridTextColumn Header="SL NHẬP" Binding="{Binding TotalQuantity}" Width="80"/>
+                                    <DataGridTextColumn Header="Mã PN" Binding="{Binding DisplayID}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Nhà cung cấp" Binding="{Binding SupplierName}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                                <Setter Property="TextWrapping" Value="Wrap"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="SL nhập" Binding="{Binding TotalQuantity}" Width="80" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Chi phí" Binding="{Binding Total}" Width="Auto" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -340,11 +508,65 @@
                                 <materialDesign:PackIcon Kind="CashMultiple" Foreground="#05CD99" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="CÁC PHIẾU THU TIỀN TRONG NGÀY" FontSize="15" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding PaymentReceipts}" MaxHeight="250" PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="False" Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding PaymentReceipts}" 
+                              SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
+                              HeadersVisibility="Column" BorderThickness="0" MinRowHeight="30"
+                              FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
+                              Foreground="#2B3674" GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
+                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserResizeColumns="False"
+                              CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True" 
+                                      PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="MÃ PHIẾU" Binding="{Binding PaymentId}" Width="100"/>
-                                    <DataGridTextColumn Header="LÝ DO THU" Binding="{Binding Reason}" Width="*"/>
-                                    <DataGridTextColumn Header="SỐ TIỀN" Binding="{Binding Amount, StringFormat='{}{0:#,0} đ'}" Width="110"/>
+                                    <DataGridTextColumn Header="Mã PT" Binding="{Binding DisplayID}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Khách hàng" Binding="{Binding CustomerName}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                                <Setter Property="TextWrapping" Value="Wrap"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+
+                                    <DataGridTextColumn Header="Lý do" Binding="{Binding Reason}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                                <Setter Property="TextWrapping" Value="Wrap"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Số tiền" Binding="{Binding Amount, StringFormat='{}{0:#,0} đ'}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -356,18 +578,48 @@
                                 <materialDesign:PackIcon Kind="AlertCircleOutline" Foreground="#EE5D50" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="CẢNH BÁO TỒN KHO" FontSize="15" FontWeight="Bold" Foreground="#EE5D50" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding StockWarnings}" MaxHeight="250" PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="False" Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding StockWarnings}" 
+                              SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
+                              HeadersVisibility="Column" BorderThickness="0" MinRowHeight="30"
+                              FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
+                              Foreground="#2B3674" GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
+                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserResizeColumns="False"
+                              CanUserResizeRows="False" CanUserReorderColumns="False"
+                                VirtualizingStackPanel.IsVirtualizing="True"
+                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                ScrollViewer.IsDeferredScrollingEnabled="True" 
+                                      PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="TÊN SÁCH" Binding="{Binding Name}" Width="*"/>
-                                    <DataGridTextColumn Header="TỒN" Binding="{Binding RemainingQuantity}" Width="80">
+                                    <DataGridTextColumn Header="Tên sách" Binding="{Binding Name}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="#EE5D50"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                                <Setter Property="TextWrapping" Value="Wrap"></Setter>
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Tồn kho" Binding="{Binding RemainingQuantity}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Margin" Value="10 0 10 0"></Setter>
+                                                <Setter Property="TextWrapping" Value="Wrap"></Setter>
+                                                <Setter Property="Foreground" Value="#EE5D50"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                 
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>

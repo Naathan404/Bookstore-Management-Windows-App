@@ -155,15 +155,24 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<HoaDon>()
-                .HasOne<KhachHang>().WithMany().HasForeignKey(h => h.MaKhachHang)
+                .HasOne(p => p.KhachHang).WithMany().HasForeignKey(p => p.MaKhachHang)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HoaDon>()
+                .HasOne(p => p.NguoiDung).WithMany().HasForeignKey(p => p.NguoiTao)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_HoaDon>()
-                .HasOne<HoaDon>().WithMany().HasForeignKey(h => h.MaHoaDon)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(p => p.HoaDon)
+                .WithMany(h => h.ChiTietHoaDons) 
+                .HasForeignKey(p => p.MaHoaDon)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<CT_HoaDon>()
-                .HasOne<PhienBanSach>().WithMany().HasForeignKey(h => h.ISBN)
+                .HasOne(p => p.PhienBanSach)
+                .WithMany()
+                .HasForeignKey(p => p.ISBN)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<HoaDon_UuDai>()
                 .HasOne<HoaDon>().WithMany().HasForeignKey(h => h.MaHoaDon)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -175,7 +184,7 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhieuThuTien>()
-                .HasOne<KhachHang>().WithMany().HasForeignKey(k => k.MaKhachHang)
+                .HasOne(p => p.KhachHang).WithMany().HasForeignKey(p => p.MaKhachHang)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_BC_Sach>()
@@ -757,14 +766,14 @@ namespace Bookstore.API.Data
             // CHI TIẾT HÓA ĐƠN
             modelBuilder.Entity<CT_HoaDon>().HasData(
                 // Chi tiết HD 1: 1 Mắt biếc (Giá bán 110k)
-                new CT_HoaDon { MaHoaDon = 1, ISBN = "978-604-1-09887-1", SoLuong = 1, DonGia = 110000m },
+                new CT_HoaDon { MaHoaDon = 1, ISBN = "978-604-1-09887-1", SoLuong = 1, DonGia = 110000m, GiaVon = 100000m },
 
                 // Chi tiết HD 2: 2 Clean Code (Giá bán 450k/cuốn)
-                new CT_HoaDon { MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, DonGia = 450000m },
+                new CT_HoaDon { MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, DonGia = 450000m, GiaVon = 440000m},
 
                 // Chi tiết HD 3: 5 Doraemon tập 1 (20k/cuốn) + 1 Rừng Na Uy (145k)
-                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-2-11111-1", SoLuong = 5, DonGia = 20000m },
-                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-56-7890-1", SoLuong = 6, DonGia = 150000m }
+                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-2-11111-1", SoLuong = 5, DonGia = 20000m, GiaVon = 18000m },
+                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-56-7890-1", SoLuong = 6, DonGia = 150000m, GiaVon = 140000m }
             );
 
             // HÓA ĐƠN - ƯU ĐÃI

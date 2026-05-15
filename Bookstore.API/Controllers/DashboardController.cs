@@ -1,6 +1,10 @@
 ﻿using Bookstore.API.Data;
+using Bookstore.API.Models;
 using Bookstore.Share.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
+using System.Security.Cryptography.Xml;
 
 namespace Bookstore.API.Controllers
 {
@@ -20,89 +24,234 @@ namespace Bookstore.API.Controllers
         {
             try
             {
-                // var today = DateTime.Today;
-                // var doanhThu = await _context.HoaDons.Where(x => x.NgayLap.Date == today).SumAsync(x => x.TongTien);
-                // var khachMoi = await _context.KhachHangs.CountAsync(x => x.NgayTao.Date == today);
-                // var soDonHang = await _context.HoaDons.CountAsync(x => x.NgayLap.Date == today);
+                var today = DateTime.Today;
+                var sevenDaysAgo = today.AddDays(-6);
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                /// tính doanh thu
+                var sale = await _context.HoaDon.Where(x => x.NgayTao.Date == today).SumAsync(x => (decimal?)x.TongTien) ?? 0;
+                ///tính lợi nhuận
+                var expense = await _context.CT_HoaDon
+                    .Where(x => x.HoaDon.NgayTao.Date == today)
+                    .SumAsync(x => (decimal?)(x.SoLuong * x.GiaVon)) ?? 0;
+                var profit = sale - expense;
+
+                /// tính số lượt khách mới
+                var newCustomerNumber = await _context.KhachHang.Where(x => x.NgayTao.Date == today).CountAsync();
+                /// tính số hóa đơn
+                var receiptNumber = await _context.HoaDon.Where(x => x.NgayTao.Date == today).CountAsync();
+
+                // dữ liệu cho biểu đồ doanh thu 7 ngày trước
+                var rawRevenue = await _context.HoaDon
+                    .Where(x => x.NgayTao.Date >= sevenDaysAgo && x.NgayTao.Date <= today)
+                    .GroupBy(x => x.NgayTao.Date)
+                    .Select(g => new { Date = g.Key, Total = (double?)g.Sum(x => x.TongTien) ?? 0 })
+                    .ToListAsync();
+                var revenueSeries = new List<RevenueDataDto>();
+                for(int i = 0; i < 7; i++)
+                {
+                    var dateIdx = sevenDaysAgo.AddDays(i);
+                    var dateData = rawRevenue.FirstOrDefault(x => x.Date == dateIdx);
+                    revenueSeries.Add(new RevenueDataDto
+                    {
+                        Date = dateIdx.ToString("dd/MM"),
+                        Value = dateData != null ? dateData.Total : 0
+                    });
+                }
+
+                /// dữ liệu cho biểu đồ thống kê doanh mục
+                var rawCategoryShares = await _context.CT_HoaDon
+                    .Where(x => x.HoaDon.NgayTao.Date >= startOfMonth)
+                    .Join(_context.PhienBanSach, ct => ct.ISBN, pbs => pbs.ISBN, (ct, pbs) => new { ct, pbs })
+                    .Join(_context.Sach, x => x.pbs.MaSach, s => s.MaSach, (x, s) => new { x.ct, s })
+                    .Join(_context.TheLoai, x => x.s.MaTheLoai, tl => tl.MaTheLoai, (x, tl) => new { x.ct, tl })
+                    .GroupBy(x => x.tl.TenTheLoai)
+                    .Select(g => new {
+                        CategoryName = g.Key,
+                        Revenue = (double?)g.Sum(x => x.ct.SoLuong * x.ct.DonGia) ?? 0
+                    }).ToListAsync();
+
+
+                var totalMonthRevenue = rawCategoryShares.Sum(x => x.Revenue);
+                var categoryShares = rawCategoryShares.Select(x => new CategoryShareDto
+                {
+                    CategoryName = x.CategoryName ?? "Khác",
+                    Percentage = totalMonthRevenue > 0 ? Math.Round((x.Revenue / totalMonthRevenue) * 100, 2) : 0
+                }).ToList();
+
+                //// dữ liệu biểu đồ so sánh doanh thu, chi phí và suy ra lợi nhuận
+                // Lấy Doanh thu theo ngày
+                var dailyRevenue = await _context.HoaDon
+                    .Where(x => x.NgayTao.Date >= sevenDaysAgo && x.NgayTao.Date <= today)
+                    .GroupBy(x => x.NgayTao.Date)
+                    .Select(g => new { Date = g.Key, Total = (double?)g.Sum(x => x.TongTien) ?? 0 })
+                    .ToListAsync();
+
+                // Lấy Chi phí nhập kho theo ngày
+                var dailyImports = await _context.CT_PhieuNhapSach
+                            .Where(x => x.PhieuNhapSach.NgayTao.Date >= sevenDaysAgo && x.PhieuNhapSach.NgayTao.Date <= today)
+                            .GroupBy(x => x.PhieuNhapSach.NgayTao.Date)
+                            .Select(g => new {
+                                Date = g.Key,
+                                Total = (double?)g.Sum(ct => ct.SoLuong * ct.DonGiaNhap) ?? 0
+                            })
+                            .ToListAsync();
+
+                // Lấy Giá vốn hàng bán theo ngày để tính Lợi nhuận thực tế
+                var dailyCogs = await _context.CT_HoaDon
+                            .Where(x => x.HoaDon.NgayTao.Date >= sevenDaysAgo && x.HoaDon.NgayTao.Date <= today)
+                            .GroupBy(x => x.HoaDon.NgayTao.Date)
+                            .Select(g => new { Date = g.Key, Total = (double?)g.Sum(x => x.SoLuong * x.GiaVon) ?? 0 })
+                            .ToListAsync();
+
+                var comparisonSeries = new List<ComparisonDataDto>();
+
+                for (int i = 0; i < 7; i++)
+                {
+                    var dateIdx = sevenDaysAgo.AddDays(i);
+                    var rev = dailyRevenue.FirstOrDefault(x => x.Date == dateIdx)?.Total ?? 0;
+                    var imp = dailyImports.FirstOrDefault(x => x.Date == dateIdx)?.Total ?? 0;
+                    var cogs = dailyCogs.FirstOrDefault(x => x.Date == dateIdx)?.Total ?? 0;
+
+                    comparisonSeries.Add(new ComparisonDataDto
+                    {
+                        Date = dateIdx.ToString("dd/MM"),
+                        Revenue = rev,
+                        ImportCost = imp,
+                        Profit = rev - cogs // Lợi nhuận = Doanh thu - Giá vốn
+                    });
+                }
+
+
+                /// top sách
+                var topBooksQuery = await _context.CT_HoaDon
+                    .Where(x => x.HoaDon.NgayTao.Date >= startOfMonth)
+                    .GroupBy(x => x.ISBN)
+                    .Select(g => new {
+                        ISBN = g.Key,
+                        TotalSold = g.Sum(x => x.SoLuong)
+                    })
+                    .OrderByDescending(x => x.TotalSold)
+                    .Take(5).ToListAsync();
+
+                // lấy Image riêng trong bộ nhớ
+                var topBooksDto = topBooksQuery.Select((b, index) => new TopBookDto
+                {
+                    Rank = index + 1,
+                    BookImage = _context.PhienBanSach
+                        .Include(p => p.Sach)
+                        .FirstOrDefault(p => p.ISBN == b.ISBN)?.Sach?.ImageUrl
+                        ?? "/Resources/Images/Books/default_book_cover.jpg"
+                }).ToList();
+
+
+                /// top khách hàng
+                var topCustomers = await _context.HoaDon
+                    .Where(x => x.NgayTao.Date >= startOfMonth)
+                    .GroupBy(x => x.KhachHang != null ? x.KhachHang.TenKhachHang : null)
+                    .Select(g => new CustomerRankingDto
+                    {
+                        Name = g.Key ?? "Khách Lẻ",
+                        TotalSpent = (decimal?)g.Sum(x => x.TongTien) ?? 0
+                    })
+                    .OrderByDescending(x => x.TotalSpent).Take(5).ToListAsync();
+
+                // top nhân viên
+                var topStaffs = await _context.HoaDon
+                    .Where(x => x.NgayTao.Date >= startOfMonth)
+                    .GroupBy(x => x.NguoiTao)
+                    .Select(g => new StaffRankingDto
+                    {
+                        Name = g.Key ?? "Admin",
+                        SalesAmount = (decimal?)g.Sum(x => x.TongTien) ?? 0
+                    })
+                    .OrderByDescending(x => x.SalesAmount).Take(5).ToListAsync();
+
+
+
+                //// =========== Các trnagj thái vân hành ============ ///
+                var recentOrders = await _context.HoaDon
+                    .Include(x => x.KhachHang)
+                    .OrderByDescending(x => x.NgayTao)
+                    .Take(5)
+                    .Select(x => new OrderDto
+                    {
+                        ReceiptNum = x.MaHoaDon,
+                        CustomerName = x.KhachHang != null ? x.KhachHang.TenKhachHang : "Khách Lẻ",
+                        TotalCost = x.TongTien,
+                        CreateAt = x.NgayTao
+                    }).ToListAsync();
+
+
+                var recentImports = await _context.PhieuNhapSach
+                                    .Include(x => x.CT_PhieuNhapSach)
+                                    .Include(x => x.NhaCungCap)
+                                    .OrderByDescending(x => x.NgayTao)
+                                    .Take(5)
+                                    .Select(x => new ImportDto
+                                    {
+                                        ImportId = x.MaPhieuNhapSach,
+                                        SupplierName = x.NhaCungCap!.TenNhaCungCap,
+                                        TotalQuantity = x.CT_PhieuNhapSach.Sum(ct => ct.SoLuong),
+                                        Total = x.CT_PhieuNhapSach.Sum(ct => ct.DonGiaNhap * ct.SoLuong),
+                                        CreatedAt = x.NgayTao
+                                    }).ToListAsync();
+
+                var recentPayments = await _context.PhieuThuTien
+                    .OrderByDescending(x => x.NgayTao)
+                    .Take(5)
+                    .Select(x => new PaymentDto
+                    {
+                        PaymentId = x.MaPhieuThuTien,
+                        Reason = x.LyDoThu,
+                        Amount = x.SoTienThu,
+                        CreatedAt = x.NgayTao,
+                        CustomerName = x.KhachHang != null ? x.KhachHang.TenKhachHang : "Khách vãng lai"
+                    }).ToListAsync();
+
+                // Cảnh báo tồn kho dưới 10 cuốn
+                var stockWarnings = await _context.PhienBanSach
+                    .Include(x => x.Sach)
+                    .Where(x => x.TonKho < 10)
+                    .Select(x => new StockWarningDto
+                    {
+                        Name = x.Sach.TenSach,
+                        RemainingQuantity = x.TonKho
+                    })
+                    .OrderBy(x => x.RemainingQuantity).Take(10).ToListAsync();
 
                 // mock data
                 DashboardOverviewDto result = new DashboardOverviewDto
                 {
-                    Sale = 25450000,
-                    Profit = 12500000,
-                    CustNum = 45,
-                    ReceiptNum = 128,
+                    Sale = sale,
+                    Profit = profit,
+                    CustNum = newCustomerNumber,
+                    ReceiptNum = receiptNumber,
 
-                    // Biểu đồ Đường (Doanh thu 7 ngày)
-                    RevenueSeries = new List<RevenueDataDto>
-                    {
-                        new RevenueDataDto { Date = "T2", Value = 15 },
-                        new RevenueDataDto { Date = "T3", Value = 20 },
-                        new RevenueDataDto { Date = "T4", Value = 18 },
-                        new RevenueDataDto { Date = "T5", Value = 25 },
-                        new RevenueDataDto { Date = "T6", Value = 22 },
-                        new RevenueDataDto { Date = "T7", Value = 30 },
-                        new RevenueDataDto { Date = "CN", Value = 28 }
-                    },
+                    RevenueSeries = revenueSeries,
+                    CategoryShares = categoryShares,
 
-                    // Biểu đồ Tròn (Tỷ trọng thể loại)
-                    CategoryShares = new List<CategoryShareDto>
-                    {
-                        new CategoryShareDto { CategoryName = "Công nghệ thông tin", Percentage = 45 },
-                        new CategoryShareDto { CategoryName = "Kinh tế - Quản trị", Percentage = 25 },
-                        new CategoryShareDto { CategoryName = "Văn học", Percentage = 20 },
-                        new CategoryShareDto { CategoryName = "Tâm lý - Kỹ năng", Percentage = 10 }
-                    },
+                    TopBooks = topBooksDto,
+                    TopCustomers = topCustomers,
+                    TopStaffs = topStaffs,
 
-                    TopBooks = new List<TopBookDto>
-                    {
-                        new TopBookDto { Rank = 1, BookImage = "/Resources/Images/Books/matbiec.jpg" },
-                        new TopBookDto { Rank = 2, BookImage = "/Resources/Images/Books/default_book_cover.jpg" },
-                        new TopBookDto { Rank = 3, BookImage = "/Resources/Images/Books/default_book_cover.jpg" },
-                        new TopBookDto { Rank = 4, BookImage = "/Resources/Images/Books/default_book_cover.jpg" },
-                        new TopBookDto { Rank = 5, BookImage = "/Resources/Images/Books/default_book_cover.jpg" }
-                    },
-
-                    TopCustomers = new List<CustomerRankingDto>
-                    {
-                        new CustomerRankingDto { Name = "Nguyễn Văn A", TotalSpent = 15500000 },
-                        new CustomerRankingDto { Name = "Trần Thị B", TotalSpent = 12200000 }
-                    },
-
-                    TopStaffs = new List<StaffRankingDto>
-                    {
-                        new StaffRankingDto { Name = "Phạm Nhân Viên 1", SalesAmount = 45000000 },
-                        new StaffRankingDto { Name = "Hoàng Nhân Viên 2", SalesAmount = 38500000 }
-                    },
-
-                    RecentOrders = new List<OrderDto>
-                    {
-                        new OrderDto { ReceiptNum = "HD001", CustomerName = "Khách Lẻ", TotalCost = 150000 },
-                        new OrderDto { ReceiptNum = "HD002", CustomerName = "Nguyễn Văn A", TotalCost = 1250000 }
-                    },
-
-                    RecentImports = new List<ImportDto>
-                    {
-                        new ImportDto { ImportId = "NK001", SupplierName = "NXB Trẻ", TotalQuantity = 500 }
-                    },
-
-                    RecentPayments = new List<PaymentDto>
-                    {
-                        new PaymentDto { PaymentId = "PT001", Reason = "Thu tiền nợ KH", Amount = 5000000 }
-                    },
-
-                    StockWarnings = new List<StockWarningDto>
-                    {
-                        new StockWarningDto { Name = "C# căn bản tới nâng cao", RemainingQuantity = 5 },
-                        new StockWarningDto { Name = "Đắc Nhân Tâm", RemainingQuantity = 2 }
-                    }
+                    RecentOrders = recentOrders,
+                    RecentImports = recentImports,
+                    RecentPayments = recentPayments,
+                    StockWarnings = stockWarnings,
+                    ComparisonSeries = comparisonSeries
                 };
 
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new
+                {
+                    message = ex.Message,
+                    inner = ex.InnerException?.Message,
+                    type = ex.GetType().Name
+                });
             }
         }
     }

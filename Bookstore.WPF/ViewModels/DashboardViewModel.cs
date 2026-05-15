@@ -118,8 +118,7 @@ namespace Bookstore.WPF.ViewModels
         }
 
         /// <summary>
-        /// Hàm load dữ liệu giả lập để test UI. 
-        /// Sau này ông thay code query Entity Framework / API vào đây nhé!
+        /// This hàm để load dữ liệu cho trang Dashboard. 
         /// </summary>
         private async Task LoadDataFromApiAsync()
         {
@@ -157,9 +156,10 @@ namespace Bookstore.WPF.ViewModels
                     PaymentReceipts.Clear(); 
                     foreach (var item in data.RecentPayments) 
                         PaymentReceipts.Add(item);
-                    StockWarnings.Clear(); 
-                    foreach (var item in data.StockWarnings) 
+                    StockWarnings.Clear();
+                    foreach (var item in data.StockWarnings)
                         StockWarnings.Add(item);
+
 
                     // gọi hàm xử lý biểu đồ 
                     SetupLiveCharts(data);
@@ -200,34 +200,16 @@ namespace Bookstore.WPF.ViewModels
             Data = pieSeriesList;
 
             // -- Biểu đồ cột (so sánh doanh thuvà chi phí s) ---
+            var dates = data.ComparisonSeries.Select(x => x.Date).ToArray();
+            var revenueValues = data.ComparisonSeries.Select(x => x.Revenue).ToArray();
+            var importValues = data.ComparisonSeries.Select(x => x.ImportCost).ToArray();
+            var profitValues = data.ComparisonSeries.Select(x => x.Profit).ToArray();
+
             ComparisonSeries = new ObservableCollection<ISeries>
             {
-                // Doanh thu
-                new ColumnSeries<double>
-                {
-                    Name = "Doanh thu",
-                    Values = new double[] { 150, 200, 180, 250, 220, 300 },
-                    Fill = new SolidColorPaint(SKColors.CornflowerBlue),
-                    MaxBarWidth = 40
-                },
-                // Chi phí
-                new ColumnSeries<double>
-                {
-                    Name = "Chi phí",
-                    Values = new double[] { 100, 120, 110, 150, 140, 180 },
-                    Fill = new SolidColorPaint(SKColors.Tomato),
-                    MaxBarWidth = 40
-                },
-                // Lợi nhuận
-                new LineSeries<double>
-                {
-                    Name = "Lợi nhuận",
-                    Values = new double[] { 50, 80, 70, 100, 80, 120 },
-                    Stroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 },
-                    Fill = null, 
-                    GeometrySize = 12,
-                    GeometryStroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 }
-                }
+                new ColumnSeries<double> { Name = "Doanh thu", Values = revenueValues, Fill = new SolidColorPaint(SKColors.CornflowerBlue) },
+                new ColumnSeries<double> { Name = "Chi phí nhập", Values = importValues, Fill = new SolidColorPaint(SKColors.Tomato) },
+                new LineSeries<double> { Name = "Lợi nhuận", Values = profitValues, Stroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 }, Fill = null }
             };
         }
     }

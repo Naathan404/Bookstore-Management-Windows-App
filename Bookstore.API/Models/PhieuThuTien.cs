@@ -12,6 +12,9 @@ namespace Bookstore.API.Models
         public string NguoiTao { get; set; } = string.Empty;
         public int MaKhachHang { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal SoTienThu { get; set; }
+        public string LyDoThu { get; set; } = "Thu tiền cho hóa đơn còn thiếu";
         public int GetID() => MaPhieuThuTien;
+        [ForeignKey("MaKhachHang")]
+        public virtual KhachHang? KhachHang { get; set; }
     }
 }
