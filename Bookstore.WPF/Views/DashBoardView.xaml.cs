@@ -33,13 +33,21 @@ namespace Bookstore.WPF.Views
             if (!e.Handled)
             {
                 e.Handled = true;
+
                 var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
                 eventArg.RoutedEvent = UIElement.MouseWheelEvent;
                 eventArg.Source = sender;
-                var parent = ((Control)sender).Parent as UIElement;
-                if (parent != null)
+
+                // Tìm ScrollViewer tổ tiên gần nhất
+                DependencyObject parent = VisualTreeHelper.GetParent(sender as DependencyObject);
+                while (parent != null && !(parent is ScrollViewer))
                 {
-                    parent.RaiseEvent(eventArg);
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+
+                if (parent is ScrollViewer scrollViewer)
+                {
+                    scrollViewer.RaiseEvent(eventArg);
                 }
             }
         }

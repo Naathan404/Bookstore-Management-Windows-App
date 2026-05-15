@@ -366,10 +366,11 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="TRẠNG THÁI VẬN HÀNH" Style="{StaticResource CategoryTabItem}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid Margin="0,15,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -441,7 +442,7 @@
                                 <materialDesign:PackIcon Kind="PackageVariantClosed" Foreground="#4318FF" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="CÁC NHẬP KHO TRONG NGÀY" FontSize="15" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="False" Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding ImportItems}" 
+                            <DataGrid CanUserSortColumns="False" AutoGenerateColumns="False" ItemsSource="{Binding ImportItems}" 
                               SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
                               HeadersVisibility="Column" BorderThickness="0" MinRowHeight="30"
                               FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
@@ -457,7 +458,7 @@
                                 ScrollViewer.IsDeferredScrollingEnabled="True" 
                                       PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Mã PN" Binding="{Binding DisplayID}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                    <DataGridTextColumn Header="Mã PN" Binding="{Binding DisplayID}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -509,6 +510,7 @@
                                 <materialDesign:PackIcon Kind="CashMultiple" Foreground="#05CD99" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="CÁC PHIẾU THU TIỀN TRONG NGÀY" FontSize="15" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                             </StackPanel>
+                            
                             <DataGrid CanUserSortColumns="False" AutoGenerateColumns="False" Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding PaymentReceipts}" 
                               SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
                               HeadersVisibility="Column" BorderThickness="0" MinRowHeight="30"
@@ -625,6 +627,7 @@
                         </StackPanel>
                     </Border>
                 </Grid>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>
