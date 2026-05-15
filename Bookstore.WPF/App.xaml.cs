@@ -50,13 +50,13 @@ namespace Bookstore.WPF
             //};
             //window.Show();
 
-            var window = new Window
-            {
-                Content = new SupplierView(),
-                Title = "NHẬP KHẨU",
-                WindowState = WindowState.Maximized
-            };
-            window.Show();
+            //var window = new Window
+            //{
+            //    Content = new SupplierView(),
+            //    Title = "NHẬP KHẨU",
+            //    WindowState = WindowState.Maximized
+            //};
+            //window.Show();
 
 
         }

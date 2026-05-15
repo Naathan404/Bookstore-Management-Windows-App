@@ -1,10 +1,13 @@
-﻿using Bookstore.WPF.Services;
+﻿using Bookstore.Share.DTOs;
+using Bookstore.WPF.Services;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
@@ -28,7 +31,7 @@ namespace Bookstore.WPF.ViewModels
         }
 
         private int _custNum;
-        
+
         public int CustNum // Khách mới 
         {
             get => _custNum;
@@ -36,7 +39,7 @@ namespace Bookstore.WPF.ViewModels
         }
 
         private int _receiptNum;
-        
+
         public int ReceiptNum // Đơn hàng 
         {
             get => _receiptNum;
@@ -46,21 +49,20 @@ namespace Bookstore.WPF.ViewModels
         // ==========================================
         // BIỂU ĐỒ 
 
-       // Biểu đồ xu hướng doanh thu 
-        private ISeries[] _revenueSeries;
-        public ISeries[] RevenueSeries
+        // Biểu đồ xu hướng doanh thu 
+        //private ISeries[] _revenueSeries;
+        //public ISeries[] RevenueSeries
+        //{
+        //    get => _revenueSeries;
+        //    set { _revenueSeries = value; OnPropertyChanged(nameof(RevenueSeries)); }
+        //}
+
+        private ObservableCollection<ISeries> _revenueSeries;
+        public ObservableCollection<ISeries> RevenueSeries
         {
             get => _revenueSeries;
             set { _revenueSeries = value; OnPropertyChanged(nameof(RevenueSeries)); }
         }
-
-        // Biểu đồ tỷ trọng thể loại 
-        //private ISeries[] _data;
-        //public ISeries[] Data
-        //{
-        //    get => _data;
-        //    set { _data = value; OnPropertyChanged(nameof(Data)); }
-        //}
 
         private ObservableCollection<ISeries> _data;
         public ObservableCollection<ISeries> Data
@@ -69,159 +71,164 @@ namespace Bookstore.WPF.ViewModels
             set { _data = value; OnPropertyChanged(nameof(Data)); }
         }
 
+        private ObservableCollection<ISeries> _comparisonSeries;
+        public ObservableCollection<ISeries> ComparisonSeries
+        {
+            get => _comparisonSeries;
+            set { _comparisonSeries = value; OnPropertyChanged(nameof(ComparisonSeries)); }
+        }
+
         // ==========================================
-        // DANH SÁCH & BẢNG BIỂU 
+        // DANH SÁCH
 
         // Tab 1: Top 5 sách bán chạy
-        public ObservableCollection<TopBookModel> TopBooks { get; set; }
+        public ObservableCollection<TopBookDto> TopBooks { get; set; }
 
         // Tab 1: Top Khách hàng VIP
-        public ObservableCollection<CustomerRankingModel> TopCustomers { get; set; }
+        public ObservableCollection<CustomerRankingDto> TopCustomers { get; set; }
 
         // Tab 1: Doanh số nhân viên 
-        public ObservableCollection<StaffRankingModel> TopStaffs { get; set; }
+        public ObservableCollection<StaffRankingDto> TopStaffs { get; set; }
 
         // Tab 2: Đơn hàng trong ngày 
-        public ObservableCollection<OrderModel> Items { get; set; }
+        public ObservableCollection<OrderDto> Items { get; set; }
 
         // Tab 2: Nhập kho trong ngày 
-        public ObservableCollection<ImportModel> ImportItems { get; set; }
+        public ObservableCollection<ImportDto> ImportItems { get; set; }
 
         // Tab 2: Phiếu thu tiền trong ngày
-        public ObservableCollection<PaymentModel> PaymentReceipts { get; set; }
+        public ObservableCollection<PaymentDto> PaymentReceipts { get; set; }
 
         // Tab 2: Cảnh báo tồn kho 
-        public ObservableCollection<StockWarningModel> StockWarnings { get; set; }
+        public ObservableCollection<StockWarningDto> StockWarnings { get; set; }
 
 
         public DashboardViewModel()
         {
             // Khởi tạo các List
-            TopBooks = new ObservableCollection<TopBookModel>();
-            TopCustomers = new ObservableCollection<CustomerRankingModel>();
-            TopStaffs = new ObservableCollection<StaffRankingModel>();
-            Items = new ObservableCollection<OrderModel>();
-            ImportItems = new ObservableCollection<ImportModel>();
-            PaymentReceipts = new ObservableCollection<PaymentModel>();
-            StockWarnings = new ObservableCollection<StockWarningModel>();
+            TopBooks = new ObservableCollection<TopBookDto>();
+            TopCustomers = new ObservableCollection<CustomerRankingDto>();
+            TopStaffs = new ObservableCollection<StaffRankingDto>();
+            Items = new ObservableCollection<OrderDto>();
+            ImportItems = new ObservableCollection<ImportDto>();
+            PaymentReceipts = new ObservableCollection<PaymentDto>();
+            StockWarnings = new ObservableCollection<StockWarningDto>();
 
-            LoadMockData();
+            LoadDataFromApiAsync();
         }
 
         /// <summary>
         /// Hàm load dữ liệu giả lập để test UI. 
         /// Sau này ông thay code query Entity Framework / API vào đây nhé!
         /// </summary>
-        private void LoadMockData()
+        private async Task LoadDataFromApiAsync()
         {
-            //  Chỉ số tổng quan
-            Sale = 25450000;
-            Profit = 12500000;
-            CustNum = 45;
-            ReceiptNum = 128;
+            try
+            {
+                using var client = new HttpClient { BaseAddress = new Uri("https://localhost:7001/") };
 
-            // Data Biểu đồ Xu hướng doanh thu (Cartesian Chart)
-            RevenueSeries = new ISeries[]
+                // call api get dashboard overview
+                var data = await client.GetFromJsonAsync<DashboardOverviewDto>("api/dashboard/overview");
+
+                if (data != null)
+                {
+                    // số liệu tổng quan
+                    Sale = data.Sale;
+                    Profit = data.Profit;
+                    CustNum = data.CustNum;
+                    ReceiptNum = data.ReceiptNum;
+
+                    //  dữ liệu cho Bảng lưới
+                    TopBooks.Clear(); 
+                    foreach (var item in data.TopBooks) 
+                        TopBooks.Add(item);
+                    TopCustomers.Clear(); 
+                    foreach (var item in data.TopCustomers) 
+                        TopCustomers.Add(item);
+                    TopStaffs.Clear(); 
+                    foreach (var item in data.TopStaffs) 
+                        TopStaffs.Add(item);
+                    Items.Clear(); 
+                    foreach (var item in data.RecentOrders) 
+                        Items.Add(item);
+                    ImportItems.Clear(); 
+                    foreach (var item in data.RecentImports) 
+                        ImportItems.Add(item);
+                    PaymentReceipts.Clear(); 
+                    foreach (var item in data.RecentPayments) 
+                        PaymentReceipts.Add(item);
+                    StockWarnings.Clear(); 
+                    foreach (var item in data.StockWarnings) 
+                        StockWarnings.Add(item);
+
+                    // gọi hàm xử lý biểu đồ 
+                    SetupLiveCharts(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("Lỗi kết nối Server: " + ex.Message, "Lỗi", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
+
+        private void SetupLiveCharts(DashboardOverviewDto data)
+        {
+            // --- Biểu đồ Đường (Doanh thu) ---
+            var valuesArray = data.RevenueSeries.Select(x => x.Value).ToArray();
+            RevenueSeries = new ObservableCollection<ISeries>
             {
                 new LineSeries<double>
                 {
-                    Values = new double[] { 15, 20, 18, 25, 22, 30, 28 },
-                    Name = "Doanh thu (Triệu VNĐ)",
+                    Values = valuesArray,
+                    Name = "Doanh thu",
                     Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 3 },
                     Fill = new SolidColorPaint(SKColors.Blue.WithAlpha(50)),
                     GeometrySize = 10
                 }
             };
 
-            // (Pie Chart) Thể loại
-            //Data = new ISeries[]
-            //{
-            //    new PieSeries<double> { Values = new double[] { 45 }, Name = "Công nghệ thông tin" },
-            //    new PieSeries<double> { Values = new double[] { 25 }, Name = "Kinh tế - Quản trị" },
-            //    new PieSeries<double> { Values = new double[] { 20 }, Name = "Văn học" },
-            //    new PieSeries<double> { Values = new double[] { 10 }, Name = "Tâm lý - Kỹ năng" }
-            //};
-            Data = new ObservableCollection<ISeries>
+            // --- Biểu đồ Tròn (Tỷ trọng thể loại) ---
+            var pieSeriesList = new ObservableCollection<ISeries>();
+            foreach (var item in data.CategoryShares)
             {
-                new PieSeries<double> { Values = new double[] { 45 }, Name = "Công nghệ thông tin" },
-                new PieSeries<double> { Values = new double[] { 25 }, Name = "Kinh tế - Quản trị" },
-                new PieSeries<double> { Values = new double[] { 20 }, Name = "Văn học" },
-                new PieSeries<double> { Values = new double[] { 10 }, Name = "Tâm lý - Kỹ năng" }
+                pieSeriesList.Add(new PieSeries<double>
+                {
+                    Values = new double[] { item.Percentage },
+                    Name = item.CategoryName
+                });
+            }
+            Data = pieSeriesList;
+
+            // -- Biểu đồ cột (so sánh doanh thuvà chi phí s) ---
+            ComparisonSeries = new ObservableCollection<ISeries>
+            {
+                // Doanh thu
+                new ColumnSeries<double>
+                {
+                    Name = "Doanh thu",
+                    Values = new double[] { 150, 200, 180, 250, 220, 300 },
+                    Fill = new SolidColorPaint(SKColors.CornflowerBlue),
+                    MaxBarWidth = 40
+                },
+                // Chi phí
+                new ColumnSeries<double>
+                {
+                    Name = "Chi phí",
+                    Values = new double[] { 100, 120, 110, 150, 140, 180 },
+                    Fill = new SolidColorPaint(SKColors.Tomato),
+                    MaxBarWidth = 40
+                },
+                // Lợi nhuận
+                new LineSeries<double>
+                {
+                    Name = "Lợi nhuận",
+                    Values = new double[] { 50, 80, 70, 100, 80, 120 },
+                    Stroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 },
+                    Fill = null, 
+                    GeometrySize = 12,
+                    GeometryStroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 }
+                }
             };
-
-            // Tab 1: Danh sách Top
-            TopBooks.Add(new TopBookModel { Rank = 1, BookImage = "/Resources/Images/Books/matbiec.jpg" });
-            TopBooks.Add(new TopBookModel { Rank = 2, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
-            TopBooks.Add(new TopBookModel { Rank = 3, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
-            TopBooks.Add(new TopBookModel { Rank = 4, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
-            TopBooks.Add(new TopBookModel { Rank = 5, BookImage = "/Resources/Images/Books/default_book_cover.jpg" });
-
-            TopCustomers.Add(new CustomerRankingModel { Name = "Nguyễn Văn A", TotalSpent = 15500000 });
-            TopCustomers.Add(new CustomerRankingModel { Name = "Trần Thị B", TotalSpent = 12200000 });
-            TopCustomers.Add(new CustomerRankingModel { Name = "Lê Hoàng C", TotalSpent = 9800000 });
-
-            TopStaffs.Add(new StaffRankingModel { Name = "Phạm Nhân Viên 1", SalesAmount = 45000000 });
-            TopStaffs.Add(new StaffRankingModel { Name = "Hoàng Nhân Viên 2", SalesAmount = 38500000 });
-
-            //  Tab 2: Vận hành
-            Items.Add(new OrderModel { ReceiptNum = "HD001", CustomerName = "Khách Lẻ", TotalCost = 150000 });
-            Items.Add(new OrderModel { ReceiptNum = "HD002", CustomerName = "Nguyễn Văn A", TotalCost = 1250000 });
-
-            ImportItems.Add(new ImportModel { ImportId = "NK001", SupplierName = "NXB Trẻ", TotalQuantity = 500 });
-            ImportItems.Add(new ImportModel { ImportId = "NK002", SupplierName = "NXB Kim Đồng", TotalQuantity = 300 });
-
-            PaymentReceipts.Add(new PaymentModel { PaymentId = "PT001", Reason = "Thu tiền nợ KH", Amount = 5000000 });
-
-            StockWarnings.Add(new StockWarningModel { Name = "C# căn bản tới nâng cao", RemainingQuantity = 5 });
-            StockWarnings.Add(new StockWarningModel { Name = "Đắc Nhân Tâm", RemainingQuantity = 2 });
         }
-    }
-
-    // ==========================================
-    // CÁC LỚP MODEL DÙNG ĐỂ BINDING CHO DATAGRID
-    // ==========================================
-    public class TopBookModel
-    {
-        public int Rank { get; set; }
-        public string BookImage { get; set; }
-    }
-
-    public class CustomerRankingModel
-    {
-        public string Name { get; set; }
-        public decimal TotalSpent { get; set; }
-    }
-
-    public class StaffRankingModel
-    {
-        public string Name { get; set; }
-        public decimal SalesAmount { get; set; }
-    }
-
-    public class OrderModel
-    {
-        public string ReceiptNum { get; set; }
-        public string CustomerName { get; set; }
-        public decimal TotalCost { get; set; }
-    }
-
-    public class ImportModel
-    {
-        public string ImportId { get; set; }
-        public string SupplierName { get; set; }
-        public int TotalQuantity { get; set; }
-    }
-
-    public class PaymentModel
-    {
-        public string PaymentId { get; set; }
-        public string Reason { get; set; }
-        public decimal Amount { get; set; }
-    }
-
-    public class StockWarningModel
-    {
-        public string Name { get; set; }
-        public int RemainingQuantity { get; set; }
     }
 }

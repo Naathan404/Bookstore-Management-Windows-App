@@ -1216,7 +1216,7 @@
 
                                         <Border Grid.Column="0" Width="180" Height="220" CornerRadius="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="2" ClipToBounds="True" Cursor="Hand" VerticalAlignment="Top">
                                             <Border.InputBindings>
-                                                <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}"/>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeImageCommand}" CommandParameter="SelectImage"/>
                                             </Border.InputBindings>
                                             <Grid>
                                                 <Image Source="{Binding EditingBook.HinhAnh}" Stretch="UniformToFill" HorizontalAlignment="Center"/>

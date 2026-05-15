@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Bookstore.Share.DTOs;
+using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -110,6 +112,23 @@ namespace Bookstore.WPF.Services
                 return response.IsSuccessStatusCode;
             }
             catch { return false; }
+        }
+
+        /// <summary>
+        /// GET DASHBOARD DATA
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<DashboardOverviewDto> GetDashboardOverviewAsync()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("api/dashboard/overview");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<DashboardOverviewDto>(json);
+            }
+
+            return null; 
         }
     }
 }
