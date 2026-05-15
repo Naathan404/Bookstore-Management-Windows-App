@@ -397,6 +397,7 @@
                                 VirtualizingStackPanel.VirtualizationMode="Recycling"
                                 ScrollViewer.IsDeferredScrollingEnabled="True" 
                                       PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                                
 
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Mã HĐ" Binding="{Binding DisplayID}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
@@ -514,8 +515,6 @@
                               FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
                               Foreground="#2B3674" GridLinesVisibility="Horizontal"
                               HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
-                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                               CanUserAddRows="False" CanUserDeleteRows="False"
                               CanUserResizeColumns="False"
                               CanUserResizeRows="False" CanUserReorderColumns="False"
@@ -523,6 +522,7 @@
                                 VirtualizingStackPanel.VirtualizationMode="Recycling"
                                 ScrollViewer.IsDeferredScrollingEnabled="True" 
                                       PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Mã PT" Binding="{Binding DisplayID}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                         <DataGridTextColumn.ElementStyle>

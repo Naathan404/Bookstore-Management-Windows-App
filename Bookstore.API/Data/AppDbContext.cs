@@ -111,10 +111,15 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_PhieuNhapSach>()
-                .HasOne<PhieuNhapSach>().WithMany().HasForeignKey(p => p.MaPhieuNhapSach)
+                .HasOne(p => p.PhieuNhapSach)
+                .WithMany(p => p.CT_PhieuNhapSach) 
+                .HasForeignKey(p => p.MaPhieuNhapSach)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<CT_PhieuNhapSach>()
-                .HasOne<PhienBanSach>().WithMany().HasForeignKey(p => p.ISBN)
+                .HasOne(p => p.PhienBanSach) 
+                .WithMany()
+                .HasForeignKey(p => p.ISBN)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<KhachHang>()

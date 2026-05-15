@@ -172,6 +172,7 @@ namespace Bookstore.API.Controllers
                 //// =========== Các trnagj thái vân hành ============ ///
                 var recentOrders = await _context.HoaDon
                     .Include(x => x.KhachHang)
+                    .Where(x => x.NgayTao.Date == today)
                     .OrderByDescending(x => x.NgayTao)
                     .Take(5)
                     .Select(x => new OrderDto
@@ -186,6 +187,7 @@ namespace Bookstore.API.Controllers
                 var recentImports = await _context.PhieuNhapSach
                                     .Include(x => x.CT_PhieuNhapSach)
                                     .Include(x => x.NhaCungCap)
+                                    .Where(x => x.NgayTao.Date == today)
                                     .OrderByDescending(x => x.NgayTao)
                                     .Take(5)
                                     .Select(x => new ImportDto
@@ -198,6 +200,7 @@ namespace Bookstore.API.Controllers
                                     }).ToListAsync();
 
                 var recentPayments = await _context.PhieuThuTien
+                    .Where(x => x.NgayTao.Date == today)
                     .OrderByDescending(x => x.NgayTao)
                     .Take(5)
                     .Select(x => new PaymentDto
