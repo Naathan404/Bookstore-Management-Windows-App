@@ -458,7 +458,7 @@
                                 ScrollViewer.IsDeferredScrollingEnabled="True" 
                                       PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Mã PN" Binding="{Binding DisplayID}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                    <DataGridTextColumn Header="Mã PN" Binding="{Binding DisplayID}" Width="11s0" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Left"/>
