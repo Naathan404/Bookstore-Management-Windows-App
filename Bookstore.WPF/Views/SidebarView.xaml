@@ -198,9 +198,6 @@
                 Height="45" Width="180" FontSize="15" FontWeight="Bold" 
                 Background="#6344FF" BorderBrush="#6344FF" Foreground="White" 
                 materialDesign:ButtonAssist.CornerRadius="20">
-            <Button.Effect>
-                <DropShadowEffect BlurRadius="10" Color="#6344FF" Opacity="0.3" ShadowDepth="3"/>
-            </Button.Effect>
         </Button>
     </Grid>
 </UserControl>
