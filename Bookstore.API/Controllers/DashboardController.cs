@@ -24,6 +24,7 @@ namespace Bookstore.API.Controllers
         {
             try
             {
+                /// =========================== Các số liệu tổng quan ============================
                 var today = DateTime.Today;
                 var sevenDaysAgo = today.AddDays(-6);
                 var startOfMonth = new DateTime(today.Year, today.Month, 1);
@@ -41,7 +42,42 @@ namespace Bookstore.API.Controllers
                 /// tính số hóa đơn
                 var receiptNumber = await _context.HoaDon.Where(x => x.NgayTao.Date == today).CountAsync();
 
-                // dữ liệu cho biểu đồ doanh thu 7 ngày trước
+                /// so sánh với ngày hôm qua để biết tăng giảm
+                var yesterday = today.AddDays(-1);
+                var saleYesterday = await _context.HoaDon.Where(x => x.NgayTao.Date == yesterday).SumAsync(x => (decimal?)x.TongTien) ?? 0;
+
+                decimal saleChangePercent = 0;
+                if (saleYesterday > 0)
+                {
+                    saleChangePercent = ((sale - saleYesterday) / saleYesterday) * 100;
+                }
+                else if (sale > 0)
+                {
+                    saleChangePercent = 100; // Hôm qua móm, hôm nay có tiền -> Tăng 100%
+                }
+
+                string saleChangeText, saleChangeColor, saleChangeIcon;
+
+                if (saleChangePercent > 0)
+                {
+                    saleChangeText = $"+{Math.Round(saleChangePercent, 1)}%";
+                    saleChangeColor = "#05CD99"; // Màu Xanh lá (Trending Up)
+                    saleChangeIcon = "TrendingUp";
+                }
+                else if (saleChangePercent < 0)
+                {
+                    saleChangeText = $"{Math.Round(saleChangePercent, 1)}%";
+                    saleChangeColor = "#EE5D50"; // Màu Đỏ (Trending Down)
+                    saleChangeIcon = "TrendingDown";
+                }
+                else
+                {
+                    saleChangeText = "0%";
+                    saleChangeColor = "#FFB547"; // Màu Vàng (Trending Neutral)
+                    saleChangeIcon = "TrendingNeutral";
+                }
+
+                // ==================== dữ liệu cho biểu đồ doanh thu 7 ngày trước =========================
                 var rawRevenue = await _context.HoaDon
                     .Where(x => x.NgayTao.Date >= sevenDaysAgo && x.NgayTao.Date <= today)
                     .GroupBy(x => x.NgayTao.Date)
@@ -59,7 +95,7 @@ namespace Bookstore.API.Controllers
                     });
                 }
 
-                /// dữ liệu cho biểu đồ thống kê doanh mục
+                /// ========================== dữ liệu cho biểu đồ thống kê doanh mục ========================
                 var rawCategoryShares = await _context.CT_HoaDon
                     .Where(x => x.HoaDon.NgayTao.Date >= startOfMonth)
                     .Join(_context.PhienBanSach, ct => ct.ISBN, pbs => pbs.ISBN, (ct, pbs) => new { ct, pbs })
@@ -67,18 +103,33 @@ namespace Bookstore.API.Controllers
                     .Join(_context.TheLoai, x => x.s.MaTheLoai, tl => tl.MaTheLoai, (x, tl) => new { x.ct, tl })
                     .GroupBy(x => x.tl.TenTheLoai)
                     .Select(g => new {
-                        CategoryName = g.Key,
+                        CategoryName = g.Key ?? "Chưa phân loại",
                         Revenue = (double?)g.Sum(x => x.ct.SoLuong * x.ct.DonGia) ?? 0
-                    }).ToListAsync();
+                    })
+                    .OrderByDescending(x => x.Revenue) 
+                    .ToListAsync();
 
 
                 var totalMonthRevenue = rawCategoryShares.Sum(x => x.Revenue);
-                var categoryShares = rawCategoryShares.Select(x => new CategoryShareDto
+                var top5Categories = rawCategoryShares.Take(5).ToList();
+                var otherCategoriesRevenue = rawCategoryShares.Skip(5).Sum(x => x.Revenue);
+                var categoryShares = top5Categories.Select(x => new CategoryShareDto
                 {
-                    CategoryName = x.CategoryName ?? "Khác",
+                    CategoryName = x.CategoryName,
                     Percentage = totalMonthRevenue > 0 ? Math.Round((x.Revenue / totalMonthRevenue) * 100, 2) : 0
                 }).ToList();
 
+                // nhét phần khác vào
+                if (otherCategoriesRevenue > 0)
+                {
+                    categoryShares.Add(new CategoryShareDto
+                    {
+                        CategoryName = "Khác",
+                        Percentage = totalMonthRevenue > 0 ? Math.Round((otherCategoriesRevenue / totalMonthRevenue) * 100, 2) : 0
+                    });
+                }
+
+                /// ======================== biểu đồ so sanh doanh thu, chi phí và lợi nhuận trong 7 ngày gần nhất =========================
                 //// dữ liệu biểu đồ so sánh doanh thu, chi phí và suy ra lợi nhuận
                 // Lấy Doanh thu theo ngày
                 var dailyRevenue = await _context.HoaDon
@@ -123,7 +174,7 @@ namespace Bookstore.API.Controllers
                 }
 
 
-                /// top sách
+                /// ======================  top sách =========================
                 var topBooksQuery = await _context.CT_HoaDon
                     .Where(x => x.HoaDon.NgayTao.Date >= startOfMonth)
                     .GroupBy(x => x.ISBN)
@@ -135,17 +186,38 @@ namespace Bookstore.API.Controllers
                     .Take(5).ToListAsync();
 
                 // lấy Image riêng trong bộ nhớ
-                var topBooksDto = topBooksQuery.Select((b, index) => new TopBookDto
-                {
-                    Rank = index + 1,
-                    BookImage = _context.PhienBanSach
-                        .Include(p => p.Sach)
-                        .FirstOrDefault(p => p.ISBN == b.ISBN)?.Sach?.ImageUrl
-                        ?? "/Resources/Images/Books/default_book_cover.jpg"
+                //var topBooksDto = topBooksQuery.Select((b, index) => new TopBookDto
+                //{
+                //    Rank = index + 1,
+                //    BookImage = _context.PhienBanSach
+                //        .Include(p => p.Sach)
+                //        .FirstOrDefault(p => p.ISBN == b.ISBN)?.Sach?.ImageUrl
+                //        ?? "/Resources/Images/Books/default_book_cover.jpg"
+                //}).ToList();
+                var topIsbns = topBooksQuery.Select(x => x.ISBN).ToList();
+
+                var bookDetails = await _context.PhienBanSach
+                    .Include(p => p.Sach).ThenInclude(s => s.TheLoai)
+                    .Where(p => topIsbns.Contains(p.ISBN))
+                    .ToListAsync();
+
+                var topBooksDto = topBooksQuery.Select((b, index) => {
+                    var phienBan = bookDetails.FirstOrDefault(p => p.ISBN == b.ISBN);
+                    return new TopBookDto
+                    {
+                        Rank = index + 1,
+                        BookImage = phienBan?.Sach?.ImageUrl ?? "/Resources/Images/Books/default_book_cover.jpg",
+
+                        // Gắn thêm dữ liệu cho Tooltip
+                        Title = phienBan?.Sach?.TenSach ?? "Đang cập nhật",
+                        CategoryName = phienBan?.Sach?.TheLoai?.TenTheLoai ?? "Chưa phân loại",
+                        Price = phienBan?.GiaNiemYet ?? 0,
+                        TotalSold = b.TotalSold
+                    };
                 }).ToList();
 
 
-                /// top khách hàng
+                /// ========================== top khách hàng =========================
                 var topCustomers = await _context.HoaDon
                     .Where(x => x.NgayTao.Date >= startOfMonth)
                     .GroupBy(x => x.KhachHang != null ? x.KhachHang.TenKhachHang : null)
@@ -156,7 +228,7 @@ namespace Bookstore.API.Controllers
                     })
                     .OrderByDescending(x => x.TotalSpent).Take(5).ToListAsync();
 
-                // top nhân viên
+                // =======================  top nhân viên =========================
                 var topStaffs = await _context.HoaDon
                     .Where(x => x.NgayTao.Date >= startOfMonth)
                     .GroupBy(x => x.NguoiTao)
@@ -187,7 +259,7 @@ namespace Bookstore.API.Controllers
                 var recentImports = await _context.PhieuNhapSach
                                     .Include(x => x.CT_PhieuNhapSach)
                                     .Include(x => x.NhaCungCap)
-                                    //.Where(x => x.NgayTao.Date == today)
+                                    .Where(x => x.NgayTao.Date == today)
                                     .OrderByDescending(x => x.NgayTao)
                                     .Take(5)
                                     .Select(x => new ImportDto
@@ -200,7 +272,7 @@ namespace Bookstore.API.Controllers
                                     }).ToListAsync();
 
                 var recentPayments = await _context.PhieuThuTien
-                    //.Where(x => x.NgayTao.Date == today)
+                    .Where(x => x.NgayTao.Date == today)
                     .OrderByDescending(x => x.NgayTao)
                     .Take(5)
                     .Select(x => new PaymentDto
@@ -230,6 +302,9 @@ namespace Bookstore.API.Controllers
                     Profit = profit,
                     CustNum = newCustomerNumber,
                     ReceiptNum = receiptNumber,
+                    SaleChangeText = saleChangeText,      
+                    SaleChangeColor = saleChangeColor,     
+                    SaleChangeIcon = saleChangeIcon,      
 
                     RevenueSeries = revenueSeries,
                     CategoryShares = categoryShares,
