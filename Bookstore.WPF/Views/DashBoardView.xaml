@@ -7,7 +7,8 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="1600"
-             Background="#F4F7FE">
+             Background="#F4F7FE"
+             Unloaded="UserControl_Unloaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -169,8 +170,8 @@
                                             <TextBlock Text="Doanh thu" Foreground="#A3AED0" FontSize="12" FontWeight="Bold"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                                 <TextBlock Text="{Binding Sale, StringFormat='{}{0:#,0} đ'}" Foreground="#2B3674" FontSize="18" FontWeight="Bold"/>
-                                                <materialDesign:PackIcon Kind="TrendingUp" Foreground="#05CD99" VerticalAlignment="Bottom" Margin="8,0,2,3" Width="18" Height="18"/>
-                                                <TextBlock Text="+12.5%" Foreground="#05CD99" FontSize="13" VerticalAlignment="Bottom" FontWeight="Bold" Margin="0,0,0,3"/>
+                                                <materialDesign:PackIcon Kind="{Binding SaleChangeIcon}" Foreground="#05CD99" VerticalAlignment="Bottom" Margin="8,0,2,3" Width="18" Height="18"/>
+                                                <TextBlock Text="{Binding SaleChangeText}" Foreground="{Binding SaleChangeColor}" FontSize="13" VerticalAlignment="Bottom" FontWeight="Bold" Margin="0,0,0,3"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
@@ -250,13 +251,13 @@
                             <Border Grid.Column="0" Style="{StaticResource DashboardCardStyle}" Margin="0,0,10,0" Height="360">
                                 <StackPanel>
                                     <TextBlock Text="XU HƯỚNG TĂNG TRƯỞNG DOANH THU" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,15"/>
-                                    <lvc:CartesianChart Series="{Binding RevenueSeries}" Height="290"/>
+                                    <lvc:CartesianChart x:Name="ChartRevenue" Series="{Binding RevenueSeries}" Height="290"/>
                                 </StackPanel>
                             </Border>
                             <Border Grid.Column="1" Style="{StaticResource DashboardCardStyle}" Height="360" Margin="0 10 0 15">
                                 <StackPanel>
                                     <TextBlock Text="TỶ TRỌNG DOANH THU THEO THỂ LOẠI" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,0"/>
-                                    <lvc:PieChart Series="{Binding Data}" Height="300" LegendPosition="Bottom"/>
+                                    <lvc:PieChart x:Name="ChartCategory" Series="{Binding Data}" Height="300" LegendPosition="Bottom"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -269,7 +270,7 @@
                             <Border Style="{StaticResource DashboardCardStyle}" Height="400">
                                 <StackPanel>
                                     <TextBlock Text="SO SÁNH DOANH THU &amp; CHI PHÍ" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,15"/>
-                                    <lvc:CartesianChart Series="{Binding ComparisonSeries}" Height="350" LegendPosition="Right"/>
+                                    <lvc:CartesianChart x:Name="ChartComparison" Series="{Binding ComparisonSeries}" Height="350" LegendPosition="Right"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -458,7 +459,7 @@
                                 ScrollViewer.IsDeferredScrollingEnabled="True" 
                                       PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Mã PN" Binding="{Binding DisplayID}" Width="11s0" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                    <DataGridTextColumn Header="Mã PN" Binding="{Binding DisplayID}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Left"/>

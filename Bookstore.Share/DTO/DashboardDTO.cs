@@ -10,6 +10,11 @@ namespace Bookstore.Share.DTOs
         public int CustNum { get; set; }
         public int ReceiptNum { get; set; }
 
+        public string SaleChangeText { get; set; }
+        public string SaleChangeColor { get; set; }
+        public string SaleChangeIcon { get; set; }
+
+
         public List<RevenueDataDto> RevenueSeries { get; set; }
         public List<CategoryShareDto> CategoryShares { get; set; }
 

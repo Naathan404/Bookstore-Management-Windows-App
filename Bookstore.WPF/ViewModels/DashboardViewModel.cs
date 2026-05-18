@@ -3,6 +3,7 @@ using Bookstore.WPF.Services;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using MaterialDesignThemes.Wpf;
 using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
@@ -44,6 +45,39 @@ namespace Bookstore.WPF.ViewModels
         {
             get => _receiptNum;
             set { _receiptNum = value; OnPropertyChanged(nameof(ReceiptNum)); }
+        }
+
+        private string _saleChangeIcon = "TreiangleNeutral";
+        public string SaleChangeIcon
+        {
+            get => _saleChangeIcon;
+            set
+            {
+                _saleChangeIcon = value;
+                OnPropertyChanged(nameof(SaleChangeIcon));
+            }
+        }
+
+        private string _saleChangeText = "0%";
+        public string SaleChangeText
+        {
+            get => _saleChangeText;
+            set
+            {
+                _saleChangeText = value;
+                OnPropertyChanged(nameof(SaleChangeText));
+            }
+        }
+
+        private string _saleChangeColor = "#FFB547";
+        public string SaleChangeColor   
+        {
+            get => _saleChangeColor;
+            set 
+            {
+                _saleChangeColor = value;
+                OnPropertyChanged(nameof(SaleChangeColor));
+            }
         }
 
         // ==========================================
@@ -136,6 +170,9 @@ namespace Bookstore.WPF.ViewModels
                     Profit = data.Profit;
                     CustNum = data.CustNum;
                     ReceiptNum = data.ReceiptNum;
+                    SaleChangeText = data.SaleChangeText;
+                    SaleChangeIcon = data.SaleChangeIcon;
+                    SaleChangeColor = data.SaleChangeColor;
 
                     //  dữ liệu cho Bảng lưới
                     TopBooks.Clear(); 

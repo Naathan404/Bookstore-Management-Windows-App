@@ -51,5 +51,13 @@ namespace Bookstore.WPF.Views
                 }
             }
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (ChartRevenue != null) ChartRevenue.Series = null;
+            if (ChartCategory != null) ChartCategory.Series = null;
+            if (ChartComparison != null) ChartComparison.Series = null;
+            this.DataContext = null;
+        }
     }
 }
