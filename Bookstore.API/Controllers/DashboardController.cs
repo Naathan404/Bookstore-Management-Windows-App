@@ -186,13 +186,34 @@ namespace Bookstore.API.Controllers
                     .Take(5).ToListAsync();
 
                 // lấy Image riêng trong bộ nhớ
-                var topBooksDto = topBooksQuery.Select((b, index) => new TopBookDto
-                {
-                    Rank = index + 1,
-                    BookImage = _context.PhienBanSach
-                        .Include(p => p.Sach)
-                        .FirstOrDefault(p => p.ISBN == b.ISBN)?.Sach?.ImageUrl
-                        ?? "/Resources/Images/Books/default_book_cover.jpg"
+                //var topBooksDto = topBooksQuery.Select((b, index) => new TopBookDto
+                //{
+                //    Rank = index + 1,
+                //    BookImage = _context.PhienBanSach
+                //        .Include(p => p.Sach)
+                //        .FirstOrDefault(p => p.ISBN == b.ISBN)?.Sach?.ImageUrl
+                //        ?? "/Resources/Images/Books/default_book_cover.jpg"
+                //}).ToList();
+                var topIsbns = topBooksQuery.Select(x => x.ISBN).ToList();
+
+                var bookDetails = await _context.PhienBanSach
+                    .Include(p => p.Sach).ThenInclude(s => s.TheLoai)
+                    .Where(p => topIsbns.Contains(p.ISBN))
+                    .ToListAsync();
+
+                var topBooksDto = topBooksQuery.Select((b, index) => {
+                    var phienBan = bookDetails.FirstOrDefault(p => p.ISBN == b.ISBN);
+                    return new TopBookDto
+                    {
+                        Rank = index + 1,
+                        BookImage = phienBan?.Sach?.ImageUrl ?? "/Resources/Images/Books/default_book_cover.jpg",
+
+                        // Gắn thêm dữ liệu cho Tooltip
+                        Title = phienBan?.Sach?.TenSach ?? "Đang cập nhật",
+                        CategoryName = phienBan?.Sach?.TheLoai?.TenTheLoai ?? "Chưa phân loại",
+                        Price = phienBan?.GiaNiemYet ?? 0,
+                        TotalSold = b.TotalSold
+                    };
                 }).ToList();
 
 

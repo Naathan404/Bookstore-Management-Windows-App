@@ -32,7 +32,15 @@ namespace Bookstore.Share.DTOs
     // DTOs con cho các phần dữ liệu chi tiết hơn
     public class RevenueDataDto { public string Date { get; set; } public double Value { get; set; } }
     public class CategoryShareDto { public string CategoryName { get; set; } public double Percentage { get; set; } }
-    public class TopBookDto { public int Rank { get; set; } public string BookImage { get; set; } }
+    public class TopBookDto 
+    { 
+        public int Rank { get; set; } 
+        public string BookImage { get; set; }
+        public string Title { get; set; }
+        public string CategoryName { get; set; }
+        public decimal Price { get; set; }
+        public int TotalSold { get; set; }
+    }
     public class CustomerRankingDto { public string Name { get; set; } public decimal TotalSpent { get; set; } }
     public class StaffRankingDto { public string Name { get; set; } public decimal SalesAmount { get; set; } }
     public class OrderDto 

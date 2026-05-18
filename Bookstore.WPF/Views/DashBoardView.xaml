@@ -287,9 +287,181 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid x:Name="ItemContainer" HorizontalAlignment="Center" Background="Transparent">
+                                            <Grid x:Name="ItemContainer" HorizontalAlignment="Center" Background="Transparent" 
+                                                  ToolTipService.InitialShowDelay="100"
+                                                  ToolTipService.ShowDuration="30000">
+                                                <Grid.ToolTip>
+                                                    <ToolTip
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HasDropShadow="False"
+                                                        Placement="MousePoint"
+                                                        VerticalOffset="18">
+
+                                                        <Border
+                                                            Width="280"
+                                                            Padding="16"
+                                                            Background="#FFFFFF"
+                                                            BorderBrush="#E2E8F0"
+                                                            BorderThickness="1"
+                                                            CornerRadius="18">
+
+                                                            <StackPanel>
+
+                                                                <!-- Header -->
+                                                                <StackPanel Margin="0,0,0,12">
+
+                                                                    <TextBlock
+                                                                        Text="{Binding Title}"
+                                                                        FontSize="18"
+                                                                        FontWeight="SemiBold"
+                                                                        Foreground="#1E293B"
+                                                                        TextWrapping="Wrap"/>
+
+                                                                    <Border CornerRadius="12" Padding="10,5" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                                        <Border.Style>
+                                                                            <Style TargetType="Border">
+                                                                                <!-- Màu Nền Mặc định (Nếu thể loại không nằm trong danh sách dưới) -->
+                                                                                <Setter Property="Background" Value="#F3F4F6"/>
+
+                                                                                <Style.Triggers>
+                                                                                    <!-- Công nghệ thông tin: Tone Xanh dương -->
+                                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Công nghệ thông tin">
+                                                                                        <Setter Property="Background" Value="#DBEAFE"/>
+                                                                                    </DataTrigger>
+                                                                                    <!-- Văn học nghệ thuật: Tone Hồng -->
+                                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Văn học nghệ thuật">
+                                                                                        <Setter Property="Background" Value="#FCE7F3"/>
+                                                                                    </DataTrigger>
+                                                                                    <!-- Kinh tế - Quản trị: Tone Xanh ngọc -->
+                                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Kinh tế - Quản trị">
+                                                                                        <Setter Property="Background" Value="#D1FAE5"/>
+                                                                                    </DataTrigger>
+                                                                                    <!-- Tâm lý - Kỹ năng sống: Tone Tím -->
+                                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Tâm lý - Kỹ năng sống">
+                                                                                        <Setter Property="Background" Value="#EDE9FE"/>
+                                                                                    </DataTrigger>
+                                                                                    <!-- Truyện tranh: Tone Cam/Vàng -->
+                                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Truyện tranh">
+                                                                                        <Setter Property="Background" Value="#FEF3C7"/>
+                                                                                    </DataTrigger>
+                                                                                    <!-- Thiếu nhi: Tone Xanh lá nhạt -->
+                                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Thiếu nhi">
+                                                                                        <Setter Property="Background" Value="#DCFCE7"/>
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Border.Style>
+
+                                                                        <!-- ĐỊNH DẠNG MÀU CHỮ BÊN TRONG -->
+                                                                        <TextBlock FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center">
+                                                                            <TextBlock.Style>
+                                                                                <Style TargetType="TextBlock">
+                                                                                    <!-- Chữ Mặc định (Xám đậm) -->
+                                                                                    <Setter Property="Foreground" Value="#4B5563"/>
+                                                                                    <Setter Property="Text" Value="{Binding CategoryName}"/>
+                                                                                    <Style.Triggers>
+                                                                                        <!-- Công nghệ thông tin -->
+                                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Công nghệ thông tin">
+                                                                                            <Setter Property="Foreground" Value="#1D4ED8"/>
+                                                                                        </DataTrigger>
+                                                                                        <!-- Văn học nghệ thuật -->
+                                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Văn học nghệ thuật">
+                                                                                            <Setter Property="Foreground" Value="#BE185D"/>
+                                                                                        </DataTrigger>
+                                                                                        <!-- Kinh tế - Quản trị -->
+                                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Kinh tế - Quản trị">
+                                                                                            <Setter Property="Foreground" Value="#047857"/>
+                                                                                        </DataTrigger>
+                                                                                        <!-- Tâm lý - Kỹ năng sống -->
+                                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Tâm lý - Kỹ năng sống">
+                                                                                            <Setter Property="Foreground" Value="#6D28D9"/>
+                                                                                        </DataTrigger>
+                                                                                        <!-- Truyện tranh -->
+                                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Truyện tranh">
+                                                                                            <Setter Property="Foreground" Value="#B45309"/>
+                                                                                        </DataTrigger>
+                                                                                        <!-- Thiếu nhi -->
+                                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Thiếu nhi">
+                                                                                            <Setter Property="Foreground" Value="#15803D"/>
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </TextBlock.Style>
+                                                                        </TextBlock>
+                                                                    </Border>
+                                                                </StackPanel>
+
+                                                                <!-- Divider -->
+                                                                <Border
+                                                                    Height="1"
+                                                                    Margin="0,0,0,12"
+                                                                    Background="#F1F5F9"/>
+
+                                                                <!-- Stats -->
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <!-- Giá -->
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Margin="0,0,6,0"
+                                                                        Padding="12"
+                                                                        Background="#F8FAFC"
+                                                                        CornerRadius="14">
+
+                                                                        <StackPanel>
+
+                                                                            <TextBlock
+                                                                                Text="Giá niêm yết"
+                                                                                FontSize="11"
+                                                                                Foreground="#64748B"/>
+
+                                                                            <TextBlock
+                                                                                Margin="0,4,0,0"
+                                                                                Text="{Binding Price, StringFormat={}{0:N0}₫}"
+                                                                                FontSize="16"
+                                                                                FontWeight="Bold"
+                                                                                Foreground="#0F172A"/>
+                                                                        </StackPanel>
+                                                                    </Border>
+
+                                                                    <!-- Đã bán -->
+                                                                    <Border
+                                                                        Grid.Column="1"
+                                                                        Margin="6,0,0,0"
+                                                                        Padding="12"
+                                                                        Background="#F8FAFC"
+                                                                        CornerRadius="14">
+
+                                                                        <StackPanel>
+
+                                                                            <TextBlock
+                                                                                Text="Đã bán"
+                                                                                FontSize="11"
+                                                                                Foreground="#64748B"/>
+
+                                                                            <TextBlock
+                                                                                Margin="0,4,0,0"
+                                                                                Text="{Binding TotalSold}"
+                                                                                FontSize="16"
+                                                                                FontWeight="Bold"
+                                                                                Foreground="#16A34A"/>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </Grid>
+
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Grid.ToolTip>
                                                 <TextBlock Text="{Binding Rank}" FontSize="95" FontWeight="Black" Foreground="#2B3674" Opacity="0.08" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="-15,0,0,0"/>
+
                                                 <Border x:Name="BookBorder" Width="100" Height="145" CornerRadius="12" Margin="30,0,0,0" RenderTransformOrigin="0.5,0.5">
+
                                                     <Border.RenderTransform>
                                                         <ScaleTransform ScaleX="1" ScaleY="1"/>
                                                     </Border.RenderTransform>
@@ -298,6 +470,7 @@
                                                     </Border.Background>
                                                 </Border>
                                             </Grid>
+
                                             <DataTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True" SourceName="ItemContainer">
                                                     <Setter TargetName="BookBorder" Property="Panel.ZIndex" Value="1"/>
