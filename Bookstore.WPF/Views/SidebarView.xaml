@@ -64,7 +64,8 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsDashboardVisible}"
                              IsChecked="{Binding IsDashboardChecked}"
-                             Command="{Binding ShowDashboardCommand}">
+                             Command="{Binding ShowDashboardCommand}"
+                             CommandParameter="Dashboard">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="ViewDashboard" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Dashboard" VerticalAlignment="Center"/>
@@ -75,7 +76,8 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsSaleVisible}"
                              IsChecked="{Binding IsSaleChecked}"
-                             Command="{Binding ShowBanHangCommand}">
+                             Command="{Binding ShowBanHangCommand}"
+                             CommandParameter="Sale">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="CashRegister" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Bán hàng" VerticalAlignment="Center"/>
@@ -86,7 +88,8 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsProductVisible}"
                              IsChecked="{Binding IsProductChecked}"
-                             Command="{Binding ShowTraCuuSachCommand}">
+                             Command="{Binding ShowTraCuuSachCommand}"
+                             CommandParameter="Product">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="BookSearch" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Tra cứu sách" VerticalAlignment="Center"/>
@@ -97,7 +100,8 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsCustomerVisible}"
                              IsChecked="{Binding IsCustomerChecked}"
-                             Command="{Binding ShowKhachHangCommand}">
+                             Command="{Binding ShowKhachHangCommand}"
+                             CommandParameter="Customer">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="AccountGroup" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Khách hàng" VerticalAlignment="Center"/>
@@ -108,7 +112,8 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsImportVisible}"
                              IsChecked="{Binding IsImportChecked}"
-                             Command="{Binding ShowNhapKhoCommand}">
+                             Command="{Binding ShowNhapKhoCommand}"
+                             CommandParameter="Import">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Warehouse" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Nhập kho" VerticalAlignment="Center"/>
@@ -119,7 +124,8 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsSupplierVisible}"
                              IsChecked="{Binding IsSupplierChecked}"
-                             Command="{Binding ShowNhaCungCapCommand}">
+                             Command="{Binding ShowNhaCungCapCommand}"
+                             CommandParameter="Supplier">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="TruckDelivery" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Nhà cung cấp" VerticalAlignment="Center"/>
@@ -130,36 +136,51 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu" 
                              Visibility="{Binding IsPromotionVisible}"
                              IsChecked="{Binding IsPromtionChecked}"
-                             Command="{Binding ShowUuDaiCommand}">
+                             Command="{Binding ShowUuDaiCommand}"
+                             CommandParameter="Promotion">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="TicketPercent" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Ưu đãi" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 8. BÁO CÁO -->
+                <!-- 8. DANH MỤC -->
+                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
+                             Visibility="{Binding IsCategoryVisible}"
+                             IsChecked="{Binding IsCategoryChecked}"
+                             Command="{Binding ShowDanhMucCommand}"
+                             CommandParameter="Category">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CategoryPlus" Width="22" Height="22" Margin="0,0,15,0"/>
+                        <TextBlock Text="Danh mục" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </RadioButton>
+
+                <!-- 9. BÁO CÁO -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsReportVisible}"
                              IsChecked="{Binding IsReportChecked}"
-                             Command="{Binding ShowBaoCaoCommand}">
+                             Command="{Binding ShowBaoCaoCommand}"
+                             CommandParameter="Report">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="ChartBar" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Báo cáo" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 9. TÀI KHOẢN -->
+                <!-- 10. TÀI KHOẢN -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsAccountVisible}"
                              IsChecked="{Binding IsAccountChecked}"
-                             Command="{Binding ShowTaiKhoanCommand}">
+                             Command="{Binding ShowTaiKhoanCommand}"
+                             CommandParameter="Account">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="ShieldAccount" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Tài khoản" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 10. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
+                <!-- 11. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsSettingVisible}"
                              IsChecked="{Binding IsSettingChecked}"
@@ -173,13 +194,10 @@
         </ScrollViewer>
 
         <!-- footer -->
-        <Button Grid.Row="2" Content="Đăng xuất" Command="{Binding LogoutCommand}"
+        <Button Grid.Row="2" Content="Đăng xuất" Command="{Binding LogoutCommand}" CommandParameter="LogOut"
                 Height="45" Width="180" FontSize="15" FontWeight="Bold" 
                 Background="#6344FF" BorderBrush="#6344FF" Foreground="White" 
                 materialDesign:ButtonAssist.CornerRadius="20">
-            <Button.Effect>
-                <DropShadowEffect BlurRadius="10" Color="#6344FF" Opacity="0.3" ShadowDepth="3"/>
-            </Button.Effect>
         </Button>
     </Grid>
 </UserControl>

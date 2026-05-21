@@ -13,5 +13,10 @@ namespace Bookstore.WPF.Views
             InitializeComponent();
             this.DataContext = new MainViewModel();
         }
+
+        private void SidebarView_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

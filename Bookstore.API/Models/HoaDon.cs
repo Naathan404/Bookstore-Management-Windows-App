@@ -17,5 +17,11 @@ namespace Bookstore.API.Models
         [Column(TypeName = "decimal(18,2)")] public decimal TongTien { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal SoTienTra { get; set; }
         public int GetID() => MaHoaDon;
+        public virtual ICollection<CT_HoaDon> ChiTietHoaDons { get; set; } = new List<CT_HoaDon>();
+
+        [ForeignKey("MaKhachHang")]
+        public virtual KhachHang KhachHang { get; set; }
+        [ForeignKey("NguoiTao")]
+        public virtual NguoiDung? NguoiDung { get; set; }
     }
 }

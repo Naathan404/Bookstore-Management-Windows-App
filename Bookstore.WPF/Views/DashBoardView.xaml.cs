@@ -26,5 +26,38 @@ namespace Bookstore.WPF.Views
             InitializeComponent();
             //DataContext = new DashboardViewModel(); 
         }
+
+
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.Source = sender;
+
+                // Tìm ScrollViewer tổ tiên gần nhất
+                DependencyObject parent = VisualTreeHelper.GetParent(sender as DependencyObject);
+                while (parent != null && !(parent is ScrollViewer))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+
+                if (parent is ScrollViewer scrollViewer)
+                {
+                    scrollViewer.RaiseEvent(eventArg);
+                }
+            }
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (ChartRevenue != null) ChartRevenue.Series = null;
+            if (ChartCategory != null) ChartCategory.Series = null;
+            if (ChartComparison != null) ChartComparison.Series = null;
+            this.DataContext = null;
+        }
     }
 }

@@ -67,6 +67,13 @@ namespace Bookstore.WPF.ViewModels
             set { _isPromotionVisible = value; OnPropertyChanged(); }
         }
 
+        private Visibility _isCategoryVisible;
+        public Visibility IsCategoryVisible
+        {
+            get => _isCategoryVisible;
+            set { _isCategoryVisible = value; OnPropertyChanged(); }
+        }
+
         private Visibility _isReportVisible;
         public Visibility IsReportVisible
         {
@@ -97,6 +104,7 @@ namespace Bookstore.WPF.ViewModels
         private ImportViewModel _importViewModel;
         private SupplierViewModel _supplierViewModel;
         private PromotionViewModel _promotionViewModel;
+        private CategoryViewModel _categoryViewModel;
         private ReportViewModel _reportViewModel;
         private AccountViewModel _accountViewModel;
         private SettingViewModel _settingViewModel;
@@ -111,6 +119,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ShowNhapKhoCommand { get; set; }
         public ICommand ShowNhaCungCapCommand { get; set; }
         public ICommand ShowUuDaiCommand { get; set; }
+        public ICommand ShowDanhMucCommand { get; set; }
         public ICommand ShowBaoCaoCommand { get; set; }
         public ICommand ShowTaiKhoanCommand { get; set; }
         public ICommand ShowCaiDatCommand { get; set; }
@@ -169,6 +178,13 @@ namespace Bookstore.WPF.ViewModels
             set { _isPromotionChecked = value; OnPropertyChanged(); }
         }
 
+        private bool _isCategoryChecked;
+        public bool IsCategoryChecked
+        {
+            get => _isCategoryChecked;
+            set { _isCategoryChecked = value; OnPropertyChanged(); }
+        }
+
         private bool _isReportChecked;
         public bool IsReportChecked
         {
@@ -196,9 +212,9 @@ namespace Bookstore.WPF.ViewModels
             _handleChangeView = changeViewAction;
             var listQuyen = AppState.CurrentPermissions;
 
-            string debugstring = string.Empty;
-            foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
-            MessageBox.Show(debugstring);
+            //string debugstring = string.Empty;
+            //foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
+            //MessageBox.Show(debugstring);
 
             HomeTabName = AppState.CurrentUser.Username;
             // Đọc phân quyền từ api
@@ -211,6 +227,7 @@ namespace Bookstore.WPF.ViewModels
             IsImportVisible = listQuyen.Contains("ImportView") ? Visibility.Visible : Visibility.Collapsed;
             IsSupplierVisible = listQuyen.Contains("SupplierView") ? Visibility.Visible : Visibility.Collapsed;
             IsPromotionVisible = listQuyen.Contains("PromotionView") ? Visibility.Visible : Visibility.Collapsed;
+            IsCategoryVisible = listQuyen.Contains("CategoryView") ? Visibility.Visible : Visibility.Collapsed;
             IsReportVisible = listQuyen.Contains("ReportView") ? Visibility.Visible : Visibility.Collapsed;
             IsAccountVisible = listQuyen.Contains("AccountView") ? Visibility.Visible : Visibility.Collapsed;
             IsSettingVisible = listQuyen.Contains("SettingView") ? Visibility.Visible : Visibility.Collapsed;
@@ -241,7 +258,12 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("ProductView"))
             {
                 _productViewModel = new ProductViewModel();
-                ShowTraCuuSachCommand = new RelayCommand<object>((p) => _handleChangeView(_productViewModel));
+                ShowTraCuuSachCommand = new RelayCommand<object>(async (p) =>
+                {
+                    await _productViewModel.LoadMasterData();
+
+                    _handleChangeView(_productViewModel);
+                });
             }
 
             if (listQuyen.Contains("CustomerView"))
@@ -266,6 +288,18 @@ namespace Bookstore.WPF.ViewModels
             {
                 _promotionViewModel = new PromotionViewModel();
                 ShowUuDaiCommand = new RelayCommand<object>((p) => _handleChangeView(_promotionViewModel));
+            }
+
+
+            if (listQuyen.Contains("CategoryView"))
+            {
+                _categoryViewModel = new CategoryViewModel();
+                //ShowDanhMucCommand = new RelayCommand<object>((p) => _handleChangeView(_categoryViewModel));
+                ShowDanhMucCommand = new RelayCommand<object>(async (p) =>
+                {
+                    await _categoryViewModel.LoadAllDataAsync();
+                    _handleChangeView(_categoryViewModel);
+                });
             }
 
             if (listQuyen.Contains("ReportView"))
@@ -313,6 +347,7 @@ namespace Bookstore.WPF.ViewModels
             else if (listQuyen.Contains("ImportView")) IsImportChecked = true;
             else if (listQuyen.Contains("SupplierView")) IsSupplierChecked = true;
             else if (listQuyen.Contains("PromotionView")) IsPromotionChecked = true;
+            else if (listQuyen.Contains("CategoryView")) IsCategoryChecked = true;
             else if (listQuyen.Contains("ReportView")) IsReportChecked = true;
             else if (listQuyen.Contains("AccountView")) IsAccountChecked = true;
             else if (listQuyen.Contains("SettingView")) IsSettingChecked = true;

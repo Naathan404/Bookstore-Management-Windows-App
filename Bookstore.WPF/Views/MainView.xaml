@@ -40,6 +40,10 @@
             <views:PromotionView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewmodels:CategoryViewModel}">
+            <views:CategoryView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type viewmodels:ReportViewModel }">
             <views:ReportView />
         </DataTemplate>
@@ -87,7 +91,7 @@
                 <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.05" ShadowDepth="0"/>
             </Border.Effect>
 
-            <views:SidebarView DataContext="{Binding SidebarVM}" />
+            <views:SidebarView DataContext="{Binding SidebarVM}" Loaded="SidebarView_Loaded" />
         </Border>
     </Grid>
 </Window>

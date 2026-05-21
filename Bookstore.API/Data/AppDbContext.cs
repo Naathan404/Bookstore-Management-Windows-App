@@ -77,9 +77,14 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<Sach>()
                 .HasOne<TheLoai>().WithMany().HasForeignKey(s => s.MaTheLoai)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Sach>()
+                .HasOne(p => p.TheLoai)
+                .WithMany()
+                .HasForeignKey(p => p.MaTheLoai)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhienBanSach>()
-                .HasOne<Sach>().WithMany().HasForeignKey(p => p.MaSach)
+                .HasOne(s => s.Sach).WithMany().HasForeignKey(p => p.MaSach)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PhienBanSach>()
                             .HasOne(p => p.NhaXuatBan)
@@ -88,11 +93,15 @@ namespace Bookstore.API.Data
                             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TacGia_Sach>()
-                .HasOne<TacGia>().WithMany().HasForeignKey(t => t.MaTacGia)
-                .OnDelete(DeleteBehavior.Restrict);
+                            .HasOne(p => p.TacGia)
+                            .WithMany()
+                            .HasForeignKey(p => p.MaTacGia)
+                            .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<TacGia_Sach>()
-                .HasOne<Sach>().WithMany().HasForeignKey(s => s.MaSach)
-                .OnDelete(DeleteBehavior.Restrict);
+                            .HasOne(p => p.Sach)
+                            .WithMany()
+                            .HasForeignKey(p => p.MaSach)
+                            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhieuNhapSach>()
                 .HasOne(p => p.NhaCungCap).WithMany().HasForeignKey(n => n.MaNhaCungCap)
@@ -102,10 +111,15 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_PhieuNhapSach>()
-                .HasOne<PhieuNhapSach>().WithMany().HasForeignKey(p => p.MaPhieuNhapSach)
+                .HasOne(p => p.PhieuNhapSach)
+                .WithMany(p => p.CT_PhieuNhapSach) 
+                .HasForeignKey(p => p.MaPhieuNhapSach)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<CT_PhieuNhapSach>()
-                .HasOne<PhienBanSach>().WithMany().HasForeignKey(p => p.ISBN)
+                .HasOne(p => p.PhienBanSach) 
+                .WithMany()
+                .HasForeignKey(p => p.ISBN)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<KhachHang>()
@@ -146,15 +160,24 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<HoaDon>()
-                .HasOne<KhachHang>().WithMany().HasForeignKey(h => h.MaKhachHang)
+                .HasOne(p => p.KhachHang).WithMany().HasForeignKey(p => p.MaKhachHang)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HoaDon>()
+                .HasOne(p => p.NguoiDung).WithMany().HasForeignKey(p => p.NguoiTao)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_HoaDon>()
-                .HasOne<HoaDon>().WithMany().HasForeignKey(h => h.MaHoaDon)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(p => p.HoaDon)
+                .WithMany(h => h.ChiTietHoaDons) 
+                .HasForeignKey(p => p.MaHoaDon)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<CT_HoaDon>()
-                .HasOne<PhienBanSach>().WithMany().HasForeignKey(h => h.ISBN)
+                .HasOne(p => p.PhienBanSach)
+                .WithMany()
+                .HasForeignKey(p => p.ISBN)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<HoaDon_UuDai>()
                 .HasOne<HoaDon>().WithMany().HasForeignKey(h => h.MaHoaDon)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -166,7 +189,7 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhieuThuTien>()
-                .HasOne<KhachHang>().WithMany().HasForeignKey(k => k.MaKhachHang)
+                .HasOne(p => p.KhachHang).WithMany().HasForeignKey(p => p.MaKhachHang)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_BC_Sach>()
@@ -219,9 +242,10 @@ namespace Bookstore.API.Data
                     new ChucNang { MaChucNang = 5, TenChucNang = "Nhập kho", TenManHinh = "ImportView" },
                     new ChucNang { MaChucNang = 6, TenChucNang = "Nhà cung cấp", TenManHinh = "SupplierView" },
                     new ChucNang { MaChucNang = 7, TenChucNang = "Ưu đãi", TenManHinh = "PromotionView" },
-                    new ChucNang { MaChucNang = 8, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
-                    new ChucNang { MaChucNang = 9, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
-                    new ChucNang { MaChucNang = 10, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
+                    new ChucNang { MaChucNang = 8, TenChucNang = "Danh mục", TenManHinh = "CategoryView" },
+                    new ChucNang { MaChucNang = 9, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
+                    new ChucNang { MaChucNang = 10, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
+                    new ChucNang { MaChucNang = 11, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
             );
 
             /// SEED data cho PHÂN QUYỀN
@@ -237,6 +261,7 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 8 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 9 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 10 },
+                new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 11 },
 
                 // QUẢN LÝ không bán hàng, thêm tài khoản và cài đặt
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 1 },
@@ -246,11 +271,13 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 6 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 7 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 8 },
+                new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 9 },
 
                 // NHÂN VIÊN có quyền bán hàng, tra cứu sách, quản lý khách hàng.
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 2 },
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 3 },
-                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 4 }
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 4 },
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 8 }
             );
 
             string defaultHash = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676";
@@ -744,14 +771,14 @@ namespace Bookstore.API.Data
             // CHI TIẾT HÓA ĐƠN
             modelBuilder.Entity<CT_HoaDon>().HasData(
                 // Chi tiết HD 1: 1 Mắt biếc (Giá bán 110k)
-                new CT_HoaDon { MaHoaDon = 1, ISBN = "978-604-1-09887-1", SoLuong = 1, DonGia = 110000m },
+                new CT_HoaDon { MaHoaDon = 1, ISBN = "978-604-1-09887-1", SoLuong = 1, DonGia = 110000m, GiaVon = 100000m },
 
                 // Chi tiết HD 2: 2 Clean Code (Giá bán 450k/cuốn)
-                new CT_HoaDon { MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, DonGia = 450000m },
+                new CT_HoaDon { MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, DonGia = 450000m, GiaVon = 440000m},
 
                 // Chi tiết HD 3: 5 Doraemon tập 1 (20k/cuốn) + 1 Rừng Na Uy (145k)
-                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-2-11111-1", SoLuong = 5, DonGia = 20000m },
-                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-56-7890-1", SoLuong = 6, DonGia = 150000m }
+                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-2-11111-1", SoLuong = 5, DonGia = 20000m, GiaVon = 18000m },
+                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-56-7890-1", SoLuong = 6, DonGia = 150000m, GiaVon = 140000m }
             );
 
             // HÓA ĐƠN - ƯU ĐÃI

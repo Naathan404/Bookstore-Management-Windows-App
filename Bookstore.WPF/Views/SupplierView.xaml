@@ -4,9 +4,511 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Bookstore.WPF.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+    <UserControl.Resources>
+        <!-- Style -->
+        <SolidColorBrush x:Key="PrimaryDarkColor" Color="#2B3674"/>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#4318FF"/>
+        <SolidColorBrush x:Key="TextLightColor" Color="#A3AED0"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#F4F7FE"/>
+        <SolidColorBrush x:Key="WhiteColor" Color="White"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#EF4444"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#10B981"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#F59E0B"/>
+
+        <LinearGradientBrush x:Key="GradientButtonBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#4318FF" Offset="0"/>
+            <GradientStop Color="#5B3CFF" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GradientSuccessBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#10B981" Offset="0"/>
+            <GradientStop Color="#059669" Offset="1"/>
+        </LinearGradientBrush>
+
+        <DropShadowEffect x:Key="CardShadowEffect" BlurRadius="20" ShadowDepth="0" Opacity="0.08" Color="#4318FF"/>
+        <DropShadowEffect x:Key="ButtonShadowEffect" BlurRadius="10" ShadowDepth="2" Opacity="0.25" Color="#4318FF"/>
+        <DropShadowEffect x:Key="PopupShadowEffect" BlurRadius="30" ShadowDepth="0" Opacity="0.15" Color="#2B3674"/>
+
+        <Style x:Key="MainGradientButton" TargetType="Button">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect" Value="{StaticResource ButtonShadowEffect}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{StaticResource GradientButtonBrush}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PageButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#2B3674"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E0E7FF"/>
+                                <Setter Property="Foreground" Value="#4318FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ActivePageButtonStyle" TargetType="Button" BasedOn="{StaticResource PageButtonStyle}">
+            <Setter Property="Background" Value="#4318FF"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource BackgroundColor}">
+        <Ellipse Width="600" Height="600" Fill="#4318FF" Opacity="0.03" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-200,-200,0,0"/>
+        <Ellipse Width="500" Height="500" Fill="#2B3674" Opacity="0.03" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,-150,-150"/>
+
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Border Grid.Row="0" Margin="0,0,0,16" Padding="24,16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <materialDesign:PackIcon Kind="TruckDelivery" Width="32" Height="32" Foreground="#4318FF" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="NHÀ CUNG CẤP" FontSize="26" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button x:Name="btnThemMoi" Style="{StaticResource MainGradientButton}" Width="140" HorizontalAlignment="Right" Click="btnThemKhach_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="TruckAdd" Width="18" Height="18" Foreground="White" Margin="0,0,8,0"/>
+                            <TextBlock Text="THÊM MỚI"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- FILTER -->
+            <Border Grid.Row="1" Margin="0,0,0,16" Padding="20,16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" Margin="0,0,16,0">
+                        <TextBox x:Name="txtTimKiem"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             materialDesign:HintAssist.Hint="Tìm kiếm nhà cung cấp..."
+                             FontSize="14" Foreground="#2B3674"
+                             TextChanged="txtTimKiem_TextChanged"/>
+                        <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Foreground="#A3AED0"
+                                             HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <ComboBox x:Name="cboKieuTimKiem" Width="150" Height="48"
+                              materialDesign:HintAssist.Hint="Tìm theo"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
+                              SelectionChanged="cboKieuTimKiem_SelectionChanged">
+                            <ComboBoxItem Content="Tên nhà cung cấp" IsSelected="True"/>
+                            <ComboBoxItem Content="Số điện thoại"/>
+                            <ComboBoxItem Content="Địa chỉ"/>
+                            <ComboBoxItem Content="Mã số thuế"/>
+                            <ComboBoxItem Content="Email"/>
+                        </ComboBox>
+
+
+
+                        <Border Background="#F4F7FE" CornerRadius="10" Padding="12,10" Margin="8,0,8,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Tổng:" Foreground="#A3AED0" FontSize="12" Margin="0,0,6,0"/>
+                                <TextBlock x:Name="txtTongBanGhi" Text="0" FontWeight="Bold" FontSize="14" Foreground="#4318FF"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button x:Name="btnXoaLoc" Width="42" Height="42"
+                            Style="{StaticResource MaterialDesignIconForegroundButton}"
+                            Foreground="#EF4444" ToolTip="Xóa bộ lọc"
+                            Click="btnXoaLoc_Click" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="FilterRemove" Width="22" Height="22"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- DATAGRID -->
+            <Border Grid.Row="2" Margin="0,0,0,16" Padding="20" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                <DataGrid x:Name="dgDanhSachKhach"
+          AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow"
+          HeadersVisibility="Column" BorderThickness="0" RowHeight="52"
+          FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
+          Foreground="#2B3674" GridLinesVisibility="Horizontal"
+          HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
+          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"
+          IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False"
+          CanUserResizeRows="False" CanUserReorderColumns="False">
+
+                    <DataGrid.Resources>
+                        <!-- Header Style -->
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F8FAFC"/>
+                            <Setter Property="Foreground" Value="#2B3674"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="Height" Value="44"/>
+                            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridColumnHeader">
+                                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ContentPresenter VerticalAlignment="Center" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="12,0"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <!-- Cell Style -->
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ContentPresenter VerticalAlignment="Center" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="12,0"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <!-- Row Style -->
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#E0E7FF"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#F3F4F6"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Resources>
+
+                    <DataGrid.Columns>
+                        <!-- Mã NCC -->
+                        <DataGridTextColumn Header="Mã NCC" Binding="{Binding MaNhaCungCap}" Width="100">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#4318FF"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Tên NCC -->
+                        <DataGridTextColumn Header="Tên nhà cung cấp" Binding="{Binding TenNhaCungCap}" Width="190">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- SĐT -->
+                        <DataGridTextColumn Header="Số điện thoại" Binding="{Binding SoDienThoai}" Width="130">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Email -->
+                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Số tài khoản -->
+                        <DataGridTextColumn Header="Số tài khoản" Binding="{Binding SoTaiKhoan}" Width="130">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+
+                        <!-- Tên ngân hàng -->
+                        <DataGridTextColumn Header="Tên ngân hàng" Binding="{Binding TenNganHang}" Width="100">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Sửa -->
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Width="34" Height="34" Background="#E0E7FF" 
+                            BorderThickness="0" Cursor="Hand" ToolTip="Sửa"
+                            Click="btnSuaKhach_Click" Tag="{Binding}"
+                            HorizontalAlignment="Center">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6">
+                                                    <materialDesign:PackIcon Kind="Edit" Width="16" Height="16" 
+                                                             Foreground="#4318FF"
+                                                             HorizontalAlignment="Center" 
+                                                             VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#C7D2FE"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Xóa -->
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Width="34" Height="34" Background="#FEE2E2" 
+                            BorderThickness="0" Cursor="Hand" ToolTip="Xóa"
+                            Click="btnXoaKhach_Click" Tag="{Binding}"
+                            HorizontalAlignment="Center">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6">
+                                                    <materialDesign:PackIcon Kind="Delete" Width="16" Height="16" 
+                                                             Foreground="#EF4444"
+                                                             HorizontalAlignment="Center" 
+                                                             VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#FECACA"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- FOOTER -->
+            <Border Grid.Row="3" Padding="20,12" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                <Grid>
+                    <TextBlock x:Name="txtPhanTrangInfo" Text="Trang 1/1" 
+               Foreground="#A3AED0" FontSize="13" VerticalAlignment="Center" 
+               HorizontalAlignment="Left"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                    <StackPanel x:Name="pnlPhanTrang" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Content="«" Style="{StaticResource PageButtonStyle}" Click="btnTrangDau_Click"/>
+                        <Button Content="‹" Style="{StaticResource PageButtonStyle}" Click="btnTrangTruoc_Click" Margin="4,0,0,0"/>
+                        <Button x:Name="btnTrang1" Content="1" Style="{StaticResource ActivePageButtonStyle}" Margin="4,0,0,0" Click="btnTrangSo_Click" Tag="1"/>
+                        <Button x:Name="btnTrang2" Content="2" Style="{StaticResource PageButtonStyle}" Margin="4,0,0,0" Click="btnTrangSo_Click" Tag="2" Visibility="Collapsed"/>
+                        <Button x:Name="btnTrang3" Content="3" Style="{StaticResource PageButtonStyle}" Margin="4,0,0,0" Click="btnTrangSo_Click" Tag="3" Visibility="Collapsed"/>
+                        <TextBlock x:Name="txtEllipsis" Text="..." Foreground="#A3AED0" FontSize="13" Margin="4,0,4,0" Visibility="Collapsed"/>
+                        <Button x:Name="btnTrangCuoiSo" Content="10" Style="{StaticResource PageButtonStyle}" Margin="4,0,0,0" Click="btnTrangSo_Click" Tag="10" Visibility="Collapsed"/>
+                        <Button Content="›" Style="{StaticResource PageButtonStyle}" Click="btnTrangSau_Click" Margin="8,0,0,0"/>
+                        <Button Content="»" Style="{StaticResource PageButtonStyle}" Click="btnTrangCuoi_Click" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ==================== POPUP THÊM/SỬA NHÀ CUNG CẤP ==================== -->
+        <Grid x:Name="popupNhaCungCap" Background="#80000000" Visibility="Hidden"
+          VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="1000">
+            <Border Background="#80000000" MouseLeftButtonDown="btnPopupQuayLai_Click"/>
+
+            <Border Width="620" Background="White" CornerRadius="16"
+                Effect="{StaticResource PopupShadowEffect}"
+                HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="700">
+                    <Grid Margin="30">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                            <materialDesign:PackIcon x:Name="iconPopupNhaCungCap" Kind="TruckAdd" 
+                                                 Width="24" Height="24" Foreground="#4318FF" Margin="0,0,10,0"/>
+                            <TextBlock x:Name="txtPopupTitle" Text="THÊM NHÀ CUNG CẤP MỚI" 
+                                   FontSize="18" FontWeight="Bold" Foreground="#2B3674"/>
+                        </StackPanel>
+
+                        <!-- MaNCC + TenNCC -->
+                        <Grid Grid.Row="1" Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" MinWidth="120" MaxWidth="200"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" x:Name="txtPopupMaNCC" 
+                             materialDesign:HintAssist.Hint="Mã nhà cung cấp *"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                             IsReadOnly="True" />
+                            <TextBox Grid.Column="2" x:Name="txtPopupTenNCC" 
+                                 materialDesign:HintAssist.Hint="Tên nhà cung cấp *"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                            
+                        </Grid>
+
+                        <!-- SĐT + Email -->
+                        <Grid Grid.Row="2" Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="txtPopupSDT" 
+                                 materialDesign:HintAssist.Hint="Số điện thoại *"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                            <TextBox Grid.Column="2" x:Name="txtPopupEmail" 
+                                 materialDesign:HintAssist.Hint="Email"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        </Grid>
+
+                        
+
+                        <!-- Địa chỉ + MST -->
+                        <Grid Grid.Row="5" Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="txtPopupDiaChi" 
+                                 materialDesign:HintAssist.Hint="Địa chỉ"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                            <TextBox Grid.Column="2" x:Name="txtPopupMaSoThue" 
+                                 materialDesign:HintAssist.Hint="Mã số thuế"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        </Grid>
+                        <!-- Địa chỉ + MST -->
+                        <Grid Grid.Row="6" Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="txtPopupSoTai" 
+                                    materialDesign:HintAssist.Hint="Số tài khoản"
+                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                            <TextBox Grid.Column="2" x:Name="txtPopupTenNganHang" 
+                                    materialDesign:HintAssist.Hint="Tên ngân hàng"
+                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                    </Grid>
+
+                        <!-- Buttons -->
+                        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="QUAY LẠI" Width="120" Height="42" Margin="0,0,10,0"
+                                FontSize="14" FontWeight="SemiBold" Foreground="#A3AED0"
+                                Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="1"
+                                Cursor="Hand" Click="btnPopupQuayLai_Click"/>
+                            <Button Content="LƯU" Width="120" Height="42"
+                                FontSize="14" FontWeight="SemiBold" Foreground="White"
+                                Background="#10B981" Cursor="Hand" Click="btnPopupLuu_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

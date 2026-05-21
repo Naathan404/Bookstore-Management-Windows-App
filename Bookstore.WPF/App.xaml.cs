@@ -18,6 +18,7 @@ namespace Bookstore.WPF
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
             await Task.Run(async () => {
                 try
                 {
@@ -44,12 +45,30 @@ namespace Bookstore.WPF
             //admin.Show();
             //var window = new Window
             //{
-            //    Content = new CustomerView(),
-            //    Title = "KHÁCH HÀNG",
+            //    Content = new ImportView(),
+            //    Title = "NHẬP KHẨU",
             //    WindowState = WindowState.Maximized
             //};
             //window.Show();
 
+            //var window = new Window
+            //{
+            //    Content = new SupplierView(),
+            //    Title = "NHẬP KHẨU",
+            //    WindowState = WindowState.Maximized
+            //};
+            //window.Show();
+
+
+        }
+
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Exception is NullReferenceException &&
+               (e.Exception.StackTrace?.Contains("LiveChartsCore") == true || e.Exception.StackTrace?.Contains("SkiaSharp") == true))
+            {
+                e.Handled = true;
+            }
         }
 
         private async void App_Startup(object sender, StartupEventArgs e)
