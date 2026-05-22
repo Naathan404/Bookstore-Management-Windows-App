@@ -59,6 +59,24 @@
             </Setter>
         </Style>
 
+        <Style x:Key="OutlineExcelButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="Green"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" BorderBrush="Green" BorderThickness="1.5" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="MiniAddButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="28"/>
             <Setter Property="Height" Value="28"/>
@@ -165,9 +183,9 @@
                                 <TextBlock Text="THÊM"/>
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource OutlineButtonStyle}" CommandParameter="{Binding}" Width="120" Command="{Binding ExportExcelCommand}">
+                        <Button Style="{StaticResource OutlineExcelButtonStyle}" CommandParameter="{Binding}" Width="120" Command="{Binding ExportExcelCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="#4318FF" Margin="0,0,6,0"/>
+                                <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="Green" Margin="0,0,6,0"/>
                                 <TextBlock Text="XUẤT EXCEL"/>
                             </StackPanel>
                         </Button>
