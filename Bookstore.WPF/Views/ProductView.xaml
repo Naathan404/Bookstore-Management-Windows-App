@@ -1038,14 +1038,28 @@
                                             </Grid.ColumnDefinitions>
                                             <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
                                                 <Grid>
-                                                    <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                    <TextBox Text="{Binding EditingBook.GiaNiemYet}" FontSize="14" FontWeight="SemiBold" Foreground="#4318FF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                                    <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                         Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.GiaNiemYet, Mode=TwoWay,
+                                                        UpdateSourceTrigger=PropertyChanged}"
+                                                         FontSize="14" FontWeight="SemiBold" Foreground="#4318FF"
+                                                         BorderThickness="0" Background="Transparent"
+                                                         VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                         HorizontalContentAlignment="Right"/>
                                                 </Grid>
                                             </Border>
-                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+
+                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                                                    BorderThickness="1.5" Height="46">
                                                 <Grid>
-                                                    <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                    <TextBox Text="{Binding EditingBook.DonGiaBan}" FontSize="14" FontWeight="SemiBold" Foreground="#10B981" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                                    <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                        Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.DonGiaBan, Mode=TwoWay,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                     FontSize="14" FontWeight="SemiBold" Foreground="#10B981"
+                                                     BorderThickness="0" Background="Transparent"
+                                                     VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                     HorizontalContentAlignment="Right"/>
                                                 </Grid>
                                             </Border>
                                         </Grid>
@@ -1482,19 +1496,33 @@
                                         <ColumnDefinition Width="15"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
-                                        <Grid>
-                                            <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                            <TextBox Text="{Binding EditingBook.GiaNiemYet}" FontSize="14" FontWeight="SemiBold" Foreground="#4318FF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                            <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                                <Grid>
+                                                    <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                         Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.GiaNiemYet, Mode=TwoWay,
+                                                        UpdateSourceTrigger=PropertyChanged}"
+                                                         FontSize="14" FontWeight="SemiBold" Foreground="#4318FF"
+                                                         BorderThickness="0" Background="Transparent"
+                                                         VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                         HorizontalContentAlignment="Right"/>
+                                                </Grid>
+                                            </Border>
+
+                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                                                    BorderThickness="1.5" Height="46">
+                                                <Grid>
+                                                    <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                        Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.DonGiaBan, Mode=TwoWay,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                     FontSize="14" FontWeight="SemiBold" Foreground="#10B981"
+                                                     BorderThickness="0" Background="Transparent"
+                                                     VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                     HorizontalContentAlignment="Right"/>
+                                                </Grid>
+                                            </Border>
                                         </Grid>
-                                    </Border>
-                                    <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
-                                        <Grid>
-                                            <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                            <TextBox Text="{Binding EditingBook.DonGiaBan}" FontSize="14" FontWeight="SemiBold" Foreground="#10B981" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
 
                                 <!-- Dòng 4: Tồn kho & Đã bán -->
                                 <Grid>
