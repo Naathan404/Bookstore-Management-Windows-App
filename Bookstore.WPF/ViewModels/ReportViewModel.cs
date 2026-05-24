@@ -3,6 +3,7 @@ using Bookstore.WPF.Services;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using Org.BouncyCastle.Bcpg;
 using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
@@ -43,14 +44,10 @@ namespace Bookstore.WPF.ViewModels
 
                 // Reset dữ liệu khi đổi loại báo cáo
                 StatusText = "Nhấn 'Xem Báo Cáo' để tải dữ liệu.";
-                TotalRows = 0;
-                TotalPages = 1;
                 CurrentPage = 1;
-                RevenueRows.Clear();
-                InventoryRows.Clear();
-                DebtRows.Clear();
-                PageNumbers.Clear();
 
+                //UpdatePagedData();
+                _ = LoadReportDataAsync();
             }
         }
 
@@ -287,6 +284,17 @@ namespace Bookstore.WPF.ViewModels
             set { _debtXAxes = value; OnPropertyChanged(nameof(DebtXAxes)); }
         }
 
+        private IEnumerable<Axis> _debtYAxes;
+        public IEnumerable<Axis> DebtYAxes
+        {
+            get => _debtYAxes;
+            set
+            {
+                _debtYAxes = value;
+                OnPropertyChanged(nameof(DebtYAxes));
+            }
+        }
+
         // ==========================================
         // DỮ LIỆU BẢNG
 
@@ -455,7 +463,14 @@ namespace Bookstore.WPF.ViewModels
                 };
 
                 var result = await client.PostAsJsonAsync("api/report/generate", filter);
-                result.EnsureSuccessStatusCode();
+                if (!result.IsSuccessStatusCode)
+                {
+                    var error = await result.Content.ReadAsStringAsync();
+
+                    MessageBox.Show(error, "API ERROR");
+
+                    return;
+                }
                 var data = await result.Content.ReadFromJsonAsync<ReportResultDto>();
 
                 if (data != null)
@@ -566,7 +581,8 @@ namespace Bookstore.WPF.ViewModels
             {
                 new Axis
                 {
-                    Labeler = value => $"{value / 1_000:N0}K",
+                    //Labeler = value => $"{value / 1_000:N0}K đ",
+                    Labeler = value => $"{value:N0}" + " đ",
                     TextSize = 11,
                     LabelsPaint = new SolidColorPaint(new SKColor(163, 174, 208)) // #A3AED0
                 }
@@ -580,17 +596,23 @@ namespace Bookstore.WPF.ViewModels
         {
             if (data.InventoryBarLabels == null) return;
 
+            var invenValue = data.InventoryBarValues?.Select(x => (double)x).ToArray() ?? Array.Empty<double>();
+
             InventoryChartSeries = new ObservableCollection<ISeries>
             {
                 new RowSeries<double>
                 {
                     Name = "Giá trị tồn kho",
-                    Values = data.InventoryBarValues?.Select(x => (double)x).ToArray() ?? Array.Empty<double>(),
+                    Values = invenValue,
                     Fill = new SolidColorPaint(new SKColor(67, 24, 255)),       // #4318FF tím
                     MaxBarWidth = 20,
+
+                    XToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue:#,0} đ",
+            
+                    // Giữ nguyên các dòng định dạng nhãn hiển thị trực tiếp trên thanh
                     DataLabelsPaint = new SolidColorPaint(new SKColor(43, 54, 116)),
                     DataLabelsSize = 10,
-                    DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue / 1_000_000:N0}M đ"
+                    DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue / 1_000:N0}K đ"
                 }
             };
 
@@ -608,7 +630,8 @@ namespace Bookstore.WPF.ViewModels
             {
                 new Axis
                 {
-                    Labeler = value => $"{value / 1_000_000:N0}M",
+                    //Labeler = value => $"{value / 1_000:N0}K đ",
+                    Labeler = value => $"{value:N0}" + " đ",
                     TextSize = 10,
                     LabelsPaint = new SolidColorPaint(new SKColor(163, 174, 208))
                 }
@@ -653,6 +676,16 @@ namespace Bookstore.WPF.ViewModels
                     Labels = data.DebtAxisLabels,
                     TextSize = 11,
                     LabelsPaint = new SolidColorPaint(new SKColor(43, 54, 116))
+                }
+            };
+
+            DebtYAxes = new[]
+            {
+                new Axis
+                {
+                    //Labeler = value => $"{value / 1_000:N0}K đ",
+                    Labeler = value => $"{value:N0}" + " đ",
+                    TextSize = 11,
                 }
             };
         }

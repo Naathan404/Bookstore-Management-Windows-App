@@ -83,6 +83,9 @@
         /// <summary>Doanh thu thuần = TotalAmount - Discount</summary>
         public decimal NetRevenue { get; set; }
 
+        /// <summary> Giá vốn </summary>
+        public decimal TotalCost { get; set; }
+
         /// <summary>Lợi nhuận gộp = NetRevenue - GiaVon*SoLuong</summary>
         public decimal GrossProfit { get; set; }
     }

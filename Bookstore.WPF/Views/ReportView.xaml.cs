@@ -48,5 +48,17 @@ namespace Bookstore.WPF.Views
                 }
             }
         }
+
+        private void DataGridRow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow row)
+            {
+                if (row.IsSelected)
+                {
+                    row.IsSelected = false;
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }

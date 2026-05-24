@@ -86,7 +86,6 @@ namespace Bookstore.API.Controllers
                 // ============================================================
                 if (filter.ReportType == 0)
                 {
-                    // DÙNG .JOIN() THAY VÌ .INCLUDE() VÌ CT_HOADON KHÔNG LIÊN KẾT TRỰC TIẾP
                     var query = _context.CT_HoaDon
                         .Include(x => x.HoaDon)
                         .Where(x => x.HoaDon.NgayTao >= fromDate && x.HoaDon.NgayTao <= toDate)
@@ -114,9 +113,9 @@ namespace Bookstore.API.Controllers
 
                             decimal totalAmount = g.Sum(x => x.ct.SoLuong * x.ct.DonGia);
                             decimal discount = distinctOrders.Sum(x => x.GiamGia);
-                            decimal netRevenue = distinctOrders.Sum(x => x.TongTien);
-                            decimal cogs = g.Sum(x => x.ct.SoLuong * x.ct.GiaVon);
-                            decimal grossProfit = netRevenue - cogs;
+                            decimal netRevenue = totalAmount - discount;
+                            decimal totalCost = g.Sum(x => x.ct.SoLuong * x.ct.GiaVon);
+                            decimal grossProfit = netRevenue - totalCost;
 
                             return new RevenueReportRowDto
                             {
@@ -126,12 +125,15 @@ namespace Bookstore.API.Controllers
                                 TotalAmount = totalAmount,
                                 Discount = discount,
                                 NetRevenue = netRevenue,
+                                TotalCost = totalCost,
                                 GrossProfit = grossProfit
                             };
                         })
                         .ToList();
 
-                    result.RevenueRows = groupedByDay;
+                    result.RevenueRows = groupedByDay
+                                        .OrderByDescending(x => x.Date)
+                                        .ToList();
 
                     // --- Dữ liệu biểu đồ Stacked Column ---
                     result.RevenueDateLabels = groupedByDay.Select(x => x.Date.ToString("dd/MM")).ToList();
@@ -144,92 +146,159 @@ namespace Bookstore.API.Controllers
                 // Biểu đồ: Horizontal Bar — Top 10 giá trị tồn kho cao nhất
                 // Bảng: từng phiên bản sách, tính đầu kỳ → cuối kỳ
                 // ============================================================
+                //else if (filter.ReportType == 1)
+                //{
+                //    var booksQuery = _context.PhienBanSach
+                //        .Include(p => p.Sach)
+                //            .ThenInclude(s => s.TheLoai)
+                //        .AsQueryable();
+
+                //    if (!string.IsNullOrEmpty(filter.CategoryName))
+                //        booksQuery = booksQuery.Where(p =>
+                //            p.Sach != null &&
+                //            p.Sach.TheLoai != null &&
+                //            p.Sach.TheLoai.TenTheLoai == filter.CategoryName); 
+
+                //    var books = await booksQuery.ToListAsync();
+                //    var allIsbns = books.Select(b => b.ISBN).ToList();
+
+                //    // Tổng số lượng NHẬP trong kỳ theo ISBN
+                //    var importsInPeriod = await _context.CT_PhieuNhapSach
+                //        .Where(ct => allIsbns.Contains(ct.ISBN)
+                //                  && ct.PhieuNhapSach.NgayTao >= fromDate
+                //                  && ct.PhieuNhapSach.NgayTao <= toDate)
+                //        .GroupBy(ct => ct.ISBN)
+                //        .Select(g => new { ISBN = g.Key, Qty = g.Sum(x => x.SoLuong) })
+                //        .ToDictionaryAsync(x => x.ISBN, x => x.Qty);
+
+                //    // Tổng số lượng XUẤT (bán) trong kỳ theo ISBN
+                //    var salesInPeriod = await _context.CT_HoaDon
+                //        .Where(ct => allIsbns.Contains(ct.ISBN)
+                //                  && ct.HoaDon.NgayTao >= fromDate
+                //                  && ct.HoaDon.NgayTao <= toDate)
+                //        .GroupBy(ct => ct.ISBN)
+                //        .Select(g => new { ISBN = g.Key, Qty = g.Sum(x => x.SoLuong) })
+                //        .ToDictionaryAsync(x => x.ISBN, x => x.Qty);
+
+                //    // Lấy giá vốn trung bình mỗi ISBN từ lần nhập gần nhất
+                //    var latestCostByIsbn = await _context.CT_PhieuNhapSach
+                //        .Where(ct => allIsbns.Contains(ct.ISBN))
+                //        .GroupBy(ct => ct.ISBN)
+                //        .Select(g => new
+                //        {
+                //            ISBN = g.Key,
+                //            LatestCost = g.OrderByDescending(x => x.PhieuNhapSach.NgayTao)
+                //                          .Select(x => x.DonGiaNhap)
+                //                          .FirstOrDefault()
+                //        })
+                //        .ToDictionaryAsync(x => x.ISBN, x => x.LatestCost);
+
+                //    var inventoryRows = books.Select(b =>
+                //    {
+                //        int imported = importsInPeriod.GetValueOrDefault(b.ISBN, 0);
+                //        int sold = salesInPeriod.GetValueOrDefault(b.ISBN, 0);
+                //        int closing = b.TonKho;
+                //        // Công thức ngược: Đầu kỳ = Cuối kỳ - Nhập + Bán
+                //        int opening = closing - imported + sold;
+
+                //        // Ưu tiên giá vốn nhập gần nhất; fallback về giá niêm yết
+                //        decimal costPrice = latestCostByIsbn.GetValueOrDefault(b.ISBN, b.GiaNiemYet);
+                //        decimal stockValue = closing * costPrice;
+
+                //        return new InventoryReportRowDto
+                //        {
+                //            BookId = b.ISBN,
+                //            BookName = b.Sach?.TenSach ?? "Không rõ",
+                //            CategoryName = b.Sach?.TheLoai?.TenTheLoai ?? "Chưa phân loại",
+                //            OpeningQty = Math.Max(opening, 0), // Không để âm gây hiểu lầm
+                //            ImportedQty = imported,
+                //            SoldQty = sold,
+                //            ClosingQty = closing,
+                //            StockValue = stockValue
+                //        };
+                //    })
+                //    .OrderByDescending(x => x.StockValue)
+                //    .ToList();
+
+                //    result.InventoryRows = inventoryRows;
+
+                //    // --- Dữ liệu biểu đồ Horizontal Bar (Top 10) ---
+                //    // ViewModel expects:
+                //    //   InventoryBarLabels = nhãn trục Y (tên sách)
+                //    //   InventoryBarValues = giá trị tồn kho (double)
+                //    var top10 = inventoryRows.Take(10).ToList();
+                //    result.InventoryBarLabels = top10
+                //        .Select(x => x.BookName.Length > 20
+                //            ? x.BookName[..20] + "…"
+                //            : x.BookName)
+                //        .ToList();
+                //    result.InventoryBarValues = top10
+                //        .Select(x => (double)x.StockValue)
+                //        .ToList();
+                //}
+
+                // ================================================================
+                // LOẠI 1: BÁO CÁO TỒN KHO (TÍNH TOÁN ĐẦU KỲ - CUỐI KỲ VIA JOIN)
+                // ================================================================
                 else if (filter.ReportType == 1)
                 {
                     var booksQuery = _context.PhienBanSach
-                        .Include(p => p.Sach)
-                            .ThenInclude(s => s.TheLoai)
+                        .Include(x => x.Sach)
+                            .ThenInclude(x => x.TheLoai)
                         .AsQueryable();
 
                     if (!string.IsNullOrEmpty(filter.CategoryName))
-                        booksQuery = booksQuery.Where(p => p.Sach.TheLoai.TenTheLoai == filter.CategoryName);
+                    {
+                        booksQuery = booksQuery.Where(x => x.Sach.TheLoai.TenTheLoai == filter.CategoryName);
+                    }
 
-                    var books = await booksQuery.ToListAsync();
-                    var allIsbns = books.Select(b => b.ISBN).ToList();
+                    Console.WriteLine(await booksQuery.CountAsync());
+                    var booksList = await booksQuery.ToListAsync();
 
-                    // Tổng số lượng NHẬP trong kỳ theo ISBN
+                    // Tính toán số lượng nhập trong kỳ từ chi tiết phiếu nhập
                     var importsInPeriod = await _context.CT_PhieuNhapSach
-                        .Where(ct => allIsbns.Contains(ct.ISBN)
-                                  && ct.PhieuNhapSach.NgayTao >= fromDate
-                                  && ct.PhieuNhapSach.NgayTao <= toDate)
-                        .GroupBy(ct => ct.ISBN)
-                        .Select(g => new { ISBN = g.Key, Qty = g.Sum(x => x.SoLuong) })
+                        .Join(_context.PhieuNhapSach, ct => ct.MaPhieuNhapSach, pn => pn.MaPhieuNhapSach, (ct, pn) => new { ct, pn })
+                        .Where(x => x.pn.NgayTao >= fromDate && x.pn.NgayTao <= toDate)
+                        .GroupBy(x => x.ct.ISBN)
+                        .Select(g => new { ISBN = g.Key, Qty = g.Sum(x => x.ct.SoLuong) })
                         .ToDictionaryAsync(x => x.ISBN, x => x.Qty);
 
-                    // Tổng số lượng XUẤT (bán) trong kỳ theo ISBN
+                    // Tính toán số lượng xuất trong kỳ từ chi tiết hóa đơn
                     var salesInPeriod = await _context.CT_HoaDon
-                        .Where(ct => allIsbns.Contains(ct.ISBN)
-                                  && ct.HoaDon.NgayTao >= fromDate
-                                  && ct.HoaDon.NgayTao <= toDate)
-                        .GroupBy(ct => ct.ISBN)
-                        .Select(g => new { ISBN = g.Key, Qty = g.Sum(x => x.SoLuong) })
+                        .Join(_context.HoaDon, ct => ct.MaHoaDon, hd => hd.MaHoaDon, (ct, hd) => new { ct, hd })
+                        .Where(x => x.hd.NgayTao >= fromDate && x.hd.NgayTao <= toDate)
+                        .GroupBy(x => x.ct.ISBN)
+                        .Select(g => new { ISBN = g.Key, Qty = g.Sum(x => x.ct.SoLuong) })
                         .ToDictionaryAsync(x => x.ISBN, x => x.Qty);
 
-                    // Lấy giá vốn trung bình mỗi ISBN từ lần nhập gần nhất
-                    var latestCostByIsbn = await _context.CT_PhieuNhapSach
-                        .Where(ct => allIsbns.Contains(ct.ISBN))
-                        .GroupBy(ct => ct.ISBN)
-                        .Select(g => new
-                        {
-                            ISBN = g.Key,
-                            LatestCost = g.OrderByDescending(x => x.PhieuNhapSach.NgayTao)
-                                          .Select(x => x.DonGiaNhap)
-                                          .FirstOrDefault()
-                        })
-                        .ToDictionaryAsync(x => x.ISBN, x => x.LatestCost);
+                    var inventoryRows = new List<InventoryReportRowDto>();
 
-                    var inventoryRows = books.Select(b =>
+                    foreach (var b in booksList)
                     {
                         int imported = importsInPeriod.GetValueOrDefault(b.ISBN, 0);
                         int sold = salesInPeriod.GetValueOrDefault(b.ISBN, 0);
                         int closing = b.TonKho;
-                        // Công thức ngược: Đầu kỳ = Cuối kỳ - Nhập + Bán
-                        int opening = closing - imported + sold;
+                        int opening = closing - imported + sold; // Thuật toán tính lùi tồn đầu kỳ
 
-                        // Ưu tiên giá vốn nhập gần nhất; fallback về giá niêm yết
-                        decimal costPrice = latestCostByIsbn.GetValueOrDefault(b.ISBN, b.GiaNiemYet);
-                        decimal stockValue = closing * costPrice;
-
-                        return new InventoryReportRowDto
+                        inventoryRows.Add(new InventoryReportRowDto
                         {
-                            BookId = b.ISBN,
-                            BookName = b.Sach?.TenSach ?? "Không rõ",
-                            CategoryName = b.Sach?.TheLoai?.TenTheLoai ?? "Chưa phân loại",
-                            OpeningQty = Math.Max(opening, 0), // Không để âm gây hiểu lầm
+                            BookId = b.ISBN,         // FIX: Đổi từ BookCode sang BookId cho khớp 100% với XAML Binding
+                            BookName = b.Sach.TenSach,   // FIX: Đổi từ Title sang BookName cho khớp 100% với XAML Binding
+                            CategoryName = b.Sach.TheLoai.TenTheLoai,
+                            OpeningQty = opening,
                             ImportedQty = imported,
                             SoldQty = sold,
                             ClosingQty = closing,
-                            StockValue = stockValue
-                        };
-                    })
-                    .OrderByDescending(x => x.StockValue)
-                    .ToList();
+                            StockValue = closing * (b.GiaNiemYet * 0.6m) // Giả định giá vốn ước tính bằng 60% giá niêm yết
+                        });
+                    }
 
-                    result.InventoryRows = inventoryRows;
+                    result.InventoryRows = inventoryRows.OrderByDescending(x => x.StockValue).ToList();
 
-                    // --- Dữ liệu biểu đồ Horizontal Bar (Top 10) ---
-                    // ViewModel expects:
-                    //   InventoryBarLabels = nhãn trục Y (tên sách)
-                    //   InventoryBarValues = giá trị tồn kho (double)
-                    var top10 = inventoryRows.Take(10).ToList();
-                    result.InventoryBarLabels = top10
-                        .Select(x => x.BookName.Length > 20
-                            ? x.BookName[..20] + "…"
-                            : x.BookName)
-                        .ToList();
-                    result.InventoryBarValues = top10
-                        .Select(x => (double)x.StockValue)
-                        .ToList();
+                    // Đóng gói dữ liệu biểu đồ thanh ngang (Lấy Top 10 đầu sách tồn lớn nhất)
+                    var topStock = result.InventoryRows.Take(10).ToList();
+                    result.InventoryBarValues = topStock.Select(x => (double)x.StockValue).ToList();
+                    result.InventoryBarLabels = topStock.Select(x => x.BookName.Length > 12 ? x.BookName.Substring(0, 12) + "..." : x.BookName).ToList();
                 }
 
                 // ============================================================
@@ -237,91 +306,160 @@ namespace Bookstore.API.Controllers
                 // Biểu đồ: Line Chart theo ngày — Nợ phát sinh vs Nợ thu hồi
                 // Bảng: tổng hợp theo từng khách hàng
                 // ============================================================
+                //else if (filter.ReportType == 2)
+                //{
+                //    // ---- BẢNG: Tổng hợp theo khách hàng ----
+                //    var customerQuery = _context.KhachHang.AsQueryable();
+
+                //    if (!string.IsNullOrEmpty(filter.CustomerName))
+                //        customerQuery = customerQuery.Where(x => x.TenKhachHang.Contains(filter.CustomerName));
+
+                //    var customers = await customerQuery.ToListAsync();
+                //    var customerIds = customers.Select(c => c.MaKhachHang).ToList();
+
+                //    // Hóa đơn mua nợ trong kỳ (còn nợ = TongTien - SoTienTra > 0)
+                //    // Nếu HoaDon không có SoTienTra thì xem toàn bộ TongTien là nợ phát sinh
+                //    var invoicesInPeriod = await _context.HoaDon
+                //        .Where(x => customerIds.Contains(x.MaKhachHang!)
+                //                 && x.NgayTao >= fromDate
+                //                 && x.NgayTao <= toDate)
+                //        .ToListAsync();
+
+                //    // Phiếu thu tiền trong kỳ
+                //    var receiptsInPeriod = await _context.PhieuThuTien
+                //        .Where(x => x.MaKhachHang != null
+                //                 && x.MaKhachHang != null && customerIds.Contains(x.MaKhachHang)
+                //                 && x.NgayTao >= fromDate
+                //                 && x.NgayTao <= toDate)
+                //        .ToListAsync();
+
+                //    var debtRows = customers.Select(c =>
+                //    {
+                //        // Phát sinh nợ mới = phần chưa trả của các hóa đơn trong kỳ
+                //        // SoTienTra: nếu bảng của bạn có cột này thì dùng; không thì dùng 0
+                //        decimal newDebt = invoicesInPeriod
+                //            .Where(x => x.MaKhachHang == c.MaKhachHang)
+                //            .Sum(x => x.TongTien - (x.SoTienTra > 0 ? x.SoTienTra : 0));
+
+                //        decimal paidDebt = receiptsInPeriod
+                //            .Where(x => x.MaKhachHang == c.MaKhachHang)
+                //            .Sum(x => x.SoTienThu);
+
+                //        // Tính ngược nợ đầu kỳ từ số nợ hiện tại (c.TienNo = nợ cuối kỳ hiện tại)
+                //        // Công thức: OpeningDebt = ClosingDebtNow - NewDebt + PaidDebt
+                //        decimal openingDebt = c.TienNo - newDebt + paidDebt;
+                //        decimal closingDebt = openingDebt + newDebt - paidDebt;
+
+                //        return new DebtReportRowDto
+                //        {
+                //            CustomerName = c.TenKhachHang,
+                //            OpeningDebt = Math.Max(openingDebt, 0),
+                //            NewDebt = Math.Max(newDebt, 0),
+                //            PaidDebt = Math.Max(paidDebt, 0),
+                //            ClosingDebt = Math.Max(closingDebt, 0)
+                //        };
+                //    })
+                //    .OrderByDescending(x => x.ClosingDebt)
+                //    .ToList();
+
+                //    result.DebtRows = debtRows;
+
+                //    // ---- BIỂU ĐỒ: Theo ngày (line chart biến động) ----
+                //    // Gom hóa đơn và phiếu thu theo ngày để vẽ đường biến động
+                //    // ViewModel expects:
+                //    //   DebtAxisLabels = nhãn trục X (ngày)
+                //    //   DebtNewSeries  = nợ phát sinh mỗi ngày (decimal)
+                //    //   DebtPaidSeries = nợ thu hồi mỗi ngày (decimal)
+                //    var totalDays = (filter.ToDate.Date - filter.FromDate.Date).Days + 1;
+
+                //    // Nhóm hóa đơn theo ngày
+                //    var invoicesByDay = invoicesInPeriod
+                //        .GroupBy(x => x.NgayTao.Date)
+                //        .ToDictionary(
+                //            g => g.Key,
+                //            g => g.Sum(x => x.TongTien - (x.SoTienTra > 0 && x.SoTienTra != null ? x.SoTienTra : 0)));
+
+                //    // Nhóm phiếu thu theo ngày
+                //    var receiptsByDay = receiptsInPeriod
+                //        .GroupBy(x => x.NgayTao.Date)
+                //        .ToDictionary(
+                //            g => g.Key,
+                //            g => g.Sum(x => x.SoTienThu));
+
+                //    var debtAxisLabels = new List<string>();
+                //    var debtNewSeries = new List<decimal>();
+                //    var debtPaidSeries = new List<decimal>();
+
+                //    for (int i = 0; i < totalDays; i++)
+                //    {
+                //        var day = filter.FromDate.Date.AddDays(i);
+                //        debtAxisLabels.Add(day.ToString("dd/MM"));
+                //        debtNewSeries.Add(invoicesByDay.GetValueOrDefault(day, 0));
+                //        debtPaidSeries.Add(receiptsByDay.GetValueOrDefault(day, 0));
+                //    }
+
+                //    result.DebtAxisLabels = debtAxisLabels;
+                //    result.DebtNewSeries = debtNewSeries;
+                //    result.DebtPaidSeries = debtPaidSeries;
+                //}
+                // ================================================================
+                // LOẠI 2: BÁO CÁO CÔNG NỢ KHÁCH HÀNG (SỬ DỤNG COALESCE TRÁNH NULL)
+                // ================================================================
                 else if (filter.ReportType == 2)
                 {
-                    // ---- BẢNG: Tổng hợp theo khách hàng ----
                     var customerQuery = _context.KhachHang.AsQueryable();
 
                     if (!string.IsNullOrEmpty(filter.CustomerName))
+                    {
                         customerQuery = customerQuery.Where(x => x.TenKhachHang.Contains(filter.CustomerName));
+                    }
 
                     var customers = await customerQuery.ToListAsync();
-                    var customerIds = customers.Select(c => c.MaKhachHang).ToList();
 
-                    // Hóa đơn mua nợ trong kỳ (còn nợ = TongTien - SoTienTra > 0)
-                    // Nếu HoaDon không có SoTienTra thì xem toàn bộ TongTien là nợ phát sinh
-                    var invoicesInPeriod = await _context.HoaDon
-                        .Where(x => customerIds.Contains(x.MaKhachHang!)
-                                 && x.NgayTao >= fromDate
-                                 && x.NgayTao <= toDate)
+                    // Quét hóa đơn và phiếu thu tiền phát sinh trong khoảng thời gian lọc
+                    var invoices = await _context.HoaDon
+                        .Where(x => x.NgayTao >= fromDate && x.NgayTao <= toDate && x.MaKhachHang != 0)
                         .ToListAsync();
 
-                    // Phiếu thu tiền trong kỳ
-                    var receiptsInPeriod = await _context.PhieuThuTien
-                        .Where(x => x.MaKhachHang != null
-                                 && customerIds.Contains(x.MaKhachHang!)
-                                 && x.NgayTao >= fromDate
-                                 && x.NgayTao <= toDate)
+                    var receipts = await _context.PhieuThuTien
+                        .Where(x => x.NgayTao >= fromDate && x.NgayTao <= toDate && x.MaKhachHang != 0)
                         .ToListAsync();
 
-                    var debtRows = customers.Select(c =>
+                    var debtRows = new List<DebtReportRowDto>();
+
+                    foreach (var c in customers)
                     {
-                        // Phát sinh nợ mới = phần chưa trả của các hóa đơn trong kỳ
-                        // SoTienTra: nếu bảng của bạn có cột này thì dùng; không thì dùng 0
-                        decimal newDebt = invoicesInPeriod
-                            .Where(x => x.MaKhachHang == c.MaKhachHang)
-                            .Sum(x => x.TongTien - (x.SoTienTra > 0 ? x.SoTienTra : 0));
+                        // Số nợ phát sinh mới do mua sách chưa trả hết tiền
+                        decimal newDebt = invoices.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.TongTien - x.SoTienTra);
 
-                        decimal paidDebt = receiptsInPeriod
-                            .Where(x => x.MaKhachHang == c.MaKhachHang)
-                            .Sum(x => x.SoTienThu);
+                        // Số nợ giảm đi thu hồi được từ các phiếu thu tiền mặt
+                        decimal paidDebt = receipts.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.SoTienThu);
 
-                        // Tính ngược nợ đầu kỳ từ số nợ hiện tại (c.TienNo = nợ cuối kỳ hiện tại)
-                        // Công thức: OpeningDebt = ClosingDebtNow - NewDebt + PaidDebt
-                        decimal openingDebt = c.TienNo - newDebt + paidDebt;
-                        decimal closingDebt = openingDebt + newDebt - paidDebt;
+                        decimal closingDebt = c.TienNo; // Số nợ hiện tại cuối kỳ
+                        decimal openingDebt = closingDebt - newDebt + paidDebt; // Tính ngược lại nợ đầu kỳ
 
-                        return new DebtReportRowDto
+                        debtRows.Add(new DebtReportRowDto
                         {
                             CustomerName = c.TenKhachHang,
-                            OpeningDebt = Math.Max(openingDebt, 0),
-                            NewDebt = Math.Max(newDebt, 0),
-                            PaidDebt = Math.Max(paidDebt, 0),
-                            ClosingDebt = Math.Max(closingDebt, 0)
-                        };
-                    })
-                    .OrderByDescending(x => x.ClosingDebt)
-                    .ToList();
+                            OpeningDebt = openingDebt,
+                            NewDebt = newDebt,
+                            PaidDebt = paidDebt,
+                            ClosingDebt = closingDebt,
+                        });
+                    }
 
-                    result.DebtRows = debtRows;
+                    result.DebtRows = debtRows.OrderByDescending(x => x.ClosingDebt).ToList();
 
-                    // ---- BIỂU ĐỒ: Theo ngày (line chart biến động) ----
-                    // Gom hóa đơn và phiếu thu theo ngày để vẽ đường biến động
-                    // ViewModel expects:
-                    //   DebtAxisLabels = nhãn trục X (ngày)
-                    //   DebtNewSeries  = nợ phát sinh mỗi ngày (decimal)
-                    //   DebtPaidSeries = nợ thu hồi mỗi ngày (decimal)
-                    var totalDays = (filter.ToDate.Date - filter.FromDate.Date).Days + 1;
-
-                    // Nhóm hóa đơn theo ngày
-                    var invoicesByDay = invoicesInPeriod
-                        .GroupBy(x => x.NgayTao.Date)
-                        .ToDictionary(
-                            g => g.Key,
-                            g => g.Sum(x => x.TongTien - (x.SoTienTra > 0 ? x.SoTienTra : 0)));
-
-                    // Nhóm phiếu thu theo ngày
-                    var receiptsByDay = receiptsInPeriod
-                        .GroupBy(x => x.NgayTao.Date)
-                        .ToDictionary(
-                            g => g.Key,
-                            g => g.Sum(x => x.SoTienThu));
-
+                    // Gom dữ liệu biểu đồ đường biến động theo dòng thời gian ngày
+                    int totalDays = (filter.ToDate.Date - filter.FromDate.Date).Days + 1;
                     var debtAxisLabels = new List<string>();
                     var debtNewSeries = new List<decimal>();
                     var debtPaidSeries = new List<decimal>();
 
-                    for (int i = 0; i < totalDays; i++)
+                    var invoicesByDay = invoices.GroupBy(x => x.NgayTao.Date).ToDictionary(g => g.Key, g => g.Sum(x => x.TongTien - x.SoTienTra));
+                    var receiptsByDay = receipts.GroupBy(x => x.NgayTao.Date).ToDictionary(g => g.Key, g => g.Sum(x => x.SoTienThu));
+
+                    for (int i = 0; i < Math.Min(totalDays, 30); i++) // Giới hạn tối đa hiển thị 30 điểm mốc tránh dày đặc chart
                     {
                         var day = filter.FromDate.Date.AddDays(i);
                         debtAxisLabels.Add(day.ToString("dd/MM"));
