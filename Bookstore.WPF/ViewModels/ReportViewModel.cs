@@ -44,6 +44,13 @@ namespace Bookstore.WPF.ViewModels
                 // Reset dữ liệu khi đổi loại báo cáo
                 StatusText = "Nhấn 'Xem Báo Cáo' để tải dữ liệu.";
                 TotalRows = 0;
+                TotalPages = 1;
+                CurrentPage = 1;
+                RevenueRows.Clear();
+                InventoryRows.Clear();
+                DebtRows.Clear();
+                PageNumbers.Clear();
+
             }
         }
 
@@ -128,6 +135,25 @@ namespace Bookstore.WPF.ViewModels
             set { _totalRows = value; OnPropertyChanged(nameof(TotalRows)); }
         }
 
+        // --- PROPERTY PHÂN TRANG ---
+        private int _pageSize = 10;
+
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set { _currentPage = value; OnPropertyChanged(nameof(CurrentPage)); }
+        }
+
+        private int _totalPages = 1;
+        public int TotalPages
+        {
+            get => _totalPages;
+            set { _totalPages = value; OnPropertyChanged(nameof(TotalPages)); }
+        }
+
+        public ObservableCollection<int> PageNumbers { get; set; } = new ObservableCollection<int>();
+
         // ==========================================
         // VISIBILITY - Điều khiển giao diện động
 
@@ -166,9 +192,9 @@ namespace Bookstore.WPF.ViewModels
 
         public string ChartTitle => SelectedReportTypeIndex switch
         {
-            0 => "DOANH THU & LỢI NHUẬN",
-            1 => "GIÁ TRỊ TỒN KHO (TOP 10)",
-            2 => "BIẾN ĐỘNG CÔNG NỢ",
+            0 => "THỐNG KÊ DOANH THU & LỢI NHUẬN",
+            1 => "THỐNG KÊ TỒN KHO",
+            2 => "THỐNG KÊ CÔNG NỢ",
             _ => ""
         };
 
@@ -264,6 +290,10 @@ namespace Bookstore.WPF.ViewModels
         // ==========================================
         // DỮ LIỆU BẢNG
 
+        private List<RevenueReportRowDto> _allRevenueRows = new();
+        private List<InventoryReportRowDto> _allInventoryRows = new();
+        private List<DebtReportRowDto> _allDebtRows = new();
+
         public ObservableCollection<RevenueReportRowDto> RevenueRows { get; set; }
         public ObservableCollection<InventoryReportRowDto> InventoryRows { get; set; }
         public ObservableCollection<DebtReportRowDto> DebtRows { get; set; }
@@ -274,6 +304,13 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ApplyReportCommand { get; set; }
         public ICommand ExportExcelCommand { get; set;  }
         public ICommand ExportPdfCommand { get; set; }
+
+        // Commands Phân trang
+        public ICommand FirstPageCommand { get; set; }
+        public ICommand PrevPageCommand { get; set; }
+        public ICommand NextPageCommand { get; set; }
+        public ICommand LastPageCommand { get; set; }
+        public ICommand GoToPageCommand { get; set; }
 
         // ==========================================
         // CONSTRUCTOR
@@ -287,11 +324,24 @@ namespace Bookstore.WPF.ViewModels
             ApplyReportCommand = new RelayCommand<object>(async (p) => await LoadReportDataAsync());
             ExportExcelCommand = new RelayCommand<object>(async (p) =>
             {
-                MessageBox.Show("Tính năng Xuất báo cáo thành file Excel đang được phát triển! Vui lòng quay lại sau!");
+                ExportToExcel();
             });
             ExportPdfCommand = new RelayCommand<object>(async (p) =>
             {
-                MessageBox.Show("Tính năng Xuất báo cáo thành file Pdf đang được phát triển! Vui lòng quay lại sau!");
+                ExportToPdf();
+            });
+
+            FirstPageCommand = new RelayCommand<object>(p => { if (CurrentPage > 1) { CurrentPage = 1; UpdatePagedData(); } });
+            PrevPageCommand = new RelayCommand<object>(p => { if (CurrentPage > 1) { CurrentPage--; UpdatePagedData(); } });
+            NextPageCommand = new RelayCommand<object>(p => { if (CurrentPage < TotalPages) { CurrentPage++; UpdatePagedData(); } });
+            LastPageCommand = new RelayCommand<object>(p => { if (CurrentPage < TotalPages) { CurrentPage = TotalPages; UpdatePagedData(); } });
+            GoToPageCommand = new RelayCommand<object>(p =>
+            {
+                if (p is int pageNum && pageNum != CurrentPage)
+                {
+                    CurrentPage = pageNum;
+                    UpdatePagedData();
+                }
             });
 
             FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
@@ -305,6 +355,52 @@ namespace Bookstore.WPF.ViewModels
 
         // ==========================================
         // LOAD DỮ LIỆU
+
+        private void UpdatePagedData()
+        {
+            if (TotalPages == 0) CurrentPage = 1;
+
+            RevenueRows.Clear();
+            InventoryRows.Clear();
+            DebtRows.Clear();
+
+            int skip = (CurrentPage - 1) * _pageSize;
+
+            // Lấy 10 dòng từ danh sách gốc tùy theo loại báo cáo
+            if (SelectedReportTypeIndex == 0)
+            {
+                foreach (var item in _allRevenueRows.Skip(skip).Take(_pageSize)) RevenueRows.Add(item);
+            }
+            else if (SelectedReportTypeIndex == 1)
+            {
+                foreach (var item in _allInventoryRows.Skip(skip).Take(_pageSize)) InventoryRows.Add(item);
+            }
+            else if (SelectedReportTypeIndex == 2)
+            {
+                foreach (var item in _allDebtRows.Skip(skip).Take(_pageSize)) DebtRows.Add(item);
+            }
+
+            UpdatePageNumbers();
+        }
+
+        private void UpdatePageNumbers()
+        {
+            PageNumbers.Clear();
+            if (TotalPages <= 0) return;
+
+            int start = Math.Max(1, CurrentPage - 2);
+            int end = Math.Min(TotalPages, start + 4);
+
+            if (end - start < 4)
+            {
+                start = Math.Max(1, end - 4);
+            }
+
+            for (int i = start; i <= end; i++)
+            {
+                PageNumbers.Add(i);
+            }
+        }
 
         /// <summary>
         /// Load danh sách nhân viên, thể loại, khách hàng cho bộ lọc phụ.
@@ -365,32 +461,46 @@ namespace Bookstore.WPF.ViewModels
                 if (data != null)
                 {
                     // --- Cập nhật bảng dữ liệu ---
-                    RevenueRows.Clear();
-                    InventoryRows.Clear();
-                    DebtRows.Clear();
+                    _allRevenueRows.Clear();
+                    _allInventoryRows.Clear();
+                    _allDebtRows.Clear();
 
-                    if (data.RevenueRows != null)
-                        foreach (var r in data.RevenueRows) RevenueRows.Add(r);
+                    if (data.RevenueRows != null) _allRevenueRows.AddRange(data.RevenueRows);
+                    if (data.InventoryRows != null) _allInventoryRows.AddRange(data.InventoryRows);
+                    if (data.DebtRows != null) _allDebtRows.AddRange(data.DebtRows);
 
-                    if (data.InventoryRows != null)
-                        foreach (var r in data.InventoryRows) InventoryRows.Add(r);
+                    //RevenueRows.Clear();
+                    //InventoryRows.Clear();
+                    //DebtRows.Clear();
 
-                    if (data.DebtRows != null)
-                        foreach (var r in data.DebtRows) DebtRows.Add(r);
+                    //if (data.RevenueRows != null)
+                    //    foreach (var r in data.RevenueRows) RevenueRows.Add(r);
+
+                    //if (data.InventoryRows != null)
+                    //    foreach (var r in data.InventoryRows) InventoryRows.Add(r);
+
+                    //if (data.DebtRows != null)
+                    //    foreach (var r in data.DebtRows) DebtRows.Add(r);
+
+
+                    // --- Cập nhật trạng thái ---
+                    int count = 0;
+                    if (SelectedReportTypeIndex == 0) count = _allRevenueRows.Count;
+                    else if (SelectedReportTypeIndex == 1) count = _allInventoryRows.Count;
+                    else if (SelectedReportTypeIndex == 2) count = _allDebtRows.Count;
+                    TotalRows = count;
+
+                    // tính tổng trang
+                    TotalPages = (int)Math.Ceiling((double)TotalRows / _pageSize);
+                    if (TotalPages == 0) TotalPages = 1;
+                    CurrentPage = 1;
 
                     // --- Cập nhật biểu đồ ---
                     SetupRevenueChart(data);
                     SetupInventoryChart(data);
                     SetupDebtChart(data);
 
-                    // --- Cập nhật trạng thái ---
-                    TotalRows = SelectedReportTypeIndex switch
-                    {
-                        0 => RevenueRows.Count,
-                        1 => InventoryRows.Count,
-                        2 => DebtRows.Count,
-                        _ => 0
-                    };
+                    UpdatePagedData();
 
                     StatusText = $"Hiển thị {TotalRows} dòng — từ {FromDate:dd/MM/yyyy} đến {ToDate:dd/MM/yyyy}";
                 }
@@ -456,7 +566,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 new Axis
                 {
-                    Labeler = value => $"{value / 1_000_000:N0}M",
+                    Labeler = value => $"{value / 1_000:N0}K",
                     TextSize = 11,
                     LabelsPaint = new SolidColorPaint(new SKColor(163, 174, 208)) // #A3AED0
                 }

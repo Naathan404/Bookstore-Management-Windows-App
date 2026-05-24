@@ -116,6 +116,8 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
+        private decimal _tiLeGiaBan = 1.0m;
+
         // NOTE Để bổ sung các properties còn thíu
 
         #endregion
@@ -249,6 +251,17 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
+        private float _sellingPriceRatio = 1f;
+        public float SellingPriceRatio
+        {
+            get => _sellingPriceRatio;
+            set
+            {
+                _sellingPriceRatio = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         #endregion
 
@@ -308,7 +321,6 @@ namespace Bookstore.WPF.ViewModels
 
             IsAddPopupVisible = IsEditPopupVisible = Visibility.Hidden;
             EditingBook = new BookItem();
-            //LoadSampleData();
             InitCommands();
 
             _ = LoadTheLoaiAsync();
@@ -322,6 +334,7 @@ namespace Bookstore.WPF.ViewModels
         {
             _ = LoadTheLoaiAsync();
             _ = LoadNhaXuatBanAsync();
+            _ = LoadTiLeGiaBanAsync();
             //_ = LoadNhaCungCapAsync();
             _ = LoadDataAsync();
             _ = LoadTacGiaAsync();
@@ -331,14 +344,20 @@ namespace Bookstore.WPF.ViewModels
         {
             OpenAddPopupCommand = new RelayCommand<object>((p) => {
                 IsNewProduct = true; // Mặc định là đầu sách mới
-                EditingBook = new BookItem { HinhAnh = "/Resources/Images/Books/default_book_cover.jpg", SoLuongTonKho = 0 };
+                EditingBook = new BookItem
+                {
+                    HinhAnh = "/Resources/Images/Books/default_book_cover.jpg",
+                    SoLuongTonKho = 0,
+                    TiLeGiaBan = _tiLeGiaBan
+                };
                 IsAddPopupVisible = Visibility.Visible;
                 PopupIcon = PackIconKind.BookPlus;
                 PopupTitle = "THÊM SÁCH MỚI";
             });
 
             // COMMAND MỞ POPUP SỬA
-            OpenEditPopupCommand = new RelayCommand<BookItem>((book) => {
+            OpenEditPopupCommand = new RelayCommand<BookItem>((book) => 
+            {
                 if (book == null) return;
                 EditingBook = new BookItem
                 {
@@ -355,14 +374,21 @@ namespace Bookstore.WPF.ViewModels
                     HinhThucBia = book.HinhThucBia,
                     SoLuongTonKho = book.SoLuongTonKho,
                     TongDaBan = book.TongDaBan,
+                    TiLeGiaBan = _tiLeGiaBan,
                     GiaNiemYet = book.GiaNiemYet,
-                    DonGiaBan = book.DonGiaBan
+                    DonGiaBan = book.DonGiaBan,
                 };
 
-                for(int i = 0; i < book.DanhSachTacGia.Count; i++)
+                EditingBook.ResetManualFlag();
+
+                for (int i = 0; i < book.DanhSachTacGia.Count; i++)
                 {
                     var tg = book.DanhSachTacGia[i];
-                    EditingBook.DanhSachTacGia.Add(new TacGiaDTO { Id = tg.Id, TenTacGia = tg.TenTacGia });
+                    EditingBook.DanhSachTacGia.Add(new TacGiaDTO 
+                    { 
+                        Id = tg.Id, 
+                        TenTacGia = tg.TenTacGia 
+                    });
                 }
 
                 IsEditMasterEnabled = false;
@@ -762,6 +788,24 @@ namespace Bookstore.WPF.ViewModels
         /// LOAD DATA ASYNC TỪ API
         /// </summary>
         /// <returns></returns>
+        /// 
+        private async Task LoadTiLeGiaBanAsync()
+        {
+            try
+            {
+                // ThamSo API trả về object { TenThamSo, GiaTri } — đọc GiaTri
+                var thamSo = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/ti-le-gia-ban");
+                if (thamSo != null && thamSo.GiaTri > 0)
+                {
+                    _tiLeGiaBan = thamSo.GiaTri;
+                }
+            }
+            catch
+            {
+                // Nếu API lỗi thì giữ mặc định 1.0, không crash app
+            }
+        }
+
         private async Task LoadDataAsync()
         {
             try
@@ -1008,7 +1052,47 @@ namespace Bookstore.WPF.ViewModels
         public string HinhThucBia { get; set; } = "Bìa mềm";
         public int SoLuongTonKho { get; set; } = 0;
         public int TongDaBan { get; set; } = 0;
-        public decimal GiaNiemYet { get; set; } = 0;
-        public decimal DonGiaBan { get; set; } = 0;
+
+
+        private decimal _tiLeGiaBan = 1.0m;
+        public decimal TiLeGiaBan
+        {
+            get => _tiLeGiaBan;
+            set { _tiLeGiaBan = value; OnPropertyChanged(); }
+        }
+
+        private bool _isManualDonGiaBan = false;
+        public void ResetManualFlag() => _isManualDonGiaBan = false;
+
+
+
+        private decimal _giaNiemYet = 0;
+        public decimal GiaNiemYet
+        {
+            get => _giaNiemYet;
+            set
+            {
+                _giaNiemYet = value;
+                OnPropertyChanged();
+
+                if (!_isManualDonGiaBan)
+                {
+                    _donGiaBan = Math.Round(_giaNiemYet * _tiLeGiaBan);
+                    OnPropertyChanged(nameof(DonGiaBan));
+                }
+            }
+        }
+
+        private decimal _donGiaBan = 0;
+        public decimal DonGiaBan
+        {
+            get => _donGiaBan;
+            set
+            {
+                _donGiaBan = value;
+                _isManualDonGiaBan = true;
+                OnPropertyChanged();
+            }
+        }
     }
 }
