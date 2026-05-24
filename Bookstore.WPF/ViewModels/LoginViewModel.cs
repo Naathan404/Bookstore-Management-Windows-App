@@ -168,7 +168,7 @@ namespace Bookstore.WPF.ViewModels
                 catch (Exception)
                 {
                     IsErrorLogVisible = Visibility.Visible;
-                    ErrorLog = "Không thể kết nối đến server!";
+                    ErrorLog = "Tài khoản hoặc mật khẩu không chính xác!";
                 }
             });
 

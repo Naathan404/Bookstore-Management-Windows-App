@@ -1,5 +1,6 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Models;
+using Bookstore.Share.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,6 +72,83 @@ namespace Bookstore.API.Controllers
 
             return Ok(new { message = "Đã thu hồi quyền thành công!" });
         }
+
+        [HttpGet("chuc-nang/{roleId}")]
+        public async Task<IActionResult> GetChucNangForRole(int roleId)
+        {
+            var allScreens = await _context.ChucNang
+                .OrderBy(c => c.MaChucNang)
+                .ToListAsync();
+
+            var grantedIds = (await _context.PhanQuyen
+                .Where(p => p.MaNhomNguoiDung == roleId)
+                .Select(p => p.MaChucNang)
+                .ToListAsync())
+                .ToHashSet();
+
+            var result = allScreens.Select(c => new ScreenPermissionDTO
+            {
+                MaChucNang = c.MaChucNang,
+                TenChucNang = c.TenChucNang,
+                TenManHinh = c.TenManHinh,
+                IsGranted = grantedIds.Contains(c.MaChucNang)
+            }).ToList();
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// PUT api/PhanQuyen/{roleId}
+        /// Ghi đè toàn bộ phân quyền của nhóm: xóa cũ → insert mới.
+        /// </summary>
+        [HttpPut("{roleId}")]
+        public async Task<IActionResult> UpdatePermissions(
+            int roleId, [FromBody] UpdatePermissionsDTO dto)
+        {
+            bool roleExists = await _context.NhomNguoiDung
+                .AnyAsync(r => r.MaNhomNguoiDung == roleId);
+
+            if (!roleExists)
+                return NotFound(new { message = "Không tìm thấy nhóm." });
+
+            bool isAdminGroup = await _context.NhomNguoiDung
+                .AnyAsync(r => r.MaNhomNguoiDung == roleId
+                && r.TenNhomNguoiDung == "ADMIN");
+
+            if (isAdminGroup && !dto.GrantedChucNangIds.Contains(10))
+            {
+                return BadRequest(new
+                {
+                    message = "Không thể tắt quyền 'Tài khoản' của nhóm ADMIN. " +
+                              "Hệ thống cần ít nhất 1 nhóm có thể quản lý tài khoản!"
+                });
+            }
+
+            // Xóa toàn bộ quyền cũ
+            var oldPermissions = _context.PhanQuyen
+                .Where(p => p.MaNhomNguoiDung == roleId);
+            _context.PhanQuyen.RemoveRange(oldPermissions);
+
+            // Insert lại các quyền mới
+            var newPermissions = dto.GrantedChucNangIds
+                .Distinct()
+                .Select(chucNangId => new PhanQuyen
+                {
+                    MaNhomNguoiDung = roleId,
+                    MaChucNang = chucNangId
+                });
+
+            _context.PhanQuyen.AddRange(newPermissions);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Cập nhật phân quyền thành công.",
+                grantedCount = dto.GrantedChucNangIds.Distinct().Count()
+            });
+        }
+
+        // ── Private helper ───────────────────────────────────────────
 
         private bool PhanQuyenExists(int maNhom, int maChucNang)
         {
