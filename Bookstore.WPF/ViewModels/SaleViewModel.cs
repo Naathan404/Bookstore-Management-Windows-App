@@ -1,16 +1,12 @@
-﻿using Bookstore.Share.DTOs;
+﻿using Bookstore.Share.DTOResponses; 
+using Bookstore.Share.DTOs;
 using Bookstore.WPF.Services;
-using Bookstore.WPF.Views;
-using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
 using MaterialDesignThemes.Wpf;
-using SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -41,11 +37,13 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        public decimal ThanhTien => GiaBan * SoLuongMua;
+        public decimal ThanhTien => GiaBan * _soLuongMua;
     }
 
     public class SaleViewModel : BaseViewModel
     {
+        #region PROPERTIES
+
         // --- Properties: Book & Cart ---
         private BookItem _sachDuocChonXemChiTiet;
         public BookItem SachDuocChonXemChiTiet
@@ -79,7 +77,7 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private string _keywordKhachHang;
+        private string _keywordKhachHang = string.Empty;
         public string KeywordKhachHang
         {
             get => _keywordKhachHang;
@@ -93,8 +91,9 @@ namespace Bookstore.WPF.ViewModels
             set { _tenKhachHang = value; OnPropertyChanged(); }
         }
 
-        private KhachHangItem _khachHangDuocChon;
-        public KhachHangItem KhachHangDuocChon
+        // Cập nhật kiểu dữ liệu thành CustomerResponse giống CustomerViewModel
+        private CustomerResponse _khachHangDuocChon;
+        public CustomerResponse KhachHangDuocChon
         {
             get => _khachHangDuocChon;
             set
@@ -108,7 +107,8 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private ObservableCollection<KhachHangItem> _allKhachHangs = new ObservableCollection<KhachHangItem>();
+        // Danh sách gốc lưu toàn bộ khách hàng lấy từ API
+        private List<CustomerResponse> _allKhachHangs = new List<CustomerResponse>();
 
         // --- Properties: Billing & Payment ---
         public decimal TamTinh => GioHang.Sum(item => item.ThanhTien);
@@ -144,7 +144,10 @@ namespace Bookstore.WPF.ViewModels
             set { _phuongThucThanhToan = value; OnPropertyChanged(); }
         }
 
-        // --- Commands ---
+        #endregion
+
+        #region COMMANDS
+
         public ICommand XemChiTietSachCommand { get; set; }
         public ICommand ThemVaoGioHangCommand { get; set; }
         public ICommand ThemVaoGioHangTuPopupCommand { get; set; }
@@ -156,12 +159,15 @@ namespace Bookstore.WPF.ViewModels
         public ICommand XacNhanTaoDonCommand { get; set; }
         public ICommand TimKhachHangCommand { get; set; }
 
-        // --- Constructor ---
+        #endregion
+
+        #region CONSTRUCTOR
+
         public SaleViewModel()
         {
-            InitMockData();
+            // Tải dữ liệu khách hàng thực tế từ API bất đồng bộ giống CustomerViewModel
+            _ = LoadDanhSachKhachHangAsync();
 
-            // Đồng bộ tính toán lại hóa đơn khi giỏ hàng thay đổi số lượng phần tử
             GioHang.CollectionChanged += (s, e) => { CapNhatGiaTriHoaDon(); };
 
             XemChiTietSachCommand = new RelayCommand<BookItem>((selectedBook) => {
@@ -186,14 +192,7 @@ namespace Bookstore.WPF.ViewModels
                 if (item != null) { GioHang.Remove(item); }
             });
 
-            TimKhachHangCommand = new RelayCommand<object>(
-                execute: (p) => {
-                    ThucHienTimKiemKhachHang();
-                },
-                canExecute: (p) => {
-                    return true;
-                }
-             );
+            TimKhachHangCommand = new RelayCommand<object>((p) => ThucHienTimKiemKhachHang());
 
             HuyDonHangCommand = new RelayCommand<object>((param) => {
                 GioHang.Clear();
@@ -226,7 +225,10 @@ namespace Bookstore.WPF.ViewModels
             });
         }
 
-        // --- Methods ---
+        #endregion
+
+        #region HELPER METHODS
+
         private void CapNhatGiaTriHoaDon()
         {
             OnPropertyChanged(nameof(TamTinh));
@@ -267,10 +269,10 @@ namespace Bookstore.WPF.ViewModels
             }
             var query = KeywordKhachHang.ToLower().Trim();
 
-            // Tìm kiếm đối sánh chính xác/gần đúng trong tập dữ liệu (sau này thay bằng API gọi xuống DB)
+            // Thực hiện đối sánh dữ liệu trực tiếp trên danh sách DTO CustomerResponse từ API
             var khachHangFound = _allKhachHangs.FirstOrDefault(k =>
-                (k.MaKhachHang != null && k.MaKhachHang.ToLower() == query) ||
-                (k.SoDienThoai != null && k.SoDienThoai == query)
+                (!string.IsNullOrEmpty(k.MaKhachHang) && k.MaKhachHang.ToLower() == query) ||
+                (!string.IsNullOrEmpty(k.SoDienThoai) && k.SoDienThoai.Trim() == query)
             );
 
             if (khachHangFound != null)
@@ -285,11 +287,24 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private void InitMockData()
+        // Khởi tạo lấy danh sách khách hàng từ API thay vì MockData
+        private async Task LoadDanhSachKhachHangAsync()
         {
-            _allKhachHangs.Add(new KhachHangItem { MaKhachHang = "KH001", TenKhachHang = "Nguyễn Văn A", SoDienThoai = "0912345678", Email = "vana@gmail.com", DiaChi = "Hà Nội", CongNo = 1500000, LoaiKhach = "Cá nhân", GioiTinh = "Nam", NgaySinh = new DateTime(1990, 5, 15) });
-            _allKhachHangs.Add(new KhachHangItem { MaKhachHang = "KH002", TenKhachHang = "Trần Thị B", SoDienThoai = "0987654321", Email = "thib@gmail.com", DiaChi = "TP.HCM", CongNo = 0, LoaiKhach = "Cá nhân", GioiTinh = "Nữ", NgaySinh = new DateTime(1995, 8, 20) });
-            _allKhachHangs.Add(new KhachHangItem { MaKhachHang = "KH003", TenKhachHang = "Công ty ABC", SoDienThoai = "0977777777", Email = "abc@gmail.com", DiaChi = "Đà Nẵng", CongNo = 3500000, LoaiKhach = "Doanh nghiệp", GioiTinh = "Khác", NgaySinh = new DateTime(2015, 1, 1) });
+            try
+            {
+                var result = await ApiClient.GetAsync<List<CustomerResponse>>("api/KhachHang");
+                if (result != null)
+                {
+                    _allKhachHangs = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Có lỗi xảy ra khi tải danh sách khách hàng cho màn hình bán hàng: {ex.Message}",
+                                "Lỗi tải dữ liệu", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
+        #endregion
     }
 }

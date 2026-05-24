@@ -179,7 +179,7 @@
                                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                                  materialDesign:HintAssist.Hint="Tìm kiếm sách..."
                                                  FontSize="14" Foreground="#2B3674"
-                                                 TextChanged="txtTimKiem_TextChanged"/>
+                                                 Text="{Binding SearchTextSach, UpdateSourceTrigger=PropertyChanged}"/>
                                         <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Foreground="#A3AED0"
                                                                  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                     </Grid>
@@ -189,7 +189,7 @@
                                                  materialDesign:HintAssist.Hint="Tìm theo"
                                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                                  FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
-                                                 SelectionChanged="cboKieuTimKiem_SelectionChanged">
+                                                 SelectedItem="{Binding KieuTimKiemSach}">
                                             <ComboBoxItem Content="Tên sách" IsSelected="True"/>
                                             <ComboBoxItem Content="Mã ISBN"/>
                                             <ComboBoxItem Content="Tác giả"/>
@@ -208,7 +208,7 @@
                                                  materialDesign:HintAssist.Hint="Khoảng giá"
                                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                                  FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
-                                                 SelectionChanged="cboLocGia_SelectionChanged">
+                                                 SelectedItem="{Binding LocGiaSach}">
                                             <ComboBoxItem Content="Tất cả" IsSelected="True"/>
                                             <ComboBoxItem Content="Dưới 50.000 đ"/>
                                             <ComboBoxItem Content="50.000 - 150.000 đ"/>
@@ -226,7 +226,7 @@
                                         <Button x:Name="btnXoaLoc" Width="42" Height="42"
                                                  Style="{StaticResource MaterialDesignIconForegroundButton}"
                                                  Foreground="#EF4444" ToolTip="Xóa bộ lọc"
-                                                 Click="btnXoaLoc_Click" VerticalAlignment="Center">
+                                                 Command="{Binding XoaLocSachCommand}" VerticalAlignment="Center">
                                             <materialDesign:PackIcon Kind="FilterRemove" Width="22" Height="22"/>
                                         </Button>
                                     </StackPanel>
