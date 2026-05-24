@@ -65,17 +65,17 @@ namespace Bookstore.WPF.ViewModels
             set { _selectedRevenueSubItem = value; OnPropertyChanged(nameof(SelectedRevenueSubItem)); }
         }
 
-        private string _selectedCustomer;
-        public string SelectedCustomer
+        private string _selectedCustomerType = "Tất cả khách hàng";
+        public string SelectedCustomerType
         {
-            get => _selectedCustomer;
-            set { _selectedCustomer = value; OnPropertyChanged(nameof(SelectedCustomer)); }
+            get => _selectedCustomerType;
+            set { _selectedCustomerType = value; OnPropertyChanged(nameof(SelectedCustomerType)); }
         }
 
         // Danh sách cho bộ lọc phụ
         public ObservableCollection<string> StaffList { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> CategoryList { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<string> CustomerList { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> CustomerTypeList { get; set; } = new ObservableCollection<string>();
 
         // Source động cho sub-item combobox của Revenue
         public ObservableCollection<string> RevenueSubItemsSource =>
@@ -428,7 +428,8 @@ namespace Bookstore.WPF.ViewModels
 
                 if (staffs != null) foreach (var s in staffs) StaffList.Add(s);
                 if (categories != null) foreach (var c in categories) CategoryList.Add(c);
-                if (customers != null) foreach (var c in customers) CustomerList.Add(c);
+                CustomerTypeList.Add("Tất cả khách hàng");
+                if (customers != null) foreach (var c in customers) CustomerTypeList.Add(c);
             }
             catch
             {
@@ -462,7 +463,7 @@ namespace Bookstore.WPF.ViewModels
                     ToDate = ToDate,
                     StaffName = SelectedRevenueSubFilterType == 1 ? SelectedRevenueSubItem : null,
                     CategoryName = SelectedRevenueSubFilterType == 2 ? SelectedRevenueSubItem : null,
-                    CustomerName = SelectedCustomer
+                    CustomerType = SelectedCustomerType
                 };
 
                 var result = await client.PostAsJsonAsync("api/report/generate", filter);
@@ -599,6 +600,11 @@ namespace Bookstore.WPF.ViewModels
 
             var costValues = data.RevenueCostSeries?.Select(x => (double)x).ToArray() ?? Array.Empty<double>();
             var profitValues = data.RevenueProfitSeries?.Select(x => (double)x).ToArray() ?? Array.Empty<double>();
+            var totalValues = new double[costValues.Length];
+            for (int i = 0; i < costValues.Length; i++)
+            {
+                totalValues[i] = costValues[i] + profitValues[i];
+            }
 
             RevenueChartSeries = new ObservableCollection<ISeries>
             {
@@ -607,7 +613,7 @@ namespace Bookstore.WPF.ViewModels
                     Name = "Giá vốn",
                     Values = costValues,
                     Fill = new SolidColorPaint(SKColors.Tomato),       // #EE5D50 đỏ
-                    Rx = 2, Ry = 2,
+                    Rx = 1, Ry = 1,
                     Stroke = null,
                     DataLabelsPaint = null
                 },
@@ -616,11 +622,33 @@ namespace Bookstore.WPF.ViewModels
                     Name = "Lợi nhuận",
                     Values = profitValues,
                     Fill = new SolidColorPaint(SKColors.MediumSpringGreen),       // #05CD99 xanh lá
-                    Rx = 2, Ry = 2,
+                    Rx = 1, Ry = 1,
                     Stroke = null,
                     DataLabelsPaint = null
                 }
             };
+
+            RevenueChartSeries.Add(new LineSeries<double>
+            {
+                Name = "TỔNG DOANH THU",
+                Values = totalValues,
+                Stroke = null,         
+                Fill = null,            
+                GeometrySize = 0,       
+
+                DataLabelsPaint = new SolidColorPaint(new SKColor(43, 54, 116)), 
+                DataLabelsSize = 15,
+                DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
+                DataLabelsFormatter = point =>
+                {
+                    double val = point.Coordinate.PrimaryValue;
+                    if (val >= 1_000_000) return $"{val / 1_000_000:N1}M"; // Hiện chữ M nếu > 1 triệu
+                    if (val >= 1_000) return $"{val / 1_000:N0}K"; // Hiện chữ K nếu > 1 ngàn
+                    return $"{val:N0}";
+                },
+
+                YToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue:#,0} đ"
+            });
 
             RevenueXAxes = new[]
             {
@@ -739,7 +767,7 @@ namespace Bookstore.WPF.ViewModels
                 new Axis
                 {
                     //Labeler = value => $"{value / 1_000:N0}K đ",
-                    Labeler = value => $"{value:N0}" + " đ",
+                    Labeler = value => $"{value:N0} đ",
                     TextSize = 11,
                 }
             };
