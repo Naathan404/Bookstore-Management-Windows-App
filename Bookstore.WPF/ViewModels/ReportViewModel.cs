@@ -27,27 +27,6 @@ namespace Bookstore.WPF.ViewModels
             {
                 _selectedReportTypeIndex = value;
                 OnPropertyChanged(nameof(SelectedReportTypeIndex));
-
-                // Cập nhật visibility cho toàn bộ UI dynamic
-                OnPropertyChanged(nameof(RevenueSecondaryFilterVisibility));
-                OnPropertyChanged(nameof(DebtSecondaryFilterVisibility));
-                OnPropertyChanged(nameof(RevenueChartVisibility));
-                OnPropertyChanged(nameof(InventoryChartVisibility));
-                OnPropertyChanged(nameof(DebtChartVisibility));
-                OnPropertyChanged(nameof(RevenueGridVisibility));
-                OnPropertyChanged(nameof(InventoryGridVisibility));
-                OnPropertyChanged(nameof(DebtGridVisibility));
-                OnPropertyChanged(nameof(ChartTitle));
-                OnPropertyChanged(nameof(ChartSubtitle));
-                OnPropertyChanged(nameof(ChartIconKind));
-                OnPropertyChanged(nameof(TableTitle));
-
-                // Reset dữ liệu khi đổi loại báo cáo
-                StatusText = "Nhấn 'Xem Báo Cáo' để tải dữ liệu.";
-                CurrentPage = 1;
-
-                //UpdatePagedData();
-                _ = LoadReportDataAsync();
             }
         }
 
@@ -125,6 +104,13 @@ namespace Bookstore.WPF.ViewModels
             set { _statusText = value; OnPropertyChanged(nameof(StatusText)); }
         }
 
+        private string _analysisMessage = "Chưa có phân tích dữ liệu.";
+        public string AnalysisMessage
+        {
+            get => _analysisMessage;
+            set { _analysisMessage = value; OnPropertyChanged(nameof(AnalysisMessage)); }
+        }
+
         private int _totalRows;
         public int TotalRows
         {
@@ -192,14 +178,6 @@ namespace Bookstore.WPF.ViewModels
             0 => "THỐNG KÊ DOANH THU & LỢI NHUẬN",
             1 => "THỐNG KÊ TỒN KHO",
             2 => "THỐNG KÊ CÔNG NỢ",
-            _ => ""
-        };
-
-        public string ChartSubtitle => SelectedReportTypeIndex switch
-        {
-            0 => "Biểu đồ cột chồng: Giá vốn vs Lợi nhuận theo ngày",
-            1 => "Biểu đồ thanh ngang: Top 10 đầu sách có giá trị tồn kho cao nhất",
-            2 => "Biểu đồ đường: Nợ phát sinh vs Nợ thu hồi theo ngày",
             _ => ""
         };
 
@@ -329,7 +307,32 @@ namespace Bookstore.WPF.ViewModels
             InventoryRows = new ObservableCollection<InventoryReportRowDto>();
             DebtRows = new ObservableCollection<DebtReportRowDto>();
 
-            ApplyReportCommand = new RelayCommand<object>(async (p) => await LoadReportDataAsync());
+            ApplyReportCommand = new RelayCommand<object>(async (p) =>
+            {
+                OnPropertyChanged(nameof(SelectedReportTypeIndex));
+                // Cập nhật visibility cho toàn bộ UI dynamic
+                OnPropertyChanged(nameof(RevenueSecondaryFilterVisibility));
+                OnPropertyChanged(nameof(DebtSecondaryFilterVisibility));
+                OnPropertyChanged(nameof(RevenueChartVisibility));
+                OnPropertyChanged(nameof(InventoryChartVisibility));
+                OnPropertyChanged(nameof(DebtChartVisibility));
+                OnPropertyChanged(nameof(RevenueGridVisibility));
+                OnPropertyChanged(nameof(InventoryGridVisibility));
+                OnPropertyChanged(nameof(DebtGridVisibility));
+                OnPropertyChanged(nameof(ChartTitle));
+                OnPropertyChanged(nameof(ChartIconKind));
+                OnPropertyChanged(nameof(TableTitle));
+
+                // Reset dữ liệu khi đổi loại báo cáo
+                CurrentPage = 1;
+                StatusText = "Nhấn 'Xem Báo Cáo' để tải dữ liệu.";
+
+                UpdatePagedData();
+
+                //UpdatePagedData();
+                await LoadReportDataAsync();
+            });
+
             ExportExcelCommand = new RelayCommand<object>(async (p) =>
             {
                 ExportToExcel();
@@ -510,12 +513,64 @@ namespace Bookstore.WPF.ViewModels
                     if (TotalPages == 0) TotalPages = 1;
                     CurrentPage = 1;
 
+                    if (TotalRows == 0)
+                    {
+                        AnalysisMessage = "Hệ thống chưa ghi nhận bất kỳ phát sinh nào trong khoảng thời gian này.";
+                    }
+                    else
+                    {
+                        if (SelectedReportTypeIndex == 0) // Báo cáo Doanh thu & Lợi nhuận
+                        {
+                            decimal totalNetRevenue = _allRevenueRows.Sum(x => x.NetRevenue);
+                            decimal totalGrossProfit = _allRevenueRows.Sum(x => x.GrossProfit);
+                            // Tính tỷ suất lợi nhuận gộp trung bình
+                            decimal profitMargin = totalNetRevenue > 0 ? (totalGrossProfit / totalNetRevenue) * 100 : 0;
+
+                            if (profitMargin >= 25)
+                            {
+                                AnalysisMessage = $"🔥 Tình hình kinh doanh xuất sắc! Tổng doanh thu đạt {totalNetRevenue:#,0} đ với biên lợi nhuận gộp rất cao ({profitMargin:N1}%), hoạt động kinh doanh đang tối ưu hiệu quả tốt.";
+                            }
+                            else if (profitMargin > 0 && profitMargin < 15)
+                            {
+                                AnalysisMessage = $"⚠️ Mặc dù doanh thu đạt {totalNetRevenue:#,0} đ nhưng biên lợi nhuận gộp khá mỏng ({profitMargin:N1}%), hãy kiểm tra lại giá vốn đầu vào hoặc giảm tần suất chương trình giảm giá.";
+                            }
+                            else
+                            {
+                                AnalysisMessage = $"✨ Kinh doanh ổn định. Tổng lợi nhuận gộp đạt {totalGrossProfit:#,0} đ (Hiệu suất đạt {profitMargin:N1}% trên tổng doanh thu thuần).";
+                            }
+                        }
+                        else if (SelectedReportTypeIndex == 1) // Báo cáo Tồn kho
+                        {
+                            decimal totalStockValue = _allInventoryRows.Sum(x => x.StockValue);
+                            var topSpamBook = _allInventoryRows.OrderByDescending(x => x.StockValue).FirstOrDefault();
+
+                            AnalysisMessage = $"📦 Tổng giá trị hàng hóa đang lưu kho đạt {totalStockValue:#,0} đ. Trong đó, đầu sách '{topSpamBook?.BookName}' đang chiếm tỷ trọng đọng vốn cao nhất, cần cân nhắc đẩy mạnh khuyến mãi.";
+                        }
+                        else if (SelectedReportTypeIndex == 2) // Báo cáo Công nợ
+                        {
+                            decimal totalClosingDebt = _allDebtRows.Sum(x => x.ClosingDebt);
+                            int customerInDebtCount = _allDebtRows.Count(x => x.HasDebt);
+
+                            if (totalClosingDebt > 20_000_000) 
+                            {
+                                AnalysisMessage = $"🚨 Cảnh báo rủi ro! Hiện có {customerInDebtCount} khách hàng đang mua chịu với tổng công nợ đạt {totalClosingDebt:#,0} đ. Đề xuất siết chặt hạn mức bán nợ và ưu tiên phiếu thu tiền mặt.";
+                            }
+                            else
+                            {
+                                AnalysisMessage = $"✅ Chỉ số công nợ an toàn. Hệ thống đang kiểm soát tốt các khoản nợ phải thu với tổng số dư công nợ khách hàng là {totalClosingDebt:#,0} đ.";
+                            }
+                        }
+                    }
+
+                    UpdatePagedData();
+
+                    await Task.Delay(400);
+
                     // --- Cập nhật biểu đồ ---
                     SetupRevenueChart(data);
                     SetupInventoryChart(data);
                     SetupDebtChart(data);
 
-                    UpdatePagedData();
 
                     StatusText = $"Hiển thị {TotalRows} dòng — từ {FromDate:dd/MM/yyyy} đến {ToDate:dd/MM/yyyy}";
                 }
@@ -607,7 +662,7 @@ namespace Bookstore.WPF.ViewModels
                     Fill = new SolidColorPaint(new SKColor(67, 24, 255)),       // #4318FF tím
                     MaxBarWidth = 20,
 
-                    XToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue:#,0} đ",
+                    XToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue / 1_000:N0}K đ",
             
                     // Giữ nguyên các dòng định dạng nhãn hiển thị trực tiếp trên thanh
                     DataLabelsPaint = new SolidColorPaint(new SKColor(43, 54, 116)),
@@ -630,8 +685,8 @@ namespace Bookstore.WPF.ViewModels
             {
                 new Axis
                 {
-                    //Labeler = value => $"{value / 1_000:N0}K đ",
-                    Labeler = value => $"{value:N0}" + " đ",
+                    Labeler = value => $"{value / 1_000:N0}K đ",
+                    //Labeler = value => $"{value:N0}" + " đ",
                     TextSize = 10,
                     LabelsPaint = new SolidColorPaint(new SKColor(163, 174, 208))
                 }

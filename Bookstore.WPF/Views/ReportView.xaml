@@ -411,7 +411,7 @@
                                     <materialDesign:PackIcon Kind="{Binding ChartIconKind}" Width="20" Height="20" Foreground="#4318FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock Text="{Binding ChartTitle}" FontSize="15" FontWeight="Bold" Foreground="#2B3674"/>
-                                        <TextBlock Text="{Binding ChartSubtitle}" FontSize="11" Foreground="#A3AED0" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding AnalysisMessage}" FontSize="11" Foreground="#A3AED0" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -429,23 +429,19 @@
                                 </StackPanel>
                             </Grid>
 
-                            <Grid Grid.Row="1" Visibility="{Binding LoadingVisibility}" ZIndex="10" MinHeight="250" HorizontalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="499*"/>
-                                    <ColumnDefinition Width="17*"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="722,0,0,0">
+                            <Grid Grid.Row="1" Visibility="{Binding LoadingVisibility}" Panel.ZIndex="10" MinHeight="250" Background="White">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Foreground="#4318FF"/>
                                     <TextBlock Text="Đang vẽ biểu đồ..." FontSize="13" Foreground="#A3AED0" Margin="0,10,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
 
-                            <Grid Grid.Row="1" Visibility="{Binding ContentVisibility}" MinHeight="250">
-                                <lvc:CartesianChart Series="{Binding RevenueChartSeries}" XAxes="{Binding RevenueXAxes}" YAxes="{Binding RevenueYAxes}" Visibility="{Binding RevenueChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition='Hidden'/>
+                            <Grid Grid.Row="1" MinHeight="250">
+                                <lvc:CartesianChart Series="{Binding RevenueChartSeries}" XAxes="{Binding RevenueXAxes}" YAxes="{Binding RevenueYAxes}" Visibility="{Binding RevenueChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition="Hidden"/>
                                 <lvc:CartesianChart Series="{Binding InventoryChartSeries}" XAxes="{Binding InventoryXAxes}" YAxes="{Binding InventoryYAxes}" Visibility="{Binding InventoryChartVisibility}" TooltipPosition="Right" LegendPosition="Hidden"/>
-                                <lvc:CartesianChart Series="{Binding DebtChartSeries}" XAxes="{Binding DebtXAxes}" YAxes="{Binding DebtYAxes}" Visibility="{Binding DebtChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition="Hidden"/>
+                                <lvc:CartesianChart Series="{Binding DebtChartSeries}" XAxes="{Binding DebtXAxes}" Visibility="{Binding DebtChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition="Hidden"/>
 
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ContentVisibility}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <StackPanel.Style>
                                         <Style TargetType="StackPanel">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -456,11 +452,6 @@
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
-                                    <!--
-                                    <materialDesign:PackIcon Kind="ChartBoxOutline" Width="64" Height="64" Foreground="#E2E8F0" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Chưa có dữ liệu" FontSize="16" FontWeight="SemiBold" Foreground="#CBD5E1" HorizontalAlignment="Center" Margin="0,12,0,0"/>
-                                    <TextBlock Text="Chọn bộ lọc phù hợp và nhấn 'Xem Báo Cáo'" FontSize="12" Foreground="#E2E8F0" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                                    -->
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -739,7 +730,7 @@
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Tồn cuối kỳ" Binding="{Binding ClosingQty}" Width="120" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn Header="Tồn cuối" Binding="{Binding ClosingQty}" Width="120" HeaderStyle="{StaticResource CenterHeaderStyle}">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}">
                                                     <Setter Property="FontWeight" Value="Bold"/>
