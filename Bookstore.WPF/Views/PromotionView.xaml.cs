@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bookstore.WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace Bookstore.WPF.Views
         public PromotionView()
         {
             InitializeComponent();
+        }
+        private void PromotionDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is ViewModels.PromotionViewModel viewModel)
+                viewModel.UpdateSelectedPromotions(PromotionDataGrid.SelectedItems);
         }
     }
 }
