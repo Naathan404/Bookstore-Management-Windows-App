@@ -244,9 +244,13 @@ namespace Bookstore.WPF.ViewModels
             // Command 
             // ==========================================
             if (listQuyen.Contains("DashboardView"))
-            {
+            { 
                 _dashboardViewModel = new DashboardViewModel();
-                ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(_dashboardViewModel));
+                ShowDashboardCommand = new RelayCommand<object>(async (p) =>
+                {
+                    await _dashboardViewModel.LoadAllDataAsync();
+                    _handleChangeView(_dashboardViewModel);
+                });
             }
 
             if (listQuyen.Contains("SaleView"))

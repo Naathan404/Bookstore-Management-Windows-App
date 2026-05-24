@@ -141,32 +141,43 @@ namespace Bookstore.API.Controllers
             {
                 int maSachThucTe = request.MaSachGoc;
 
-                if (request.IsTacPhamMoi)
+                if (request.IsTacPhamMoi || request.MaSachGoc <= 0)
                 {
-                    // Kiểm tra/Tạo Thể loại
-                    var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
-                    if (theLoai == null)
+                    var existingSach = await _context.Sach.FirstOrDefaultAsync(s => s.TenSach.ToLower() == request.TenSach.ToLower());
+
+                    if (existingSach != null)
                     {
-                        theLoai = new TheLoai { TenTheLoai = request.TheLoai };
-                        _context.TheLoai.Add(theLoai);
-                        await _context.SaveChangesAsync();
+                        maSachThucTe = existingSach.MaSach;
                     }
-
-                    var sachMoi = new Sach
+                    else
                     {
-                        TenSach = request.TenSach,
-                        MaTheLoai = theLoai.MaTheLoai,
-                        MoTa = request.MoTa,
-                        ImageUrl = request.HinhAnh
-                    };
-                    _context.Sach.Add(sachMoi);
-                    await _context.SaveChangesAsync();
-                    maSachThucTe = sachMoi.MaSach;
+                        var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
+                        if (theLoai == null)
+                        {
+                            theLoai = new TheLoai { TenTheLoai = request.TheLoai };
+                            _context.TheLoai.Add(theLoai);
+                            await _context.SaveChangesAsync();
+                        }
 
-                    // Lưu Tác giả cho đầu sách mới
-                    foreach (var tg in request.DanhSachTacGia)
-                    {
-                        _context.TacGia_Sach.Add(new TacGia_Sach { MaSach = maSachThucTe, MaTacGia = tg.Id });
+                        var sachMoi = new Sach
+                        {
+                            TenSach = request.TenSach,
+                            MaTheLoai = theLoai.MaTheLoai,
+                            MoTa = request.MoTa ?? "",
+                            ImageUrl = request.HinhAnh ?? "default_book_cover.jpg"
+                        };
+                        _context.Sach.Add(sachMoi);
+                        await _context.SaveChangesAsync(); 
+                        maSachThucTe = sachMoi.MaSach;     
+
+                        // Lưu Tác giả cho đầu sách mới
+                        if (request.DanhSachTacGia != null)
+                        {
+                            foreach (var tg in request.DanhSachTacGia)
+                            {
+                                _context.TacGia_Sach.Add(new TacGia_Sach { MaSach = maSachThucTe, MaTacGia = tg.Id });
+                            }
+                        }
                     }
                 }
 

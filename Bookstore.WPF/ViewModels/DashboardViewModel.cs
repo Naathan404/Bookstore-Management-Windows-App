@@ -148,13 +148,13 @@ namespace Bookstore.WPF.ViewModels
             PaymentReceipts = new ObservableCollection<PaymentDto>();
             StockWarnings = new ObservableCollection<StockWarningDto>();
 
-            LoadDataFromApiAsync();
+            LoadAllDataAsync();
         }
 
         /// <summary>
         /// This hàm để load dữ liệu cho trang Dashboard. 
         /// </summary>
-        private async Task LoadDataFromApiAsync()
+        public async Task LoadAllDataAsync()
         {
             try
             {
