@@ -53,10 +53,8 @@ namespace Bookstore.API.Controllers
         [HttpGet("filter/customers")]
         public async Task<IActionResult> GetCustomerList()
         {
-            var customers = await _context.KhachHang
-                .Where(x => x.TenKhachHang != null)
-                .Select(x => x.TenKhachHang!)
-                .OrderBy(x => x)
+            var customers = await _context.LoaiKhachHang
+                .Select(x => x.TenLoaiKhachHang)
                 .ToListAsync();
 
             return Ok(customers);
@@ -407,11 +405,14 @@ namespace Bookstore.API.Controllers
                 // ================================================================
                 else if (filter.ReportType == 2)
                 {
-                    var customerQuery = _context.KhachHang.AsQueryable();
+                    var customerQuery = _context.KhachHang.Include(x => x.LoaiKhachHang).AsQueryable();
 
-                    if (!string.IsNullOrEmpty(filter.CustomerName))
+                    if (!string.IsNullOrEmpty(filter.CustomerType))
                     {
-                        customerQuery = customerQuery.Where(x => x.TenKhachHang.Contains(filter.CustomerName));
+                        if(filter.CustomerType != "Tất cả khách hàng")
+                        {
+                            customerQuery = customerQuery.Where(x => x.LoaiKhachHang.TenLoaiKhachHang == filter.CustomerType);
+                        }    
                     }
 
                     var customers = await customerQuery.ToListAsync();
@@ -441,6 +442,7 @@ namespace Bookstore.API.Controllers
                         debtRows.Add(new DebtReportRowDto
                         {
                             CustomerName = c.TenKhachHang,
+                            CustomerType = c.LoaiKhachHang.TenLoaiKhachHang,
                             OpeningDebt = openingDebt,
                             NewDebt = newDebt,
                             PaidDebt = paidDebt,
