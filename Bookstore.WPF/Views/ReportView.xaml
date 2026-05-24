@@ -222,7 +222,7 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="8,0,12,0"/>
                 <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="Foreground" Value="#05CD99"/>
+                <!--<Setter Property="Foreground" Value="DarkGreen"/>-->
             </Style>
             <Style x:Key="CellDebt" TargetType="TextBlock">
                 <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -243,9 +243,10 @@
 
         <Grid Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="90"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="90"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0" Margin="0,0,0,12" Padding="20" CornerRadius="16"
@@ -262,11 +263,21 @@
                         <TextBlock Text="BÁO CÁO KINH DOANH" FontSize="24" FontWeight="Bold"
                                             Foreground="#2B3674" VerticalAlignment="Center"/>
                     </StackPanel>
+                    
+                    
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                        <Button Style="{StaticResource MainGradientButton}" Command="{Binding ApplyReportCommand}" Width="130" Height="36" Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Magnify" Width="16" Height="16" Foreground="White" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="XEM BÁO CÁO" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        
                         <Button Style="{StaticResource OutlinePDFButtonStyle}" CommandParameter="{Binding}" Width="120" Margin="0,0,10,0" Command="{Binding ExportPdfCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FilePdfBox" Width="16" Height="16" Foreground="OrangeRed" Margin="0,0,6,0"/>
+                                <materialDesign:PackIcon Kind="FilePdfBox" Width="16" Height="16" Foreground="OrangeRed" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="XUẤT PDF"/>
                             </StackPanel>
                         </Button>
@@ -284,7 +295,7 @@
                     Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
 
-                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,12,10" Width="220">
+                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8, 0" Width="220">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="35"/>
@@ -293,7 +304,7 @@
                             <materialDesign:PackIcon Kind="FileChart" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             <ComboBox Grid.Column="1" SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}"
                                       Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
-                                      VerticalAlignment="Center" materialDesign:HintAssist.Hint="Loại báo cáo">
+                                      VerticalAlignment="Center" materialDesign:HintAssist.Hint="Loại báo cáo" Margin="0 0 5 0">
                                 <ComboBoxItem Content="Doanh thu &amp; Lợi nhuận"/>
                                 <ComboBoxItem Content="Tồn kho"/>
                                 <ComboBoxItem Content="Công nợ"/>
@@ -301,7 +312,7 @@
                         </Grid>
                     </Border>
 
-                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,12,10" Width="150">
+                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="150">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="35"/>
@@ -311,11 +322,11 @@
                             <DatePicker Grid.Column="1" SelectedDate="{Binding FromDate, Mode=TwoWay}"
                                         Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Từ ngày"
-                                        materialDesign:TextFieldAssist.UnderlineBrush="Transparent"/>
+                                        materialDesign:TextFieldAssist.UnderlineBrush="Transparent" Margin="0 0 5 0"/>
                         </Grid>
                     </Border>
 
-                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,12,10" Width="150">
+                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="150">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="35"/>
@@ -325,12 +336,12 @@
                             <DatePicker Grid.Column="1" SelectedDate="{Binding ToDate, Mode=TwoWay}"
                                         Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Đến ngày"
-                                        materialDesign:TextFieldAssist.UnderlineBrush="Transparent"/>
+                                        materialDesign:TextFieldAssist.UnderlineBrush="Transparent" Margin="0 0 5 0"/>
                         </Grid>
                     </Border>
 
                     <StackPanel Orientation="Horizontal" Visibility="{Binding RevenueSecondaryFilterVisibility}">
-                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,12,10" Width="150">
+                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="150">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="35"/>
@@ -339,7 +350,7 @@
                                 <materialDesign:PackIcon Kind="FilterVariant" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <ComboBox Grid.Column="1" SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}"
                                           Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
-                                          VerticalAlignment="Center" materialDesign:HintAssist.Hint="Lọc theo">
+                                          VerticalAlignment="Center" materialDesign:HintAssist.Hint="Lọc theo" Margin="0 0 5 0">
                                     <ComboBoxItem Content="Tất cả"/>
                                     <ComboBoxItem Content="Nhân viên"/>
                                     <ComboBoxItem Content="Thể loại"/>
@@ -347,7 +358,7 @@
                             </Grid>
                         </Border>
 
-                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,12,10" Width="180" Visibility="{Binding RevenueSubItemFilterVisibility}">
+                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8, 0" Width="180" Visibility="{Binding RevenueSubItemFilterVisibility}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="35"/>
@@ -362,7 +373,7 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Visibility="{Binding DebtSecondaryFilterVisibility}">
-                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,12,10" Width="200">
+                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="200">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="35"/>
@@ -371,17 +382,10 @@
                                 <materialDesign:PackIcon Kind="AccountOutline" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <ComboBox Grid.Column="1" ItemsSource="{Binding CustomerList}" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
                                           Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
-                                          VerticalAlignment="Center" materialDesign:HintAssist.Hint="Tất cả KH"/>
+                                          VerticalAlignment="Center" materialDesign:HintAssist.Hint="Tất cả KH" Margin="0 0 5 0"/>
                             </Grid>
                         </Border>
                     </StackPanel>
-
-                    <Button Style="{StaticResource MainGradientButton}" Command="{Binding ApplyReportCommand}" Width="150" Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Magnify" Width="18" Height="18" Foreground="White" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="XEM BÁO CÁO" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
                 </WrapPanel>
             </Border>
 
@@ -427,16 +431,20 @@
                             </Grid>
 
                             <Grid Grid.Row="1" Visibility="{Binding LoadingVisibility}" ZIndex="10" MinHeight="250">
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="499*"/>
+                                    <ColumnDefinition Width="17*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="722,0,0,0">
                                     <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Foreground="#4318FF"/>
                                     <TextBlock Text="Đang vẽ biểu đồ..." FontSize="13" Foreground="#A3AED0" Margin="0,10,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
 
                             <Grid Grid.Row="1" Visibility="{Binding ContentVisibility}" MinHeight="250">
-                                <lvc:CartesianChart Series="{Binding RevenueChartSeries}" XAxes="{Binding RevenueXAxes}" YAxes="{Binding RevenueYAxes}" Visibility="{Binding RevenueChartVisibility}" ZoomMode="X" TooltipPosition="Top" LegendPosition="Hidden"/>
+                                <lvc:CartesianChart Series="{Binding RevenueChartSeries}" XAxes="{Binding RevenueXAxes}" YAxes="{Binding RevenueYAxes}" Visibility="{Binding RevenueChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition='Hidden'/>
                                 <lvc:CartesianChart Series="{Binding InventoryChartSeries}" XAxes="{Binding InventoryXAxes}" YAxes="{Binding InventoryYAxes}" Visibility="{Binding InventoryChartVisibility}" TooltipPosition="Right" LegendPosition="Hidden"/>
-                                <lvc:CartesianChart Series="{Binding DebtChartSeries}" XAxes="{Binding DebtXAxes}" Visibility="{Binding DebtChartVisibility}" ZoomMode="X" TooltipPosition="Top" LegendPosition="Hidden"/>
+                                <lvc:CartesianChart Series="{Binding DebtChartSeries}" XAxes="{Binding DebtXAxes}" Visibility="{Binding DebtChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition="Hidden"/>
 
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ContentVisibility}">
                                     <StackPanel.Style>
@@ -449,9 +457,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
+                                    <!--
                                     <materialDesign:PackIcon Kind="ChartBoxOutline" Width="64" Height="64" Foreground="#E2E8F0" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Chưa có dữ liệu" FontSize="16" FontWeight="SemiBold" Foreground="#CBD5E1" HorizontalAlignment="Center" Margin="0,12,0,0"/>
                                     <TextBlock Text="Chọn bộ lọc phù hợp và nhấn 'Xem Báo Cáo'" FontSize="12" Foreground="#E2E8F0" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                                    -->
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -508,7 +518,7 @@
                                         <DataGridTextColumn Header="GIẢM GIÁ" Binding="{Binding Discount, StringFormat='{}{0:#,0} đ'}" Width="130" HeaderStyle="{StaticResource RightHeaderStyle}">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource CellRight}">
-                                                    <Setter Property="Foreground" Value="#F59E0B"/>
+                                                    <!--<Setter Property="Foreground" Value="#F59E0B"/>-->
                                                     <Setter Property="FontWeight" Value="SemiBold"/>
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
@@ -516,7 +526,7 @@
                                         <DataGridTextColumn Header="DOANH THU THUẦN" Binding="{Binding NetRevenue, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource RightHeaderStyle}">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource CellMoney}">
-                                                    <Setter Property="Foreground" Value="#4318FF"/>
+                                                    <!--<Setter Property="Foreground" Value="#4318FF"/> -->
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
@@ -640,6 +650,41 @@
                     </Border>
                 </Grid>
             </ScrollViewer>
+
+            <Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" Margin="0,0,4,0">
+                        <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
+                    </Button>
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" Margin="0,0,8,0">
+                        <materialDesign:PackIcon Kind="ChevronLeft" Width="16" Height="16" Foreground="#A3AED0"/>
+                    </Button>
+
+                    <ItemsControl ItemsSource="{Binding PageNumbers}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding}" Margin="0,0,4,0" Style="{StaticResource PaginationButtonStyle}"
+                                        Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" Margin="8,0,0,0">
+                        <materialDesign:PackIcon Kind="ChevronRight" Width="16" Height="16" Foreground="#A3AED0"/>
+                    </Button>
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" Margin="4,0,0,0">
+                        <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
+                    </Button>
+
+                    <TextBlock Text="{Binding CurrentPage, StringFormat='Trang {0}'}" FontSize="12" Foreground="#A3AED0" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                </StackPanel>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

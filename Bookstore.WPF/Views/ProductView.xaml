@@ -637,10 +637,10 @@
             <!-- Card 4: Pagination -->
             <Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" Margin="0,0,4,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" CommandParameter="{Binding}" Margin="0,0,4,0">
                         <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" Margin="0,0,8,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" CommandParameter="{Binding}" Margin="0,0,8,0">
                         <materialDesign:PackIcon Kind="ChevronLeft" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
 
@@ -659,10 +659,10 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" Margin="8,0,0,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" CommandParameter="{Binding}" Margin="8,0,0,0">
                         <materialDesign:PackIcon Kind="ChevronRight" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" Margin="4,0,0,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" CommandParameter="{Binding}" Margin="4,0,0,0">
                         <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
 
@@ -921,7 +921,7 @@
                                         <Grid>
                                             <TextBlock Text="Mô tả nội dung" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
                                             <TextBox Text="{Binding EditingBook.MoTa}" FontSize="13" Foreground="#4B5563" BorderThickness="0" 
-                             Margin="10,22,10,10" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                                    Margin="10,22,10,10" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
                                         </Grid>
                                     </Border>
                                 </Grid>

@@ -271,9 +271,9 @@ namespace Bookstore.WPF.ViewModels
         // ==========================================
         // LỆNH
 
-        public ICommand ApplyReportCommand { get; }
-        public ICommand ExportExcelCommand { get; }
-        public ICommand ExportPdfCommand { get; }
+        public ICommand ApplyReportCommand { get; set; }
+        public ICommand ExportExcelCommand { get; set;  }
+        public ICommand ExportPdfCommand { get; set; }
 
         // ==========================================
         // CONSTRUCTOR
@@ -285,8 +285,14 @@ namespace Bookstore.WPF.ViewModels
             DebtRows = new ObservableCollection<DebtReportRowDto>();
 
             ApplyReportCommand = new RelayCommand<object>(async (p) => await LoadReportDataAsync());
-            //ExportExcelCommand = new RelayCommand(_ => ExportToExcel(), _ => TotalRows > 0);
-            //ExportPdfCommand = new RelayCommand(_ => ExportToPdf(), _ => TotalRows > 0);
+            ExportExcelCommand = new RelayCommand<object>(async (p) =>
+            {
+                MessageBox.Show("Tính năng Xuất báo cáo thành file Excel đang được phát triển! Vui lòng quay lại sau!");
+            });
+            ExportPdfCommand = new RelayCommand<object>(async (p) =>
+            {
+                MessageBox.Show("Tính năng Xuất báo cáo thành file Pdf đang được phát triển! Vui lòng quay lại sau!");
+            });
 
             FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             ToDate = DateTime.Today;
@@ -420,7 +426,8 @@ namespace Bookstore.WPF.ViewModels
                 {
                     Name = "Giá vốn",
                     Values = costValues,
-                    Fill = new SolidColorPaint(new SKColor(238, 93, 80)),       // #EE5D50 đỏ
+                    Fill = new SolidColorPaint(SKColors.Tomato),       // #EE5D50 đỏ
+                    Rx = 2, Ry = 2,
                     Stroke = null,
                     DataLabelsPaint = null
                 },
@@ -428,7 +435,8 @@ namespace Bookstore.WPF.ViewModels
                 {
                     Name = "Lợi nhuận",
                     Values = profitValues,
-                    Fill = new SolidColorPaint(new SKColor(5, 205, 153)),       // #05CD99 xanh lá
+                    Fill = new SolidColorPaint(SKColors.MediumSpringGreen),       // #05CD99 xanh lá
+                    Rx = 2, Ry = 2,
                     Stroke = null,
                     DataLabelsPaint = null
                 }
