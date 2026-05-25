@@ -6,7 +6,10 @@
              xmlns:local="clr-namespace:Bookstore.WPF.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="900" d:DesignWidth="1600">
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:SaleViewModel, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -38,143 +41,180 @@
     </UserControl.Resources>
 
     <Grid Background="{StaticResource BackgroundColor}">
-        <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True">
+        <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True" OverlayBackground="Transparent" IsOpen="{Binding IsBookDetailOpen, Mode=TwoWay}">
 
             <materialDesign:DialogHost.DialogContent>
-                <Border Width="600" Padding="24" Background="White" CornerRadius="24" Effect="{StaticResource CardShadowEffect}">
-                    <Grid DataContext="{Binding SachDuocChonXemChiTiet}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <Grid Grid.Row="0" Margin="0,0,0,20">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="24" Height="24" Foreground="#4318FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <TextBlock Text="Thông Tin Chi Tiết Sách" FontSize="20" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <Button Style="{StaticResource MaterialDesignFlatButton}" 
-                                Content="Đóng" 
-                                Foreground="#EF4444"
-                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
-                        </Grid>
-
-                        <Grid Grid.Row="1" Margin="0,0,0,24">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Border Grid.Column="0" CornerRadius="12" ClipToBounds="True" Height="240" Background="#F1F5F9" VerticalAlignment="Top">
-                                <Image Source="{Binding HinhAnh}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            </Border>
-
-                            <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                                <TextBlock Text="{Binding TenSach}" FontSize="18" FontWeight="Bold" Foreground="#2B3674" TextWrapping="Wrap" Margin="0,0,0,12"/>
-
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="90"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="Mã ISBN:" Foreground="#A3AED0" FontSize="14"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Isbn}" Foreground="#2B3674" FontSize="14" FontWeight="SemiBold"/>
-                                </Grid>
-
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="90"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="Thể loại:" Foreground="#A3AED0" FontSize="14"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding TenTheLoai}" Foreground="#4318FF" FontSize="14" FontWeight="SemiBold"/>
-                                </Grid>
-
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="90"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="Số lượng tồn:" Foreground="#A3AED0" FontSize="14"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding SoLuongTon, StringFormat='{}{0} quyển'}" Foreground="#05CD99" FontSize="14" FontWeight="SemiBold"/>
-                                </Grid>
-
-                                <Border Background="#F4F7FE" CornerRadius="12" Padding="16,12" Margin="0,12,0,0">
-                                    <StackPanel>
-                                        <TextBlock Text="Giá bán hiện tại:" Foreground="#A3AED0" FontSize="12"/>
-                                        <TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} VNĐ'}" FontSize="24" FontWeight="Black" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </Grid>
-
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Style="{StaticResource MaterialDesignOutlinedButton}" 
-                                    Content="Đóng lại" 
-                                    Width="120" Margin="0,0,12,0"
-                                    BorderBrush="#A3AED0" Foreground="#707EAE"
-                                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
-
-                            <Button Style="{StaticResource MaterialDesignFlatMidBgButton}" 
-                                    Content="Thêm vào giỏ" 
-                                    Width="150" Background="#4318FF" BorderBrush="Transparent"
-                                    Command="{Binding DataContext.ThemVaoGioHangTuPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    CommandParameter="{Binding}">
-                                <Button.ContentTemplate>
+                <ContentControl Content="{Binding}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="CartPlus" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{Binding}" VerticalAlignment="Center" FontWeight="Bold"/>
-                                        </StackPanel>
+                                        <Border Width="550" Padding="24" Background="White" CornerRadius="16">
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,16">
+                                                    <TextBlock Text="CHI TIẾT SẢN PHẨM" FontSize="18" FontWeight="Bold" Foreground="#2B3674"/>
+                                                    <Button HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Gray" 
+                                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                                                        <materialDesign:PackIcon Kind="Close"/>
+                                                    </Button>
+                                                </Grid>
+
+                                                <Border CornerRadius="8" ClipToBounds="True" HorizontalAlignment="Center" Margin="0,0,0,16" Background="#F4F7FE" Width="160" Height="200">
+                                                    <Image Source="{Binding SachDuocChonXemChiTiet.HinhAnh}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border>
+
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Tên sách:" Foreground="#A3AED0"/>
+                                                    <TextBlock Text="{Binding SachDuocChonXemChiTiet.TenSach}" HorizontalAlignment="Right" FontWeight="Bold" Foreground="#2B3674"/>
+                                                </Grid>
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Mã ISBN:" Foreground="#A3AED0"/>
+                                                    <TextBlock Text="{Binding SachDuocChonXemChiTiet.ISBN}" HorizontalAlignment="Right" Foreground="#2B3674"/>
+                                                </Grid>
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Thể loại:" Foreground="#A3AED0"/>
+                                                    <TextBlock Text="{Binding SachDuocChonXemChiTiet.TheLoai}" HorizontalAlignment="Right" Foreground="#2B3674"/>
+                                                </Grid>
+                                                <Grid Margin="0,0,0,16">
+                                                    <TextBlock Text="Giá bán:" Foreground="#A3AED0"/>
+                                                    <TextBlock Text="{Binding SachDuocChonXemChiTiet.DonGiaBan, StringFormat='{}{0:N0} đ'}" HorizontalAlignment="Right" Foreground="#EF4444" FontWeight="Bold"/>
+                                                </Grid>
+
+                                                <Button Content="Thêm vào giỏ hàng" Style="{StaticResource MaterialDesignRaisedButton}" Background="#4318FF" 
+                                                        Command="{Binding ThemVaoGioHangTuPopupCommand}" 
+                                                        CommandParameter="{Binding SachDuocChonXemChiTiet}"/>
+                                            </StackPanel>
+                                        </Border>
                                     </DataTemplate>
-                                </Button.ContentTemplate>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfirmingOrder}" Value="True">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <Border Width="600" Padding="28" Background="White" CornerRadius="20" Effect="{StaticResource CardShadowEffect}">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="*"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <Border Grid.Row="0" Margin="0,0,0,16" BorderBrush="#F4F7FE" BorderThickness="0,0,0,1">
+                                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                                                <materialDesign:PackIcon Kind="PlaylistCheck" Width="24" Height="24" Foreground="#4318FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                                <TextBlock Text="Xác Nhận Đơn Hàng &amp; Thanh Toán" FontSize="18" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <StackPanel Grid.Row="1" Margin="0,0,0,16">
+                                                            <Grid Margin="0,0,0,6">
+                                                                <TextBlock Text="Khách hàng:" Foreground="#A3AED0" FontSize="13"/>
+                                                                <TextBlock Text="{Binding TenKhachHang}" HorizontalAlignment="Right" FontWeight="SemiBold" Foreground="#2B3674" FontSize="13"/>
+                                                            </Grid>
+                                                            <Grid Margin="0,0,0,12">
+                                                                <TextBlock Text="Số điện thoại:" Foreground="#A3AED0" FontSize="13"/>
+                                                                <TextBlock Text="{Binding SdtKhachHang}" HorizontalAlignment="Right" Foreground="#2B3674" FontSize="13"/>
+                                                            </Grid>
+
+                                                            <TextBlock Text="Danh sách sản phẩm mua:" Foreground="#2B3674" FontWeight="Bold" Margin="0,4,0,6" FontSize="13"/>
+
+                                                            <Border Background="#F4F7FE" CornerRadius="8" Padding="12" MaxHeight="150">
+                                                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                                    <ItemsControl ItemsSource="{Binding DanhSachGioHang}">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Grid Margin="0,4">
+                                                                                    <TextBlock Text="{Binding TenSach}" Foreground="#2B3674" FontWeight="Medium" Width="300" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"/>
+                                                                                    <TextBlock Text="{Binding SoLuongMua, StringFormat='x{0}'}" Foreground="#A3AED0" HorizontalAlignment="Right" Margin="0,0,100,0"/>
+                                                                                    <TextBlock Text="{Binding ThanhTien, StringFormat='{}{0:N0} đ'}" Foreground="#4318FF" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                                                </Grid>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </ScrollViewer>
+                                                            </Border>
+                                                        </StackPanel>
+
+                                                        <Border Grid.Row="2" Background="#FFF9DB" CornerRadius="12" Padding="16" Margin="0,0,0,24" BorderBrush="#FFE066" BorderThickness="1">
+                                                            <StackPanel>
+                                                                <TextBlock Text="CHỌN PHƯƠNG THỨC THANH TOÁN:" FontSize="13" FontWeight="Bold" Foreground="#F59E0B" Margin="0,0,0,10"/>
+                                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                                    <RadioButton Content="Tiền mặt" IsChecked="{Binding IsThanhToanTienMat}" Margin="0,0,32,0" FontSize="14" FontWeight="SemiBold" Foreground="#2B3674"/>
+                                                                    <RadioButton Content="Chuyển khoản (Ví / Thẻ)" IsChecked="{Binding IsThanhToanChuyenKhoan}" FontSize="14" FontWeight="SemiBold" Foreground="#2B3674"/>
+                                                                </StackPanel>
+
+                                                                <Border Margin="0,16,0,0" BorderBrush="#FFE066" BorderThickness="0,1,0,0" Padding="0,10,0,0">
+                                                                    <Grid>
+                                                                        <TextBlock Text="TỔNG TIỀN PHẢI THU:" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Foreground="#2B3674"/>
+                                                                        <TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}" HorizontalAlignment="Right" FontSize="22" FontWeight="Black" Foreground="#EF4444"/>
+                                                                    </Grid>
+                                                                </Border>
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                            <Button Content="HỦY BỎ" Style="{StaticResource MaterialDesignOutlinedButton}" Width="120" Height="40" Margin="0,0,12,0" Foreground="#707EAE" BorderBrush="#E2E8F0"
+                                                                    Command="{Binding HuyBoGiaoDichCommand}"/>
+                                                            <Button Content="XÁC NHẬN TẠO ĐƠN" Style="{StaticResource MaterialDesignRaisedButton}" Width="180" Height="40" Background="#05CD99" BorderThickness="0" Foreground="White" FontWeight="Bold"
+                                                                    Command="{Binding XacNhanTaoDonCommand}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
             </materialDesign:DialogHost.DialogContent>
 
             <Grid>
                 <Ellipse Width="600" Height="600" Fill="#4318FF" Opacity="0.03" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-200,-200,0,0"/>
                 <Ellipse Width="500" Height="500" Fill="#2B3674" Opacity="0.03" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,-150,-150"/>
 
-                <Grid Margin="16">
+                <Grid Margin="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="90"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Margin="0,0,0,16" Padding="24,16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                    <Border Grid.Row="0" Margin="0,0,0,12" Padding="24,16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
                         <Grid>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <materialDesign:PackIcon Kind="Shopping" Width="32" Height="32" Foreground="#4318FF" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="THÔNG TIN BÁN HÀNG" FontSize="26" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
+                                <TextBlock Text="THÔNG TIN BÁN HÀNG" FontSize="24" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Grid>
                     </Border>
 
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1050"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="3.5*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Column="0" Margin="0,0,16,0">
+                        <Grid Grid.Column="0" Margin="0,0,12,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Border Grid.Row="0" Margin="0,0,0,16" Padding="20,16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                            <Border Grid.Row="0" Margin="0,0,0,12" Padding="16,12" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid Grid.Column="0" Margin="0,0,16,0">
+                                    <Grid Grid.Column="0" Margin="0,0,12,0">
                                         <TextBox x:Name="txtTimKiem"
                                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                                  materialDesign:HintAssist.Hint="Tìm kiếm sách..."
@@ -185,30 +225,30 @@
                                     </Grid>
 
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                        <ComboBox x:Name="cboKieuTimKiem" Width="130" Height="48"
-                                                 materialDesign:HintAssist.Hint="Tìm theo"
-                                                 Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                                 FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
-                                                 SelectedItem="{Binding KieuTimKiemSach}">
+                                        <ComboBox x:Name="cboKieuTimKiem" Width="115" Height="44"
+                                                  materialDesign:HintAssist.Hint="Tìm theo"
+                                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                                  FontSize="13" Foreground="#2B3674" Margin="0,0,8,0"
+                                                  SelectedItem="{Binding KieuTimKiemSach}">
                                             <ComboBoxItem Content="Tên sách" IsSelected="True"/>
                                             <ComboBoxItem Content="Mã ISBN"/>
                                             <ComboBoxItem Content="Tác giả"/>
                                         </ComboBox>
 
-                                        <ComboBox Width="140" Height="48"
-                                                 materialDesign:HintAssist.Hint="Thể loại sách"
-                                                 Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                                 FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
-                                                 ItemsSource="{Binding DanhSachTheLoai}"
-                                                 SelectedItem="{Binding TheLoaiDuocChon, Mode=TwoWay}"
-                                                 DisplayMemberPath="TenTheLoai">
+                                        <ComboBox Width="125" Height="44"
+                                                  materialDesign:HintAssist.Hint="Thể loại sách"
+                                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                                  FontSize="13" Foreground="#2B3674" Margin="0,0,8,0"
+                                                  ItemsSource="{Binding DanhSachTheLoai}"
+                                                  SelectedItem="{Binding TheLoaiDuocChon, Mode=TwoWay}"
+                                                  DisplayMemberPath="TenTheLoai">
                                         </ComboBox>
 
-                                        <ComboBox x:Name="cboLocGia" Width="130" Height="48"
-                                                 materialDesign:HintAssist.Hint="Khoảng giá"
-                                                 Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                                 FontSize="13" Foreground="#2B3674" Margin="0,0,12,0"
-                                                 SelectedItem="{Binding LocGiaSach}">
+                                        <ComboBox x:Name="cboLocGia" Width="120" Height="44"
+                                                  materialDesign:HintAssist.Hint="Khoảng giá"
+                                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                                  FontSize="13" Foreground="#2B3674" Margin="0,0,8,0"
+                                                  SelectedItem="{Binding LocGiaSach}">
                                             <ComboBoxItem Content="Tất cả" IsSelected="True"/>
                                             <ComboBoxItem Content="Dưới 50.000 đ"/>
                                             <ComboBoxItem Content="50.000 - 150.000 đ"/>
@@ -216,96 +256,88 @@
                                             <ComboBoxItem Content="Trên 300.000 đ"/>
                                         </ComboBox>
 
-                                        <Border Background="#F4F7FE" CornerRadius="10" Padding="12,10" Margin="4,0,4,0">
+                                        <Border Background="#F4F7FE" CornerRadius="10" Padding="10,4" Margin="4,0,4,0" VerticalAlignment="Center" Height="36">
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <TextBlock Text="Tổng:" Foreground="#A3AED0" FontSize="12" Margin="0,0,6,0"/>
-                                                <TextBlock x:Name="txtTongBanGhi" Text="{Binding TongSoSach}" FontWeight="Bold" FontSize="14" Foreground="#4318FF"/>
+                                                <TextBlock Text="Tổng:" Foreground="#A3AED0" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="txtTongBanGhi" Text="{Binding TongSoSach}" FontWeight="Bold" FontSize="14" Foreground="#4318FF" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Border>
 
-                                        <Button x:Name="btnXoaLoc" Width="42" Height="42"
-                                                 Style="{StaticResource MaterialDesignIconForegroundButton}"
-                                                 Foreground="#EF4444" ToolTip="Xóa bộ lọc"
-                                                 Command="{Binding XoaLocSachCommand}" VerticalAlignment="Center">
-                                            <materialDesign:PackIcon Kind="FilterRemove" Width="22" Height="22"/>
+                                        <Button Command="{Binding DataContext.XoaBoLocCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                ToolTip="Xóa tất cả bộ lọc"
+                                                Style="{StaticResource MaterialDesignIconButton}" 
+                                                Width="36" Height="36"
+                                                IsEnabled="True"
+                                                Foreground="#EF4444">
+                                            <materialDesign:PackIcon Kind="FilterRemove" Width="20" Height="20" />
                                         </Button>
                                     </StackPanel>
                                 </Grid>
                             </Border>
 
-                            <Border Grid.Row="1" Margin="0,0,0,16" Padding="20" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Border Grid.Row="1" Margin="0,0,0,12" Padding="12" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                     <ItemsControl ItemsSource="{Binding DanhSachSachHienThi}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <UniformGrid Columns="3" VerticalAlignment="Top"/>
+                                                <UniformGrid Columns="3" VerticalAlignment="Top" />
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
 
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Button Padding="0" Margin="8" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource MaterialDesignFlatButton}"
-                                                        Command="{Binding DataContext.XemChiTietSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                        CommandParameter="{Binding}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                                <Border Margin="6" Background="White" CornerRadius="12" BorderThickness="1" BorderBrush="#F1F5F9"
+                                                        Effect="{StaticResource MaterialDesignElevationShadow1}">
+                                                    <Grid Width="173" Height="Auto">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
 
-                                                    <Border Padding="12" CornerRadius="12" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" HorizontalAlignment="Stretch">
-                                                        <Grid>
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="140"/>
-                                                                <RowDefinition Height="Auto"/>
-                                                                <RowDefinition Height="Auto"/>
-                                                            </Grid.RowDefinitions>
+                                                        <Grid Grid.Row="0" Cursor="Hand">
+                                                            <Grid.InputBindings>
+                                                                <MouseBinding MouseAction="LeftClick" 
+                                                                              Command="{Binding DataContext.XemChiTietSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                              CommandParameter="{Binding}" />
+                                                            </Grid.InputBindings>
 
-                                                            <Grid Grid.Row="0" Margin="0,0,0,10">
-                                                                <Border CornerRadius="8" ClipToBounds="True" Background="#E2E8F0">
-                                                                    <Image Source="{Binding HinhAnh}" Stretch="UniformToFill" 
-                                                                           RenderOptions.BitmapScalingMode="HighQuality"/>
-                                                                </Border>
-                                                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                                          Style="{StaticResource MaterialDesignSecondaryCheckBox}"
-                                                                          HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6">
-                                                                    <CheckBox.Resources>
-                                                                        <Style TargetType="Border">
-                                                                            <Setter Property="CornerRadius" Value="100"/>
-                                                                        </Style>
-                                                                    </CheckBox.Resources>
-                                                                </CheckBox>
-                                                            </Grid>
+                                                            <Border CornerRadius="12,12,0,0" ClipToBounds="True">
+                                                                <Image Source="{Binding HinhAnh}" Height="140" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                            </Border>
+                                                        </Grid>
 
-                                                            <StackPanel Grid.Row="1" Margin="0,0,0,8">
-                                                                <TextBlock Text="{Binding TenSach}" FontSize="15" FontWeight="Bold" Foreground="#2B3674" 
-                                                                           TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="44" HorizontalAlignment="Left"/>
-                                                                <Border Background="#4318FF" Opacity="0.08" Height="1" Margin="0,6,0,6"/>
-                                                                <Grid>
-                                                                    <TextBlock Text="{Binding TenTheLoai}" FontSize="11" FontWeight="SemiBold" Foreground="#4318FF"/>
-                                                                    <TextBlock Text="{Binding Isbn}" FontSize="11" Foreground="#A3AED0" HorizontalAlignment="Right"/>
-                                                                </Grid>
+                                                        <Grid Grid.Row="1" Margin="8,8,8,8">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <StackPanel Grid.Column="0" Cursor="Hand">
+                                                                <StackPanel.InputBindings>
+                                                                    <MouseBinding MouseAction="LeftClick" 
+                                                                                  Command="{Binding DataContext.XemChiTietSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                                  CommandParameter="{Binding}" />
+                                                                </StackPanel.InputBindings>
+
+                                                                <TextBlock Text="{Binding TenSach}" TextWrapping="Wrap" FontSize="13" MaxHeight="38" 
+                                                                           TextTrimming="CharacterEllipsis" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,4"/>
+                                                                <TextBlock Text="{Binding DonGiaBan, StringFormat='{}{0:N0} đồng'}" FontWeight="SemiBold" FontSize="14" Foreground="#EF4444"/>
                                                             </StackPanel>
 
-                                                            <Grid Grid.Row="2" Margin="0,4,0,0">
-                                                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                    <TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}" FontSize="16" FontWeight="Heavy" Foreground="#2B3674"/>
-                                                                    <TextBlock Text="{Binding SoLuongTon, StringFormat='Kho: {0}'}" FontSize="11" Foreground="#05CD99" FontWeight="Medium"/>
-                                                                </StackPanel>
-
-                                                                <Button HorizontalAlignment="Right" Width="36" Height="36" Padding="0"
-                                                                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                                                        Background="#2B3674" BorderBrush="Transparent" Foreground="White"
-                                                                        Command="{Binding DataContext.ThemVaoGioHangCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                        CommandParameter="{Binding}">
-                                                                    <materialDesign:PackIcon Kind="Plus" Width="18" Height="18"/>
-                                                                </Button>
-                                                            </Grid>
+                                                            <CheckBox Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0"
+                                                                      IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                      Command="{Binding DataContext.ChonSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                      CommandParameter="{Binding}"/>
                                                         </Grid>
-                                                    </Border>
-                                                </Button>
+                                                    </Grid>
+                                                </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </ScrollViewer>
                             </Border>
 
-                            <Border Grid.Row="2" Padding="12,8" CornerRadius="12" Background="White" Effect="{StaticResource CardShadowEffect}">
+                            <Border Grid.Row="2" Padding="12,6" CornerRadius="12" Background="White" Effect="{StaticResource CardShadowEffect}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" Margin="0,0,4,0">
                                         <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
@@ -347,18 +379,14 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <Border Grid.Row="0" Margin="0,0,0,16" Padding="20" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                            <Border Grid.Row="0" Margin="0,0,0,12" Padding="16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="302*"/>
-                                        <ColumnDefinition Width="177*"/>
-                                    </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16" Grid.ColumnSpan="2">
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                                         <materialDesign:PackIcon Kind="ShoppingCartOutline" Width="22" Height="22" Foreground="#4318FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Giỏ Hàng Hiện Tại" FontSize="16" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                                         <Border Background="#F4F7FE" CornerRadius="8" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
@@ -366,40 +394,40 @@
                                         </Border>
                                     </StackPanel>
 
-                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2">
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                         <ItemsControl ItemsSource="{Binding DanhSachGioHang}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Border Margin="0,0,0,12" Padding="10" Background="#F8FAFC" CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
+                                                    <Border Margin="0,0,0,8" Padding="10" Background="#F8FAFC" CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto"/>
                                                                 <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
                                                                 <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
 
-                                                            <StackPanel Grid.Column="0" Width="180" VerticalAlignment="Center">
+                                                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,4,0">
                                                                 <TextBlock Text="{Binding TenSach}" FontSize="13" FontWeight="Bold" Foreground="#2B3674" TextTrimming="CharacterEllipsis"/>
                                                                 <TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}" FontSize="12" Foreground="#A3AED0" Margin="0,2,0,0"/>
                                                             </StackPanel>
 
-                                                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <Button Width="26" Height="26" Padding="0" Style="{StaticResource MaterialDesignOutlinedButton}" BorderBrush="#CBD5E1" ToolTip="Giảm số lượng"
+                                                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0">
+                                                                <Button Width="24" Height="24" Padding="0" Style="{StaticResource MaterialDesignOutlinedButton}" BorderBrush="#CBD5E1" ToolTip="Giảm số lượng"
                                                                         Command="{Binding DataContext.GiamSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
                                                                     <materialDesign:PackIcon Kind="Minus" Width="12" Height="12" Foreground="#707EAE"/>
                                                                 </Button>
 
-                                                                <TextBlock Text="{Binding SoLuongMua}" FontSize="14" FontWeight="Bold" Foreground="#2B3674" Width="30" TextAlignment="Center" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="{Binding SoLuongMua}" FontSize="13" FontWeight="Bold" Foreground="#2B3674" Width="26" TextAlignment="Center" VerticalAlignment="Center"/>
 
-                                                                <Button Width="26" Height="26" Padding="0" Style="{StaticResource MaterialDesignOutlinedButton}" BorderBrush="#CBD5E1" ToolTip="Tăng số lượng"
+                                                                <Button Width="24" Height="24" Padding="0" Style="{StaticResource MaterialDesignOutlinedButton}" BorderBrush="#CBD5E1" ToolTip="Tăng số lượng"
                                                                         Command="{Binding DataContext.TangSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
                                                                     <materialDesign:PackIcon Kind="Plus" Width="12" Height="12" Foreground="#707EAE"/>
                                                                 </Button>
                                                             </StackPanel>
 
-                                                            <Button Grid.Column="2" Width="32" Height="32" Padding="0" Style="{StaticResource MaterialDesignIconForegroundButton}" Foreground="#EF4444"
+                                                            <Button Grid.Column="2" Width="28" Height="28" Padding="0" Style="{StaticResource MaterialDesignIconForegroundButton}" Foreground="#EF4444"
                                                                     Command="{Binding DataContext.XoaKhoiGioHangCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
-                                                                <materialDesign:PackIcon Kind="DeleteOutline" Width="18" Height="18"/>
+                                                                <materialDesign:PackIcon Kind="DeleteOutline" Width="16" Height="16"/>
                                                             </Button>
                                                         </Grid>
                                                     </Border>
@@ -410,56 +438,77 @@
                                 </Grid>
                             </Border>
 
-                            <Border Grid.Row="1" Padding="20" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+                            <Border Grid.Row="1" Padding="16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
                                 <StackPanel>
-                                    <TextBlock Text="Thông tin hóa đơn" FontSize="15" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,12"/>
+                                    <TextBlock Text="Thông tin hóa đơn" FontSize="15" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,10"/>
 
-                                    <Grid Margin="0,0,0,10">
-                                        <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                                 materialDesign:HintAssist.Hint="Số điện thoại khách hàng"
-                                                 Text="{Binding SdtKhachHang, UpdateSourceTrigger=PropertyChanged}"
-                                                 FontSize="13" Foreground="#2B3674"/>
-                                        <materialDesign:PackIcon Kind="Phone" Width="18" Height="18" Foreground="#A3AED0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    </Grid>
+                                    <CheckBox x:Name="chkKhachVangLai" 
+                                              Content="Khách vãng lai" 
+                                              IsChecked="{Binding IsKhachVangLai, Mode=TwoWay}"
+                                              FontSize="13" FontWeight="Medium" Foreground="#2B3674"
+                                              Margin="0,0,0,10" 
+                                              Style="{StaticResource MaterialDesignCheckBox}"/>
 
-                                    <Grid Margin="0,0,0,16">
-                                        <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                                 materialDesign:HintAssist.Hint="Tên khách hàng"
-                                                 Text="{Binding TenKhachHang}" IsEnabled="False"
-                                                 FontSize="13" Foreground="#2B3674"/>
-                                        <materialDesign:PackIcon Kind="Account" Width="18" Height="18" Foreground="#A3AED0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    </Grid>
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=chkKhachVangLai, Path=IsChecked}" Value="True">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Opacity" Value="0.5"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
 
-                                    <Separator Background="#F4F7FE" Margin="0,0,0,12"/>
+                                        <Grid Margin="0,0,0,8">
+                                            <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                                     materialDesign:HintAssist.Hint="Số điện thoại khách hàng"
+                                                     Text="{Binding SdtKhachHang, UpdateSourceTrigger=PropertyChanged}"
+                                                     Padding="0,4,25,4" 
+                                                     FontSize="13" Foreground="#2B3674"/>
+                                            <materialDesign:PackIcon Kind="Phone" Width="18" Height="18" Foreground="#A3AED0" 
+                                                                     HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0"
+                                                                     IsHitTestVisible="False"/>
+                                        </Grid>
 
-                                    <Grid Margin="0,0,0,8">
+                                        <Grid Margin="0,0,0,12">
+                                            <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                                     materialDesign:HintAssist.Hint="Tên khách hàng"
+                                                     Text="{Binding TenKhachHang}" IsEnabled="False"
+                                                     Padding="0,4,25,4"
+                                                     FontSize="13" Foreground="#2B3674"/>
+                                            <materialDesign:PackIcon Kind="Account" Width="18" Height="18" Foreground="#A3AED0" 
+                                                                     HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0"
+                                                                     IsHitTestVisible="False"/>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <Separator Background="#F4F7FE" Margin="0,0,0,10"/>
+
+                                    <Grid Margin="0,0,0,6">
                                         <TextBlock Text="Tạm tính:" Foreground="#A3AED0" FontSize="13"/>
                                         <TextBlock Text="{Binding TamTinh, StringFormat='{}{0:N0} đ'}" HorizontalAlignment="Right" Foreground="#2B3674" FontSize="13" FontWeight="SemiBold"/>
                                     </Grid>
 
-                                    <Grid Margin="0,0,0,8">
+                                    <Grid Margin="0,0,0,6">
                                         <TextBlock Text="Giảm giá (%):" Foreground="#A3AED0" FontSize="13" VerticalAlignment="Center"/>
                                         <TextBox Width="50" HorizontalAlignment="Right" TextAlignment="Right"
                                                  Text="{Binding PhanTramGiam, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0}'}" 
                                                  FontSize="13" Foreground="#EF4444" FontWeight="Bold" Margin="0,0,0,-4"/>
                                     </Grid>
 
-                                    <Grid Margin="0,0,0,16">
-                                        <TextBlock Text="Tổng thanh toán:" Foreground="#2B3674" FontSize="14" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}" HorizontalAlignment="Right" Foreground="#4318FF" FontSize="20" FontWeight="Black"/>
+                                    <Grid Margin="0,0,0,12">
+                                        <TextBlock Text="Tổng thanh toán:" Foreground="#2B3674" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}" HorizontalAlignment="Right" Foreground="#4318FF" FontSize="18" FontWeight="Black"/>
                                     </Grid>
 
-                                    <Border Background="#2196F3" CornerRadius="5">
-                                        <Button Content="Thanh toán" 
-            Background="Transparent" 
-            BorderThickness="0" 
-            Foreground="White"
-            Padding="10,5"/>
+                                    <Border Background="#2196F3" CornerRadius="6" IsEnabled="True" Opacity="1.0">
+                                        <Button Content="Thanh toán" Background="Transparent" BorderThickness="0" Foreground="White" Padding="10,6" Command="{Binding DataContext.MoPopupThanhToanCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"/>
                                     </Border>
                                 </StackPanel>
                             </Border>
                         </Grid>
-
                     </Grid>
                 </Grid>
             </Grid>
