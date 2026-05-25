@@ -18,7 +18,7 @@
         public string? CategoryName { get; set; }
 
         /// <summary>Lọc theo tên khách hàng (cho báo cáo Công nợ). Null = tất cả.</summary>
-        public string? CustomerName { get; set; }
+        public string? CustomerType { get; set; }
     }
 
     // ================================================================
@@ -117,6 +117,7 @@
     public class DebtReportRowDto
     {
         public string CustomerName { get; set; } = string.Empty;
+        public string CustomerType { get; set; } = string.Empty;
 
         /// <summary>Nợ đầu kỳ (trước FromDate)</summary>
         public decimal OpeningDebt { get; set; }

@@ -1,22 +1,32 @@
 ﻿<UserControl x:Class="Bookstore.WPF.Views.AccountView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Background="#F4F7FE">
+             mc:Ignorable="d"
+             Background="#F4F7FE"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
 
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <SolidColorBrush x:Key="PrimaryDarkColor" Color="#2B3674"/>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#4318FF"/>
+        <SolidColorBrush x:Key="TextLightColor" Color="#A3AED0"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#F4F7FE"/>
 
         <LinearGradientBrush x:Key="GradientButtonBrush" StartPoint="0,0" EndPoint="1,0">
             <GradientStop Color="#4318FF" Offset="0"/>
             <GradientStop Color="#5B3CFF" Offset="1"/>
         </LinearGradientBrush>
 
-        <!-- MAIN BUTTON -->
         <Style x:Key="MainGradientButton" TargetType="Button">
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -28,12 +38,30 @@
             </Setter>
         </Style>
 
-        <!-- ICON BUTTON -->
-        <Style x:Key="IconButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="32"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="BorderThickness" Value="0"/>
+        <Style x:Key="OutlineButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#4318FF"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" BorderBrush="#4318FF" BorderThickness="1.5" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PaginationButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#2B3674"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -43,734 +71,630 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F4F7FE"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
+        <Style x:Key="FilterBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="42"/>
+        </Style>
+
+        <Style x:Key="PermissionCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#2B3674"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
     </UserControl.Resources>
 
-    <Grid Background="#F4F7FE">
+    <Grid Background="{StaticResource BackgroundColor}">
+        <Ellipse Width="400" Height="400" Fill="#4318FF" Opacity="0.03" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-150,-150,0,0" IsHitTestVisible="False"/>
+        <Ellipse Width="300" Height="300" Fill="#2B3674" Opacity="0.03" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,-100,-100" IsHitTestVisible="False"/>
 
-        <!-- BACKGROUND DECORATIONS -->
-        <Ellipse Width="400" Height="400" Fill="#4318FF" Opacity="0.03"
-                 VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-150,-150,0,0"/>
-        <Ellipse Width="300" Height="300" Fill="#2B3674" Opacity="0.03"
-                 VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,-100,-100"/>
-
-        <!-- MAIN LAYOUT -->
         <Grid Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="90"/>
-                <RowDefinition Height="330"/>
                 <RowDefinition Height="90"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- ==================== HEADER ==================== -->
-            <Border Grid.Row="0" Margin="0,0,0,12" Padding="20"
-                    CornerRadius="16" Background="White"
-                    BorderBrush="#E2E8F0" BorderThickness="1">
+            <Border Grid.Row="0" Margin="0,0,0,12" Padding="20" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="AccountGroup" Width="28" Height="28"
-                                                 Foreground="#4318FF" Margin="0,0,10,0"/>
-                        <TextBlock Text="QUẢN LÝ TÀI KHOẢN" FontSize="24"
-                                   FontWeight="Bold" Foreground="#2B3674"/>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ShieldAccount" Width="28" Height="28" Foreground="#4318FF" Margin="0,0,10,0"/>
+                        <TextBlock Text="TÀI KHOẢN &amp; PHÂN QUYỀN" FontSize="24" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                     </StackPanel>
 
-                    <Button Grid.Column="1" Width="190" Height="30"
-                            Style="{StaticResource MainGradientButton}">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Plus" Width="16" Height="16"
-                                                     Margin="0,0,6,0" Foreground="White"/>
-                            <TextBlock Text="THÊM TÀI KHOẢN"/>
-                        </StackPanel>
-                    </Button>
-                </Grid>
-            </Border>
-
-            <!-- ==================== PROFILE ==================== -->
-            <Border Grid.Row="1" Margin="0,0,0,10" Padding="24"
-                    CornerRadius="20" Background="White"
-                    BorderBrush="#E2E8F0" BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- LEFT: Avatar + Name + Role + Password button -->
-                    <StackPanel Grid.Column="0">
-                        <Border Width="110" Height="110" CornerRadius="55"
-                                Background="#EEF2FF" HorizontalAlignment="Center">
-                            <materialDesign:PackIcon Kind="AccountCircle" Width="60" Height="60"
-                                                     Foreground="#4318FF"
-                                                     HorizontalAlignment="Center"
-                                                     VerticalAlignment="Center"/>
-                        </Border>
-
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
-                            <TextBlock Text="{Binding CurrentUser.HoTen}" FontSize="28"
-                                       FontWeight="Bold" Foreground="#2B3674"/>
-                            <Button Margin="10,0,0,0" Background="#E0E7FF"
-                                    Style="{StaticResource IconButtonStyle}">
-                                <materialDesign:PackIcon Kind="Pencil" Width="14" Height="14" Foreground="#4318FF"/>
-                            </Button>
-                        </StackPanel>
-
-                        <Border Background="#DCFCE7" CornerRadius="10" Padding="14,6"
-                                Margin="0,14,0,0" HorizontalAlignment="Center">
-                            <TextBlock Text="{Binding CurrentUser.ChucVu}"
-                                       Foreground="#15803D" FontWeight="SemiBold"/>
-                        </Border>
-
-                        <Button Margin="0,18,0,0" Height="34" Width="180"
-                                HorizontalAlignment="Center"
-                                Style="{StaticResource MainGradientButton}">
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Style="{StaticResource OutlineButtonStyle}" 
+                                Command="{Binding OpenAddRolePopupCommand}" CommandParameter="{Binding}"
+                                Width="150" Margin="0,0,10,0">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="LockReset" Width="14" Height="14"
-                                                         Margin="0,0,5,0" Foreground="White"/>
-                                <TextBlock Text="ĐỔI MẬT KHẨU" FontSize="12"/>
+                                <materialDesign:PackIcon Kind="AccountGroup" Width="16" Height="16" Foreground="#4318FF" Margin="0,0,6,0"/>
+                                <TextBlock Text="THÊM NHÓM"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource MainGradientButton}" 
+                                Command="{Binding OpenAddAccountPopupCommand}" CommandParameter="{Binding}"
+                                Width="160">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AccountPlus" Width="16" Height="16" Foreground="White" Margin="0,0,6,0"/>
+                                <TextBlock Text="THÊM TÀI KHOẢN"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
-
-                    <!-- RIGHT: Info fields -->
-                    <ScrollViewer Grid.Column="2"
-                                  VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="0,0,8,0">
-
-                            <!-- Reusable field template (Họ tên / Giới tính / SĐT / Email / Username / Mật khẩu / Chức vụ) -->
-
-                            <!-- HỌ VÀ TÊN -->
-                            <Border Height="58" Margin="0,0,0,12" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#06B6D4" CornerRadius="3"/>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Họ và tên" FontSize="11" Foreground="#A3AED0"/>
-                                        <TextBlock Text="{Binding CurrentUser.HoTen}" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- GIỚI TÍNH -->
-                            <Border Height="58" Margin="0,0,0,12" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#EC4899" CornerRadius="3"/>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Giới tính" FontSize="11" Foreground="#A3AED0"/>
-                                        <TextBlock Text="{Binding CurrentUser.GioiTinh}" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- SỐ ĐIỆN THOẠI -->
-                            <Border Height="58" Margin="0,0,0,12" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#8B5CF6" CornerRadius="3"/>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Số điện thoại" FontSize="11" Foreground="#A3AED0"/>
-                                        <TextBlock Text="{Binding CurrentUser.SoDienThoai}" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- EMAIL -->
-                            <Border Height="58" Margin="0,0,0,12" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#EF4444" CornerRadius="3"/>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Gmail" FontSize="11" Foreground="#A3AED0"/>
-                                        <TextBlock Text="{Binding CurrentUser.Email}" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- TÊN ĐĂNG NHẬP -->
-                            <Border Height="58" Margin="0,0,0,12" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#10B981" CornerRadius="3"/>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Tên đăng nhập" FontSize="11" Foreground="#A3AED0"/>
-                                        <TextBlock Text="{Binding CurrentUser.TenDangNhap}" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- MẬT KHẨU -->
-                            <Border Height="58" Margin="0,0,0,12" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#F59E0B" CornerRadius="3"/>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Mật khẩu" FontSize="11" Foreground="#A3AED0"/>
-                                        <TextBlock Text="••••••••" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- CHỨC VỤ -->
-                            <Border Height="58" Margin="0,0,0,12" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#14B8A6" CornerRadius="3"/>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Chức vụ" FontSize="11" Foreground="#A3AED0"/>
-                                        <TextBlock Text="{Binding CurrentUser.ChucVu}" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#2B3674"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                        </StackPanel>
-                    </ScrollViewer>
-
                 </Grid>
             </Border>
 
-            <!-- ==================== SEARCH ==================== -->
-            <Border Grid.Row="2" Margin="0,0,0,12" Padding="20"
-                    CornerRadius="16" Background="White"
-                    BorderBrush="#E2E8F0" BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="15"/>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="15"/>
-                        <ColumnDefinition Width="150"/>
-                    </Grid.ColumnDefinitions>
+            <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Foreground" Value="#A3AED0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,3"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Padding" Value="15,10"/>
+                        <Setter Property="Margin" Value="0,0,20,0"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="#4318FF"/>
+                                <Setter Property="BorderBrush" Value="#4318FF"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TabControl.Resources>
 
-                    <!-- SEARCH BOX -->
-                    <Border Grid.Column="0" Background="#F8FAFC"
-                            CornerRadius="10" BorderBrush="#E2E8F0" BorderThickness="1">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <materialDesign:PackIcon Kind="Magnify" Width="18" Height="18"
-                                                     Margin="12,0,6,0" Foreground="#A3AED0"
-                                                     VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" BorderThickness="0" Background="Transparent"
-                                     FontSize="13" Text="{Binding SearchKeyword}"
-                                     VerticalAlignment="Center"/>
-                        </Grid>
-                    </Border>
+                <TabItem Header="DANH SÁCH TÀI KHOẢN">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- TÌM THEO -->
-                    <ComboBox Grid.Column="2" Height="42" FontSize="13" FontWeight="SemiBold"
-                              Foreground="#2B3674" BorderBrush="#E2E8F0" BorderThickness="1"
-                              Background="White" materialDesign:HintAssist.Hint="Tìm theo">
-                        <ComboBoxItem>
-                            <Border Background="#E0E7FF" CornerRadius="8" Padding="10,4">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="8" Height="8" Fill="#4318FF" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Tên đăng nhập" Foreground="#4318FF"/>
-                                </StackPanel>
-                            </Border>
-                        </ComboBoxItem>
-                        <ComboBoxItem>
-                            <Border Background="#CFFAFE" CornerRadius="8" Padding="10,4">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="8" Height="8" Fill="#0891B2" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Họ tên" Foreground="#0891B2"/>
-                                </StackPanel>
-                            </Border>
-                        </ComboBoxItem>
-                    </ComboBox>
+                        <Border Grid.Row="0" Margin="0,10,0,12" Padding="20" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300"/>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                    <!-- NHÓM QUYỀN FILTER -->
-                    <ComboBox Grid.Column="4" Height="42" FontSize="13" FontWeight="SemiBold"
-                              SelectedItem="{Binding SelectedRole}"
-                              BorderBrush="#E2E8F0" BorderThickness="1" Background="White"
-                              materialDesign:HintAssist.Hint="Nhóm quyền">
-                        <ComboBoxItem>
-                            <Border Background="#E2E8F0" CornerRadius="8" Padding="10,4">
-                                <TextBlock Text="Tất cả" Foreground="#475569"/>
-                            </Border>
-                        </ComboBoxItem>
-                        <ComboBoxItem>
-                            <Border Background="#FEE2E2" CornerRadius="8" Padding="10,4">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="8" Height="8" Fill="#DC2626" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Admin" Foreground="#DC2626"/>
-                                </StackPanel>
-                            </Border>
-                        </ComboBoxItem>
-                        <ComboBoxItem>
-                            <Border Background="#DBEAFE" CornerRadius="8" Padding="10,4">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="8" Height="8" Fill="#2563EB" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Quản lý" Foreground="#2563EB"/>
-                                </StackPanel>
-                            </Border>
-                        </ComboBoxItem>
-                        <ComboBoxItem>
-                            <Border Background="#DCFCE7" CornerRadius="8" Padding="10,4">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="8" Height="8" Fill="#16A34A" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Nhân viên" Foreground="#16A34A"/>
-                                </StackPanel>
-                            </Border>
-                        </ComboBoxItem>
-                    </ComboBox>
+                                <Border Grid.Column="0" Style="{StaticResource FilterBorderStyle}" Margin="0,0,10,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <materialDesign:PackIcon Kind="Magnify" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Transparent" BorderThickness="0" 
+                                                 VerticalAlignment="Center" FontSize="13" Foreground="#2B3674" 
+                                                 materialDesign:HintAssist.Hint="Tìm tên đăng nhập, họ tên..."
+                                                 Margin="0 0 5 0" FontWeight="Normal"/>
+                                    </Grid>
+                                </Border>
 
-                </Grid>
-            </Border>
+                                <Border Grid.Column="1" Style="{StaticResource FilterBorderStyle}" Margin="0,0,10,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <materialDesign:PackIcon Kind="AccountGroup" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <ComboBox Grid.Column="1" 
+                                                  ItemsSource="{Binding RoleFilterList}"
+                                                  SelectedItem="{Binding SelectedRoleFilter, Mode=TwoWay}"
+                                                  DisplayMemberPath="TenNhomNguoiDung"
+                                                  Background="Transparent" BorderThickness="0" 
+                                                  VerticalAlignment="Center" FontSize="13" Foreground="#2B3674" 
+                                                  materialDesign:HintAssist.Hint="Nhóm người dùng"
+                                                  FontWeight="Normal"
+                                                  Margin="0 0 5 0"/>
+                                    </Grid>
+                                </Border>
 
-            <!-- ==================== DATAGRID ==================== -->
-            <Border Grid.Row="3" CornerRadius="20" Background="White"
-                    BorderBrush="#E2E8F0" BorderThickness="1" Padding="16">
-                <DataGrid ItemsSource="{Binding Accounts}"
-                          AutoGenerateColumns="False"
-                          Height="260"
-                          HeadersVisibility="Column"
-                          CanUserAddRows="False"
-                          IsReadOnly="True"
-                          RowHeight="52"
-                          BorderThickness="0"
-                          CanUserResizeColumns="False"
-                          CanUserReorderColumns="False"
-                          CanUserSortColumns="False"
-                          CanUserResizeRows="False"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
-                          ScrollViewer.CanContentScroll="False"
-                          ScrollViewer.VerticalScrollBarVisibility="Visible"
-                          ScrollViewer.HorizontalScrollBarVisibility="Visible">
-                    <DataGrid.Columns>
+                                <Button Grid.Column="3" Width="42" Height="42" ToolTip="Xóa bộ lọc" 
+                                        Command="{Binding ClearFilterCommand}" CommandParameter="{Binding}"
+                                        Background="#FEE2E2" BorderThickness="0" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                                <materialDesign:PackIcon Kind="FilterOff" Width="20" Height="20" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                        </Border>
 
-                        <DataGridTextColumn Header="Họ và tên"      Binding="{Binding HoTen}"        Width="230"/>
-                        <DataGridTextColumn Header="Giới tính"      Binding="{Binding GioiTinh}"     Width="120"/>
-                        <DataGridTextColumn Header="Số điện thoại"  Binding="{Binding SoDienThoai}"  Width="170"/>
-                        <DataGridTextColumn Header="Gmail"           Binding="{Binding Email}"        Width="260"/>
-                        <DataGridTextColumn Header="Tên đăng nhập"  Binding="{Binding TenDangNhap}"  Width="220"/>
+                        <Border Grid.Row="1" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
+                            <DataGrid ItemsSource="{Binding PagedAccounts}" 
+                                      Style="{Binding CleanDataGrid}"
+                                      AutoGenerateColumns="False"
+                                      SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
+                                      HeadersVisibility="Column" BorderThickness="0" MinRowHeight="52"
+                                      FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
+                                      Foreground="#2B3674" GridLinesVisibility="Horizontal"
+                                      HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                      CanUserAddRows="False" CanUserDeleteRows="False"
+                                      CanUserResizeColumns="False"
+                                      CanUserResizeRows="False" CanUserReorderColumns="False"
+                                      VirtualizingStackPanel.IsVirtualizing="True"
+                                      VirtualizingStackPanel.VirtualizationMode="Standard" ScrollViewer.IsDeferredScrollingEnabled="False">
+                                <DataGrid.Resources>
+                                    <!-- Style Mặc định cho Header-->
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+                                        <Style.Triggers>
+                                            <Trigger Property="Orientation" Value="Vertical">
+                                                <Setter Property="LayoutTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="0.4"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Margin" Value="0,0,2,0"/>
+                                            </Trigger>
 
-                        <!-- MẬT KHẨU -->
-                        <DataGridTemplateColumn Header="Mật khẩu" Width="150">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="••••••••" FontWeight="SemiBold"
-                                               Foreground="#2B3674" HorizontalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                                            <Trigger Property="Orientation" Value="Horizontal">
+                                                <Setter Property="LayoutTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleY="0.4"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Margin" Value="0,0,0,2"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="Background" Value="#F8FAFC"/>
+                                        <Setter Property="Foreground" Value="#2B3674"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="FontSize" Value="13"/>
+                                        <Setter Property="Height" Value="44"/>
+                                        <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                                        <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                                        <Setter Property="Padding" Value="12,0"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    </Style>
 
-                        <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChucVu}" Width="160"/>
+                                    <!-- Style Header-->
+                                    <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    </Style>
 
-                        <!-- NHÓM QUYỀN -->
-                        <DataGridTemplateColumn Header="Nhóm quyền" Width="160">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border Padding="10,4" CornerRadius="8" HorizontalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#DCFCE7"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding NhomNguoiDung}" Value="Admin">
-                                                        <Setter Property="Background" Value="#FEE2E2"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding NhomNguoiDung}" Value="Quản lý">
-                                                        <Setter Property="Background" Value="#DBEAFE"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
+                                    <!-- Style Header -->
+                                    <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                    </Style>
+
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        <Setter Property="Padding" Value="12,0"/>
+                                        <!-- Đệm lề-->
+                                    </Style>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#E0E7FF"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F3F4F6"/>
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <!-- Cột STT-->
+                                    <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="45" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="Foreground" Value="#A3AED0"/>
                                             </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="{Binding NhomNguoiDung}" FontWeight="SemiBold">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="#15803D"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding NhomNguoiDung}" Value="Admin">
-                                                            <Setter Property="Foreground" Value="#DC2626"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding NhomNguoiDung}" Value="Quản lý">
-                                                            <Setter Property="Foreground" Value="#2563EB"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <!-- Cột tên đăng nhập-->
+                                    <DataGridTextColumn Header="Tên đăng nhập" Binding="{Binding Username}" Width="150" FontWeight="SemiBold" 
+                                                        HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <!-- Cột Họ tên tài khoản-->
+                                    <DataGridTextColumn Header="Họ và tên" Binding="{Binding HoTen}" Width="*" FontWeight="Bold" 
+                                                        HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <!-- Cột Email-->
+                                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200" FontWeight="SemiBold" 
+                                                        HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
 
-                        <!-- TRẠNG THÁI -->
-                        <DataGridTemplateColumn Header="Trạng thái" Width="140">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border Padding="10,4" CornerRadius="8"
-                                            Background="#DCFCE7" HorizontalAlignment="Center">
-                                        <TextBlock Text="Hoạt động"
-                                                   Foreground="#15803D" FontWeight="SemiBold"/>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
 
-                        <!-- THAO TÁC -->
-                        <DataGridTemplateColumn Header="Thao tác" Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <Button Width="32" Height="32" Margin="0,0,6,0"
-                                                Background="#E0E7FF" BorderThickness="0">
-                                            <materialDesign:PackIcon Kind="Pencil" Width="14" Height="14"
-                                                                     Foreground="#4318FF"/>
-                                        </Button>
-                                        <Button Width="32" Height="32"
-                                                Background="#FEE2E2" BorderThickness="0">
-                                            <materialDesign:PackIcon Kind="Lock" Width="14" Height="14"
-                                                                     Foreground="#DC2626"/>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Nhóm quyền" Width="150">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="8" Padding="10,4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <!-- mặc định -->
+                                                            <Setter Property="Background" Value="#EDE9FE"/>
 
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Border>
+                                                            <Style.Triggers>
+                                                                <!-- admin -->
+                                                                <DataTrigger Binding="{Binding RoleName}" Value="ADMIN">
+                                                                    <Setter Property="Background" Value="#DBEAFE"/>
+                                                                </DataTrigger>
+                                                                <!-- quản lý -->
+                                                                <DataTrigger Binding="{Binding RoleName}" Value="QUẢN LÝ">
+                                                                    <Setter Property="Background" Value="#D1FAE5"/>
+                                                                </DataTrigger>
+                                                                <!-- nhân viên -->
+                                                                <DataTrigger Binding="{Binding RoleName}" Value="NHÂN VIÊN">
+                                                                    <Setter Property="Background" Value="#FEF3C7"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
 
-        </Grid>
+                                                    <!-- ĐỊNH DẠNG MÀU CHỮ BÊN TRONG -->
+                                                    <TextBlock FontSize="12" FontWeight="Bold" HorizontalAlignment="Center">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <!-- default -->
+                                                                <Setter Property="Foreground" Value="#6D28D9"/>
+                                                                <Setter Property="Text" Value="{Binding RoleName}"/>
+                                                                <Style.Triggers>
+                                                                    <!-- admin -->
+                                                                    <DataTrigger Binding="{Binding RoleName}" Value="ADMIN">
+                                                                        <Setter Property="Foreground" Value="#1D4ED8"/>
+                                                                    </DataTrigger>
+                                                                    <!-- quản lý -->
+                                                                    <DataTrigger Binding="{Binding RoleName}" Value="QUẢN LÝ">
+                                                                        <Setter Property="Foreground" Value="#047857"/>
+                                                                    </DataTrigger>
+                                                                    <!-- nhân viên -->
+                                                                    <DataTrigger Binding="{Binding RoleName}" Value="NHÂN VIÊN">
+                                                                        <Setter Property="Foreground" Value="#B45309"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
-        <!-- ==================== POPUP ĐỔI MẬT KHẨU ==================== -->
-        <Grid Background="#80000000" Panel.ZIndex="1000"
-              Visibility="{Binding IsChangePasswordPopupVisible}">
-
-            <Border Background="Transparent">
-                <Border.InputBindings>
-                    <MouseBinding MouseAction="LeftClick"
-                                  Command="{Binding CloseChangePasswordPopupCommand}"/>
-                </Border.InputBindings>
-            </Border>
-
-            <Border Width="460" Height="380" Padding="28" CornerRadius="20"
-                    Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
-                    HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- HEADER -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,24">
-                        <materialDesign:PackIcon Kind="LockReset" Width="26" Height="26"
-                                                 Foreground="#4318FF" Margin="0,0,10,0"/>
-                        <TextBlock Text="Đổi mật khẩu" FontSize="22"
-                                   FontWeight="Bold" Foreground="#2B3674"/>
-                    </StackPanel>
-
-                    <!-- FORM -->
-                    <StackPanel Grid.Row="1">
-                        <Border Height="50" Margin="0,0,0,16" CornerRadius="10"
-                                Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
-                            <PasswordBox Margin="12,0" Background="Transparent" BorderThickness="0"
-                                         FontSize="13" materialDesign:HintAssist.Hint="Mật khẩu cũ"/>
+                                    <DataGridTemplateColumn Header="Thao tác" Width="150">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Width="32" Height="32" Background="#E0E7FF" BorderThickness="0" Cursor="Hand" ToolTip="Chỉnh sửa" Command="{Binding DataContext.OpenEditAccountPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                                    <materialDesign:PackIcon Kind="Edit" Width="15" Height="15" Foreground="#4318FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                    <Button Width="32" Height="32" Background="#FEF3C7" BorderThickness="0" Cursor="Hand" ToolTip="Khôi phục mật khẩu mặc định" Margin="6,0,0,0" Command="{Binding DataContext.ResetPasswordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                                    <materialDesign:PackIcon Kind="KeyChange" Width="16" Height="16" Foreground="#D97706" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                    <Button Width="32" Height="32" Background="#FEE2E2" BorderThickness="0" Cursor="Hand" ToolTip="Xóa tài khoản" Margin="6,0,0,0" Command="{Binding DataContext.DeleteAccountCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                                    <materialDesign:PackIcon Kind="Delete" Width="15" Height="15" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </Border>
-                        <Border Height="50" Margin="0,0,0,16" CornerRadius="10"
-                                Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
-                            <PasswordBox Margin="12,0" Background="Transparent" BorderThickness="0"
-                                         FontSize="13" materialDesign:HintAssist.Hint="Mật khẩu mới"/>
+                        
+                        <!--Phân trang-->
+                        <Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" CommandParameter="{Binding}" Margin="0,0,4,0">
+                                    <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
+                                </Button>
+                                <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" CommandParameter="{Binding}" Margin="0,0,8,0">
+                                    <materialDesign:PackIcon Kind="ChevronLeft" Width="16" Height="16" Foreground="#A3AED0"/>
+                                </Button>
+
+                                <ItemsControl ItemsSource="{Binding PageNumbers}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding}" Margin="0,0,4,0" Style="{StaticResource PaginationButtonStyle}"
+                            Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" CommandParameter="{Binding}" Margin="8,0,0,0">
+                                    <materialDesign:PackIcon Kind="ChevronRight" Width="16" Height="16" Foreground="#A3AED0"/>
+                                </Button>
+                                <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" CommandParameter="{Binding}" Margin="4,0,0,0">
+                                    <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
+                                </Button>
+
+                                <TextBlock Text="{Binding CurrentPage, StringFormat='Trang {0}'}" FontSize="12" Foreground="#A3AED0" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                            </StackPanel>
                         </Border>
-                        <Border Height="50" CornerRadius="10"
-                                Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
-                            <PasswordBox Margin="12,0" Background="Transparent" BorderThickness="0"
-                                         FontSize="13" materialDesign:HintAssist.Hint="Xác nhận mật khẩu mới"/>
-                        </Border>
-                    </StackPanel>
+                    </Grid>
+                </TabItem>
 
-                    <!-- BUTTONS -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal"
-                                HorizontalAlignment="Right" Margin="0,24,0,0">
-                        <Button Width="120" Height="40" Margin="0,0,10,0" Content="HỦY"
-                                Command="{Binding CloseChangePasswordPopupCommand}"/>
-                        <Button Width="150" Height="40" Content="CẬP NHẬT"
-                                Style="{StaticResource MainGradientButton}"/>
-                    </StackPanel>
-
-                </Grid>
-            </Border>
-
-        </Grid>
-
-        <!-- ==================== POPUP THÊM TÀI KHOẢN ==================== -->
-        <Grid Background="#80000000" Panel.ZIndex="1000"
-              Visibility="{Binding IsAddAccountPopupVisible}">
-
-            <Border Background="Transparent">
-                <Border.InputBindings>
-                    <MouseBinding MouseAction="LeftClick"
-                                  Command="{Binding CloseAddAccountPopupCommand}"/>
-                </Border.InputBindings>
-            </Border>
-
-            <Border Width="760" Height="560" Padding="28" CornerRadius="20"
-                    Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
-                    HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- HEADER -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,24">
-                        <materialDesign:PackIcon Kind="AccountPlus" Width="26" Height="26"
-                                                 Foreground="#4318FF" Margin="0,0,10,0"/>
-                        <TextBlock Text="Thêm tài khoản mới" FontSize="22"
-                                   FontWeight="Bold" Foreground="#2B3674"/>
-                    </StackPanel>
-
-                    <!-- FORM (2 cột) -->
-                    <Grid Grid.Row="1">
+                <TabItem Header="NHÓM &amp; PHÂN QUYỀN">
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="300"/>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- CỘT TRÁI -->
-                        <StackPanel Grid.Column="0">
+                        <Border Grid.Column="0" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="15">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Danh sách Nhóm" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="5,0,0,15"/>
 
-                            <!-- Họ và tên -->
-                            <Border Height="58" Margin="0,0,0,16" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#06B6D4" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Họ và tên" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <TextBox Margin="0,22,0,0" BorderThickness="0"
-                                                 Background="Transparent" FontSize="14"/>
-                                    </Grid>
-                                </Grid>
-                            </Border>
+                                <ListBox Grid.Row="1" ItemsSource="{Binding RolesList}" SelectedItem="{Binding SelectedRole}" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding" Value="15"/>
+                                            <Setter Property="Margin" Value="0,0,0,8"/>
+                                            <Setter Property="Background" Value="#F8FAFC"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="10" BorderBrush="#E2E8F0" BorderThickness="1">
+                                                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#E0E7FF"/>
+                                                                <Setter Property="Cursor" Value="Hand"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter Property="Background" Value="#4318FF"/>
+                                                                <Setter Property="TextElement.Foreground" Value="White"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon Kind="AccountMultiple" Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding TenNhomNguoiDung}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Border>
 
-                            <!-- Giới tính -->
-                            <Border Height="58" Margin="0,0,0,16" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#EC4899" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Giới tính" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <ComboBox Margin="0,22,0,0" BorderThickness="0"
-                                                  Background="Transparent" FontSize="14">
-                                            <ComboBoxItem Content="Nam"/>
-                                            <ComboBoxItem Content="Nữ"/>
-                                        </ComboBox>
-                                    </Grid>
-                                </Grid>
-                            </Border>
+                        <Border Grid.Column="2" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="25">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <!-- Số điện thoại -->
-                            <Border Height="58" Margin="0,0,0,16" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#8B5CF6" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Số điện thoại" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <TextBox Margin="0,22,0,0" BorderThickness="0"
-                                                 Background="Transparent" FontSize="14"/>
-                                    </Grid>
-                                </Grid>
-                            </Border>
+                                <TextBlock Grid.Row="0" Text="Cấp quyền truy cập màn hình" FontSize="18" FontWeight="Bold" Foreground="#2B3674"/>
+                                <TextBlock Grid.Row="1" Text="{Binding SelectedRole.TenNhomNguoiDung, StringFormat='Đang chỉnh sửa quyền cho nhóm: {0}'}" FontSize="13" Foreground="#A3AED0" Margin="0,5,0,20"/>
 
-                            <!-- Gmail -->
-                            <Border Height="58" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#EF4444" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Gmail" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <TextBox Margin="0,22,0,0" BorderThickness="0"
-                                                 Background="Transparent" FontSize="14"/>
-                                    </Grid>
-                                </Grid>
-                            </Border>
+                                <ItemsControl Grid.Row="2" ItemsSource="{Binding ScreenPermissions}" HorizontalAlignment="Center">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#F8FAFC" CornerRadius="10" 
+                                                    Margin="0,0,15,15" Padding="5" 
+                                                    Width="200" BorderBrush="#E2E8F0" BorderThickness="1">
+                                                <CheckBox Style="{StaticResource PermissionCheckBoxStyle}" Content="{Binding TenChucNang}" IsChecked="{Binding IsGranted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
-                        </StackPanel>
-
-                        <!-- CỘT PHẢI -->
-                        <StackPanel Grid.Column="2">
-
-                            <!-- Tên đăng nhập -->
-                            <Border Height="58" Margin="0,0,0,16" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#10B981" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Tên đăng nhập" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <TextBox Margin="0,22,0,0" BorderThickness="0"
-                                                 Background="Transparent" FontSize="14"/>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-
-                            <!-- Mật khẩu -->
-                            <Border Height="58" Margin="0,0,0,16" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#F59E0B" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Mật khẩu" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <PasswordBox Margin="0,22,0,0" BorderThickness="0"
-                                                     Background="Transparent" FontSize="14"/>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-
-                            <!-- Chức vụ -->
-                            <Border Height="58" Margin="0,0,0,16" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#14B8A6" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Chức vụ" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <TextBox Margin="0,22,0,0" BorderThickness="0"
-                                                 Background="Transparent" FontSize="14"/>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-
-                            <!-- Nhóm quyền -->
-                            <Border Height="58" Background="#F8FAFC"
-                                    CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <Grid Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="#4318FF" CornerRadius="3"/>
-                                    <Grid Grid.Column="2">
-                                        <TextBlock Text="Nhóm quyền" FontSize="11"
-                                                   Foreground="#A3AED0" Margin="0,8,0,0"/>
-                                        <ComboBox Margin="0,22,0,0" BorderThickness="0"
-                                                  Background="Transparent" FontSize="14">
-                                            <ComboBoxItem Content="Admin"/>
-                                            <ComboBoxItem Content="Quản lý"/>
-                                            <ComboBoxItem Content="Nhân viên"/>
-                                        </ComboBox>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-
-                        </StackPanel>
-
+                                <Button Grid.Row="3" Style="{StaticResource MainGradientButton}" 
+                                        Command="{Binding SavePermissionsCommand}" CommandParameter="{Binding}"
+                                        Width="160" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="ContentSave" Width="18" Height="18" Foreground="White" Margin="0,0,6,0"/>
+                                        <TextBlock Text="LƯU PHÂN QUYỀN"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Border>
                     </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
 
-                    <!-- BUTTONS -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal"
-                                HorizontalAlignment="Right" Margin="0,24,0,0">
-                        <Button Width="120" Height="40" Margin="0,0,10,0" Content="HỦY"
-                                Command="{Binding CloseAddAccountPopupCommand}"/>
-                        <Button Width="180" Height="40" Content="THÊM TÀI KHOẢN"
-                                Style="{StaticResource MainGradientButton}"/>
-                    </StackPanel>
-
-                </Grid>
+        <Grid Background="#80000000" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="1000" 
+              Visibility="{Binding IsAccountPopupVisible, Converter={StaticResource BoolToVis}}">
+            <Border Background="#80000000">
+                <Border.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}"/>
+                </Border.InputBindings>
             </Border>
 
+            <Border Width="750" Height="Auto" Background="White" CornerRadius="20" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <materialDesign:PackIcon Kind="AccountEdit" Width="26" Height="26" Foreground="#4318FF" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding AccountPopupTitle}" FontSize="20" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBox Text="{Binding EditingAccount.Username, UpdateSourceTrigger=PropertyChanged}" 
+                             IsReadOnly="{Binding IsEditMode}" FontSize="14" Foreground="#2B3674" 
+                             materialDesign:HintAssist.Hint="Tên đăng nhập *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,20"/>
+
+                            <TextBox Text="{Binding EditingAccount.HoTen, UpdateSourceTrigger=PropertyChanged}" 
+                             FontSize="14" Foreground="#2B3674" 
+                             materialDesign:HintAssist.Hint="Họ và tên hiển thị *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,20"/>
+
+                            <ComboBox ItemsSource="{Binding RolesList}" SelectedItem="{Binding EditingAccount.SelectedRole}" 
+                              DisplayMemberPath="TenNhomNguoiDung" FontSize="14" Foreground="#2B3674" 
+                              materialDesign:HintAssist.Hint="Nhóm người dùng *" Margin="0,5,0,20"/>
+
+                            <TextBox Text="{Binding EditingAccount.ChucVu, UpdateSourceTrigger=PropertyChanged}" 
+                             FontSize="14" Foreground="#2B3674" 
+                             materialDesign:HintAssist.Hint="Chức vụ" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,20"/>
+
+                            <ComboBox SelectedValue="{Binding EditingAccount.GioiTinh}" SelectedValuePath="Content"
+                              FontSize="14" Foreground="#2B3674" materialDesign:HintAssist.Hint="Giới tính" Margin="0,5,0,20">
+                                <ComboBoxItem Content="Nam"/>
+                                <ComboBoxItem Content="Nữ"/>
+                                <ComboBoxItem Content="Khác"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBox Text="{Binding EditingAccount.Email, UpdateSourceTrigger=PropertyChanged}" 
+                             FontSize="14" Foreground="#2B3674" 
+                             materialDesign:HintAssist.Hint="Email liên hệ" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,20"/>
+
+                            <DatePicker SelectedDate="{Binding EditingAccount.NgaySinhDateTime}" 
+                                FontSize="14" Foreground="#2B3674" 
+                                materialDesign:HintAssist.Hint="Ngày sinh" Margin="0,5,0,20"/>
+
+                            <DatePicker SelectedDate="{Binding EditingAccount.NgayVaoLamDateTime}" 
+                                FontSize="14" Foreground="#2B3674" 
+                                materialDesign:HintAssist.Hint="Ngày vào làm" Margin="0,5,0,25"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,20" VerticalAlignment="Center">
+                                <TextBlock Text="Trạng thái làm việc:" FontSize="14" Foreground="#2B3674" VerticalAlignment="Center" Margin="0,0,15,0"/>
+
+                                <ToggleButton IsChecked="{Binding EditingAccount.DangLamViec, UpdateSourceTrigger=PropertyChanged}" 
+                                  Style="{StaticResource MaterialDesignSwitchToggleButton}" 
+                                  Cursor="Hand" VerticalAlignment="Center"/>
+
+                                <TextBlock Text="{Binding EditingAccount.TrangThaiText}" 
+                                   Foreground="{Binding EditingAccount.TrangThaiColor}" 
+                                   FontWeight="Bold" FontSize="14" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="* Mật khẩu mặc định khi thêm mới là: 123456" FontSize="12" Foreground="#EF4444" FontStyle="Italic" 
+                       Visibility="{Binding IsAddMode, Converter={StaticResource BoolToVis}}" Margin="0,10,0,25" HorizontalAlignment="Center"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}" Width="120" Height="40" Margin="0,0,15,0" Style="{StaticResource OutlineButtonStyle}"/>
+                        <Button Content="LƯU THÔNG TIN" Command="{Binding SaveAccountCommand}" CommandParameter="{Binding}" Width="140" Height="40" Style="{StaticResource MainGradientButton}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Background="#80000000" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="1000" 
+              Visibility="{Binding IsRolePopupVisible, Converter={StaticResource BoolToVis}}">
+            <Border Background="#80000000">
+                <Border.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}"/>
+                </Border.InputBindings>
+            </Border>
+
+            <Border Width="400" Height="Auto" Background="White" CornerRadius="20" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <materialDesign:PackIcon Kind="AccountGroup" Width="26" Height="26" Foreground="#4318FF" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="THÊM NHÓM QUYỀN MỚI" FontSize="20" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBox Text="{Binding NewRoleName}" FontSize="14" Foreground="#2B3674" materialDesign:HintAssist.Hint="Tên nhóm người dùng *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,30"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}" Width="120" Height="40" Margin="0,0,15,0" Style="{StaticResource OutlineButtonStyle}"/>
+                        <Button Content="THÊM NHÓM" Command="{Binding SaveNewRoleCommand}" CommandParameter="{Binding}" Width="140" Height="40" Style="{StaticResource MainGradientButton}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
         </Grid>
 
     </Grid>
-
 </UserControl>

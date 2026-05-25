@@ -125,6 +125,21 @@ namespace Bookstore.WPF.ViewModels
             LoginCommand = new RelayCommand<object>(async (p) =>
             {
                 string plainText = new NetworkCredential("", SecurePassword).Password;
+
+                if (string.IsNullOrWhiteSpace(this.Username) || string.IsNullOrWhiteSpace(plainText))
+                {
+                    ErrorLog = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
+                    IsErrorLogVisible = Visibility.Visible;
+                    return;
+                }
+
+                if (plainText.Length < 6)
+                {
+                    ErrorLog = "Mật khẩu phải có từ 6 ký tự trở lên!";
+                    IsErrorLogVisible = Visibility.Visible;
+                    return;
+                }
+
                 var requestData = new LoginRequest
                 {
                     Username = this.Username,
@@ -168,7 +183,7 @@ namespace Bookstore.WPF.ViewModels
                 catch (Exception)
                 {
                     IsErrorLogVisible = Visibility.Visible;
-                    ErrorLog = "Không thể kết nối đến server!";
+                    ErrorLog = "Tài khoản hoặc mật khẩu không chính xác!";
                 }
             });
 
@@ -246,6 +261,13 @@ namespace Bookstore.WPF.ViewModels
             {
                 string newPw = new NetworkCredential("", NewPassword).Password;
                 string ConfirmPw = new NetworkCredential("", ConfirmPassword).Password;
+
+                if (newPw.Length < 6)
+                {
+                    ErrorLog = "Mật khẩu phải có từ 6 ký tự trở lên!";
+                    IsErrorLogVisible = Visibility.Visible;
+                    return;
+                }
 
                 if (newPw != ConfirmPw)
                 {
