@@ -31,7 +31,7 @@ namespace Bookstore.API.Controllers.Auth
                         .Include(u => u.NhomNguoiDung)
                             .ThenInclude(u => u.PhanQuyens)
                                 .ThenInclude(pq => pq.ChucNang)
-                    .FirstOrDefaultAsync(u => u.TenDangNhap == request.Username && u.MatKhau == hashPw);
+                    .FirstOrDefaultAsync(u => u.TenDangNhap == request.Username && u.MatKhau == hashPw && u.DangLamViec == true);
 
             if (user == null)
             {
