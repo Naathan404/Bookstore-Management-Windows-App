@@ -102,8 +102,10 @@ namespace Bookstore.WPF.ViewModels
 
         // COMMANDS
         public ICommand ClearFilterCommand { get; private set; }
+        public ICommand FirstPageCommand { get; private set; }
         public ICommand PrevPageCommand { get; private set; }
         public ICommand NextPageCommand { get; private set; }
+        public ICommand LastPageCommand { get; private set; }
         public ICommand GoToPageCommand { get; private set; }
 
         public ICommand OpenAddAccountPopupCommand { get; private set; }
@@ -135,6 +137,15 @@ namespace Bookstore.WPF.ViewModels
                 SelectedRoleFilter = null;
             });
 
+            FirstPageCommand = new RelayCommand<object>(_ =>
+            {
+                if (CurrentPage > 1)
+                {
+                    CurrentPage = 1;
+                    ApplyFilterAndPagination();
+                }
+            });
+
             PrevPageCommand = new RelayCommand<object>(_ =>
             {
                 if (CurrentPage > 1) { CurrentPage--; ApplyFilterAndPagination(); }
@@ -143,6 +154,15 @@ namespace Bookstore.WPF.ViewModels
             NextPageCommand = new RelayCommand<object>(_ =>
             {
                 if (CurrentPage < TotalPages) { CurrentPage++; ApplyFilterAndPagination(); }
+            });
+
+            LastPageCommand = new RelayCommand<object>(_ =>
+            {
+                if (CurrentPage < TotalPages)
+                {
+                    CurrentPage = TotalPages;
+                    ApplyFilterAndPagination();
+                }
             });
 
             GoToPageCommand = new RelayCommand<object>(p =>
@@ -368,6 +388,15 @@ namespace Bookstore.WPF.ViewModels
                 return;
             }
 
+            if (EditingAccount.NgayVaoLam <= EditingAccount.NgaySinh)
+            {
+                MessageBox.Show("Ngày vào làm không hợp lệ! Ngày vào làm phải lớn hơn ngày sinh.",
+                                "Lỗi nhập liệu",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                return;
+            }
+
             // Gán MaNhomNguoiDung từ SelectedRole trước khi gửi
             EditingAccount.MaNhomNguoiDung = EditingAccount.SelectedRole.MaNhomNguoiDung;
 
@@ -475,7 +504,7 @@ namespace Bookstore.WPF.ViewModels
             catch (Exception ex)
             {
                 // ApiClient.DeleteAsync ném exception khi backend trả về lỗi (vd: tài khoản đang dùng)
-                MessageBox.Show(ex.Message, "Không thể xóa",
+                MessageBox.Show("Không thể xóa tài khoản do đã có ít nhất một hóa đơn được tạo bởi tài khoản này", "Không thể xóa",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -599,7 +628,8 @@ namespace Bookstore.WPF.ViewModels
 
                 MessageBox.Show(
                     success ? $"Đã lưu phân quyền cho nhóm '{SelectedRole.TenNhomNguoiDung}' thành công!"
-                            : "Lưu phân quyền thất bại! Vui lòng thử lại.",
+                            : "Không thể tắt quyền 'Tài khoản' của nhóm ADMIN. " +
+                              "Hệ thống cần ít nhất 1 nhóm có thể quản lý tài khoản!",
                     success ? "Thành công" : "Lỗi",
                     MessageBoxButton.OK,
                     success ? MessageBoxImage.Information : MessageBoxImage.Error);
@@ -615,28 +645,62 @@ namespace Bookstore.WPF.ViewModels
 
     // DTO
 
-    public class AccountDto
+    public class AccountDto : BaseViewModel
     {
         public int STT { get; set; }
-
-        // Thông tin đăng nhập
         public string Username { get; set; } = "";
+        public string HoTen { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string RoleName { get; set; } = "";
+        public NhomNguoiDungDto? SelectedRole { get; set; }
         public int MaNhomNguoiDung { get; set; }
 
-        // Thông tin cá nhân
-        public string HoTen { get; set; } = "";
+
         public string GioiTinh { get; set; } = "Nam";
         public string ChucVu { get; set; } = "";
-        public string Email { get; set; } = "";
-        public bool DangLamViec { get; set; } = true;
+
+        private bool _dangLamViec = true;
+        public bool DangLamViec
+        {
+            get => _dangLamViec;
+            set
+            {
+                if (Username?.ToLower() == "admin" && !value)
+                {
+                    System.Windows.MessageBox.Show(
+                        "Không thể tắt trạng thái làm việc của tài khoản này!",
+                        "Cảnh báo bảo mật",
+                        System.Windows.MessageBoxButton.OK,
+                        System.Windows.MessageBoxImage.Warning);
+
+                    OnPropertyChanged();
+                    return;
+                }
+
+                _dangLamViec = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TrangThaiText));
+                OnPropertyChanged(nameof(TrangThaiColor));
+            }
+        }
         public DateOnly NgaySinh { get; set; } = new DateOnly(2000, 1, 1);
         public DateOnly NgayVaoLam { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
-        public string RoleName { get; set; } = "";
-        public NhomNguoiDungDto? SelectedRole { get; set; }
 
         public string TrangThaiText => DangLamViec ? "Đang làm" : "Đã nghỉ";
-        public string TrangThaiColor => DangLamViec ? "#05CD99" : "#EE5D50";
+        public string TrangThaiColor => DangLamViec ? "#05CD99" : "#EE5D50"; // Xanh lá : Đỏ
+
+        public DateTime? NgaySinhDateTime
+        {
+            get => NgaySinh.ToDateTime(TimeOnly.MinValue);
+            set { if (value.HasValue) { NgaySinh = DateOnly.FromDateTime(value.Value); OnPropertyChanged(); } }
+        }
+
+        public DateTime? NgayVaoLamDateTime
+        {
+            get => NgayVaoLam.ToDateTime(TimeOnly.MinValue);
+            set { if (value.HasValue) { NgayVaoLam = DateOnly.FromDateTime(value.Value); OnPropertyChanged(); } }
+        }
     }
 
     public class NhomNguoiDungDto
