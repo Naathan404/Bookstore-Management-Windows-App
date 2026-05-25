@@ -275,7 +275,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand XoaKhoiGioHangCommand { get; set; }
         public ICommand XacNhanTaoDonCommand { get; set; }
         public ICommand HuyBoGiaoDichCommand { get; set; }
-        public ICommand XoaLocSachCommand { get; set; }
+        public ICommand XoaBoLocCommand { get; set; }
         public ICommand FirstPageCommand { get; set; }
         public ICommand PrevPageCommand { get; set; }
         public ICommand NextPageCommand { get; set; }
@@ -392,7 +392,7 @@ namespace Bookstore.WPF.ViewModels
             #endregion
 
             #region CHỨC NĂNG LỌC & PHÂN TRANG KHỞI TẠO
-            XoaLocSachCommand = new RelayCommand<object>((param) => {
+            XoaBoLocCommand = new RelayCommand<object>((param) => {
                 SearchTextSach = string.Empty;
                 TheLoaiDuocChon = DanhSachTheLoai.FirstOrDefault(t => t.TenTheLoai == "Tất cả");
                 CurrentPage = 1;
