@@ -342,6 +342,17 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
+                                    <!-- Cột Chức vụ-->
+                                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChucVu}" Width="*" FontWeight="Bold" 
+                                                        HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
                                     <!-- Cột Email-->
                                     <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200" FontWeight="SemiBold" 
                                                         HeaderStyle="{StaticResource CenterHeaderStyle}">
@@ -427,7 +438,7 @@
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">
                                                                 <Border Background="{TemplateBinding Background}" CornerRadius="6">
-                                                                    <materialDesign:PackIcon Kind="KeyChange" Width="16" Height="16" Foreground="#D97706" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    <materialDesign:PackIcon Kind="Key" Width="16" Height="16" Foreground="#D97706" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                 </Border>
                                                             </ControlTemplate>
                                                         </Button.Template>
