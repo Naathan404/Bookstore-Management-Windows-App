@@ -15,6 +15,13 @@ namespace Bookstore.WPF.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set { _isLoading = value; OnPropertyChanged(); }
+        }
         // ==========================================
         // Tab 1
         private decimal _sale;
@@ -156,6 +163,7 @@ namespace Bookstore.WPF.ViewModels
         /// </summary>
         public async Task LoadAllDataAsync()
         {
+            IsLoading = true;
             try
             {
                 using var client = new HttpClient { BaseAddress = new Uri("https://localhost:7001/") };
@@ -205,6 +213,10 @@ namespace Bookstore.WPF.ViewModels
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show("Lỗi kết nối Server: " + ex.Message, "Lỗi", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 
