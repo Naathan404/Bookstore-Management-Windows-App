@@ -91,6 +91,8 @@ namespace Bookstore.API.Controllers
             // phieuNhap.NguoiTao = newPhieuNhap.NguoiTao;
             // phieuNhap.NgayTao = DateTime.Now; //Cập nhật thời gian sửa đổi
 
+            await _context.SaveChangesAsync();
+
             return Ok("Cập nhật phiếu nhập thành công");
         }
 
@@ -150,7 +152,6 @@ namespace Bookstore.API.Controllers
                             throw new Exception($"Chỉ nhập sách có số lượng nhỏ hơn {soLuongToiDaCoTheNhap}");
                         }
                         sach.TonKho += item.SoLuong;
-                        _context.PhienBanSach.Update(sach);
                     }
                     else
                     {
@@ -195,7 +196,7 @@ namespace Bookstore.API.Controllers
                     .Where(ct => ct.MaPhieuNhapSach == id)
                     .ToListAsync();
 
-                foreach (var chiTiet in phieuNhap.CT_PhieuNhapSach)
+                foreach (var chiTiet in danhSachChiTiet)
                 {
                     var sach = await _context.PhienBanSach.FindAsync(chiTiet.ISBN);
                     if (sach == null) throw new Exception($"Không tìm thấy sách");
