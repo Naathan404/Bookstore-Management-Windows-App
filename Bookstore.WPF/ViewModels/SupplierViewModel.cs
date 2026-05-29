@@ -1,6 +1,6 @@
 ﻿using Bookstore.Share.DTO;
-using Bookstore.WPF.Services; // Chứa ApiClient của ông
-using Bookstore.WPF.Utils;    // Chứa RelayCommand
+using Bookstore.WPF.Services; 
+using Bookstore.WPF.Utils;    
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -15,11 +15,10 @@ namespace Bookstore.WPF.ViewModels
 {
     public class SupplierViewModel : BaseViewModel
     {
-        // Danh bạ gốc lưu toàn bộ Nhà cung cấp tải từ Server về
         private List<SupplierDTO> _allSuppliers = new List<SupplierDTO>();
 
         #region Properties Trạng thái & Dữ liệu
-        // Biến bật/tắt hiệu ứng Skeleton Loading
+        // Skeleton Loading
         private bool _isLoading;
         public bool IsLoading
         {
@@ -62,7 +61,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 _searchKeyword = value;
                 OnPropertyChanged();
-                ApplyFilterAndPagination(); // Lọc realtime khi gõ
+                ApplyFilterAndPagination(); 
             }
         }
 
@@ -187,7 +186,6 @@ namespace Bookstore.WPF.ViewModels
                 PopupTitle = "CẬP NHẬT NHÀ CUNG CẤP";
                 _isAddMode = false;
 
-                // Clone đối tượng để tránh dính Binding 2 chiều khi chưa bấm Lưu
                 EditingSupplier = new SupplierDTO
                 {
                     MaNhaCungCap = supplier.MaNhaCungCap,
@@ -272,7 +270,6 @@ namespace Bookstore.WPF.ViewModels
             IsLoading = true;
             try
             {
-                // Gọi API thật tới NhaCungCapController
                 var response = await ApiClient.GetAsync<List<SupplierDTO>>("api/NhaCungCap");
                 if (response != null)
                 {
@@ -319,7 +316,6 @@ namespace Bookstore.WPF.ViewModels
             }
             catch (Exception ex)
             {
-                // Catch luôn các thông báo lỗi BadRequest từ API trả về (VD: Trùng SĐT, Email...)
                 MessageBox.Show($"Không thể lưu dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -345,7 +341,6 @@ namespace Bookstore.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    // Sẽ báo lỗi nếu NCC này đã có PhieuNhapSach (nhờ logic check của ông ở Controller)
                     MessageBox.Show($"Xóa thất bại: {ex.Message}", "Lỗi xóa dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
