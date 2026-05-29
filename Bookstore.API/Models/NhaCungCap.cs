@@ -14,6 +14,8 @@ namespace Bookstore.API.Models
         public string Email { get; set; } = string.Empty;
         public string NganHang { get; set; } = string.Empty;
         public string SoTaiKhoan { get; set; } = string.Empty;
+        public string NguoiDaiDien { get; set; } = string.Empty;
+        public bool ConGiaoGich { get; set; } = true;
         public int GetID() => MaNhaCungCap;
     }
 }

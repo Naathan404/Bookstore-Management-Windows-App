@@ -39,6 +39,17 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.85"/>
+
+                </Trigger>
+
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="OutlineButtonStyle" TargetType="Button">
@@ -57,6 +68,17 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.85"/>
+
+                </Trigger>
+
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="OutlineExcelButtonStyle" TargetType="Button">
@@ -202,7 +224,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="120"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
@@ -318,7 +341,14 @@
                         </Grid>
                     </Border>
 
-                    <Button Grid.Column="5" Width="42" Height="42" 
+                    <Border Grid.Column="5" Background="#F4F7FE" CornerRadius="10" Padding="15,0" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Tổng:" Foreground="#A3AED0" FontSize="12" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding TotalRecords}" FontWeight="Bold" Foreground="#4318FF" FontSize="15" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Grid.Column="6" Width="42" Height="42" 
                         ToolTip="Xóa tất cả bộ lọc"
                         Command="{Binding ClearFilterCommand}" CommandParameter="{Binding}"
                         Background="#FEE2E2" BorderThickness="0" Cursor="Hand">
@@ -428,6 +458,12 @@
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="FontWeight" Value="SemiBold"/>
                                     <Setter Property="Foreground" Value="#A3AED0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
@@ -1038,7 +1074,7 @@
                                                 <ColumnDefinition Width="15"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
                                                 <Grid>
                                                     <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0"
                                                          Margin="12,4,0,0" VerticalAlignment="Top"/>
@@ -1051,7 +1087,7 @@
                                                 </Grid>
                                             </Border>
 
-                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                                            <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0"
                                                     BorderThickness="1.5" Height="46">
                                                 <Grid>
                                                     <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0"
@@ -1070,7 +1106,7 @@
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                             </Grid.ColumnDefinitions>
-                                            <Border CornerRadius="10" Background="#F3F4F6" BorderBrush="#E5E7EB" BorderThickness="1" Height="46">
+                                            <Border CornerRadius="10" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" Height="46">
                                                 <Grid>
                                                     <TextBlock Text="Số lượng tồn" FontSize="10" Foreground="#9CA3AF" Margin="12,4,0,0" VerticalAlignment="Top"/>
                                                     <TextBox Text="{Binding EditingBook.SoLuongTonKho}" FontSize="13" FontWeight="Bold" Foreground="#9CA3AF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Center"/>
@@ -1085,23 +1121,12 @@
 
                     <!-- Buttons -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="2" CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Content="HỦY BỎ" Style="{StaticResource OutlineButtonStyle}"
+                                Command="{Binding ClosePopupCommand}" CommandParameter="{Binding}" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Cursor="Hand">
                         </Button>
-                        <Button Content="THÊM SÁCH" Command="{Binding SaveNewBookCommand}" CommandParameter="{Binding}" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="#10B981" CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Content="THÊM SÁCH" Command="{Binding SaveNewBookCommand}" CommandParameter="{Binding}"
+                                Style="{StaticResource MainGradientButton}"
+                                Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
                         </Button>
                     </StackPanel>
                 </Grid>
@@ -1498,7 +1523,7 @@
                                         <ColumnDefinition Width="15"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                            <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
                                                 <Grid>
                                                     <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0"
                                                          Margin="12,4,0,0" VerticalAlignment="Top"/>
@@ -1511,7 +1536,7 @@
                                                 </Grid>
                                             </Border>
 
-                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                                            <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0"
                                                     BorderThickness="1.5" Height="46">
                                                 <Grid>
                                                     <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0"
@@ -1554,23 +1579,11 @@
 
                     <!-- Buttons -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" CommandParameter="Close" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="2" CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Content="HỦY BỎ" Style="{StaticResource OutlineButtonStyle}"
+                                Command="{Binding ClosePopupCommand}" CommandParameter="Close" Width="120" Height="40" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold"  Cursor="Hand">
                         </Button>
-                        <Button Content="LƯU THÔNG TIN" Command="{Binding SaveEditBookCommand}" CommandParameter="Save" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="#10B981" CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Content="LƯU THÔNG TIN" Style="{StaticResource MainGradientButton}"
+                                Command="{Binding SaveEditBookCommand}" CommandParameter="Save" Width="140" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
                         </Button>
                     </StackPanel>
                 </Grid>
