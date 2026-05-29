@@ -161,6 +161,8 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
+        // UTIL region removed: STT is UI-only and calculated per visible row
+
         #region COMMANDS
 
         // CRUD Khách hàng

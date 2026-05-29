@@ -201,6 +201,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Converters\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
 
