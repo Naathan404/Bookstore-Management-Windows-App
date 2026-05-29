@@ -424,7 +424,7 @@
                                     <DataGridTemplateColumn Header="Thao tác" Width="150">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                     <Button Width="32" Height="32" Background="#E0E7FF" BorderThickness="0" Cursor="Hand" ToolTip="Chỉnh sửa" Command="{Binding DataContext.OpenEditAccountPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">
