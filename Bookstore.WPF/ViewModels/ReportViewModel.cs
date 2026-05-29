@@ -147,12 +147,18 @@ namespace Bookstore.WPF.ViewModels
             SelectedRevenueSubFilterType != 0 ? Visibility.Visible : Visibility.Collapsed;
 
         // Biểu đồ
+        //public Visibility RevenueChartVisibility =>
+        //    SelectedReportTypeIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
+        //public Visibility InventoryChartVisibility =>
+        //    SelectedReportTypeIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
+        //public Visibility DebtChartVisibility =>
+        //    SelectedReportTypeIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
         public Visibility RevenueChartVisibility =>
-            SelectedReportTypeIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
+            SelectedReportTypeIndex == 0 ? Visibility.Visible : Visibility.Hidden;
         public Visibility InventoryChartVisibility =>
-            SelectedReportTypeIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
+            SelectedReportTypeIndex == 1 ? Visibility.Visible : Visibility.Hidden;
         public Visibility DebtChartVisibility =>
-            SelectedReportTypeIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
+            SelectedReportTypeIndex == 2 ? Visibility.Visible : Visibility.Hidden;
 
         // DataGrid
         public Visibility RevenueGridVisibility =>
@@ -486,20 +492,6 @@ namespace Bookstore.WPF.ViewModels
                     if (data.InventoryRows != null) _allInventoryRows.AddRange(data.InventoryRows);
                     if (data.DebtRows != null) _allDebtRows.AddRange(data.DebtRows);
 
-                    //RevenueRows.Clear();
-                    //InventoryRows.Clear();
-                    //DebtRows.Clear();
-
-                    //if (data.RevenueRows != null)
-                    //    foreach (var r in data.RevenueRows) RevenueRows.Add(r);
-
-                    //if (data.InventoryRows != null)
-                    //    foreach (var r in data.InventoryRows) InventoryRows.Add(r);
-
-                    //if (data.DebtRows != null)
-                    //    foreach (var r in data.DebtRows) DebtRows.Add(r);
-
-
                     // --- Cập nhật trạng thái ---
                     int count = 0;
                     if (SelectedReportTypeIndex == 0) count = _allRevenueRows.Count;
@@ -563,7 +555,8 @@ namespace Bookstore.WPF.ViewModels
 
                     UpdatePagedData();
 
-                    await Task.Delay(400);
+                    Random rnd = new Random();
+                    await Task.Delay(rnd.Next(400, 800));
 
                     // --- Cập nhật biểu đồ ---
                     SetupRevenueChart(data);

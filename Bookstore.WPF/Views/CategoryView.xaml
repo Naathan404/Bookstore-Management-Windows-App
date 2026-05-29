@@ -156,6 +156,12 @@
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="FontWeight" Value="SemiBold"/>
                                             <Setter Property="Foreground" Value="#A3AED0"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -279,6 +285,7 @@
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="TextWrapping" Value="Wrap"/>
                                             <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="Margin" Value="0 10 0 10"></Setter>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -371,6 +378,12 @@
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="FontWeight" Value="SemiBold"/>
                                             <Setter Property="Foreground" Value="#A3AED0"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -471,6 +484,12 @@
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="FontWeight" Value="SemiBold"/>
                                             <Setter Property="Foreground" Value="#A3AED0"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -546,7 +565,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SearchNXB, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Tìm Nhà xuất bản..." BorderThickness="0" VerticalAlignment="Center" Background="Transparent" Foreground="Black" Margin="0 0 10 0" />
                             </Grid>
                         </Border>
-                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="200" Command="{Binding OpenAddNXBCommand}" CommandParameter="{Binding}" Content="+ THÊM NHÀ XUẤT BẢN" FontWeight="Bold"/>
+                        <Button Grid.Column="2" Style="{StaticResource MainGradientButton}" Width="200" Command="{Binding OpenAddNXBCommand}" CommandParameter="{Binding}" Content="+ THÊM NHÀ XUẤT BẢN" FontWeight="SemiBold"/>
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredNXBs}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold"
@@ -572,6 +591,12 @@
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="FontWeight" Value="SemiBold"/>
                                             <Setter Property="Foreground" Value="#A3AED0"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>

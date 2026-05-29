@@ -224,6 +224,17 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
+        private int _totalRecords = 0;
+        public int TotalRecords
+        {
+            get => _totalRecords;
+            set
+            {
+                _totalRecords = value;
+                OnPropertyChanged();
+            }
+        }
+
         // Biến chứa dữ liệu sách đang được thêm hoặc sửa
         private BookItem _editingBook;
         public BookItem EditingBook { get => _editingBook; set { _editingBook = value; OnPropertyChanged(); } }
@@ -702,7 +713,7 @@ namespace Bookstore.WPF.ViewModels
         private void PerformSearch()
         {
             var result = _allBooks.AsEnumerable();
-            
+
             // lọc tên sách
             if (!string.IsNullOrWhiteSpace(SearchTenSach))
                 result = result.Where(b => b.TenSach.ToLower().Contains(SearchTenSach.ToLower()));
@@ -714,7 +725,7 @@ namespace Bookstore.WPF.ViewModels
             }    
 
             // lọc theo thể loại
-            if (SelectedTheLoai != "Tất cả" && !string.IsNullOrEmpty(SelectedTheLoai))
+            if (SelectedTheLoai != "Tất cả thể loại" && !string.IsNullOrEmpty(SelectedTheLoai))
                 result = result.Where(b => b.TheLoai == SelectedTheLoai);
 
             // lọc theo khoảng giá
@@ -751,7 +762,7 @@ namespace Bookstore.WPF.ViewModels
                 _filteredBooks.Add(b);
             }
 
-            //_filteredBooks = new ObservableCollection<BookItem>(result);
+            TotalRecords = _filteredBooks.Count;
 
             //CurrentPage = 1;
             UpdatePagination();
@@ -889,14 +900,14 @@ namespace Bookstore.WPF.ViewModels
                     {
                         ListTheLoai.Clear();
                         ListTheLoaiTaoSach.Clear();
-                        ListTheLoai.Add("Tất cả");
+                        ListTheLoai.Add("Tất cả thể loại");
 
                         foreach (var tl in danhSachTheLoai)
                         {
                             ListTheLoai.Add(tl);
                             ListTheLoaiTaoSach.Add(tl);
                         }
-                        SelectedTheLoai = "Tất cả";
+                        SelectedTheLoai = "Tất cả thể loại";
                     });
                 }
             }

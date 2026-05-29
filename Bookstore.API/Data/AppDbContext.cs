@@ -629,7 +629,9 @@ namespace Bookstore.API.Data
                     SoDienThoai = "1900636467",
                     Email = "info@fahasa.com",
                     NganHang = "Vietcombank",
-                    SoTaiKhoan = "0071000123456"
+                    SoTaiKhoan = "0071000123456",
+                    NguoiDaiDien = "Lê Thành Nghĩa",
+                    ConGiaoGich = true
                 },
                 new NhaCungCap
                 {
@@ -640,7 +642,22 @@ namespace Bookstore.API.Data
                     SoDienThoai = "1900555555",
                     Email = "contact@phuongnam.com",
                     NganHang = "Techcombank",
-                    SoTaiKhoan = "1901234567890"
+                    SoTaiKhoan = "1901234567890",
+                    NguoiDaiDien = "Tô Công Hữu Nhân",
+                    ConGiaoGich = true
+                },
+                new NhaCungCap
+                {
+                    MaNhaCungCap = 3,
+                    TenNhaCungCap = "Nhà sách JustBooks",
+                    DiaChi = "36A Alexander, Quận 3, TP.HCM",
+                    MaSoThue = "0302221115",
+                    SoDienThoai = "19005551234",
+                    Email = "contact@justbooks.com",
+                    NganHang = "Techcombank",
+                    SoTaiKhoan = "1901234567777",
+                    NguoiDaiDien = "Nguyễn Khả An",
+                    ConGiaoGich = true
                 }
             );
 
