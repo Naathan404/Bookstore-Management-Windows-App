@@ -57,6 +57,17 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="0.85"/>
+
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value="0.6"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="MiniAddButtonStyle" TargetType="Button">
@@ -161,6 +172,16 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="0.85"/>
+
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value="0.6"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="FilterBorderStyle" TargetType="Border">
@@ -187,6 +208,16 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+         <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.85"/>
+
+                </Trigger>
+
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </Style.Triggers>
     </Style>
 
     <Style x:Key="OutlinePDFButtonStyle" TargetType="Button">
@@ -205,6 +236,16 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="0.85"/>
+
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value="0.6"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="DashboardCardStyle" TargetType="Border">

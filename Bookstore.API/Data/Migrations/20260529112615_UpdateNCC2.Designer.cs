@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260529112615_UpdateNCC2")]
+    partial class UpdateNCC2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1061,7 +1064,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521186@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 18, 30, 25, 697, DateTimeKind.Local).AddTicks(6364),
+                            HanOTP = new DateTime(2026, 5, 29, 18, 26, 14, 574, DateTimeKind.Local).AddTicks(1672),
                             HoTen = "Nguyễn Chí Nguyên",
                             MaNhomNguoiDung = 1,
                             MaOTP = "",
@@ -1076,7 +1079,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24520604@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 18, 30, 25, 697, DateTimeKind.Local).AddTicks(6376),
+                            HanOTP = new DateTime(2026, 5, 29, 18, 26, 14, 574, DateTimeKind.Local).AddTicks(1684),
                             HoTen = "Nguyễn Gia Hưng",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1091,7 +1094,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521432@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 18, 30, 25, 697, DateTimeKind.Local).AddTicks(6378),
+                            HanOTP = new DateTime(2026, 5, 29, 18, 26, 14, 574, DateTimeKind.Local).AddTicks(1685),
                             HoTen = "Lê Hoàng Quân",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1106,7 +1109,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521536@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 18, 30, 25, 697, DateTimeKind.Local).AddTicks(6379),
+                            HanOTP = new DateTime(2026, 5, 29, 18, 26, 14, 574, DateTimeKind.Local).AddTicks(1687),
                             HoTen = "Phạm Hoàng Sơn",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1121,7 +1124,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521360@g.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 18, 30, 25, 697, DateTimeKind.Local).AddTicks(6381),
+                            HanOTP = new DateTime(2026, 5, 29, 18, 26, 14, 574, DateTimeKind.Local).AddTicks(1689),
                             HoTen = "Nguyễn Lưu Văn Phú",
                             MaNhomNguoiDung = 2,
                             MaOTP = "",
@@ -1216,13 +1219,13 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaNhaCungCap = 3,
+                            MaNhaCungCap = 5,
                             ConGiaoGich = true,
                             DiaChi = "36A Alexander, Quận 3, TP.HCM",
                             Email = "contact@justbooks.com",
                             MaSoThue = "0302221115",
                             NganHang = "Techcombank",
-                            NguoiDaiDien = "Nguyễn Khả An",
+                            NguoiDaiDien = "Tô Công Hữu Nhân",
                             SoDienThoai = "19005551234",
                             SoTaiKhoan = "1901234567777",
                             TenNhaCungCap = "Nhà sách JustBooks"
