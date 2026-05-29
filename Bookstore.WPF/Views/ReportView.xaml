@@ -2,11 +2,647 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Bookstore.WPF.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="1200" d:DesignWidth="1600"
+             Background="#F4F7FE"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+
+    <Grid Background="{StaticResource BackgroundColor}">
+        <Ellipse Width="400" Height="400" Fill="#4318FF" Opacity="0.03"
+                 VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-150,-150,0,0" IsHitTestVisible="False"/>
+        <Ellipse Width="300" Height="300" Fill="#2B3674" Opacity="0.03"
+                 VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,-100,-100" IsHitTestVisible="False"/>
+
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Margin="0,0,0,12" Padding="20" CornerRadius="16"
+                        Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ChartAreaspline" Width="28" Height="28"
+                                                     Foreground="#4318FF" Margin="0,0,10,0"/>
+                        <TextBlock Text="BÁO CÁO KINH DOANH" FontSize="24" FontWeight="Bold"
+                                            Foreground="#2B3674" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                        <Button Style="{StaticResource MainGradientButton}" Command="{Binding ApplyReportCommand}" CommandParameter="{Binding}" Width="130" Height="36" Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Magnify" Width="16" Height="16" Foreground="White" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="XEM BÁO CÁO" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Style="{StaticResource OutlinePDFButtonStyle}" CommandParameter="{Binding}" Width="120" Margin="0,0,10,0" Command="{Binding ExportPdfCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="FilePdfBox" Width="16" Height="16" Foreground="OrangeRed" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="XUẤT PDF"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource OutlineExcelButtonStyle}" CommandParameter="{Binding}" Width="120" Command="{Binding ExportExcelCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="Green" Margin="0,0,6,0"/>
+                                <TextBlock Text="XUẤT EXCEL"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1" Margin="0,0,0,12" Padding="20" CornerRadius="16"
+                    Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8, 0" Width="220">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="35"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="FileChart" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <ComboBox Grid.Column="1" SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}"
+                                      Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
+                                      VerticalAlignment="Center" materialDesign:HintAssist.Hint="Loại báo cáo" Margin="0 0 5 0">
+                                <ComboBoxItem Content="Doanh thu &amp; Lợi nhuận"/>
+                                <ComboBoxItem Content="Tồn kho"/>
+                                <ComboBoxItem Content="Công nợ"/>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="150">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="35"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="CalendarStart" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <DatePicker Grid.Column="1" SelectedDate="{Binding FromDate, Mode=TwoWay}"
+                                        Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
+                                        VerticalAlignment="Center" materialDesign:HintAssist.Hint="Từ ngày"
+                                        materialDesign:TextFieldAssist.UnderlineBrush="Transparent" Margin="0 0 5 0"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="150">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="35"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="CalendarEnd" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <DatePicker Grid.Column="1" SelectedDate="{Binding ToDate, Mode=TwoWay}"
+                                        Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
+                                        VerticalAlignment="Center" materialDesign:HintAssist.Hint="Đến ngày"
+                                        materialDesign:TextFieldAssist.UnderlineBrush="Transparent" Margin="0 0 5 0"/>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding RevenueSecondaryFilterVisibility}">
+                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="150">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="FilterVariant" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <ComboBox Grid.Column="1" SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}"
+                                          Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
+                                          VerticalAlignment="Center" materialDesign:HintAssist.Hint="Lọc theo" Margin="0 0 5 0">
+                                    <ComboBoxItem Content="Tất cả"/>
+                                    <ComboBoxItem Content="Nhân viên"/>
+                                    <ComboBoxItem Content="Thể loại"/>
+                                </ComboBox>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8, 0" Width="180" Visibility="{Binding RevenueSubItemFilterVisibility}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="SubdirectoryArrowRight" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding RevenueSubItemsSource}" SelectedItem="{Binding SelectedRevenueSubItem, Mode=TwoWay}"
+                                          Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
+                                          VerticalAlignment="Center" materialDesign:HintAssist.Hint="Chọn..." Margin="0 0 5 0"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding DebtSecondaryFilterVisibility}">
+                        <Border Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0" Width="200">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Kind="AccountOutline" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding CustomerTypeList}" SelectedItem="{Binding SelectedCustomerType, Mode=TwoWay}"
+                                          Background="Transparent" BorderThickness="0" FontSize="13" Foreground="#2B3674"
+                                          VerticalAlignment="Center" materialDesign:HintAssist.Hint="Tất cả KH" Margin="0 0 5 0"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </WrapPanel>
+            </Border>
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Style="{StaticResource DashboardCardStyle}" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="{Binding ChartIconKind}" Width="20" Height="20" Foreground="#4318FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ChartTitle}" FontSize="15" FontWeight="Bold" Foreground="#2B3674"/>
+                                        <TextBlock Text="{Binding AnalysisMessage}" FontSize="11" Foreground="#A3AED0" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding RevenueChartVisibility}">
+                                    <Border Width="12" Height="12" Background="#EE5D50" CornerRadius="2" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Giá vốn" FontSize="11" Foreground="#64748B" Margin="0,0,12,0"/>
+                                    <Border Width="12" Height="12" Background="#05CD99" CornerRadius="2" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Lợi nhuận" FontSize="11" Foreground="#64748B"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding DebtChartVisibility}">
+                                    <Border Width="12" Height="3" Background="#EE5D50" CornerRadius="2" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Nợ phát sinh" FontSize="11" Foreground="#64748B" Margin="0,0,12,0"/>
+                                    <Border Width="12" Height="3" Background="#05CD99" CornerRadius="2" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Nợ thu hồi" FontSize="11" Foreground="#64748B"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Visibility="{Binding LoadingVisibility}" Panel.ZIndex="10" MinHeight="250" Background="White">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Foreground="#4318FF"/>
+                                    <TextBlock Text="Đang vẽ biểu đồ..." FontSize="13" Foreground="#A3AED0" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Grid.Row="1" MinHeight="250">
+                                <lvc:CartesianChart Series="{Binding RevenueChartSeries}" XAxes="{Binding RevenueXAxes}" YAxes="{Binding RevenueYAxes}" Visibility="{Binding RevenueChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition="Hidden"/>
+                                <lvc:CartesianChart Series="{Binding InventoryChartSeries}" XAxes="{Binding InventoryXAxes}" YAxes="{Binding InventoryYAxes}" Visibility="{Binding InventoryChartVisibility}" TooltipPosition="Right" LegendPosition="Hidden"/>
+                                <lvc:CartesianChart Series="{Binding DebtChartSeries}" XAxes="{Binding DebtXAxes}" YAxes="{Binding DebtYAxes}" Visibility="{Binding DebtChartVisibility}" ZoomMode="None" TooltipPosition="Top" LegendPosition="Hidden"/>
+
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding TotalRows}" Value="0">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Style="{StaticResource DashboardCardStyle}" Margin="0,0,0,5" Padding="20,16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="570"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="TableLarge" Width="18" Height="18" Foreground="#4318FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding TableTitle}" FontSize="15" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Tổng cộng: " FontSize="12" Foreground="#A3AED0"/>
+                                    <TextBlock Text="{Binding TotalRows}" FontSize="12" FontWeight="Bold" Foreground="#4318FF"/>
+                                    <TextBlock Text=" dòng" FontSize="12" Foreground="#A3AED0"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Visibility="{Binding ContentVisibility}">
+                                <DataGrid Style="{StaticResource CleanDataGrid}" 
+                                          ItemsSource="{Binding RevenueRows}" Visibility="{Binding RevenueGridVisibility}" 
+                                          PreviewMouseWheel="DataGrid_PreviewMouseWheel"
+                                          CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
+                                          CanUserSortColumns="False" CanUserResizeColumns="False">
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <EventSetter Event="PreviewMouseDown" Handler="DataGridRow_PreviewMouseDown"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#E0E7FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F3F4F6"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Ngày" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}">
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Số hóa đơn" Binding="{Binding InvoiceCount}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}"/>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Số sách bán" Binding="{Binding BooksSold}" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}"/>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Doanh thu gộp" Binding="{Binding TotalAmount, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource RightHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellMoney}">
+                                                    <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Giảm giá" Binding="{Binding Discount, StringFormat='{}{0:#,0} đ'}" Width="130" HeaderStyle="{StaticResource RightHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellRight}">
+                                                    <!--<Setter Property="Foreground" Value="#F59E0B"/>-->
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Doanh thu thuần" Binding="{Binding NetRevenue, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource RightHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellMoney}">
+                                                    <Setter Property="Foreground" Value="ForestGreen"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Tổng vốn" Binding="{Binding TotalCost, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource RightHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellRight}">
+                                                    <Setter Property="Foreground" Value="Red"></Setter>
+                                                    <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Lợi nhuận gộp" Binding="{Binding GrossProfit, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource RightHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellProfit}">
+                                                    <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                    <Setter Property="Foreground" Value="Green"></Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding InventoryRows}" Visibility="{Binding InventoryGridVisibility}" 
+                                          PreviewMouseWheel="DataGrid_PreviewMouseWheel"
+                                          CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
+                                          CanUserSortColumns="False" CanUserResizeColumns="False"
+                                          >
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <EventSetter Event="PreviewMouseDown" Handler="DataGridRow_PreviewMouseDown"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#E0E7FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F3F4F6"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ISBN" Binding="{Binding BookId}" Width="140" HeaderStyle="{StaticResource CenterHeaderStyle}" >
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}">
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Tựa sách" Binding="{Binding BookName}" Width="200" HeaderStyle="{StaticResource LeftHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellLeft}">
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="TextWrapping" Value="Wrap"></Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTemplateColumn Header="Thể loại" Width="140" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border CornerRadius="8" Padding="10,4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <!-- Màu Nền Mặc định (Nếu thể loại không nằm trong danh sách dưới) -->
+                                                                <Setter Property="Background" Value="#F3F4F6"/>
+
+                                                                <Style.Triggers>
+                                                                    <!-- Công nghệ thông tin: Tone Xanh dương -->
+                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Công nghệ thông tin">
+                                                                        <Setter Property="Background" Value="#DBEAFE"/>
+                                                                    </DataTrigger>
+                                                                    <!-- Văn học nghệ thuật: Tone Hồng -->
+                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Văn học nghệ thuật">
+                                                                        <Setter Property="Background" Value="#FCE7F3"/>
+                                                                    </DataTrigger>
+                                                                    <!-- Kinh tế - Quản trị: Tone Xanh ngọc -->
+                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Kinh tế - Quản trị">
+                                                                        <Setter Property="Background" Value="#D1FAE5"/>
+                                                                    </DataTrigger>
+                                                                    <!-- Tâm lý - Kỹ năng sống: Tone Tím -->
+                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Tâm lý - Kỹ năng sống">
+                                                                        <Setter Property="Background" Value="#EDE9FE"/>
+                                                                    </DataTrigger>
+                                                                    <!-- Truyện tranh: Tone Cam/Vàng -->
+                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Truyện tranh">
+                                                                        <Setter Property="Background" Value="#FEF3C7"/>
+                                                                    </DataTrigger>
+                                                                    <!-- Thiếu nhi: Tone Xanh lá nhạt -->
+                                                                    <DataTrigger Binding="{Binding CategoryName}" Value="Thiếu nhi">
+                                                                        <Setter Property="Background" Value="#DCFCE7"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+
+                                                        <!-- ĐỊNH DẠNG MÀU CHỮ BÊN TRONG -->
+                                                        <TextBlock FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <!-- Chữ Mặc định (Xám đậm) -->
+                                                                    <Setter Property="Foreground" Value="#4B5563"/>
+                                                                    <Setter Property="Text" Value="{Binding CategoryName}"/>
+                                                                    <Style.Triggers>
+                                                                        <!-- Công nghệ thông tin -->
+                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Công nghệ thông tin">
+                                                                            <Setter Property="Foreground" Value="#1D4ED8"/>
+                                                                        </DataTrigger>
+                                                                        <!-- Văn học nghệ thuật -->
+                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Văn học nghệ thuật">
+                                                                            <Setter Property="Foreground" Value="#BE185D"/>
+                                                                        </DataTrigger>
+                                                                        <!-- Kinh tế - Quản trị -->
+                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Kinh tế - Quản trị">
+                                                                            <Setter Property="Foreground" Value="#047857"/>
+                                                                        </DataTrigger>
+                                                                        <!-- Tâm lý - Kỹ năng sống -->
+                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Tâm lý - Kỹ năng sống">
+                                                                            <Setter Property="Foreground" Value="#6D28D9"/>
+                                                                        </DataTrigger>
+                                                                        <!-- Truyện tranh -->
+                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Truyện tranh">
+                                                                            <Setter Property="Foreground" Value="#B45309"/>
+                                                                        </DataTrigger>
+                                                                        <!-- Thiếu nhi -->
+                                                                        <DataTrigger Binding="{Binding CategoryName}" Value="Thiếu nhi">
+                                                                            <Setter Property="Foreground" Value="#15803D"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Tồn đầu" Binding="{Binding OpeningQty}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}">
+                                                    <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Nhập" Binding="{Binding ImportedQty}" Width="90" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Xuất" Binding="{Binding SoldQty}" Width="110" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Tồn cuối" Binding="{Binding ClosingQty}" Width="120" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellCenter}">
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Giá trị tồn" Binding="{Binding StockValue, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource RightHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellMoney}">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                    <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding DebtRows}" Visibility="{Binding DebtGridVisibility}" 
+                                          PreviewMouseWheel="DataGrid_PreviewMouseWheel"
+                                          CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
+                                          CanUserSortColumns="False" CanUserResizeColumns="False"
+                                          HorizontalAlignment="Center">
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <EventSetter Event="PreviewMouseDown" Handler="DataGridRow_PreviewMouseDown"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#E0E7FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F3F4F6"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Tên khách hàng" Binding="{Binding CustomerName}" Width="2*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellLeft}">
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Nợ đầu" Binding="{Binding OpeningDebt, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellMoney}">
+                                                </Style>
+                                                
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Phát sinh" Binding="{Binding NewDebt, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellDebt}"/>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Thu hồi" Binding="{Binding PaidDebt, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CellProfit}"/>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Nợ cuối" Binding="{Binding ClosingDebt, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="Margin" Value="8,0,12,0"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                    <Setter Property="FontSize" Value="14"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasDebt}" Value="True">
+                                                            <Setter Property="Foreground" Value="Red"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding HasDebt}" Value="False">
+                                                            <Setter Property="Foreground" Value="Green"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
+                                                                Value="True">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="2" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" Margin="0,0,4,0">
+                                <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
+                            </Button>
+                            <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" Margin="0,0,8,0">
+                                <materialDesign:PackIcon Kind="ChevronLeft" Width="16" Height="16" Foreground="#A3AED0"/>
+                            </Button>
+
+                            <ItemsControl ItemsSource="{Binding PageNumbers}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding}" Margin="0,0,4,0" Style="{StaticResource PaginationButtonStyle}"
+                                        Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" Margin="8,0,0,0">
+                                <materialDesign:PackIcon Kind="ChevronRight" Width="16" Height="16" Foreground="#A3AED0"/>
+                            </Button>
+                            <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" Margin="4,0,0,0">
+                                <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
+                            </Button>
+
+                            <TextBlock Text="{Binding CurrentPage, StringFormat='Trang {0}'}" FontSize="12" Foreground="#A3AED0" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

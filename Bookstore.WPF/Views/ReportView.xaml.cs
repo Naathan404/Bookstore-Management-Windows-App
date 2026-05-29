@@ -24,5 +24,41 @@ namespace Bookstore.WPF.Views
         {
             InitializeComponent();
         }
+
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.Source = sender;
+
+                // Tìm ScrollViewer tổ tiên gần nhất
+                DependencyObject parent = VisualTreeHelper.GetParent(sender as DependencyObject);
+                while (parent != null && !(parent is ScrollViewer))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+
+                if (parent is ScrollViewer scrollViewer)
+                {
+                    scrollViewer.RaiseEvent(eventArg);
+                }
+            }
+        }
+
+        private void DataGridRow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow row)
+            {
+                if (row.IsSelected)
+                {
+                    row.IsSelected = false;
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }

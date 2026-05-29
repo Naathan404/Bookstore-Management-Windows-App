@@ -34,7 +34,7 @@ namespace Bookstore.WPF
                       .AddDefaultMappers()
                       .AddLightTheme()
             );
-
+            
             //var login = new LoginView();
             //login.Show();
             // Thử DashboardView

@@ -59,6 +59,24 @@
             </Setter>
         </Style>
 
+        <Style x:Key="OutlineExcelButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="Green"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" BorderBrush="Green" BorderThickness="1.5" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="MiniAddButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="28"/>
             <Setter Property="Height" Value="28"/>
@@ -165,9 +183,9 @@
                                 <TextBlock Text="THÊM"/>
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource OutlineButtonStyle}" CommandParameter="{Binding}" Width="120" Command="{Binding ExportExcelCommand}">
+                        <Button Style="{StaticResource OutlineExcelButtonStyle}" CommandParameter="{Binding}" Width="120" Command="{Binding ExportExcelCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="#4318FF" Margin="0,0,6,0"/>
+                                <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="Green" Margin="0,0,6,0"/>
                                 <TextBlock Text="XUẤT EXCEL"/>
                             </StackPanel>
                         </Button>
@@ -534,6 +552,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"></Setter>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding SoLuongTonKho}" Value="0">
                                             <Setter Property="Foreground" Value="#EF4444"/>
@@ -551,8 +570,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="#10B981"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
@@ -564,6 +582,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Right"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"></Setter>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
@@ -575,8 +594,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Right"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="#4318FF"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
@@ -621,10 +639,10 @@
             <!-- Card 4: Pagination -->
             <Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" Margin="0,0,4,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" CommandParameter="{Binding}" Margin="0,0,4,0">
                         <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" Margin="0,0,8,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" CommandParameter="{Binding}" Margin="0,0,8,0">
                         <materialDesign:PackIcon Kind="ChevronLeft" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
 
@@ -643,10 +661,10 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" Margin="8,0,0,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" CommandParameter="{Binding}" Margin="8,0,0,0">
                         <materialDesign:PackIcon Kind="ChevronRight" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" Margin="4,0,0,0">
+                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" CommandParameter="{Binding}" Margin="4,0,0,0">
                         <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
 
@@ -905,7 +923,7 @@
                                         <Grid>
                                             <TextBlock Text="Mô tả nội dung" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
                                             <TextBox Text="{Binding EditingBook.MoTa}" FontSize="13" Foreground="#4B5563" BorderThickness="0" 
-                             Margin="10,22,10,10" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                                    Margin="10,22,10,10" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
                                         </Grid>
                                     </Border>
                                 </Grid>
@@ -1022,14 +1040,28 @@
                                             </Grid.ColumnDefinitions>
                                             <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
                                                 <Grid>
-                                                    <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                    <TextBox Text="{Binding EditingBook.GiaNiemYet}" FontSize="14" FontWeight="SemiBold" Foreground="#4318FF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                                    <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                         Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.GiaNiemYet, Mode=TwoWay,
+                                                        UpdateSourceTrigger=PropertyChanged}"
+                                                         FontSize="14" FontWeight="SemiBold" Foreground="#4318FF"
+                                                         BorderThickness="0" Background="Transparent"
+                                                         VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                         HorizontalContentAlignment="Right"/>
                                                 </Grid>
                                             </Border>
-                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+
+                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                                                    BorderThickness="1.5" Height="46">
                                                 <Grid>
-                                                    <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                    <TextBox Text="{Binding EditingBook.DonGiaBan}" FontSize="14" FontWeight="SemiBold" Foreground="#10B981" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                                    <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                        Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.DonGiaBan, Mode=TwoWay,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                     FontSize="14" FontWeight="SemiBold" Foreground="#10B981"
+                                                     BorderThickness="0" Background="Transparent"
+                                                     VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                     HorizontalContentAlignment="Right"/>
                                                 </Grid>
                                             </Border>
                                         </Grid>
@@ -1466,19 +1498,33 @@
                                         <ColumnDefinition Width="15"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
-                                        <Grid>
-                                            <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                            <TextBox Text="{Binding EditingBook.GiaNiemYet}" FontSize="14" FontWeight="SemiBold" Foreground="#4318FF" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
+                                            <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
+                                                <Grid>
+                                                    <TextBlock Text="Giá Niêm Yết (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                         Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.GiaNiemYet, Mode=TwoWay,
+                                                        UpdateSourceTrigger=PropertyChanged}"
+                                                         FontSize="14" FontWeight="SemiBold" Foreground="#4318FF"
+                                                         BorderThickness="0" Background="Transparent"
+                                                         VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                         HorizontalContentAlignment="Right"/>
+                                                </Grid>
+                                            </Border>
+
+                                            <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                                                    BorderThickness="1.5" Height="46">
+                                                <Grid>
+                                                    <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0"
+                                                        Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                                    <TextBox Text="{Binding EditingBook.DonGiaBan, Mode=TwoWay,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                     FontSize="14" FontWeight="SemiBold" Foreground="#10B981"
+                                                     BorderThickness="0" Background="Transparent"
+                                                     VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"
+                                                     HorizontalContentAlignment="Right"/>
+                                                </Grid>
+                                            </Border>
                                         </Grid>
-                                    </Border>
-                                    <Border Grid.Column="2" CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="46">
-                                        <Grid>
-                                            <TextBlock Text="Đơn giá bán (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                            <TextBox Text="{Binding EditingBook.DonGiaBan}" FontSize="14" FontWeight="SemiBold" Foreground="#10B981" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0" HorizontalContentAlignment="Right"/>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
 
                                 <!-- Dòng 4: Tồn kho & Đã bán -->
                                 <Grid>

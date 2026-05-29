@@ -123,7 +123,7 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<KhachHang>()
-                .HasOne<LoaiKhachHang>().WithMany().HasForeignKey(k => k.MaLoaiKhachHang)
+                .HasOne(k => k.LoaiKhachHang).WithMany().HasForeignKey(k => k.MaLoaiKhachHang)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UuDai>()
@@ -355,7 +355,7 @@ namespace Bookstore.API.Data
             /// Tham số
             /// đã đủ
             modelBuilder.Entity<ThamSo>().HasData(
-                new ThamSo { TenThamSo = "TiLeTinhdonGiaBan", GiaTri = 110 },
+                new ThamSo { TenThamSo = "TiLeDonGiaBan", GiaTri = 110 },
                 new ThamSo { TenThamSo = "SoLuongNhapToiThieu", GiaTri = 150 },
                 new ThamSo { TenThamSo = "SoLuongTonToiDaCoTheNhap", GiaTri = 300 },
                 new ThamSo { TenThamSo = "SoLuongUuDaiToiThieu", GiaTri=1},

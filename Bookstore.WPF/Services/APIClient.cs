@@ -51,7 +51,9 @@ namespace Bookstore.WPF.Services
             var response = await _httpClient.PostAsJsonAsync(endpoint, data);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadFromJsonAsync<TResponse>();
-            return default;
+
+            string error = await response.Content.ReadAsStringAsync();
+            throw new Exception(error);
         }
 
         /// <summary>
@@ -130,5 +132,42 @@ namespace Bookstore.WPF.Services
 
             return null; 
         }
+
+        /// <summary>
+        /// PUT API (Sửa dữ liệu, Trả về Object)
+        /// </summary>
+        public static async Task<TResponse> PutAsync<TRequest, TResponse>(string endpoint, TRequest data)
+        {
+            var response = await _httpClient.PutAsJsonAsync(endpoint, data);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadFromJsonAsync<TResponse>();
+
+            // Đọc lỗi từ API
+            string error = await response.Content.ReadAsStringAsync();
+            throw new Exception(error);
+        }
+
+        /// <summary>
+        /// DELETE API (Xóa dữ liệu)
+        /// </summary>
+        public static async Task<bool> DeleteAsync(string endpoint)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync(endpoint);
+                
+                if (response.IsSuccessStatusCode)
+                    return true;
+
+                // Nếu Backend chặn không cho xóa (vd: Đã có hóa đơn, Còn nợ...)
+                string errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception(errorContent);
+            }
+            catch (HttpRequestException)
+            {
+                throw new Exception("Không thể kết nối đến máy chủ.");
+            }
+        }
+
     }
 }

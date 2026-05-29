@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508193546_UpdateKhachHang")]
+    partial class UpdateKhachHang
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -472,9 +475,6 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<decimal>("DonGia")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("GiaVon")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("SoLuong")
                         .HasColumnType("int");
 
@@ -490,7 +490,6 @@ namespace Bookstore.API.Data.Migrations
                             MaHoaDon = 1,
                             ISBN = "978-604-1-09887-1",
                             DonGia = 110000m,
-                            GiaVon = 100000m,
                             SoLuong = 1
                         },
                         new
@@ -498,7 +497,6 @@ namespace Bookstore.API.Data.Migrations
                             MaHoaDon = 2,
                             ISBN = "978-0132350884",
                             DonGia = 450000m,
-                            GiaVon = 440000m,
                             SoLuong = 2
                         },
                         new
@@ -506,7 +504,6 @@ namespace Bookstore.API.Data.Migrations
                             MaHoaDon = 3,
                             ISBN = "978-604-2-11111-1",
                             DonGia = 20000m,
-                            GiaVon = 18000m,
                             SoLuong = 5
                         },
                         new
@@ -514,7 +511,6 @@ namespace Bookstore.API.Data.Migrations
                             MaHoaDon = 3,
                             ISBN = "978-604-56-7890-1",
                             DonGia = 150000m,
-                            GiaVon = 140000m,
                             SoLuong = 6
                         });
                 });
@@ -530,12 +526,22 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<decimal>("DonGiaNhap")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("PhienBanSachISBN")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("PhieuNhapSachMaPhieuNhapSach")
+                        .HasColumnType("int");
+
                     b.Property<int>("SoLuong")
                         .HasColumnType("int");
 
                     b.HasKey("MaPhieuNhapSach", "ISBN");
 
                     b.HasIndex("ISBN");
+
+                    b.HasIndex("PhienBanSachISBN");
+
+                    b.HasIndex("PhieuNhapSachMaPhieuNhapSach");
 
                     b.ToTable("CT_PhieuNhapSach");
 
@@ -629,24 +635,18 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaChucNang = 8,
-                            TenChucNang = "Danh mục",
-                            TenManHinh = "CategoryView"
-                        },
-                        new
-                        {
-                            MaChucNang = 9,
                             TenChucNang = "Báo cáo",
                             TenManHinh = "ReportView"
                         },
                         new
                         {
-                            MaChucNang = 10,
+                            MaChucNang = 9,
                             TenChucNang = "Tài khoản",
                             TenManHinh = "AccountView"
                         },
                         new
                         {
-                            MaChucNang = 11,
+                            MaChucNang = 10,
                             TenChucNang = "Cài đặt",
                             TenManHinh = "SettingView"
                         });
@@ -671,7 +671,7 @@ namespace Bookstore.API.Data.Migrations
 
                     b.Property<string>("NguoiTao")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("SoTienTra")
                         .HasColumnType("decimal(18,2)");
@@ -688,8 +688,6 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaHoaDon");
 
                     b.HasIndex("MaKhachHang");
-
-                    b.HasIndex("NguoiTao");
 
                     b.ToTable("HoaDon");
 
@@ -807,6 +805,9 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<int>("GioiTinh")
                         .HasColumnType("int");
 
+                    b.Property<int?>("LoaiKhachHangMaLoaiKhachHang")
+                        .HasColumnType("int");
+
                     b.Property<int>("MaLoaiKhachHang")
                         .HasColumnType("int");
 
@@ -841,6 +842,8 @@ namespace Bookstore.API.Data.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("LoaiKhachHangMaLoaiKhachHang");
 
                     b.HasIndex("MaLoaiKhachHang");
 
@@ -1061,7 +1064,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521186@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7307),
+                            HanOTP = new DateTime(2026, 5, 9, 2, 35, 44, 224, DateTimeKind.Local).AddTicks(5964),
                             HoTen = "Nguyễn Chí Nguyên",
                             MaNhomNguoiDung = 1,
                             MaOTP = "",
@@ -1076,7 +1079,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24520604@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7327),
+                            HanOTP = new DateTime(2026, 5, 9, 2, 35, 44, 224, DateTimeKind.Local).AddTicks(5983),
                             HoTen = "Nguyễn Gia Hưng",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1091,7 +1094,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521432@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7329),
+                            HanOTP = new DateTime(2026, 5, 9, 2, 35, 44, 224, DateTimeKind.Local).AddTicks(5987),
                             HoTen = "Lê Hoàng Quân",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1106,7 +1109,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521536@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7331),
+                            HanOTP = new DateTime(2026, 5, 9, 2, 35, 44, 224, DateTimeKind.Local).AddTicks(5990),
                             HoTen = "Phạm Hoàng Sơn",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1121,7 +1124,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521360@g.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7332),
+                            HanOTP = new DateTime(2026, 5, 9, 2, 35, 44, 224, DateTimeKind.Local).AddTicks(5993),
                             HoTen = "Nguyễn Lưu Văn Phú",
                             MaNhomNguoiDung = 2,
                             MaOTP = "",
@@ -1375,11 +1378,6 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaChucNang = 11,
-                            MaNhomNguoiDung = 1
-                        },
-                        new
-                        {
                             MaChucNang = 1,
                             MaNhomNguoiDung = 3
                         },
@@ -1415,11 +1413,6 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaChucNang = 9,
-                            MaNhomNguoiDung = 3
-                        },
-                        new
-                        {
                             MaChucNang = 2,
                             MaNhomNguoiDung = 2
                         },
@@ -1431,11 +1424,6 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaChucNang = 4,
-                            MaNhomNguoiDung = 2
-                        },
-                        new
-                        {
-                            MaChucNang = 8,
                             MaNhomNguoiDung = 2
                         });
                 });
@@ -1467,6 +1455,9 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<int>("NamXuatBan")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SachMaSach")
+                        .HasColumnType("int");
+
                     b.Property<int>("TonKho")
                         .HasColumnType("int");
 
@@ -1478,6 +1469,8 @@ namespace Bookstore.API.Data.Migrations
                     b.HasIndex("MaNhaXuatBan");
 
                     b.HasIndex("MaSach");
+
+                    b.HasIndex("SachMaSach");
 
                     b.ToTable("PhienBanSach");
 
@@ -1878,10 +1871,6 @@ namespace Bookstore.API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhieuThuTien"));
 
-                    b.Property<string>("LyDoThu")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("MaKhachHang")
                         .HasColumnType("int");
 
@@ -1905,7 +1894,6 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaPhieuThuTien = 1,
-                            LyDoThu = "Thu tiền cho hóa đơn còn thiếu",
                             MaKhachHang = 2,
                             NgayTao = new DateTime(2024, 5, 5, 17, 0, 0, 0, DateTimeKind.Unspecified),
                             NguoiTao = "phunlv",
@@ -2406,7 +2394,7 @@ namespace Bookstore.API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            TenThamSo = "TiLeDonGiaBan",
+                            TenThamSo = "TiLeTinhdonGiaBan",
                             GiaTri = 110
                         },
                         new
@@ -2772,36 +2760,40 @@ namespace Bookstore.API.Data.Migrations
 
             modelBuilder.Entity("Bookstore.API.Models.CT_HoaDon", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.PhienBanSach", "PhienBanSach")
+                    b.HasOne("Bookstore.API.Models.PhienBanSach", null)
                         .WithMany()
                         .HasForeignKey("ISBN")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.HoaDon", "HoaDon")
-                        .WithMany("ChiTietHoaDons")
+                    b.HasOne("Bookstore.API.Models.HoaDon", null)
+                        .WithMany()
                         .HasForeignKey("MaHoaDon")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("HoaDon");
-
-                    b.Navigation("PhienBanSach");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.CT_PhieuNhapSach", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.PhienBanSach", "PhienBanSach")
+                    b.HasOne("Bookstore.API.Models.PhienBanSach", null)
                         .WithMany()
                         .HasForeignKey("ISBN")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.PhieuNhapSach", "PhieuNhapSach")
-                        .WithMany("CT_PhieuNhapSach")
+                    b.HasOne("Bookstore.API.Models.PhieuNhapSach", null)
+                        .WithMany()
                         .HasForeignKey("MaPhieuNhapSach")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Bookstore.API.Models.PhienBanSach", "PhienBanSach")
+                        .WithMany()
+                        .HasForeignKey("PhienBanSachISBN");
+
+                    b.HasOne("Bookstore.API.Models.PhieuNhapSach", "PhieuNhapSach")
+                        .WithMany("CT_PhieuNhapSach")
+                        .HasForeignKey("PhieuNhapSachMaPhieuNhapSach");
 
                     b.Navigation("PhienBanSach");
 
@@ -2810,21 +2802,11 @@ namespace Bookstore.API.Data.Migrations
 
             modelBuilder.Entity("Bookstore.API.Models.HoaDon", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.KhachHang", "KhachHang")
+                    b.HasOne("Bookstore.API.Models.KhachHang", null)
                         .WithMany()
                         .HasForeignKey("MaKhachHang")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Bookstore.API.Models.NguoiDung", "NguoiDung")
-                        .WithMany()
-                        .HasForeignKey("NguoiTao")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("KhachHang");
-
-                    b.Navigation("NguoiDung");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.HoaDon_UuDai", b =>
@@ -2850,6 +2832,10 @@ namespace Bookstore.API.Data.Migrations
             modelBuilder.Entity("Bookstore.API.Models.KhachHang", b =>
                 {
                     b.HasOne("Bookstore.API.Models.LoaiKhachHang", "LoaiKhachHang")
+                        .WithMany()
+                        .HasForeignKey("LoaiKhachHangMaLoaiKhachHang");
+
+                    b.HasOne("Bookstore.API.Models.LoaiKhachHang", null)
                         .WithMany()
                         .HasForeignKey("MaLoaiKhachHang")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2896,11 +2882,15 @@ namespace Bookstore.API.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.Sach", "Sach")
+                    b.HasOne("Bookstore.API.Models.Sach", null)
                         .WithMany()
                         .HasForeignKey("MaSach")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Bookstore.API.Models.Sach", "Sach")
+                        .WithMany()
+                        .HasForeignKey("SachMaSach");
 
                     b.Navigation("NhaXuatBan");
 
@@ -2928,43 +2918,35 @@ namespace Bookstore.API.Data.Migrations
 
             modelBuilder.Entity("Bookstore.API.Models.PhieuThuTien", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.KhachHang", "KhachHang")
+                    b.HasOne("Bookstore.API.Models.KhachHang", null)
                         .WithMany()
                         .HasForeignKey("MaKhachHang")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("KhachHang");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.Sach", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.TheLoai", "TheLoai")
+                    b.HasOne("Bookstore.API.Models.TheLoai", null)
                         .WithMany()
                         .HasForeignKey("MaTheLoai")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("TheLoai");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.TacGia_Sach", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.Sach", "Sach")
+                    b.HasOne("Bookstore.API.Models.Sach", null)
                         .WithMany()
                         .HasForeignKey("MaSach")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.TacGia", "TacGia")
+                    b.HasOne("Bookstore.API.Models.TacGia", null)
                         .WithMany()
                         .HasForeignKey("MaTacGia")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Sach");
-
-                    b.Navigation("TacGia");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.UuDai", b =>
@@ -3015,11 +2997,6 @@ namespace Bookstore.API.Data.Migrations
             modelBuilder.Entity("Bookstore.API.Models.ChucNang", b =>
                 {
                     b.Navigation("PhanQuyens");
-                });
-
-            modelBuilder.Entity("Bookstore.API.Models.HoaDon", b =>
-                {
-                    b.Navigation("ChiTietHoaDons");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.NhomNguoiDung", b =>

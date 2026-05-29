@@ -10,127 +10,6 @@
              Background="#F4F7FE"
              Unloaded="UserControl_Unloaded">
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/XAMLRes/SharedStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-
-            <Style x:Key="DashboardCardStyle" TargetType="Border">
-                <Setter Property="Background" Value="White"/>
-                <Setter Property="CornerRadius" Value="16"/>
-                <Setter Property="BorderBrush" Value="#E2E8F0"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Padding" Value="20"/>
-                <Setter Property="Margin" Value="0,0,0,15"/>
-            </Style>
-
-
-            <Style TargetType="DataGrid" x:Key="CleanDataGrid">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="AutoGenerateColumns" Value="False"/>
-                <Setter Property="IsReadOnly" Value="True"/>
-                <Setter Property="HeadersVisibility" Value="Column"/>
-                <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-                <Setter Property="HorizontalGridLinesBrush" Value="#E2E8F0"/>
-                <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
-                <Setter Property="Foreground" Value="#2B3674"/>
-                <Setter Property="FontSize" Value="13"/>
-                <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
-                <Setter Property="RowBackground" Value="White"/>
-                <Setter Property="CanUserSortColumns" Value="False"/>
-                <Setter Property="SelectionMode" Value="Single"/>
-                <Setter Property="SelectionUnit" Value="FullRow"/>
-                <Setter Property="MinRowHeight" Value="30"/>
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-                <Setter Property="CanUserAddRows" Value="False"/>
-                <Setter Property="CanUserDeleteRows" Value="False"/>
-                <Setter Property="CanUserResizeColumns" Value="False"/>
-                <Setter Property="CanUserResizeRows" Value="False"/>
-                <Setter Property="CanUserReorderColumns" Value="False"/>
-                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
-                <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
-                <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
-            </Style>
-
-
-            <!-- Style Mặc định cho Header-->
-            <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
-                <Style.Triggers>
-                    <Trigger Property="Orientation" Value="Vertical">
-                        <Setter Property="LayoutTransform">
-                            <Setter.Value>
-                                <ScaleTransform ScaleX="0.4"/>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="Margin" Value="0,0,2,0"/>
-                    </Trigger>
-
-                    <Trigger Property="Orientation" Value="Horizontal">
-                        <Setter Property="LayoutTransform">
-                            <Setter.Value>
-                                <ScaleTransform ScaleY="0.4"/>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="Margin" Value="0,0,0,2"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style TargetType="DataGridColumnHeader">
-                <Setter Property="Background" Value="#F8FAFC"/>
-                <Setter Property="Foreground" Value="#2B3674"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="FontSize" Value="13"/>
-                <Setter Property="Height" Value="44"/>
-                <Setter Property="BorderBrush" Value="#E2E8F0"/>
-                <Setter Property="BorderThickness" Value="0,0,0,2"/>
-                <Setter Property="Padding" Value="12,0"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-            </Style>
-
-            <Style TargetType="TextBlock" x:Key="CellText">
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="Foreground" Value="#A3AED0"/>
-            </Style>
-
-            <!-- Style Header-->
-            <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            </Style>
-
-            <!-- Style Header -->
-            <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            </Style>
-
-            <Style TargetType="DataGridCell">
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                <Setter Property="Padding" Value="12,0"/>
-                <!-- Đệm lề-->
-            </Style>
-            <Style TargetType="DataGridRow">
-                <Setter Property="Background" Value="Transparent"/>
-                <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Background" Value="#E0E7FF"/>
-                    </Trigger>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#F3F4F6"/>
-                        <Setter Property="Cursor" Value="Hand"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="90"/>
@@ -170,7 +49,7 @@
                                             <TextBlock Text="Doanh thu" Foreground="#A3AED0" FontSize="12" FontWeight="Bold"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                                 <TextBlock Text="{Binding Sale, StringFormat='{}{0:#,0} đ'}" Foreground="#2B3674" FontSize="18" FontWeight="Bold"/>
-                                                <materialDesign:PackIcon Kind="{Binding SaleChangeIcon}" Foreground="#05CD99" VerticalAlignment="Bottom" Margin="8,0,2,3" Width="18" Height="18"/>
+                                                <materialDesign:PackIcon Kind="{Binding SaleChangeIcon}" Foreground="{Binding SaleChangeColor}" VerticalAlignment="Bottom" Margin="8,0,2,3" Width="18" Height="18"/>
                                                 <TextBlock Text="{Binding SaleChangeText}" Foreground="{Binding SaleChangeColor}" FontSize="13" VerticalAlignment="Bottom" FontWeight="Bold" Margin="0,0,0,3"/>
                                             </StackPanel>
                                         </StackPanel>
@@ -251,7 +130,7 @@
                             <Border Grid.Column="0" Style="{StaticResource DashboardCardStyle}" Margin="0,0,10,0" Height="360">
                                 <StackPanel>
                                     <TextBlock Text="XU HƯỚNG TĂNG TRƯỞNG DOANH THU" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,15"/>
-                                    <lvc:CartesianChart x:Name="ChartRevenue" Series="{Binding RevenueSeries}" Height="290"/>
+                                    <lvc:CartesianChart x:Name="ChartRevenue" Series="{Binding RevenueSeries}" Height="290" Margin="-10 0 -5 0"/>
                                 </StackPanel>
                             </Border>
                             <Border Grid.Column="1" Style="{StaticResource DashboardCardStyle}" Height="360" Margin="0 10 0 15">
@@ -804,5 +683,37 @@
                 </ScrollViewer>
             </TabItem>
         </TabControl>
+
+        <Border Grid.Row="1" Background="#F4F7FE" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="15,15,15,0">
+                    <UniformGrid Columns="4" Margin="0,0,0,20">
+                        <Border Height="80" Style="{StaticResource SkeletonPulseStyle}" Margin="0,0,10,0"/>
+                        <Border Height="80" Style="{StaticResource SkeletonPulseStyle}" Margin="0,0,10,0"/>
+                        <Border Height="80" Style="{StaticResource SkeletonPulseStyle}" Margin="0,0,10,0"/>
+                        <Border Height="80" Style="{StaticResource SkeletonPulseStyle}" Margin="0,0,0,0"/>
+                    </UniformGrid>
+
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.6*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Height="360" Style="{StaticResource SkeletonPulseStyle}" Margin="0,0,10,0"/>
+                        <Border Grid.Column="1" Height="360" Style="{StaticResource SkeletonPulseStyle}"/>
+                    </Grid>
+
+                    <Border Height="400" Style="{StaticResource SkeletonPulseStyle}" Margin="0,0,0,20"/>
+
+                    <UniformGrid Columns="5">
+                        <Border Height="180" Style="{StaticResource SkeletonPulseStyle}" Margin="5"/>
+                        <Border Height="180" Style="{StaticResource SkeletonPulseStyle}" Margin="5"/>
+                        <Border Height="180" Style="{StaticResource SkeletonPulseStyle}" Margin="5"/>
+                        <Border Height="180" Style="{StaticResource SkeletonPulseStyle}" Margin="5"/>
+                        <Border Height="180" Style="{StaticResource SkeletonPulseStyle}" Margin="5"/>
+                    </UniformGrid>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </UserControl>

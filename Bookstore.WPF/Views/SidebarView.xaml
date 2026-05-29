@@ -163,7 +163,7 @@
                              Command="{Binding ShowBaoCaoCommand}"
                              CommandParameter="Report">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ChartBar" Width="22" Height="22" Margin="0,0,15,0"/>
+                        <materialDesign:PackIcon Kind="ChartAreaspline" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Báo cáo" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
@@ -184,7 +184,8 @@
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsSettingVisible}"
                              IsChecked="{Binding IsSettingChecked}"
-                             Command="{Binding ShowCaiDatCommand}">
+                             Command="{Binding ShowCaiDatCommand}"
+                             CommandParameter="{Binding}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Cog" Width="22" Height="22" Margin="0,0,15,0"/>
                         <TextBlock Text="Cài đặt" VerticalAlignment="Center"/>
@@ -194,7 +195,7 @@
         </ScrollViewer>
 
         <!-- footer -->
-        <Button Grid.Row="2" Content="Đăng xuất" Command="{Binding LogoutCommand}" CommandParameter="LogOut"
+        <Button Grid.Row="2" Content="Đăng xuất" Command="{Binding LogoutCommand}" CommandParameter="{Binding}"
                 Height="45" Width="180" FontSize="15" FontWeight="Bold" 
                 Background="#6344FF" BorderBrush="#6344FF" Foreground="White" 
                 materialDesign:ButtonAssist.CornerRadius="20">
