@@ -4,13 +4,14 @@ using Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace Bookstore.API.Controllers
 {
     [ApiController]
-    [Route("api/[controler]")]
+    [Route("api/[controller]")]
     public class PhieuThuController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -43,19 +44,19 @@ namespace Bookstore.API.Controllers
 
             if (startDate.HasValue)
             {
-                query.Where(p => p.NgayTao >=  startDate.Value.Date);
+                query = query.Where(p => p.NgayTao >=  startDate.Value.Date);
             }
             if (endDate.HasValue)
             {
-                query.Where(p => p.NgayTao  <= endDate.Value.Date.AddDays(1));
+                query = query.Where(p => p.NgayTao  <= endDate.Value.Date.AddDays(1));
             }
             if (!string.IsNullOrWhiteSpace(nguoiTao))
             {
-                query.Where(p => p.NguoiTao.Equals(nguoiTao));
+                query = query.Where(p => p.NguoiTao.Equals(nguoiTao));
             }
             if (khachHang.HasValue)
             {
-                query.Where(p => p.MaKhachHang ==  khachHang.Value);
+                query = query.Where(p => p.MaKhachHang ==  khachHang.Value);
             }
 
             var result = await query
@@ -124,7 +125,17 @@ namespace Bookstore.API.Controllers
             await _context.PhieuThuTien.AddAsync(newPhieuThu);
             await _context.SaveChangesAsync();
 
-            ReceiptResponse response = MapToReceipResponse.Compile().Invoke(newPhieuThu);
+            ReceiptResponse response = new ReceiptResponse
+            {
+                MaPhieuThuTien = newPhieuThu.MaPhieuThuTien,
+                NgayTao = newPhieuThu.NgayTao,
+                NguoiTao = newPhieuThu.NguoiTao,
+                TenNguoiTao = nguoiDung.HoTen,
+                MaKhachHang = newPhieuThu.MaKhachHang,
+                TenKhachHang = khachHang.TenKhachHang,
+                SoTienThu = newPhieuThu.SoTienThu,
+                LyDoThu = newPhieuThu.LyDoThu
+            };
             return Ok(response);
         }
 
@@ -154,15 +165,6 @@ namespace Bookstore.API.Controllers
                 return BadRequest(new { Message = "Khách hàng mới không có nợ" }); 
             }
 
-            var tsTienThuLonHonNo = await _context.ThamSo.FindAsync("TienThuLonHonNo");
-            bool tienThuLonHonNo = (tsTienThuLonHonNo == null || tsTienThuLonHonNo.GiaTri == 1);
-
-            if (!tienThuLonHonNo && request.SoTienThu > khachHangMoi.TienNo)
-            {
-                return BadRequest(new { Message = "Tiền thu không được lớn hơn nợ" });
-            }
-
-            khachHangMoi.TienNo -= request.SoTienThu;
             if (request.MaKhachHang == phieuThu.MaKhachHang)
             {
                 khachHangMoi.TienNo += phieuThu.SoTienThu;
@@ -177,6 +179,15 @@ namespace Bookstore.API.Controllers
 
                 khachHangCu.TienNo += phieuThu.SoTienThu;
             }
+
+            var tsTienThuLonHonNo = await _context.ThamSo.FindAsync("TienThuLonHonNo");
+            bool tienThuLonHonNo = (tsTienThuLonHonNo == null || tsTienThuLonHonNo.GiaTri == 1);
+
+            if (!tienThuLonHonNo && request.SoTienThu > khachHangMoi.TienNo)
+            {
+                return BadRequest(new { Message = "Tiền thu không được lớn hơn nợ" });
+            }
+            khachHangMoi.TienNo -= request.SoTienThu;
 
             phieuThu.NguoiTao = request.NguoiTao;
             phieuThu.MaKhachHang = request.MaKhachHang;
@@ -207,7 +218,7 @@ namespace Bookstore.API.Controllers
             _context.PhieuThuTien.Remove(phieuThu);
             await _context.SaveChangesAsync();
 
-            message = "Đã xóa phiếu thu";
+            if (message.IsNullOrEmpty()) message = "Đã xóa phiếu thu";
 
             return Ok(new { Message = message });
         }
