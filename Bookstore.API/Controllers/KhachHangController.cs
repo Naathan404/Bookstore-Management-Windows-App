@@ -23,7 +23,7 @@ namespace Bookstore.API.Controllers
         {
             return k => new CustomerResponse
             {
-                MaKhachHang = k.MaKhachHang.ToString(),
+                MaKhachHang = k.MaKhachHang,
                 TenKhachHang = k.TenKhachHang,
                 SoDienThoai = k.SoDienThoai,
                 Email = k.Email,
@@ -31,8 +31,11 @@ namespace Bookstore.API.Controllers
                 MaSoThue = k.MaSoThue,
                 LoaiKhach = (k.LoaiKhachHang != null) ? k.LoaiKhachHang.TenLoaiKhachHang : "Khách vãng lai",
                 GioiTinh = (k.GioiTinh == 0) ? "Nam" : "Nữ",
-                NgaySinh = k.NgaySinh.ToDateTime(TimeOnly.MinValue),
-                CongNo = (long)k.TienNo
+                NgaySinh = k.NgaySinh.HasValue
+                   ? (DateTime?)k.NgaySinh.Value.ToDateTime(TimeOnly.MinValue)
+                   : null,
+                CongNo = (long)k.TienNo,
+                NgayTao = k.NgayTao
             };
         }
 
@@ -52,22 +55,36 @@ namespace Bookstore.API.Controllers
             };
         }
 
-        private Task<(bool IsValid, string Message)> CheckUniqueCustomer(CustomerRequest request, int? excludeId = null)
+        private async Task<(bool IsValid, string Message)> CheckUniqueCustomer(CustomerRequest request, int? excludeId = null)
         {
-            var query = _context.KhachHang.AsQueryable();
-            if (request.SoDienThoai != null)
+            if (!string.IsNullOrWhiteSpace(request.SoDienThoai))
             {
-                query = query.Where(k => k.SoDienThoai == request.SoDienThoai && (!excludeId.HasValue || k.MaKhachHang != excludeId.Value));
+                bool isPhoneExist = await _context.KhachHang
+                    .AnyAsync(k => k.SoDienThoai == request.SoDienThoai &&
+                                  (!excludeId.HasValue || k.MaKhachHang != excludeId.Value));
+
+                if (isPhoneExist) return (false, "Số điện thoại này đã tồn tại trong hệ thống.");
             }
-            if (request.Email != null)
+
+            if (!string.IsNullOrWhiteSpace(request.Email))
             {
-                query = query.Where(k => k.Email == request.Email && (!excludeId.HasValue || k.MaKhachHang != excludeId.Value));
+                bool isEmailExist = await _context.KhachHang
+                    .AnyAsync(k => k.Email == request.Email &&
+                                  (!excludeId.HasValue || k.MaKhachHang != excludeId.Value));
+
+                if (isEmailExist) return (false, "Email này đã được sử dụng cho một khách hàng khác.");
             }
-            if (request.MaSoThue != null)
+
+            if (!string.IsNullOrWhiteSpace(request.MaSoThue))
             {
-                query = query.Where(k => k.MaSoThue == request.MaSoThue && (!excludeId.HasValue || k.MaKhachHang != excludeId.Value));
+                bool isTaxCodeExist = await _context.KhachHang
+                    .AnyAsync(k => k.MaSoThue == request.MaSoThue &&
+                                  (!excludeId.HasValue || k.MaKhachHang != excludeId.Value));
+
+                if (isTaxCodeExist) return (false, "Mã số thuế này đã tồn tại trong hệ thống.");
             }
-            return Task.FromResult((!query.Any(), query.Any() ? "Số điện thoại, email hoặc mã số thuế đã tồn tại." : string.Empty));
+
+            return (true, string.Empty);
         }
 
         [HttpGet]
@@ -100,6 +117,7 @@ namespace Bookstore.API.Controllers
             }
 
             var result = await finalQuery
+                .OrderByDescending(q => q.NgayTao)
                 .Select(MapToResponse())
                 .ToListAsync();
 
@@ -125,6 +143,10 @@ namespace Bookstore.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateKhachHang([FromBody] CustomerRequest request)
         {
+            request.Email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email;
+            request.DiaChi = string.IsNullOrWhiteSpace(request.DiaChi) ? null : request.DiaChi;
+            request.MaSoThue = string.IsNullOrWhiteSpace(request.MaSoThue) ? null : request.MaSoThue;
+
             var (isValid, message) = await CheckUniqueCustomer(request);
 
             if (isValid)
@@ -132,6 +154,7 @@ namespace Bookstore.API.Controllers
                 var khachHang = MapToEntity().Compile()(request);
                 _context.KhachHang.Add(khachHang);
                 await _context.SaveChangesAsync();
+
                 return CreatedAtAction(nameof(GetKhachHangById), new { id = khachHang.MaKhachHang }, MapToResponse().Compile()(khachHang));
             }
             else
@@ -184,9 +207,9 @@ namespace Bookstore.API.Controllers
             try
             {
                 var hasRelatedInvoices = await _context.HoaDon.AnyAsync(hd => hd.MaKhachHang == id);
-                if (hasRelatedInvoices || khachHang.TongDonDaMua == 0)
+                if (hasRelatedInvoices || khachHang.TongDonDaMua != 0)
                 {
-                    throw new Exception("Không thể xóa khách hàng vì đã có hóa đơn liên quan.");
+                    throw new Exception($"Không thể xóa khách hàng vì {id} đã có hóa đơn liên quan.");
                 }
                 var hasRelatedReceipts = await _context.PhieuThuTien.AnyAsync(pt => pt.MaKhachHang == id);
                 if (hasRelatedReceipts)

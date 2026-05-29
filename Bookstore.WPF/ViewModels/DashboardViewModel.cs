@@ -77,10 +77,10 @@ namespace Bookstore.WPF.ViewModels
         }
 
         private string _saleChangeColor = "#FFB547";
-        public string SaleChangeColor   
+        public string SaleChangeColor
         {
             get => _saleChangeColor;
-            set 
+            set
             {
                 _saleChangeColor = value;
                 OnPropertyChanged(nameof(SaleChangeColor));
@@ -183,23 +183,23 @@ namespace Bookstore.WPF.ViewModels
                     SaleChangeColor = data.SaleChangeColor;
 
                     //  dữ liệu cho Bảng lưới
-                    TopBooks.Clear(); 
-                    foreach (var item in data.TopBooks) 
+                    TopBooks.Clear();
+                    foreach (var item in data.TopBooks)
                         TopBooks.Add(item);
-                    TopCustomers.Clear(); 
-                    foreach (var item in data.TopCustomers) 
+                    TopCustomers.Clear();
+                    foreach (var item in data.TopCustomers)
                         TopCustomers.Add(item);
-                    TopStaffs.Clear(); 
-                    foreach (var item in data.TopStaffs) 
+                    TopStaffs.Clear();
+                    foreach (var item in data.TopStaffs)
                         TopStaffs.Add(item);
-                    Items.Clear(); 
-                    foreach (var item in data.RecentOrders) 
+                    Items.Clear();
+                    foreach (var item in data.RecentOrders)
                         Items.Add(item);
-                    ImportItems.Clear(); 
-                    foreach (var item in data.RecentImports) 
+                    ImportItems.Clear();
+                    foreach (var item in data.RecentImports)
                         ImportItems.Add(item);
-                    PaymentReceipts.Clear(); 
-                    foreach (var item in data.RecentPayments) 
+                    PaymentReceipts.Clear();
+                    foreach (var item in data.RecentPayments)
                         PaymentReceipts.Add(item);
                     StockWarnings.Clear();
                     foreach (var item in data.StockWarnings)

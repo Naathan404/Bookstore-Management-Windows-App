@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260529092300_RemoveCustomerConstraint2")]
+    partial class RemoveCustomerConstraint2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1133,9 +1136,6 @@ namespace Bookstore.API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaNhaCungCap"));
 
-                    b.Property<bool>("ConGiaoGich")
-                        .HasColumnType("bit");
-
                     b.Property<string>("DiaChi")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1149,10 +1149,6 @@ namespace Bookstore.API.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NganHang")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NguoiDaiDien")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1185,12 +1181,10 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaNhaCungCap = 1,
-                            ConGiaoGich = true,
                             DiaChi = "387-389 Hai Bà Trưng, Quận 3, TP.HCM",
                             Email = "info@fahasa.com",
                             MaSoThue = "0300435133",
                             NganHang = "Vietcombank",
-                            NguoiDaiDien = "Lê Thành Nghĩa",
                             SoDienThoai = "1900636467",
                             SoTaiKhoan = "0071000123456",
                             TenNhaCungCap = "Công ty CP Phát hành sách FAHASA"
@@ -1198,28 +1192,13 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaNhaCungCap = 2,
-                            ConGiaoGich = true,
                             DiaChi = "212 Nguyễn Trãi, Quận 1, TP.HCM",
                             Email = "contact@phuongnam.com",
                             MaSoThue = "0302221113",
                             NganHang = "Techcombank",
-                            NguoiDaiDien = "Tô Công Hữu Nhân",
                             SoDienThoai = "1900555555",
                             SoTaiKhoan = "1901234567890",
                             TenNhaCungCap = "Nhà sách Phương Nam"
-                        },
-                        new
-                        {
-                            MaNhaCungCap = 3,
-                            ConGiaoGich = true,
-                            DiaChi = "36A Alexander, Quận 3, TP.HCM",
-                            Email = "contact@justbooks.com",
-                            MaSoThue = "0302221115",
-                            NganHang = "Techcombank",
-                            NguoiDaiDien = "Nguyễn Khả An",
-                            SoDienThoai = "19005551234",
-                            SoTaiKhoan = "1901234567777",
-                            TenNhaCungCap = "Nhà sách JustBooks"
                         });
                 });
 
