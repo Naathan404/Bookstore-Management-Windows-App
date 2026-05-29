@@ -16,7 +16,8 @@ namespace Bookstore.Share.DTOResponses
         public string? MaSoThue { get; set; }
         public string? LoaiKhach { get; set; }
         public string? GioiTinh { get; set; }
-        public DateTime NgaySinh { get; set; }
+        public DateTime? NgaySinh { get; set; }
         public long CongNo { get; set; }
+        public DateTime NgayTao { get; set; }
     }
 }

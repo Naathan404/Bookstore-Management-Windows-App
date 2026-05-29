@@ -239,14 +239,15 @@
 								Style="{StaticResource MainGradientButton}"
 								Width="110"
 								Margin="0,0,10,0"
-								Command="{Binding MoPopupThemCommand}">
+								Command="{Binding MoPopupThemCommand}"
+								CommandParameter="1">
 							<StackPanel Orientation="Horizontal">
 								<materialDesign:PackIcon Kind="AccountPlus"
 														 Width="16"
 														 Height="16"
 														 Foreground="White"
 														 Margin="0,0,6,0" />
-								<TextBlock Text="THÊM MỚI" />
+								<TextBlock Text="THÊM" />
 							</StackPanel>
 						</Button>
 					</StackPanel>
@@ -325,9 +326,9 @@
 										  materialDesign:HintAssist.Hint="Tìm theo"
 										  SelectedValue="{Binding KieuTimKiem}"
 										  SelectedValuePath="Content">
-									<ComboBoxItem Content="Tên khách hàng"
+									<ComboBoxItem Content="Số điện thoại"
 												  IsSelected="True" />
-									<ComboBoxItem Content="Số điện thoại" />
+									<ComboBoxItem Content="Tên khách hàng" />
 									<ComboBoxItem Content="Email" />
 								</ComboBox>
 							</Grid>
@@ -422,7 +423,8 @@
 								Style="{StaticResource MaterialDesignIconForegroundButton}"
 								Foreground="#EF4444"
 								ToolTip="Xóa bộ lọc"
-								Command="{Binding XoaLocCommand}">
+								Command="{Binding XoaLocCommand}"
+								CommandParameter="1">
 							<materialDesign:PackIcon Kind="FilterRemove"
 													 Width="22"
 													 Height="22" />
@@ -546,10 +548,10 @@
 					</DataGrid.Resources>
 
 					<DataGrid.Columns>
-						<!-- STT (computed per visible row via Row.Tag set in code-behind) -->
-						<DataGridTextColumn Header="STT"
-											Width="60"
-											Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Tag}">
+						<!-- Mã Khách hàng  -->
+						<DataGridTextColumn Header="Mã KH"
+											Width="130"
+											Binding="{Binding MaKhachHang}">
 							<DataGridTextColumn.HeaderStyle>
 								<Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
@@ -562,9 +564,9 @@
 									<Setter Property="HorizontalAlignment"
 											Value="Center" />
 									<Setter Property="Foreground"
-											Value="#A3AED0" />
+											Value="#4318FF" />
 									<Setter Property="FontWeight"
-											Value="SemiBold" />
+											Value="Bold" />
 								</Style>
 							</DataGridTextColumn.ElementStyle>
 						</DataGridTextColumn>

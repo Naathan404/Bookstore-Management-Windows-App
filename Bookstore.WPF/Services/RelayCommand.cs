@@ -29,15 +29,15 @@ namespace Bookstore.WPF.Services
             }
         }
 
-        public bool CanExecute(object? parameter)
+        public bool CanExecute(object parameter)
         {
-            if (_canExecute == null) return true;
-            return _canExecute((T)(parameter!));
+            return parameter is T t && (_canExecute?.Invoke(t) ?? true);
         }
 
-        public void Execute(object? parameter)
+        public void Execute(object parameter)
         {
-            _execute((T)(parameter!));
+            if (parameter is T t)
+                _execute(t);
         }
 
         public void RaiseCanExecuteChanged()

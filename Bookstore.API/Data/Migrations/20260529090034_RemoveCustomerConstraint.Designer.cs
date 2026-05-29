@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260529090034_RemoveCustomerConstraint")]
+    partial class RemoveCustomerConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -797,9 +800,11 @@ namespace Bookstore.API.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaKhachHang"));
 
                     b.Property<string>("DiaChi")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("GioiTinh")
@@ -809,9 +814,10 @@ namespace Bookstore.API.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MaSoThue")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("NgaySinh")
+                    b.Property<DateOnly>("NgaySinh")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("NgayTao")
@@ -1055,7 +1061,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521186@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 16, 22, 59, 172, DateTimeKind.Local).AddTicks(9321),
+                            HanOTP = new DateTime(2026, 5, 29, 16, 0, 32, 627, DateTimeKind.Local).AddTicks(9051),
                             HoTen = "Nguyễn Chí Nguyên",
                             MaNhomNguoiDung = 1,
                             MaOTP = "",
@@ -1070,7 +1076,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24520604@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 16, 22, 59, 172, DateTimeKind.Local).AddTicks(9331),
+                            HanOTP = new DateTime(2026, 5, 29, 16, 0, 32, 627, DateTimeKind.Local).AddTicks(9062),
                             HoTen = "Nguyễn Gia Hưng",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1085,7 +1091,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521432@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 16, 22, 59, 172, DateTimeKind.Local).AddTicks(9334),
+                            HanOTP = new DateTime(2026, 5, 29, 16, 0, 32, 627, DateTimeKind.Local).AddTicks(9066),
                             HoTen = "Lê Hoàng Quân",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1100,7 +1106,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521536@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 16, 22, 59, 172, DateTimeKind.Local).AddTicks(9337),
+                            HanOTP = new DateTime(2026, 5, 29, 16, 0, 32, 627, DateTimeKind.Local).AddTicks(9069),
                             HoTen = "Phạm Hoàng Sơn",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1115,7 +1121,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521360@g.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 29, 16, 22, 59, 172, DateTimeKind.Local).AddTicks(9340),
+                            HanOTP = new DateTime(2026, 5, 29, 16, 0, 32, 627, DateTimeKind.Local).AddTicks(9071),
                             HoTen = "Nguyễn Lưu Văn Phú",
                             MaNhomNguoiDung = 2,
                             MaOTP = "",

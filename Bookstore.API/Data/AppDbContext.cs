@@ -69,7 +69,6 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<NhaCungCap>().HasIndex(ncc => ncc.SoDienThoai).IsUnique();
             modelBuilder.Entity<NhaCungCap>().HasIndex(ncc => ncc.Email).IsUnique();
             modelBuilder.Entity<KhachHang>().HasIndex(k => k.SoDienThoai).IsUnique();
-            modelBuilder.Entity<KhachHang>().HasIndex(k => k.Email).IsUnique();
             modelBuilder.Entity<NguoiDung>().HasIndex(n => n.Email).IsUnique();
 
 

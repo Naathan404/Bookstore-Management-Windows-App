@@ -52,7 +52,7 @@ namespace Bookstore.WPF.ViewModels
             set { _searchText = value; OnPropertyChanged(); ApplyFilter(); }
         }
 
-        private string _kieuTimKiem = "Tên khách hàng";
+        private string _kieuTimKiem = "Số điện thoại";
         public string KieuTimKiem
         {
             get => _kieuTimKiem;
@@ -180,6 +180,7 @@ namespace Bookstore.WPF.ViewModels
         // Tiện ích
         public ICommand XoaLocCommand { get; }
         public ICommand PhanTrangCommand { get; }
+        #endregion
 
         public CustomerViewModel()
         {
@@ -201,9 +202,8 @@ namespace Bookstore.WPF.ViewModels
             _ = KhoiTaoDuLieuAsync();
         }
 
-        #endregion
 
-        #region HELPER METHODS
+        #region METHODS
 
         // ==================== LOGIC THÊM / SỬA / XÓA ====================
         private void ExecuteMoPopupThem(object obj)
@@ -214,7 +214,7 @@ namespace Bookstore.WPF.ViewModels
 
             KhachHangForm = new CustomerResponse
             {
-                MaKhachHang = $"KH{_danhSachKhachHangGoc.Count + 1:D3}",
+                MaKhachHang = GenerateNextMaKhachHang(),
                 NgaySinh = DateTime.Now,
                 LoaiKhach = "Cá nhân",
                 GioiTinh = "Nam",
@@ -255,8 +255,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 try
                 {
-                    // API của bạn yêu cầu ID là số nguyên (int)
-                    int id = int.Parse(kh.MaKhachHang);
+                    int id = int.Parse(kh.MaKhachHang.Substring(8));
 
                     // Gọi API HttpDelete
                     bool isSuccess = await ApiClient.DeleteAsync($"api/KhachHang/{id}");
@@ -299,18 +298,18 @@ namespace Bookstore.WPF.ViewModels
                     TenKhachHang = KhachHangForm.TenKhachHang,
                     GioiTinh = gioiTinhNum,
 
-                    NgaySinh = KhachHangForm.NgaySinh.ToString("yyyy-MM-dd"),
+                    NgaySinh = KhachHangForm.NgaySinh?.ToString("yyyy-MM-dd"),
 
                     SoDienThoai = KhachHangForm.SoDienThoai,
-                    Email = KhachHangForm.Email ?? string.Empty,
-                    DiaChi = KhachHangForm.DiaChi ?? string.Empty,
-                    MaSoThue = KhachHangForm.MaSoThue ?? string.Empty
+                    Email = string.IsNullOrWhiteSpace(KhachHangForm.Email) ? null : KhachHangForm.Email,
+                    DiaChi = string.IsNullOrWhiteSpace(KhachHangForm.DiaChi) ? null : KhachHangForm.DiaChi,
+                    MaSoThue = string.IsNullOrWhiteSpace(KhachHangForm.MaSoThue) ? null : KhachHangForm.MaSoThue
                 };
 
                 // 2. GỌI API THEO CHẾ ĐỘ SỬA HOẶC THÊM
                 if (_dangSua)
                 {
-                    int id = int.Parse(KhachHangForm.MaKhachHang);
+                    int id = int.Parse(KhachHangForm.MaKhachHang.Substring(8));
                     var response = await ApiClient.PutAsync<object, CustomerResponse>($"api/KhachHang/{id}", requestData);
 
                     if (response != null)
@@ -323,7 +322,7 @@ namespace Bookstore.WPF.ViewModels
                         target.MaSoThue = response.MaSoThue;
                         target.NgaySinh = response.NgaySinh;
                         target.GioiTinh = response.GioiTinh;
-                        target.LoaiKhach = response.LoaiKhach;
+                        target.LoaiKhach = KhachHangForm.LoaiKhach;
 
                         MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -339,6 +338,14 @@ namespace Bookstore.WPF.ViewModels
 
                     if (response != null)
                     {
+                        response.LoaiKhach = KhachHangForm.LoaiKhach;
+
+                        string numericPart = new string(response.MaKhachHang.Where(char.IsDigit).ToArray());
+                        if (int.TryParse(numericPart, out int newId))
+                        {
+                            response.MaKhachHang = $"KH{response.NgayTao:yyMMdd}{newId:D3}";
+                        }
+
                         _danhSachKhachHangGoc.Insert(0, response);
                         MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -395,7 +402,7 @@ namespace Bookstore.WPF.ViewModels
         {
             // Set trực tiếp vào field để không trigger ApplyFilter nhiều lần
             _searchText = "";
-            _kieuTimKiem = "Tên khách hàng";
+            _kieuTimKiem = "Số điện thoại";
             _locLoaiKhach = "Tất cả";
             _locCongNo = "Tất cả";
 
@@ -475,7 +482,28 @@ namespace Bookstore.WPF.ViewModels
 
                 if (result != null && result.Any())
                 {
-                    _danhSachKhachHangGoc = new ObservableCollection<CustomerResponse>(result);
+                    var validCustomers = new List<CustomerResponse>();
+
+                    foreach (var item in result)
+                    {
+                        // Loại bỏ khách vãng lai và ID = 1
+                        if ((item.TenKhachHang != null && item.TenKhachHang.Equals("Khách hàng vãng lai", StringComparison.OrdinalIgnoreCase)) ||
+                             item.MaKhachHang == "1")
+                        {
+                            continue;
+                        }
+
+                        // Format: KH + Ngày tạo + ID (3 số)
+                        string numericPart = new string(item.MaKhachHang.Where(char.IsDigit).ToArray());
+                        if (int.TryParse(numericPart, out int id))
+                        {
+                            item.MaKhachHang = $"KH{item.NgayTao:yyMMdd}{id:D3}";
+                        }
+
+                        validCustomers.Add(item);
+                    }
+
+                    _danhSachKhachHangGoc = new ObservableCollection<CustomerResponse>(validCustomers);
                 }
                 else
                 {
@@ -485,9 +513,7 @@ namespace Bookstore.WPF.ViewModels
             }
             catch (Exception ex)
             {
-                // ApiClient có thể đã bắt lỗi, nhưng cứ bọc try-catch ở View để hiện thông báo cho người dùng
-                MessageBox.Show($"Có lỗi xảy ra khi lấy danh sách khách hàng: {ex.Message}",
-                                "Lỗi tải dữ liệu", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -520,6 +546,37 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
+        #endregion
+
+        #region HELPER
+        private string GenerateNextMaKhachHang()
+        {
+            string datePrefix = $"KH{DateTime.Now:yyMMdd}";
+
+            var customersToday = _danhSachKhachHangGoc
+                .Where(k => !string.IsNullOrEmpty(k.MaKhachHang) && k.MaKhachHang.StartsWith(datePrefix))
+                .ToList();
+
+            if (customersToday.Count == 0)
+            {
+                return $"{datePrefix}001";
+            }
+
+            int maxNumber = 0;
+            foreach (var cus in customersToday)
+            {
+                if (cus.MaKhachHang.Length > 8)
+                {
+                    string suffix = cus.MaKhachHang.Substring(8);
+                    if (int.TryParse(suffix, out int number))
+                    {
+                        if (number > maxNumber) maxNumber = number;
+                    }
+                }
+            }
+
+            return $"{datePrefix}{(maxNumber + 1):D3}";
+        }
         #endregion
     }
 }
