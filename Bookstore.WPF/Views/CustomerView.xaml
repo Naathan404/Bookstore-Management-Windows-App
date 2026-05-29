@@ -13,7 +13,6 @@
 			 d:DataContext="{d:DesignInstance Type=vm:CustomerViewModel}">
 
 	<UserControl.Resources>
-
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
 		<!-- Row index shown via DataGridRow.Tag set in code-behind -->
 
@@ -551,7 +550,14 @@
 						<!-- Mã Khách hàng  -->
 						<DataGridTextColumn Header="Mã KH"
 											Width="130"
-											Binding="{Binding MaKhachHang}">
+											SortMemberPath="MaKhachHang">
+							<DataGridTextColumn.Binding>
+								<MultiBinding StringFormat="KH{0:ddMMyy}{1:D3}">
+									<Binding Path="NgayTao" />
+									<Binding Path="MaKhachHang" />
+								</MultiBinding>
+							</DataGridTextColumn.Binding>
+
 							<DataGridTextColumn.HeaderStyle>
 								<Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
@@ -559,6 +565,7 @@
 											Value="Center" />
 								</Style>
 							</DataGridTextColumn.HeaderStyle>
+
 							<DataGridTextColumn.ElementStyle>
 								<Style TargetType="TextBlock">
 									<Setter Property="HorizontalAlignment"
@@ -936,17 +943,17 @@
 													 Foreground="#A3AED0"
 													 VerticalAlignment="Center"
 													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding MaPhieuThu}"
-									 IsReadOnly="True"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#9CA3AF"
-									 materialDesign:HintAssist.Hint="Mã phiếu" />
+							<TextBlock Grid.Column="1"
+									   Text="{Binding MaPhieuThu}"
+									   Margin="0 0 5 0"
+									   Background="Transparent"
+									   VerticalAlignment="Center"
+									   HorizontalAlignment="Stretch"
+									   FontSize="13"
+									   Foreground="#9CA3AF"
+									   materialDesign:HintAssist.Hint="Mã phiếu">
+
+							</TextBlock>
 						</Grid>
 					</Border>
 					
@@ -1030,12 +1037,10 @@
 													 Foreground="#A3AED0"
 													 VerticalAlignment="Center"
 													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
+							<TextBlock Grid.Column="1"
 									 Text="{Binding KhachHangForm.TenKhachHang}"
-									 IsReadOnly="True"
 									 Margin="0 0 5 0"
 									 Background="Transparent"
-									 BorderThickness="0"
 									 VerticalAlignment="Center"
 									 HorizontalAlignment="Stretch"
 									 FontSize="13"
@@ -1221,16 +1226,20 @@
 														 Foreground="#A3AED0"
 														 VerticalAlignment="Center"
 														 HorizontalAlignment="Center" />
-								<TextBox Grid.Column="1"
-										 Text="{Binding KhachHangForm.MaKhachHang}"
-										 IsReadOnly="True"
-										 Margin="0 0 5 0"
-										 Background="Transparent"
-										 BorderThickness="0"
-										 VerticalAlignment="Center"
-										 HorizontalAlignment="Stretch"
-										 FontSize="13"
-										 Foreground="#9CA3AF" />
+								<TextBlock Grid.Column="1"
+										   Margin="0 0 5 0"
+										   Background="Transparent"
+										   VerticalAlignment="Center"
+										   HorizontalAlignment="Stretch"
+										   FontSize="13"
+										   Foreground="#9CA3AF">
+									<TextBlock.Text>
+										<MultiBinding StringFormat="KH{0:ddMMyy}{1:D3}">
+											<Binding Path="KhachHangForm.NgayTao" />
+											<Binding Path="KhachHangForm.MaKhachHang" />
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
 							</Grid>
 						</Border>
 

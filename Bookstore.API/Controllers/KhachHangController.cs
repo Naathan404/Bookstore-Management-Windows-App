@@ -23,7 +23,7 @@ namespace Bookstore.API.Controllers
         {
             return k => new CustomerResponse
             {
-                MaKhachHang = k.MaKhachHang.ToString(),
+                MaKhachHang = k.MaKhachHang,
                 TenKhachHang = k.TenKhachHang,
                 SoDienThoai = k.SoDienThoai,
                 Email = k.Email,

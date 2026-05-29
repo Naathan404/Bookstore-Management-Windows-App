@@ -8,7 +8,7 @@ namespace Bookstore.Share.DTOResponses
 {
     public class CustomerResponse
     {
-        public string? MaKhachHang { get; set; }
+        public int MaKhachHang { get; set; }
         public string? TenKhachHang { get; set; }
         public string? SoDienThoai { get; set; }
         public string? Email { get; set; }

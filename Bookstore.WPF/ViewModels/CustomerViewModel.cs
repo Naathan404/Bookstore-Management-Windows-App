@@ -1,5 +1,7 @@
 ﻿using Bookstore.Share.DTOResponses;
+using Bookstore.WPF.Converters;
 using Bookstore.WPF.Services;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -214,7 +216,8 @@ namespace Bookstore.WPF.ViewModels
 
             KhachHangForm = new CustomerResponse
             {
-                MaKhachHang = GenerateNextMaKhachHang(),
+                MaKhachHang = GetNextMaKhachHang(),
+                NgayTao = DateTime.Now,
                 NgaySinh = DateTime.Now,
                 LoaiKhach = "Cá nhân",
                 GioiTinh = "Nam",
@@ -255,10 +258,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 try
                 {
-                    int id = int.Parse(kh.MaKhachHang.Substring(8));
-
-                    // Gọi API HttpDelete
-                    bool isSuccess = await ApiClient.DeleteAsync($"api/KhachHang/{id}");
+                    bool isSuccess = await ApiClient.DeleteAsync($"api/KhachHang/{kh.MaKhachHang}");
 
                     if (isSuccess)
                     {
@@ -309,8 +309,7 @@ namespace Bookstore.WPF.ViewModels
                 // 2. GỌI API THEO CHẾ ĐỘ SỬA HOẶC THÊM
                 if (_dangSua)
                 {
-                    int id = int.Parse(KhachHangForm.MaKhachHang.Substring(8));
-                    var response = await ApiClient.PutAsync<object, CustomerResponse>($"api/KhachHang/{id}", requestData);
+                    var response = await ApiClient.PutAsync<object, CustomerResponse>($"api/KhachHang/{KhachHangForm.MaKhachHang}", requestData);
 
                     if (response != null)
                     {
@@ -339,12 +338,6 @@ namespace Bookstore.WPF.ViewModels
                     if (response != null)
                     {
                         response.LoaiKhach = KhachHangForm.LoaiKhach;
-
-                        string numericPart = new string(response.MaKhachHang.Where(char.IsDigit).ToArray());
-                        if (int.TryParse(numericPart, out int newId))
-                        {
-                            response.MaKhachHang = $"KH{response.NgayTao:yyMMdd}{newId:D3}";
-                        }
 
                         _danhSachKhachHangGoc.Insert(0, response);
                         MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -458,18 +451,10 @@ namespace Bookstore.WPF.ViewModels
                     {
                         // Chặn khách vãng lai và ID = 1
                         if ((item.TenKhachHang != null && item.TenKhachHang.Equals("Khách hàng vãng lai", StringComparison.OrdinalIgnoreCase)) ||
-                             item.MaKhachHang == "1")
+                             item.MaKhachHang == 1)
                         {
                             continue;
                         }
-
-                        // Format lại mã KH
-                        string numericPart = new string(item.MaKhachHang.Where(char.IsDigit).ToArray());
-                        if (int.TryParse(numericPart, out int id))
-                        {
-                            item.MaKhachHang = $"KH{item.NgayTao:yyMMdd}{id:D3}";
-                        }
-
                         validCustomers.Add(item);
                     }
                 }
@@ -525,18 +510,10 @@ namespace Bookstore.WPF.ViewModels
                     {
                         // Loại bỏ khách vãng lai và ID = 1
                         if ((item.TenKhachHang != null && item.TenKhachHang.Equals("Khách hàng vãng lai", StringComparison.OrdinalIgnoreCase)) ||
-                             item.MaKhachHang == "1")
+                             item.MaKhachHang == 1)
                         {
                             continue;
                         }
-
-                        // Format: KH + Ngày tạo + ID (3 số)
-                        string numericPart = new string(item.MaKhachHang.Where(char.IsDigit).ToArray());
-                        if (int.TryParse(numericPart, out int id))
-                        {
-                            item.MaKhachHang = $"KH{item.NgayTao:yyMMdd}{id:D3}";
-                        }
-
                         validCustomers.Add(item);
                     }
 
@@ -586,33 +563,9 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region HELPER
-        private string GenerateNextMaKhachHang()
+        private int GetNextMaKhachHang()
         {
-            string datePrefix = $"KH{DateTime.Now:yyMMdd}";
-
-            var customersToday = _danhSachKhachHangGoc
-                .Where(k => !string.IsNullOrEmpty(k.MaKhachHang) && k.MaKhachHang.StartsWith(datePrefix))
-                .ToList();
-
-            if (customersToday.Count == 0)
-            {
-                return $"{datePrefix}001";
-            }
-
-            int maxNumber = 0;
-            foreach (var cus in customersToday)
-            {
-                if (cus.MaKhachHang.Length > 8)
-                {
-                    string suffix = cus.MaKhachHang.Substring(8);
-                    if (int.TryParse(suffix, out int number))
-                    {
-                        if (number > maxNumber) maxNumber = number;
-                    }
-                }
-            }
-
-            return $"{datePrefix}{(maxNumber + 1):D3}";
+            return (_danhSachKhachHangGoc.Any() ? _danhSachKhachHangGoc.Max(x => x.MaKhachHang) : 0) + 1;
         }
         #endregion
     }
