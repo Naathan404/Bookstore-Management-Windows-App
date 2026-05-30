@@ -13,6 +13,7 @@
 			 d:DataContext="{d:DesignInstance Type=vm:ReceiptPopupViewModel}">
 
 	<UserControl.Resources>
+		<local:CurrencyConverter x:Key="CurrencyConverter" />
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
 		<!-- Row index shown via DataGridRow.Tag set in code-behind -->
 
