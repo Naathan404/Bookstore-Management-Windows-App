@@ -55,7 +55,12 @@
         <DataTemplate DataType="{x:Type viewmodels:SettingViewModel}">
             <views:SettingView />
         </DataTemplate>
-    </Window.Resources>
+
+		<DataTemplate DataType="{x:Type viewmodels:ReceiptViewModel}">
+			<views:ReceiptView />
+		</DataTemplate>
+		
+	</Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>

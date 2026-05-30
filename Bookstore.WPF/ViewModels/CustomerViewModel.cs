@@ -255,7 +255,8 @@ namespace Bookstore.WPF.ViewModels
                 NgaySinh = kh.NgaySinh,
                 CongNo = kh.CongNo,
                 GioiTinh = kh.GioiTinh,
-                LoaiKhach = kh.LoaiKhach
+                LoaiKhach = kh.LoaiKhach,
+                NgayTao = kh.NgayTao,
             };
             IsKhachHangPopupOpen = true;
         }

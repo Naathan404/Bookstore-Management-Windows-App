@@ -10,6 +10,7 @@
 			 HorizontalAlignment="Stretch"
 			 VerticalAlignment="Stretch"
 			 xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 d:DataContext="{d:DesignInstance Type=vm:CustomerViewModel}">
 
 	<UserControl.Resources>
@@ -887,7 +888,8 @@
 		</Grid>
 
 		<!-- ==================== POPUP THU TIỀN ==================== -->
-		<Grid x:Name="popupThuTien"
+		<components:ReceiptPopupControl DataContext="{Binding PopupThuTienVM}" />
+		<!--<Grid x:Name="popupThuTien"
 			  Background="#80000000"
 			  Visibility="{Binding IsThuTienPopupOpen, Converter={StaticResource BoolToVis}}"
 			  VerticalAlignment="Stretch"
@@ -917,7 +919,7 @@
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
-					<!-- Header -->
+					--><!-- Header --><!--
 					<Grid Grid.Row="0"
 						  Margin="0,0,0,20">
 						<Grid.ColumnDefinitions>
@@ -949,7 +951,7 @@
 								Command="{Binding DongPopupThuTienCommand}" />
 					</Grid>
 
-					<!-- Mã phiếu -->
+					--><!-- Mã phiếu --><!--
 					<Border Grid.Row="1"
 							Style="{StaticResource FilterBorderStyle}"
 							Margin="0,0,0,12"
@@ -979,7 +981,7 @@
 						</Grid>
 					</Border>
 					
-					<!-- Ngày lập + Người lập -->
+					--><!-- Ngày lập + Người lập --><!--
 					<Grid Grid.Row="2"
 						  Margin="0,0,0,12">
 						<Grid.ColumnDefinitions>
@@ -1043,7 +1045,7 @@
 						</Border>
 					</Grid>
 
-					<!-- Khách hàng -->
+					--><!-- Khách hàng --><!--
 					<Border Grid.Row="3"
 							Style="{StaticResource FilterBorderStyle}"
 							Margin="0,0,0,12"
@@ -1071,7 +1073,7 @@
 						</Grid>
 					</Border>
 
-					<!-- Số tiền thu -->
+					--><!-- Số tiền thu --><!--
 					<Border Grid.Row="4"
 							Style="{StaticResource FilterBorderStyle}"
 							Margin="0,0,0,12"
@@ -1102,7 +1104,7 @@
 						</Grid>
 					</Border>
 
-					<!-- Công nợ sau khi thu -->
+					--><!-- Công nợ sau khi thu --><!--
 					<Border Grid.Row="5"
 							CornerRadius="8"
 							Background="#DCFCE7"
@@ -1120,7 +1122,7 @@
 						</Grid>
 					</Border>
 
-					<!-- Buttons -->
+					--><!-- Buttons --><!--
 					<StackPanel Grid.Row="6"
 								Orientation="Horizontal"
 								HorizontalAlignment="Right">
@@ -1140,7 +1142,7 @@
 					</StackPanel>
 				</Grid>
 			</Border>
-		</Grid>
+		</Grid>-->
 
 		<!-- ==================== POPUP THÊM/SỬA KHÁCH HÀNG ==================== -->
 		<Grid x:Name="popupThemSua"

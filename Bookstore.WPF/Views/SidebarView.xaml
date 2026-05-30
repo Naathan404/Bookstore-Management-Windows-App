@@ -107,8 +107,25 @@
                         <TextBlock Text="Khách hàng" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
+				
+                <!-- PHIẾU NHẬP -->
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsReceiptVisible}"
+							 IsChecked="{Binding IsReceiptChecked}"
+							 Command="{Binding ShowPhieuThuCommand}"
+							 CommandParameter="Receipt">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="ReceiptText"
+												 Width="22"
+												 Height="22"
+												 Margin="0,0,15,0" />
+						<TextBlock Text="Phiếu thu"
+								   VerticalAlignment="Center" />
+					</StackPanel>
+				</RadioButton>
 
-                <!-- 5. NHẬP KHO -->
+				<!-- 5. NHẬP KHO -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsImportVisible}"
                              IsChecked="{Binding IsImportChecked}"

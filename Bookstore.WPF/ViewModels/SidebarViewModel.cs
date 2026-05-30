@@ -46,6 +46,13 @@ namespace Bookstore.WPF.ViewModels
             set { _isCustomerVisible = value; OnPropertyChanged(); }
         }
 
+        private Visibility _isReceiptVisible;
+        public Visibility IsReceiptVisible
+        {
+            get => _isReceiptVisible;
+            set { _isReceiptVisible = value; OnPropertyChanged(); }
+        }
+
         private Visibility _isImportVisible;
         public Visibility IsImportVisible
         {
@@ -101,6 +108,7 @@ namespace Bookstore.WPF.ViewModels
         private SaleViewModel _saleViewModel;
         private ProductViewModel _productViewModel;
         private CustomerViewModel _customerViewModel;
+        private ReceiptViewModel _receiptViewModel;
         private ImportViewModel _importViewModel;
         private SupplierViewModel _supplierViewModel;
         private PromotionViewModel _promotionViewModel;
@@ -116,6 +124,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ShowBanHangCommand { get; set; }
         public ICommand ShowTraCuuSachCommand { get; set; }
         public ICommand ShowKhachHangCommand { get; set; }
+        public ICommand ShowPhieuThuCommand { get; set; }
         public ICommand ShowNhapKhoCommand { get; set; }
         public ICommand ShowNhaCungCapCommand { get; set; }
         public ICommand ShowUuDaiCommand { get; set; }
@@ -155,6 +164,12 @@ namespace Bookstore.WPF.ViewModels
         {
             get => _isCustomerChecked;
             set { _isCustomerChecked = value; OnPropertyChanged(); }
+        }
+        private bool _isReceiptChecked;
+        public bool IsReceiptChecked
+        {
+            get => _isReceiptChecked;
+            set { _isReceiptChecked = value; OnPropertyChanged(); } 
         }
 
         private bool _isImportChecked;
@@ -224,6 +239,7 @@ namespace Bookstore.WPF.ViewModels
             IsSaleVisible = listQuyen.Contains("SaleView") ? Visibility.Visible : Visibility.Collapsed;
             IsProductVisible = listQuyen.Contains("ProductView") ? Visibility.Visible : Visibility.Collapsed;
             IsCustomerVisible = listQuyen.Contains("CustomerView") ? Visibility.Visible : Visibility.Collapsed;
+            IsReceiptVisible = listQuyen.Contains("ReceiptView") ? Visibility.Visible : Visibility.Collapsed;
             IsImportVisible = listQuyen.Contains("ImportView") ? Visibility.Visible : Visibility.Collapsed;
             IsSupplierVisible = listQuyen.Contains("SupplierView") ? Visibility.Visible : Visibility.Collapsed;
             IsPromotionVisible = listQuyen.Contains("PromotionView") ? Visibility.Visible : Visibility.Collapsed;
@@ -274,6 +290,12 @@ namespace Bookstore.WPF.ViewModels
             {
                 _customerViewModel = new CustomerViewModel();
                 ShowKhachHangCommand = new RelayCommand<object>((p) => _handleChangeView(_customerViewModel));
+            }
+
+            if (listQuyen.Contains("ReceiptView"))
+            {
+                _receiptViewModel = new ReceiptViewModel();
+                ShowPhieuThuCommand = new RelayCommand<object>((p) => _handleChangeView(_receiptViewModel));
             }
 
             if (listQuyen.Contains("ImportView"))
@@ -348,6 +370,7 @@ namespace Bookstore.WPF.ViewModels
             else if (listQuyen.Contains("SaleView")) IsSaleChecked = true;
             else if (listQuyen.Contains("ProductView")) IsProductChecked = true;
             else if (listQuyen.Contains("CustomerView")) IsCustomerChecked = true;
+            else if (listQuyen.Contains("ReceiptView")) IsReceiptChecked = true;
             else if (listQuyen.Contains("ImportView")) IsImportChecked = true;
             else if (listQuyen.Contains("SupplierView")) IsSupplierChecked = true;
             else if (listQuyen.Contains("PromotionView")) IsPromotionChecked = true;
