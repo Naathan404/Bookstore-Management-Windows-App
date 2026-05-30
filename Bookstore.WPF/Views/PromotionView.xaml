@@ -9,180 +9,6 @@
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
 
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-
-        <!-- Màu sắc chính -->
-        <SolidColorBrush x:Key="PrimaryDarkColor" Color="#2B3674"/>
-        <SolidColorBrush x:Key="PrimaryColor" Color="#4318FF"/>
-        <SolidColorBrush x:Key="TextLightColor" Color="#A3AED0"/>
-        <SolidColorBrush x:Key="BackgroundColor" Color="#F4F7FE"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#10B981"/>
-        <SolidColorBrush x:Key="WarningColor" Color="#F59E0B"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#EF4444"/>
-
-        <!-- Gradient Brushes -->
-        <LinearGradientBrush x:Key="GradientButtonBrush" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#4318FF" Offset="0"/>
-            <GradientStop Color="#5B3CFF" Offset="1"/>
-        </LinearGradientBrush>
-
-        <LinearGradientBrush x:Key="PromotionGradientBrush" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#F59E0B" Offset="0"/>
-            <GradientStop Color="#EF4444" Offset="1"/>
-        </LinearGradientBrush>
-
-        <!-- Styles -->
-        <Style x:Key="MainGradientButton" TargetType="Button">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{StaticResource GradientButtonBrush}" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="SuccessButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="#10B981" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="OutlineButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#4318FF"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="Transparent" BorderBrush="#4318FF" BorderThickness="1.5" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="DangerOutlineButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#EF4444"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="Transparent" BorderBrush="#FCA5A5" BorderThickness="1.5" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="PaginationButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="36"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#2B3674"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F4F7FE"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="FilterBorderStyle" TargetType="Border">
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E2E8F0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Height" Value="42"/>
-        </Style>
-
-        <Style x:Key="StatusBadgeStyle" TargetType="Border">
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="10,3"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-
-        <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#F8FAFC"/>
-            <Setter Property="Foreground" Value="#2B3674"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Height" Value="44"/>
-            <Setter Property="BorderBrush" Value="#E2E8F0"/>
-            <Setter Property="BorderThickness" Value="0,0,0,2"/>
-            <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style x:Key="CenterHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style x:Key="RightHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-            <Setter Property="HorizontalContentAlignment" Value="Right"/>
-        </Style>
-
-        <Style TargetType="DataGridCell">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-            <Setter Property="Padding" Value="12,0"/>
-        </Style>
-
-        <Style TargetType="DataGridRow">
-            <Setter Property="Background" Value="Transparent"/>
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E0E7FF"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F3F4F6"/>
-                    <Setter Property="Cursor" Value="Hand"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-
     <Grid Background="{StaticResource BackgroundColor}">
         <Ellipse Width="400" Height="400" Fill="#F59E0B" Opacity="0.03"
                  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-150,-150,0,0" IsHitTestVisible="False"/>
@@ -589,18 +415,7 @@
                 </Border.InputBindings>
             </Border>
 
-            <Border Width="800" Height="650" 
-                    Background="White" 
-                    CornerRadius="20" 
-                    BorderBrush="#E2E8F0" 
-                    BorderThickness="1"
-                    HorizontalAlignment="Center" 
-                    VerticalAlignment="Center" 
-                    Padding="25"
-                    IsHitTestVisible="True">
-                <Border.InputBindings>
-                    <MouseBinding MouseAction="LeftClick" Command="{x:Null}"/>
-                </Border.InputBindings>
+            <Border Width="820" MaxHeight="680" Background="White" CornerRadius="20" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -609,415 +424,248 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                        <materialDesign:PackIcon Kind="Sale" Width="26" Height="26" 
-                                                 Foreground="#F59E0B" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding PopupTitle, FallbackValue='PHIẾU THÔNG TIN ƯU ĐÃI'}" 
-                                   FontSize="20" FontWeight="Bold" 
-                                   Foreground="#2B3674" VerticalAlignment="Center"/>
+                        <materialDesign:PackIcon Kind="TicketPercent" Width="26" Height="26" Foreground="#4318FF" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding PopupTitle, FallbackValue='THIẾT LẬP CHIẾN LƯỢC ƯU ĐÃI SEMANTIC'}" FontSize="20" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
                     </StackPanel>
 
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,10,10">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15" Padding="0,0,10,0">
                         <StackPanel>
-                            <TextBlock Text="THÔNG TIN CƠ BẢN" FontWeight="Bold" Foreground="#4318FF" Margin="0,10,0,5"/>
-                            <Grid Margin="0,0,0,15">
+
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="20"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
 
-                                <Border Grid.Row="0" Grid.Column="0" CornerRadius="8" Background="#F8FAFC" 
-                                        BorderBrush="#E2E8F0" BorderThickness="1" Padding="10,5" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <TextBlock Text="Ngày lập" FontSize="10" Foreground="#A3AED0"/>
-                                        <TextBlock Text="{Binding NgayLap, StringFormat='dd/MM/yyyy HH:mm'}" 
-                                                   FontSize="13" Foreground="#2B3674" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <Border Grid.Row="0" Grid.Column="2" CornerRadius="10" Background="White" 
-                                        BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                    <Grid>
-                                        <TextBlock Text="Mã ưu đãi *" FontSize="10" Foreground="#A3AED0" 
-                                                   Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                        <Grid Margin="0,20,0,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBox Text="{Binding EditingPromotion.MaUuDai}" FontSize="14" 
-                                                     FontWeight="Bold" Foreground="#2B3674" BorderThickness="0" 
-                                                     Padding="0" CharacterCasing="Upper"/>
-                                            <Button Grid.Column="1" Width="32" Height="32" Background="#E0E7FF" 
-                                                    BorderThickness="0" Cursor="Hand" ToolTip="Tạo mã" 
-                                                    Command="{Binding GenerateCodeCommand}">
-                                                <Button.Template>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
-                                                            <materialDesign:PackIcon Kind="Autorenew" Width="16" Height="16" 
-                                                                                     Foreground="#4318FF" 
-                                                                                     HorizontalAlignment="Center" 
-                                                                                     VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                            </Button>
+                                <StackPanel Grid.Column="0">
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Tên chương trình ưu đãi *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingPromotion.TenChuongTrinh, UpdateSourceTrigger=PropertyChanged}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
                                         </Grid>
+                                    </Border>
+
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Mã Code Voucher (VD: HALLOWEEN2026) *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingPromotion.MaCode, UpdateSourceTrigger=PropertyChanged}" FontSize="13" FontWeight="SemiBold" Foreground="#4318FF" CharacterCasing="Upper" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Số lượng phát hành tối đa *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingPromotion.SoLuongToiDa}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Số điểm tích lũy cần đổi (Nhập 0 nếu miễn phí)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingPromotion.DiemQuyDoi}" FontSize="13" FontWeight="Bold" Foreground="#F59E0B" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Ngày có hiệu lực *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <DatePicker SelectedDate="{Binding EditingPromotion.NgayBatDau}" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,4" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Ngày hết hạn *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <DatePicker SelectedDate="{Binding EditingPromotion.NgayKetThuc}" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,4" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Giá trị đơn hàng tối thiểu bắt buộc (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingPromotion.GiaTriToiThieuDonHang}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Liên kết chiến dịch / Sự kiện (Tùy chọn)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <ComboBox ItemsSource="{Binding MarketingEvents}" SelectedValue="{Binding EditingPromotion.MaSuKien}" DisplayMemberPath="TenSuKien" SelectedValuePath="MaSuKien" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="Đối tượng khách hàng áp dụng (Ontology Target Roles) *" FontSize="11" FontWeight="Bold" Foreground="#2B3674" Margin="5,8,0,4"/>
+                            <Border CornerRadius="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,10" Margin="0,0,0,15">
+                                <WrapPanel>
+                                    <CheckBox IsChecked="{Binding EditingPromotion.IsTargetMember}" Content="Member (Khách tích điểm)" Style="{StaticResource MaterialDesignFilterChipCheckBox}" Margin="0,0,10,8" Background="#4318FF"/>
+                                    <CheckBox IsChecked="{Binding EditingPromotion.IsTargetVIP}" Content="VIP_Member (Khách VIP đặc quyền)" Style="{StaticResource MaterialDesignFilterChipCheckBox}" Margin="0,0,10,8" Background="#F59E0B"/>
+                                    <CheckBox IsChecked="{Binding EditingPromotion.IsTargetLost}" Content="LostCustomer (Khách đã lâu chưa ghé)" Style="{StaticResource MaterialDesignFilterChipCheckBox}" Margin="0,0,10,8" Background="#EF4444"/>
+                                    <CheckBox IsChecked="{Binding EditingPromotion.IsTargetRetention}" Content="Retention (Khách hàng thân thiết duy trì)" Style="{StaticResource MaterialDesignFilterChipCheckBox}" Margin="0,0,0,8" Background="#10B981"/>
+                                </WrapPanel>
+                            </Border>
+
+                            <TextBlock Text="Cấu hình luật hình thức giảm giá (Ontology Reasoning Rules)" FontSize="11" FontWeight="Bold" Foreground="#2B3674" Margin="5,0,0,4"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                    <Grid>
+                                        <TextBlock Text="Hình thức ưu đãi *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                        <ComboBox x:Name="TypeComboBox" SelectedIndex="{Binding EditingPromotion.LoaiUuDai}" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0">
+                                            <ComboBoxItem Content="Giảm giá theo % hóa đơn"/>
+                                            <ComboBoxItem Content="Giảm tiền mặt trực tiếp trên hóa đơn"/>
+                                            <ComboBoxItem Content="Giảm giá sản phẩm (Sách) cụ thể"/>
+                                            <ComboBoxItem Content="Tặng kèm sản phẩm khi mua hàng"/>
+                                        </ComboBox>
                                     </Grid>
                                 </Border>
 
-                                <Border Grid.Row="1" Grid.ColumnSpan="3" CornerRadius="10" Background="White" 
-                                        BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
+                                <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
                                     <Grid>
-                                        <TextBlock Text="Tên chương trình *" FontSize="10" Foreground="#A3AED0" 
-                                                   VerticalAlignment="Top"/>
-                                        <TextBox Text="{Binding EditingPromotion.TenChuongTrinh}" FontSize="14" 
-                                                 FontWeight="Bold" Foreground="#2B3674" BorderThickness="0" 
-                                                 Margin="0,20,0,5" Padding="0" 
-                                                 HorizontalAlignment="Stretch" TextWrapping="NoWrap"/>
-                                    </Grid>
-                                </Border>
-
-                                <Border Grid.Row="2" Grid.Column="0" CornerRadius="10" Background="White" 
-                                        BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                    <Grid>
-                                        <TextBlock Text="Thời gian bắt đầu *" FontSize="10" Foreground="#A3AED0" 
-                                                   Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                        <DatePicker SelectedDate="{Binding EditingPromotion.ThoiGianBatDau}" 
-                                                    BorderThickness="0" Margin="0,20,0,5" FontSize="13" 
-                                                    Foreground="#2B3674"/>
-                                    </Grid>
-                                </Border>
-                                <Border Grid.Row="2" Grid.Column="2" CornerRadius="10" Background="White" 
-                                        BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                    <Grid>
-                                        <TextBlock Text="Thời gian kết thúc *" FontSize="10" Foreground="#A3AED0" 
-                                                   Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                        <DatePicker SelectedDate="{Binding EditingPromotion.ThoiGianKetThuc}" 
-                                                    BorderThickness="0" Margin="0,20,0,5" FontSize="13" 
-                                                    Foreground="#2B3674"/>
+                                        <TextBlock Text="Phạm vi áp dụng *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                        <ComboBox x:Name="ScopeComboBox" SelectedIndex="{Binding EditingPromotion.PhamViApDung}" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0">
+                                            <ComboBoxItem Content="Áp dụng cho toàn bộ cửa hàng"/>
+                                            <ComboBoxItem Content="Áp dụng theo Thể loại danh mục (Ontology SubClass)"/>
+                                            <ComboBoxItem Content="Áp dụng cho từng sản phẩm (Individual SKU) cụ thể"/>
+                                        </ComboBox>
                                     </Grid>
                                 </Border>
                             </Grid>
 
-                            <Grid Margin="0,0,0,15">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" CornerRadius="10" Background="White" 
-                                        BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8">
-                                    <Grid>
-                                        <TextBlock Text="Số lượng tối đa" FontSize="10" Foreground="#A3AED0" 
-                                                   Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                        <Grid Margin="0,20,0,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBox Text="{Binding EditingPromotion.SoLuongToiDa}" FontSize="14" 
-                                                     FontWeight="SemiBold" Foreground="#4318FF" BorderThickness="0" 
-                                                     Padding="0" HorizontalContentAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Text="lượt (1-200)" FontSize="12" 
-                                                       Foreground="#A3AED0" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                        </Grid>
-                                    </Grid>
-                                </Border>
-                                <Border Grid.Column="2" CornerRadius="10" Background="White" 
-                                        BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8">
-                                    <Grid>
-                                        <TextBlock Text="Loại khách hàng áp dụng" FontSize="10" Foreground="#A3AED0" 
-                                                   Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                        <ComboBox ItemsSource="{Binding ListLoaiKhachHang}" 
-                                                  SelectedItem="{Binding EditingPromotion.LoaiKhachHangApDung}" 
-                                                  FontSize="13" Foreground="#2B3674" BorderThickness="0" 
-                                                  Margin="0,20,0,5" Padding="0" 
-                                                  materialDesign:HintAssist.Hint="Chọn đối tượng KH"/>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-
-                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" 
-                                    Padding="12,8" Margin="0,0,0,15">
+                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=ScopeComboBox}" Value="1">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                                 <Grid>
-                                    <TextBlock Text="Mô tả chi tiết" FontSize="10" Foreground="#A3AED0" 
-                                               Margin="0,0,0,0" VerticalAlignment="Top"/>
-                                    <TextBox Text="{Binding EditingPromotion.MoTa}" FontSize="13" Foreground="#4B5563" 
-                                             BorderThickness="0" Margin="0,20,0,5" TextWrapping="Wrap" 
-                                             AcceptsReturn="True" VerticalContentAlignment="Top" MinHeight="40"/>
+                                    <TextBlock Text="Chọn thể loại sách áp dụng (Ontology SubClass) *" FontSize="10" Foreground="#4318FF" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                    <ComboBox ItemsSource="{Binding CategoriesList}" SelectedValue="{Binding EditingPromotion.MaTheLoai}" DisplayMemberPath="TenTheLoai" SelectedValuePath="MaTheLoai" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
                                 </Grid>
                             </Border>
 
-                            <!-- ==================== PHẦN LOẠI ƯU ĐÃI ==================== -->
-                            <TextBlock Text="LOẠI ƯU ĐÃI" FontWeight="Bold" Foreground="#4318FF" Margin="0,10,0,5"/>
-
-                            <ComboBox Name="LoaiUuDaiComboBox" 
-                                      ItemsSource="{Binding ListLoaiUuDai}" 
-                                      SelectedItem="{Binding SelectedLoaiUuDaiInPopup}" 
-                                      FontSize="14" FontWeight="SemiBold" Foreground="#F59E0B" 
-                                      Margin="0,0,0,15"
-                                      materialDesign:HintAssist.Hint="-- Chọn loại ưu đãi --"/>
-
-                            <!-- 1. Giảm giá trên tổng hóa đơn -->
-                            <Grid>
-                                <Grid.Style>
-                                    <Style TargetType="Grid">
+                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                <Border.Style>
+                                    <Style TargetType="Border">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedLoaiUuDaiInPopup}" Value="Giảm giá trên tổng hóa đơn">
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=ScopeComboBox}" Value="2">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Grid.Style>
+                                </Border.Style>
+                                <Grid>
+                                    <TextBlock Text="Tìm kiếm &amp; Chọn sách áp dụng định danh (Individual SKU) *" FontSize="10" Foreground="#4318FF" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                    <ComboBox ItemsSource="{Binding ListSach}" SelectedValue="{Binding EditingPromotion.MaSachApDung}" DisplayMemberPath="TenSach" SelectedValuePath="MaSach" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                </Grid>
+                            </Border>
 
-                                <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="10"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                            <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=TypeComboBox}" Value="3">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid>
+                                    <TextBlock FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Mức ưu đãi giảm giá *"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedIndex, ElementName=TypeComboBox}" Value="0">
+                                                        <Setter Property="Text" Value="Phần trăm giảm giá hóa đơn (%) *"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedIndex, ElementName=TypeComboBox}" Value="1">
+                                                        <Setter Property="Text" Value="Số tiền giảm trực tiếp trên hóa đơn (VNĐ) *"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedIndex, ElementName=TypeComboBox}" Value="2">
+                                                        <Setter Property="Text" Value="Phần trăm giảm giá riêng cho sản phẩm (%) *"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBox Text="{Binding EditingPromotion.GiaTriUuDai, UpdateSourceTrigger=PropertyChanged}" FontSize="13" FontWeight="Bold" Foreground="#10B981" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                </Grid>
+                            </Border>
 
-                                        <Border Grid.Row="0" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Giá trị áp dụng từ (VNĐ) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.GiaTriApDungTu}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="0" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Giá trị áp dụng đến (VNĐ) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.GiaTriApDungDen}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Mức giảm giá (Số tiền hoặc %) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.MucGiamGia}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Giảm tối đa (VNĐ - nếu giảm theo %)" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.GiamToiDa}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-
-                            <!-- 2. Giảm giá cho các sản phẩm -->
-                            <Grid>
-                                <Grid.Style>
-                                    <Style TargetType="Grid">
+                            <StackPanel>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedLoaiUuDaiInPopup}" Value="Giảm giá cho các sản phẩm">
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=TypeComboBox}" Value="3">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Grid.Style>
+                                </StackPanel.Style>
 
-                                <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="10"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                        <Border Grid.Row="0" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Sách áp dụng *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding ListSach}" SelectedItem="{Binding EditingPromotion.SachApDung}" DisplayMemberPath="TenSach" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5" Padding="0"/>
-                                            </Grid>
-                                        </Border>
+                                    <Border Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Chọn sản phẩm quà tặng đi kèm (Gift SKU) *" FontSize="10" Foreground="#FF5B3C" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <ComboBox ItemsSource="{Binding ListSach}" SelectedValue="{Binding EditingPromotion.MaSachTang}" DisplayMemberPath="TenSach" SelectedValuePath="MaSach" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
 
-                                        <Border Grid.Row="0" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Số lượng áp dụng tối thiểu (quyển/bộ) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.SoLuongApDung}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Mức giảm giá (Số tiền hoặc %) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.MucGiamGia}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Giảm tối đa (VNĐ - nếu giảm theo %)" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.GiamToiDa}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-
-                            <!-- 3. Tặng quà trên tổng hóa đơn -->
-                            <Grid>
-                                <Grid.Style>
-                                    <Style TargetType="Grid">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedLoaiUuDaiInPopup}" Value="Tặng quà trên tổng hóa đơn">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="10"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.Row="0" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Giá trị áp dụng từ (VNĐ) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.GiaTriApDungTu}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="0" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Giá trị áp dụng đến (VNĐ) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.GiaTriApDungDen}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Sách tặng *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding ListSach}" SelectedItem="{Binding EditingPromotion.SachTang}" DisplayMemberPath="TenSach" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5" Padding="0"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Số lượng tặng (quyển/bộ) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.SoLuongTang}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-
-                            <!-- 4. Tặng quà khi mua sản phẩm -->
-                            <Grid>
-                                <Grid.Style>
-                                    <Style TargetType="Grid">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedLoaiUuDaiInPopup}" Value="Tặng quà khi mua sản phẩm">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <Border CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="10"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.Row="0" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Sách áp dụng *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding ListSach}" SelectedItem="{Binding EditingPromotion.SachApDung}" DisplayMemberPath="TenSach" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5" Padding="0"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="0" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Số lượng áp dụng từ (quyển) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.SoLuongApDungTu}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Sách quà tặng *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding ListSach}" SelectedItem="{Binding EditingPromotion.SachQuaTang}" DisplayMemberPath="TenSach" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5" Padding="0"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="1" Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Padding="12,8" Margin="0,0,0,10">
-                                            <Grid>
-                                                <TextBlock Text="Số lượng tặng (quyển) *" FontSize="10" Foreground="#A3AED0" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding EditingPromotion.SoLuongTang}" FontSize="13" Foreground="#2B3674" BorderThickness="0" Margin="0,20,0,5"/>
-                                            </Grid>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-                            <!-- ==================== KẾT THÚC PHẦN LOẠI ƯU ĐÃI ==================== -->
+                                    <Border Grid.Column="2" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1.5" Height="50" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="Số lượng tặng *" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
+                                            <TextBox Text="{Binding EditingPromotion.SoLuongTang}" FontSize="13" FontWeight="Bold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
 
                         </StackPanel>
                     </ScrollViewer>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" 
-                                Width="120" Height="40" Margin="0,0,10,0" FontSize="13" 
-                                FontWeight="SemiBold" Foreground="#A3AED0" Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="Transparent" BorderBrush="#E2E8F0" 
-                                            BorderThickness="2" CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                        <Button Content="{Binding SaveButtonText, FallbackValue='LƯU PHIẾU ƯU ĐÃI'}" 
-                                Command="{Binding SavePromotionCommand}" 
-                                Width="160" Height="40" FontSize="13" FontWeight="SemiBold" 
-                                Foreground="White" Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="{StaticResource PromotionGradientBrush}" CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </StackPanel>
+                    <Grid Grid.Row="2" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Information" Foreground="#A3AED0" Width="16" Height="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="Vui lòng kiểm tra kỹ các ràng buộc Ontology trước khi lưu cấu hình." FontSize="11" Foreground="#A3AED0" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="HỦY BỎ" Command="{Binding ClosePopupCommand}" Width="120" Height="40" Margin="0,0,12,0" Style="{StaticResource OutlineButtonStyle}"/>
+                            <Button Style="{StaticResource MainGradientButton}"
+                                Content="{Binding SaveButtonText, FallbackValue='LƯU CHIẾN LƯỢC'}" Command="{Binding SavePromotionCommand}" Width="160" Height="40" FontSize="13" FontWeight="SemiBold" Foreground="White" Cursor="Hand">
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
                 </Grid>
             </Border>
         </Grid>

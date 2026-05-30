@@ -581,18 +581,19 @@
 						<!-- Tên KH -->
 						<DataGridTextColumn Header="Tên khách hàng"
 											Binding="{Binding TenKhachHang}"
-											Width="190">
+											Width="*">
 							<DataGridTextColumn.HeaderStyle>
-								<Style TargetType="DataGridColumnHeader"
+                                <Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-									<Setter Property="HorizontalContentAlignment"
+                                    <Setter Property="HorizontalContentAlignment"
 											Value="Left" />
-								</Style>
-							</DataGridTextColumn.HeaderStyle>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
 							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
+								<Style TargetType="TextBlock" BasedOn="{StaticResource CellLeft}">
 									<Setter Property="TextTrimming"
 											Value="CharacterEllipsis" />
+                                    <Setter Property="TextWrapping" Value="Wrap"></Setter>
 								</Style>
 							</DataGridTextColumn.ElementStyle>
 						</DataGridTextColumn>
@@ -619,18 +620,20 @@
 						<!-- Email -->
 						<DataGridTextColumn Header="Email"
 											Binding="{Binding Email}"
-											Width="220">
+											Width="150">
 							<DataGridTextColumn.HeaderStyle>
 								<Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-									<Setter Property="HorizontalContentAlignment"
+                                    <Setter Property="HorizontalContentAlignment"
 											Value="Left" />
-								</Style>
+                                </Style>
+                                
 							</DataGridTextColumn.HeaderStyle>
 							<DataGridTextColumn.ElementStyle>
 								<Style TargetType="TextBlock">
 									<Setter Property="TextTrimming"
 											Value="CharacterEllipsis" />
+                                    <Setter Property="TextWrapping" Value="Wrap"></Setter>
 								</Style>
 							</DataGridTextColumn.ElementStyle>
 						</DataGridTextColumn>

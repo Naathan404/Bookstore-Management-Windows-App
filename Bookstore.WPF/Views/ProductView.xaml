@@ -367,7 +367,7 @@
             <!-- Card 3: Danh sách sách -->
             <Border Grid.Row="2" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                 <DataGrid Grid.Row="1" CanUserSortColumns="False" AutoGenerateColumns="False" ItemsSource="{Binding PagedBooks}" 
-                              SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True"
+                              SelectionMode="Extended" SelectionUnit="FullRow" IsReadOnly="True"
                               HeadersVisibility="Column" BorderThickness="0" MinRowHeight="52"
                               FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
                               Foreground="#2B3674" GridLinesVisibility="Horizontal"
@@ -469,7 +469,7 @@
                         </DataGridTextColumn>
 
                         <!-- Cột Tên Sách-->
-                        <DataGridTextColumn Header="Tên sách" Binding="{Binding TenSach}" Width="200">
+                        <DataGridTextColumn Header="Tên sách" Binding="{Binding TenSach}" Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="VerticalAlignment" Value="Center"/>

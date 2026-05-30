@@ -15,6 +15,8 @@ namespace Bookstore.WPF.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
+        public Axis[] XAxes { get; set; }
+        public Axis[] YAxes { get; set; }
 
         private bool _isLoading;
         public bool IsLoading
@@ -163,6 +165,33 @@ namespace Bookstore.WPF.ViewModels
         /// </summary>
         public async Task LoadAllDataAsync()
         {
+            string[] last7Days = new string[7];
+            for (int i = 6; i >= 0; i--)
+            {
+                last7Days[6 - i] = DateTime.Now.AddDays(-i).ToString("dd/MM");
+            }
+
+            XAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Labels = last7Days,
+                    LabelsRotation = 0, 
+                    TextSize = 13,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray)
+                }
+            };
+
+
+            YAxes = new Axis[]
+            {
+                new Axis
+                {
+                    MinLimit = 0,
+                    Labeler = value => value.ToString("N0") 
+                }
+            };
+
             IsLoading = true;
             try
             {
@@ -256,9 +285,25 @@ namespace Bookstore.WPF.ViewModels
 
             ComparisonSeries = new ObservableCollection<ISeries>
             {
-                new ColumnSeries<double> { Name = "Doanh thu", Values = revenueValues, Fill = new SolidColorPaint(SKColors.CornflowerBlue) },
-                new ColumnSeries<double> { Name = "Chi phí nhập", Values = importValues, Fill = new SolidColorPaint(SKColors.Tomato) },
-                new LineSeries<double> { Name = "Lợi nhuận", Values = profitValues, Stroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 }, Fill = null }
+                new ColumnSeries<double> 
+                { 
+                    Name = "Doanh thu", 
+                    Values = revenueValues, 
+                    Fill = new SolidColorPaint(SKColors.CornflowerBlue) 
+                },
+                new ColumnSeries<double> 
+                { 
+                    Name = "Chi phí nhập", 
+                    Values = importValues, 
+                    Fill = new SolidColorPaint(SKColors.Tomato) 
+                },
+                new LineSeries<double> 
+                { 
+                    Name = "Lợi nhuận",
+                    Values = profitValues,
+                    Stroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 }, 
+                    Fill = null 
+                }
             };
         }
     }

@@ -133,7 +133,7 @@
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredDauSachs}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold" 
-                              SelectionMode="Single" SelectionUnit="FullRow"
+                              SelectionMode="Extended" SelectionUnit="FullRow"
                                 HeadersVisibility="Column" BorderThickness="0" MinRowHeight="52"
                                 FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
                                 Foreground="#2B3674" GridLinesVisibility="Horizontal"
@@ -355,7 +355,7 @@
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredTacGias}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold" 
-                              SelectionMode="Single" SelectionUnit="FullRow"
+                              SelectionMode="Extended" SelectionUnit="FullRow"
                                 HeadersVisibility="Column" BorderThickness="0" MinRowHeight="52"
                                 FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
                                 Foreground="#2B3674" GridLinesVisibility="Horizontal"
@@ -463,7 +463,7 @@
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredTheLoais}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold"
-                                SelectionMode="Single" SelectionUnit="FullRow"
+                                SelectionMode="Extended" SelectionUnit="FullRow"
                                 HeadersVisibility="Column" BorderThickness="0" MinRowHeight="52"
                                 FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
                                 Foreground="#2B3674" GridLinesVisibility="Horizontal"
@@ -569,7 +569,7 @@
                     </Grid>
                     <Border Grid.Row="1" CornerRadius="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
                         <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredNXBs}" AutoGenerateColumns="False" IsReadOnly="True" Background="White" FontWeight="SemiBold"
-                                                              SelectionMode="Single" SelectionUnit="FullRow"
+                                                              SelectionMode="Extended" SelectionUnit="FullRow"
                                 HeadersVisibility="Column" BorderThickness="0" MinRowHeight="52"
                                 FontSize="13" AlternatingRowBackground="#F8FAFC" RowBackground="White"
                                 Foreground="#2B3674" GridLinesVisibility="Horizontal"

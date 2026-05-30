@@ -130,7 +130,10 @@
                             <Border Grid.Column="0" Style="{StaticResource DashboardCardStyle}" Margin="0,0,10,0" Height="360">
                                 <StackPanel>
                                     <TextBlock Text="XU HƯỚNG TĂNG TRƯỞNG DOANH THU" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,15"/>
-                                    <lvc:CartesianChart x:Name="ChartRevenue" Series="{Binding RevenueSeries}" Height="290" Margin="-10 0 -5 0"/>
+                                    <lvc:CartesianChart x:Name="ChartRevenue" 
+                                                        Series="{Binding RevenueSeries}" 
+                                                        XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+                                                        Height="290" Margin="-10 0 -5 0"/>
                                 </StackPanel>
                             </Border>
                             <Border Grid.Column="1" Style="{StaticResource DashboardCardStyle}" Height="360" Margin="0 10 0 15">
@@ -148,8 +151,11 @@
                             </Grid.ColumnDefinitions>
                             <Border Style="{StaticResource DashboardCardStyle}" Height="400">
                                 <StackPanel>
-                                    <TextBlock Text="SO SÁNH DOANH THU &amp; CHI PHÍ" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,15"/>
-                                    <lvc:CartesianChart x:Name="ChartComparison" Series="{Binding ComparisonSeries}" Height="350" LegendPosition="Right"/>
+                                    <TextBlock Text="SO SÁNH DOANH THU &amp; CHI PHÍ" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,0"/>
+                                    <lvc:CartesianChart x:Name="ChartComparison" 
+                                                        Series="{Binding ComparisonSeries}" 
+                                                        XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+                                                        Height="350" LegendPosition="Right"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
