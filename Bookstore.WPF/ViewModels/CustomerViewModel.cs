@@ -1,4 +1,5 @@
-﻿using Bookstore.Share.DTOResponses;
+﻿using Bookstore.Share.DTO;
+using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Converters;
 using Bookstore.WPF.Services;
 using Microsoft.IdentityModel.Tokens;
@@ -136,22 +137,31 @@ namespace Bookstore.WPF.ViewModels
             get => _maPhieuThu;
             set { _maPhieuThu = value; OnPropertyChanged(); }
         }
-
-        private long _soTienThu;
-        public long SoTienThu
+        private ReceiptResponse _phieuThuForm = new();
+        public ReceiptResponse PhieuThuForm
         {
-            get => _soTienThu;
+            get => _phieuThuForm;
+            set { _phieuThuForm = value; OnPropertyChanged(); }
+        }
+
+        public decimal FormSoTienThu
+        {
+            get => PhieuThuForm?.SoTienThu ?? 0;
             set
             {
-                _soTienThu = value;
+                if (PhieuThuForm != null)
+                {
+                    PhieuThuForm.SoTienThu = value;
+                }
                 OnPropertyChanged();
-                // Tự động tính toán công nợ còn lại mỗi khi người dùng gõ phím
-                ConNoSauKhiThu = Math.Max(0, (KhachHangForm?.CongNo ?? 0) - _soTienThu);
+
+                decimal noHienTai = KhachHangForm != null ? KhachHangForm.CongNo : 0;
+                ConNoSauKhiThu = Math.Max(0, noHienTai - value);
             }
         }
 
-        private long _conNoSauKhiThu;
-        public long ConNoSauKhiThu
+        private decimal _conNoSauKhiThu;
+        public decimal ConNoSauKhiThu
         {
             get => _conNoSauKhiThu;
             set { _conNoSauKhiThu = value; OnPropertyChanged(); }
@@ -369,25 +379,84 @@ namespace Bookstore.WPF.ViewModels
                 return;
             }
 
-            KhachHangForm = kh; // Mượn tạm KhachHangForm để hiển thị tên và công nợ cũ
-            MaPhieuThu = $"PT{DateTime.Now:yyyyMMddHHmmss}";
-            SoTienThu = 0;
+            KhachHangForm = kh;
+
+            PhieuThuForm = new ReceiptResponse
+            {
+                TenKhachHang = kh.TenKhachHang ?? "",
+                SoTienThu = 0,
+                TenNguoiTao = "admin",
+                LyDoThu = "Thu tiền"
+            };
+
+            MaPhieuThu = $"PT{DateTime.Now:ddMMyy}";
+
+            OnPropertyChanged(nameof(FormSoTienThu));
+            ConNoSauKhiThu = kh.CongNo;
 
             IsThuTienPopupOpen = true;
         }
 
-        private void ExecuteXacNhanThuTien(object obj)
+        private async void ExecuteXacNhanThuTien(object obj)
         {
-            if (SoTienThu <= 0) { MessageBox.Show("Số tiền không hợp lệ!"); return; }
-            if (SoTienThu > KhachHangForm.CongNo) { MessageBox.Show("Số tiền thu > công nợ!"); return; }
+            // 1. KIỂM TRA ĐIỀU KIỆN LOCAL TRƯỚC CHO NHANH
+            if (PhieuThuForm.SoTienThu <= 0)
+            {
+                MessageBox.Show("Số tiền thu không hợp lệ!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            // Tìm và trừ tiền trong danh sách gốc
-            var target = _danhSachKhachHangGoc.First(x => x.MaKhachHang == KhachHangForm.MaKhachHang);
-            target.CongNo -= SoTienThu;
+            bool tienThuLonHonNo = false;
+            try
+            {
+                // 2. GỌI API LẤY THAM SỐ
+                var tsTienThuLonHonNo = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/TienThuLonHonNo");
+                if (tsTienThuLonHonNo != null)
+                {
+                    tienThuLonHonNo = (tsTienThuLonHonNo.GiaTri == 1);
+                }
 
-            IsThuTienPopupOpen = false;
-            _ = ApplyFilterAsync();
-            MessageBox.Show($"Thu thành công! Còn nợ: {target.CongNo:N0} VNĐ");
+                // 3. KIỂM TRA VƯỢT NỢ
+                if (!tienThuLonHonNo && PhieuThuForm.SoTienThu > KhachHangForm.CongNo)
+                {
+                    MessageBox.Show("Tiền thu không được lớn hơn số nợ hiện tại!", "Lỗi quy định", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // 4. CHUẨN BỊ PAYLOAD GỬI XUỐNG API
+                var requestData = new
+                {
+                    NguoiTao = "admin", // Tạm thời hardcode, sau này lấy từ phiên đăng nhập
+                    MaKhachHang = KhachHangForm.MaKhachHang,
+                    SoTienThu = PhieuThuForm.SoTienThu,
+                    LyDoThu = PhieuThuForm.LyDoThu
+                };
+
+                // 5. GỌI API TẠO PHIẾU THU
+                var response = await ApiClient.PostAsync<object, ReceiptResponse>("api/PhieuThu", requestData);
+
+                if (response != null)
+                {
+                    // 6. NẾU API THÀNH CÔNG, CẬP NHẬT LẠI GIAO DIỆN FRONTEND
+                    var target = _danhSachKhachHangGoc.FirstOrDefault(x => x.MaKhachHang == KhachHangForm.MaKhachHang);
+                    if (target != null)
+                    {
+                        target.CongNo -= (long)PhieuThuForm.SoTienThu;
+                    }
+
+                    IsThuTienPopupOpen = false;
+                    _ = ApplyFilterAsync(); // Load lại lưới để hiển thị màu sắc/danh sách đúng
+                    MessageBox.Show($"Thu tiền thành công! Còn nợ: {target?.CongNo:N0} VNĐ", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Tạo phiếu thu thất bại. Máy chủ không phản hồi!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi hệ thống: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         // ==================== LOGIC FILTER & PAGINATION ====================
@@ -566,6 +635,11 @@ namespace Bookstore.WPF.ViewModels
         private int GetNextMaKhachHang()
         {
             return (_danhSachKhachHangGoc.Any() ? _danhSachKhachHangGoc.Max(x => x.MaKhachHang) : 0) + 1;
+        }
+
+        private int GetNextMaPhieuThu()
+        {
+            return 1;
         }
         #endregion
     }

@@ -32,5 +32,19 @@ namespace Bookstore.API.Controllers
                 GiaTri = thamSo.GiaTri / 100m
             });
         }
+
+        [HttpGet("tien-thu-lon-hon-no")]
+        public async Task<ActionResult<ThamSoDTO>> GetTienThuLonHonNo()
+        {
+            var tsTienThuLonHonNo = await _context.ThamSo.FindAsync("TienThuLonHonNo");
+            string TenThamSo = (tsTienThuLonHonNo == null) ? "TienThuLonHonNo" : tsTienThuLonHonNo.TenThamSo;
+            int GiaTri = (tsTienThuLonHonNo == null || tsTienThuLonHonNo.GiaTri == 0) ? 0 : 1;
+
+            return Ok(new ThamSoDTO
+            {
+                TenThamSo = TenThamSo,
+                GiaTri = GiaTri
+            });
+        }
     }
 }

@@ -719,9 +719,28 @@
 												Background="#D1FAE5"
 												BorderThickness="0"
 												Cursor="Hand"
-												ToolTip="Lập phiếu thu tiền"
 												Command="{Binding DataContext.MoPopupThuTienCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 												CommandParameter="{Binding}">
+
+											<Button.Style>
+												<Style TargetType="Button">
+													<Setter Property="ToolTip"
+															Value="Lập phiếu thu tiền" />
+
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding CongNo}"
+																	 Value="0">
+															<Setter Property="IsEnabled"
+																	Value="False" />
+															<Setter Property="Opacity"
+																	Value="0.4" />
+															<Setter Property="ToolTip"
+																	Value="Khách hàng không có nợ" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Button.Style>
+
 											<Button.Template>
 												<ControlTemplate TargetType="Button">
 													<Border x:Name="border"
@@ -1007,7 +1026,7 @@
 														 VerticalAlignment="Center"
 														 HorizontalAlignment="Center" />
 								<TextBox Grid.Column="1"
-										 Text="Admin"
+										 Text="{Binding PhieuThuForm.TenNguoiTao, UpdateSourceTrigger=PropertyChanged}"
 										 IsReadOnly="True"
 										 Margin="0 0 5 0"
 										 Background="Transparent"
@@ -1038,7 +1057,7 @@
 													 VerticalAlignment="Center"
 													 HorizontalAlignment="Center" />
 							<TextBlock Grid.Column="1"
-									 Text="{Binding KhachHangForm.TenKhachHang}"
+									 Text="{Binding PhieuThuForm.TenKhachHang}"
 									 Margin="0 0 5 0"
 									 Background="Transparent"
 									 VerticalAlignment="Center"
@@ -1067,7 +1086,7 @@
 													 VerticalAlignment="Center"
 													 HorizontalAlignment="Center" />
 							<TextBox Grid.Column="1"
-									 Text="{Binding SoTienThu, UpdateSourceTrigger=PropertyChanged}"
+									 Text="{Binding FormSoTienThu, UpdateSourceTrigger=PropertyChanged}"
 									 Margin="0 0 5 0"
 									 Background="Transparent"
 									 BorderThickness="0"
@@ -1106,19 +1125,15 @@
 								Width="100"
 								Height="40"
 								Margin="0,0,10,0"
-								Foreground="#A3AED0"
-								Background="Transparent"
-								BorderBrush="#E2E8F0"
-								BorderThickness="1"
+								Style="{StaticResource OutlineButtonStyle}"
 								Command="{Binding DongPopupThuTienCommand}"
-								CommandParameter="1" />
+								CommandParameter="{Binding}" />
 						<Button Content="LƯU PHIẾU"
 								Width="130"
 								Height="40"
-								Foreground="White"
-								Background="#10B981"
+								Style="{StaticResource MainGradientButton}"
 								Command="{Binding XacNhanThuTienCommand}"
-								CommandParameter="1" />
+								CommandParameter="{Binding}" />
 					</StackPanel>
 				</Grid>
 			</Border>
