@@ -363,13 +363,13 @@ namespace Bookstore.API.Data
                 new ThamSo { TenThamSo = "TiLeDonGiaBan", GiaTri = 110 },
                 new ThamSo { TenThamSo = "SoLuongNhapToiThieu", GiaTri = 150 },
                 new ThamSo { TenThamSo = "SoLuongTonToiDaCoTheNhap", GiaTri = 300 },
-                new ThamSo { TenThamSo = "SoLuongUuDaiToiThieu", GiaTri=1},
-                new ThamSo { TenThamSo = "SoLuongUuDaiToiDa", GiaTri=200},
-                new ThamSo { TenThamSo= "CoKhoangachCacKhoangGia", GiaTri=1},
-                new ThamSo { TenThamSo="ChoPhepKetThucUuDai", GiaTri = 1},
-                new ThamSo { TenThamSo="SoLuongTonToiThieu", GiaTri=20},
-                new ThamSo { TenThamSo="ThueVAT", GiaTri=8},
-                new ThamSo { TenThamSo="TienThuLonHonNo", GiaTri=1}
+                new ThamSo { TenThamSo = "SoLuongUuDaiToiThieu", GiaTri = 1 },
+                new ThamSo { TenThamSo = "SoLuongUuDaiToiDa", GiaTri = 200 },
+                new ThamSo { TenThamSo = "CoKhoangachCacKhoangGia", GiaTri = 1 },
+                new ThamSo { TenThamSo = "ChoPhepKetThucUuDai", GiaTri = 1 },
+                new ThamSo { TenThamSo = "SoLuongTonToiThieu", GiaTri = 20 },
+                new ThamSo { TenThamSo = "ThueVAT", GiaTri = 8 },
+                new ThamSo { TenThamSo = "TienThuLonHonNo", GiaTri = 1 }
             );
 
             // Loại khách hàng và khách hàng
