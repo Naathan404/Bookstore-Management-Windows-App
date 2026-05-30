@@ -29,9 +29,6 @@ namespace Bookstore.WPF.ViewModels
         private bool _isMaPhieuVisible;
         public bool IsMaPhieuVisible { get => _isMaPhieuVisible; set { _isMaPhieuVisible = value; OnPropertyChanged(); } }
 
-        //private string _maPhieuThu;
-        //public string MaPhieuThu { get => _maPhieuThu; set { _maPhieuThu = value; OnPropertyChanged(); } }
-
         private ObservableCollection<CustomerResponse> _danhSachKhachHangCombobox = new();
         public ObservableCollection<CustomerResponse> DanhSachKhachHangCombobox
         {
@@ -46,9 +43,12 @@ namespace Bookstore.WPF.ViewModels
             set
             {
                 _selectedKhachHangForm = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(TienThuaTraKhach));
+
                 decimal noHienTai = value?.CongNo ?? 0;
-                ConNoSauKhiThu = Math.Max(0, noHienTai - FormSoTienThu);
+                ConNoSauKhiThu = noHienTai - FormSoTienThu;
+
+                IsConLaiVisible = (value != null);
             }
         }
         private bool _isKhachHangEnable = true;
@@ -65,6 +65,18 @@ namespace Bookstore.WPF.ViewModels
         private decimal _conNoSauKhiThu;
         public decimal ConNoSauKhiThu { get => _conNoSauKhiThu; set { _conNoSauKhiThu = value; OnPropertyChanged(); } }
 
+        private bool _isConLaiVisible;
+        public bool IsConLaiVisible
+        {
+            get => _isConLaiVisible;
+            set
+            {
+                _isConLaiVisible = value;
+                OnPropertyChanged();
+            }
+        }
+        public decimal TienThuaTraKhach => Math.Abs(ConNoSauKhiThu < 0 ? ConNoSauKhiThu : 0);
+
         private decimal _formSoTienThu;
         public decimal FormSoTienThu
         {
@@ -73,9 +85,12 @@ namespace Bookstore.WPF.ViewModels
             {
                 _formSoTienThu = value;
                 if (PhieuThuForm != null) PhieuThuForm.SoTienThu = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(TienThuaTraKhach));
+
                 decimal noHienTai = SelectedKhachHangForm?.CongNo ?? 0;
-                ConNoSauKhiThu = Math.Max(0, noHienTai - value);
+                ConNoSauKhiThu = noHienTai - value;
+
+                IsConLaiVisible = (SelectedKhachHangForm != null);
             }
         }
         #endregion
