@@ -20,7 +20,11 @@
             <views:SaleView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewmodels:SupplierViewModel}">
+		<DataTemplate DataType="{x:Type viewmodels:InvoiceViewModel}">
+			<views:InvoiceView />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type viewmodels:SupplierViewModel}">
             <views:SupplierView />
         </DataTemplate>
 

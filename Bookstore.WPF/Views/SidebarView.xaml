@@ -84,7 +84,23 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 3. TRA CỨU SÁCH -->
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsInvoiceVisible}"
+							 IsChecked="{Binding IsInvoiceChecked}"
+							 Command="{Binding ShowHoaDonCommand}"
+							 CommandParameter="Sale">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="Invoice"
+												 Width="22"
+												 Height="22"
+												 Margin="0,0,15,0" />
+						<TextBlock Text="Hóa đơn"
+								   VerticalAlignment="Center" />
+					</StackPanel>
+				</RadioButton>
+
+				<!-- 3. TRA CỨU SÁCH -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsProductVisible}"
                              IsChecked="{Binding IsProductChecked}"

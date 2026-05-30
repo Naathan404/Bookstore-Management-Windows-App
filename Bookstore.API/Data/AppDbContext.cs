@@ -236,16 +236,17 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<ChucNang>().HasData(
                     new ChucNang { MaChucNang = 1, TenChucNang = "Trang chủ", TenManHinh = "DashboardView" },
                     new ChucNang { MaChucNang = 2, TenChucNang = "Bán hàng", TenManHinh = "SaleView" },
-                    new ChucNang { MaChucNang = 3, TenChucNang = "Tra cứu sách", TenManHinh = "ProductView" },
-                    new ChucNang { MaChucNang = 4, TenChucNang = "Khách hàng", TenManHinh = "CustomerView" },
-                    new ChucNang { MaChucNang = 5, TenChucNang = "Phiếu nhập", TenManHinh = "ReceiptView" },
-                    new ChucNang { MaChucNang = 6, TenChucNang = "Nhập kho", TenManHinh = "ImportView" },
-                    new ChucNang { MaChucNang = 7, TenChucNang = "Nhà cung cấp", TenManHinh = "SupplierView" },
-                    new ChucNang { MaChucNang = 8, TenChucNang = "Ưu đãi", TenManHinh = "PromotionView" },
-                    new ChucNang { MaChucNang = 9, TenChucNang = "Danh mục", TenManHinh = "CategoryView" },
-                    new ChucNang { MaChucNang = 10, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
-                    new ChucNang { MaChucNang = 11, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
-                    new ChucNang { MaChucNang = 12, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
+                    new ChucNang { MaChucNang = 3, TenChucNang = "Hóa đơn", TenManHinh = "InvoiceView" },
+                    new ChucNang { MaChucNang = 4, TenChucNang = "Tra cứu sách", TenManHinh = "ProductView" },
+                    new ChucNang { MaChucNang = 5, TenChucNang = "Khách hàng", TenManHinh = "CustomerView" },
+                    new ChucNang { MaChucNang = 6, TenChucNang = "Phiếu nhập", TenManHinh = "ReceiptView" },
+                    new ChucNang { MaChucNang = 7, TenChucNang = "Nhập kho", TenManHinh = "ImportView" },
+                    new ChucNang { MaChucNang = 8, TenChucNang = "Nhà cung cấp", TenManHinh = "SupplierView" },
+                    new ChucNang { MaChucNang = 9, TenChucNang = "Ưu đãi", TenManHinh = "PromotionView" },
+                    new ChucNang { MaChucNang = 10, TenChucNang = "Danh mục", TenManHinh = "CategoryView" },
+                    new ChucNang { MaChucNang = 11, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
+                    new ChucNang { MaChucNang = 12, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
+                    new ChucNang { MaChucNang = 13, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
             );
 
             /// SEED data cho PHÂN QUYỀN
@@ -263,6 +264,7 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 10 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 11 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 12 },
+                new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 13 },
 
                 // QUẢN LÝ không bán hàng, thêm tài khoản và cài đặt
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 1 },
@@ -274,12 +276,13 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 8 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 9 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 10 },
+                new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 11 },
 
                 // NHÂN VIÊN có quyền bán hàng, tra cứu sách, quản lý khách hàng.
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 2 },
-                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 3 },
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 4 },
-                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 9 }
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 5 },
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 10 }
             );
 
             string defaultHash = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676";

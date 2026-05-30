@@ -31,6 +31,16 @@ namespace Bookstore.WPF.ViewModels
             get => _isSaleVisible;
             set { _isSaleVisible = value; OnPropertyChanged(); }
         }
+        private Visibility _isInvoiceVisible;
+        public Visibility IsInvoiceVisible
+        {
+            get => _isInvoiceVisible;
+            set
+            {
+                _isInvoiceVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
         private Visibility _isProductVisible;
         public Visibility IsProductVisible
@@ -106,6 +116,7 @@ namespace Bookstore.WPF.ViewModels
         #region Cache View models
         private DashboardViewModel _dashboardViewModel;
         private SaleViewModel _saleViewModel;
+        private InvoiceViewModel _invoiceViewModel;
         private ProductViewModel _productViewModel;
         private CustomerViewModel _customerViewModel;
         private ReceiptViewModel _receiptViewModel;
@@ -122,6 +133,7 @@ namespace Bookstore.WPF.ViewModels
         //
         public ICommand ShowDashboardCommand { get; set; }
         public ICommand ShowBanHangCommand { get; set; }
+        public ICommand ShowHoaDonCommand { get; set; }
         public ICommand ShowTraCuuSachCommand { get; set; }
         public ICommand ShowKhachHangCommand { get; set; }
         public ICommand ShowPhieuThuCommand { get; set; }
@@ -150,6 +162,15 @@ namespace Bookstore.WPF.ViewModels
         {
             get => _isSaleChecked;
             set { _isSaleChecked = value; OnPropertyChanged(); }
+        }
+        private bool _isInvoiceChecked;
+        public bool IsInvoiceChecked
+        {
+            get => _isAccountChecked;
+            set
+            {
+                _isAccountChecked = value; OnPropertyChanged();
+            }
         }
 
         private bool _isProductChecked;
@@ -234,9 +255,10 @@ namespace Bookstore.WPF.ViewModels
             HomeTabName = AppState.CurrentUser.Username;
             // Đọc phân quyền từ api
             // ==========================================
-            IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
+            //IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
             IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;
             IsSaleVisible = listQuyen.Contains("SaleView") ? Visibility.Visible : Visibility.Collapsed;
+            IsInvoiceVisible = listQuyen.Contains("InvoiceView") ? Visibility.Visible: Visibility.Collapsed;
             IsProductVisible = listQuyen.Contains("ProductView") ? Visibility.Visible : Visibility.Collapsed;
             IsCustomerVisible = listQuyen.Contains("CustomerView") ? Visibility.Visible : Visibility.Collapsed;
             IsReceiptVisible = listQuyen.Contains("ReceiptView") ? Visibility.Visible : Visibility.Collapsed;
@@ -273,6 +295,12 @@ namespace Bookstore.WPF.ViewModels
             {
                 _saleViewModel = new SaleViewModel();
                 ShowBanHangCommand = new RelayCommand<object>((p) => _handleChangeView(_saleViewModel));
+            }
+
+            if (listQuyen.Contains("InvoiceView"))
+            {
+                _invoiceViewModel = new InvoiceViewModel();
+                ShowHoaDonCommand = new RelayCommand<object>((p) => _handleChangeView(_invoiceViewModel));
             }
 
             if (listQuyen.Contains("ProductView"))
