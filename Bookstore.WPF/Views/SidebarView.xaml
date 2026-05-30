@@ -108,7 +108,7 @@
                     </StackPanel>
                 </RadioButton>
 				
-                <!-- PHIẾU NHẬP -->
+                <!-- 5. PHIẾU THU -->
 				<RadioButton Style="{StaticResource NavButtonStyle}"
 							 GroupName="NavMenu"
 							 Visibility="{Binding IsReceiptVisible}"
@@ -125,7 +125,7 @@
 					</StackPanel>
 				</RadioButton>
 
-				<!-- 5. NHẬP KHO -->
+				<!-- 6. NHẬP KHO -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsImportVisible}"
                              IsChecked="{Binding IsImportChecked}"
@@ -137,7 +137,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 6. NHÀ CUNG CẤP -->
+                <!-- 7. NHÀ CUNG CẤP -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsSupplierVisible}"
                              IsChecked="{Binding IsSupplierChecked}"
@@ -149,7 +149,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 7. ƯU ĐÃI -->
+                <!-- 8. ƯU ĐÃI -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu" 
                              Visibility="{Binding IsPromotionVisible}"
                              IsChecked="{Binding IsPromtionChecked}"
@@ -161,7 +161,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 8. DANH MỤC -->
+                <!-- 9. DANH MỤC -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsCategoryVisible}"
                              IsChecked="{Binding IsCategoryChecked}"
@@ -173,7 +173,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 9. BÁO CÁO -->
+                <!-- 10. BÁO CÁO -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsReportVisible}"
                              IsChecked="{Binding IsReportChecked}"
@@ -185,7 +185,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 10. TÀI KHOẢN -->
+                <!-- 11. TÀI KHOẢN -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsAccountVisible}"
                              IsChecked="{Binding IsAccountChecked}"
@@ -197,7 +197,7 @@
                     </StackPanel>
                 </RadioButton>
 
-                <!-- 11. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
+                <!-- 12. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
                 <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
                              Visibility="{Binding IsSettingVisible}"
                              IsChecked="{Binding IsSettingChecked}"

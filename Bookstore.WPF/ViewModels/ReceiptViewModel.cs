@@ -81,7 +81,6 @@ namespace Bookstore.WPF.ViewModels
         public ICommand MoPopupThemCommand { get; }
         public ICommand MoPopupSuaCommand { get; }
         public ICommand XoaPhieuThuCommand { get; }
-        public ICommand ExportExcelCommand { get; }
         public ICommand XoaLocCommand { get; }
         public ICommand PhanTrangCommand { get; }
 
@@ -97,7 +96,6 @@ namespace Bookstore.WPF.ViewModels
             XoaPhieuThuCommand = new RelayCommand<ReceiptResponse>(ExecuteXoaPhieuThu);
             XoaLocCommand = new RelayCommand<object>(ExecuteXoaLoc);
             PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
-            ExportExcelCommand = new RelayCommand<object>(p => MessageBox.Show("Tính năng xuất Excel đang được xây dựng!"));
 
             // Khi thằng con (Popup) báo lưu thành công, thằng cha tự động tải lại DataGrid
             PopupThuTienVM.OnSavedSuccess = () => _ = LoadDataAsync();

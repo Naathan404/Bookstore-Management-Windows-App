@@ -183,7 +183,7 @@
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			 
+
 			<!-- HEADER -->
 			<Border Grid.Row="0"
 					Margin="0,0,0,12"
@@ -197,14 +197,16 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-					
+
 					<StackPanel Grid.Column="0"
-								Orientation="Horizontal">
+								Orientation="Horizontal"
+								VerticalAlignment="Center">
 						<materialDesign:PackIcon Kind="ReceiptText"
 												 Width="28"
 												 Height="28"
 												 Foreground="#4318FF"
-												 Margin="0,0,0,0" />
+												 VerticalAlignment="Center"
+												 Margin="0,0,10,0" />
 						<TextBlock Text="QUẢN LÝ PHIẾU THU"
 								   FontSize="24"
 								   FontWeight="Bold"
@@ -216,9 +218,9 @@
 								Orientation="Horizontal"
 								VerticalAlignment="Center">
 						<Button Style="{StaticResource MainGradientButton}"
-								CommandParameter="{Binding}"
 								Width="100"
 								Margin="0,0,10,0"
+								CommandParameter="{Binding}"
 								Command="{Binding MoPopupThemCommand}">
 							<StackPanel Orientation="Horizontal">
 								<materialDesign:PackIcon Kind="Plus"
@@ -229,85 +231,9 @@
 								<TextBlock Text="THÊM" />
 							</StackPanel>
 						</Button>
-						<!--<Button Style="{StaticResource OutlineExcelButtonStyle}"
-								CommandParameter="{Binding}"
-								Width="120"
-								Command="{Binding ExportExcelCommand}">
-							<StackPanel Orientation="Horizontal">
-								<materialDesign:PackIcon Kind="FileExcel"
-														 Width="16"
-														 Height="16"
-														 Foreground="Green"
-														 Margin="0,0,6,0" />
-								<TextBlock Text="XUẤT EXCEL" />
-							</StackPanel>
-						</Button>-->
 					</StackPanel>
 				</Grid>
 			</Border>
-
-			<Border Grid.Row="0"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-
-					<StackPanel Grid.Column="0"
-								Orientation="Horizontal">
-						<materialDesign:PackIcon Kind="BookSearch"
-												 Width="28"
-												 Height="28"
-												 Foreground="#4318FF"
-												 Margin="0,0,10,0" />
-						<TextBlock Text="TRA CỨU SÁCH"
-								   FontSize="24"
-								   FontWeight="Bold"
-								   Foreground="#2B3674"
-								   VerticalAlignment="Center" />
-					</StackPanel>
-
-
-					<StackPanel Grid.Column="1"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<Button Style="{StaticResource MainGradientButton}"
-								CommandParameter="{Binding}"
-								Width="100"
-								Margin="0,0,10,0"
-								Command="{Binding OpenAddPopupCommand}">
-							<StackPanel Orientation="Horizontal">
-								<materialDesign:PackIcon Kind="Plus"
-														 Width="16"
-														 Height="16"
-														 Foreground="White"
-														 Margin="0,0,6,0" />
-								<TextBlock Text="THÊM" />
-							</StackPanel>
-						</Button>
-						<Button Style="{StaticResource OutlineExcelButtonStyle}"
-								CommandParameter="{Binding}"
-								Width="120"
-								Command="{Binding ExportExcelCommand}">
-							<StackPanel Orientation="Horizontal">
-								<materialDesign:PackIcon Kind="FileExcel"
-														 Width="16"
-														 Height="16"
-														 Foreground="Green"
-														 Margin="0,0,6,0" />
-								<TextBlock Text="XUẤT EXCEL" />
-							</StackPanel>
-						</Button>
-					</StackPanel>
-				</Grid>
-			</Border>
-
 
 			<!-- FILTER -->
 			<Border Grid.Row="1"
@@ -432,6 +358,7 @@
 							Height="42"
 							ToolTip="Xóa tất cả bộ lọc"
 							Command="{Binding XoaLocCommand}"
+							CommandParameter="{Binding}"
 							Background="#FEE2E2"
 							BorderThickness="0"
 							Cursor="Hand">
@@ -451,8 +378,8 @@
 					</Button>
 				</Grid>
 			</Border>
-		
-			
+
+
 			<!-- DATA GRID -->
 			<Border Grid.Row="2"
 					CornerRadius="20"
@@ -532,9 +459,23 @@
 					</DataGrid.Resources>
 
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="Mã PT"
-											Binding="{Binding MaPhieuThuTienView}"
-											Width="100">
+						<!--<DataGridTextColumn Header="Mã PT"
+											Width="130">
+							<DataGridTextColumn.Binding>
+								<MultiBinding StringFormat="PT{0:ddMMyy}{1:D3}">
+									<Binding Path="NgayTao" />
+									<Binding Path="MaPhieuThuTien" />
+								</MultiBinding>
+							</DataGridTextColumn.Binding>
+
+							<DataGridTextColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader"
+									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+									<Setter Property="HorizontalContentAlignment"
+											Value="Center" />
+								</Style>
+							</DataGridTextColumn.HeaderStyle>
+
 							<DataGridTextColumn.ElementStyle>
 								<Style TargetType="TextBlock">
 									<Setter Property="VerticalAlignment"
@@ -545,28 +486,48 @@
 											Value="#4318FF" />
 								</Style>
 							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+						</DataGridTextColumn>-->
 
-						<DataGridTextColumn Header="Ngày thu"
-											Binding="{Binding NgayTao, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
-											Width="140">
+						<DataGridTextColumn Header="Mã PT"
+											Width="1*"
+											SortMemberPath="MaPhieuThuTien">
+							<DataGridTextColumn.Binding>
+								<MultiBinding StringFormat="PT{0:ddMMyy}{1:D3}">
+									<Binding Path="NgayTao" />
+									<Binding Path="MaPhieuThuTien" />
+								</MultiBinding>
+							</DataGridTextColumn.Binding>
+
+							<DataGridTextColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader"
+									   BasedOn="{StaticResource CenterHeaderStyle}" />
+							</DataGridTextColumn.HeaderStyle>
+
 							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource CellCenter}">
 									<Setter Property="Foreground"
-											Value="#A3AED0" />
+											Value="#4318FF" />
+									<Setter Property="FontWeight"
+											Value="Bold" />
 								</Style>
 							</DataGridTextColumn.ElementStyle>
 						</DataGridTextColumn>
 
+						<DataGridTextColumn Header="Ngày thu"
+											Binding="{Binding NgayTao, StringFormat={}{0:dd/MM/yyyy}}"
+											Width="1*"
+											HeaderStyle="{StaticResource CenterHeaderStyle}"
+											ElementStyle="{StaticResource CellCenter}">
+						</DataGridTextColumn>
+
 						<DataGridTextColumn Header="Khách hàng"
 											Binding="{Binding TenKhachHang}"
-											Width="1.5*">
+											Width="1.5*"
+											HeaderStyle="{StaticResource LeftHeaderStyle}">
 							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource CellLeft}">
 									<Setter Property="FontWeight"
 											Value="SemiBold" />
 								</Style>
@@ -575,38 +536,25 @@
 
 						<DataGridTextColumn Header="Người thu"
 											Binding="{Binding TenNguoiTao}"
-											Width="1.5*">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-								</Style>
-							</DataGridTextColumn.ElementStyle>
+											Width="1*"
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellLeft}">
 						</DataGridTextColumn>
 
 						<DataGridTextColumn Header="Lý do thu"
 											Binding="{Binding LyDoThu}"
-											Width="2*">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="TextTrimming"
-											Value="CharacterEllipsis" />
-								</Style>
-							</DataGridTextColumn.ElementStyle>
+											Width="1.5*"
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellLeft}">
 						</DataGridTextColumn>
 
 						<DataGridTextColumn Header="Số tiền thu"
 											Binding="{Binding SoTienThu, StringFormat={}{0:N0} đ}"
-											Width="150"
+											Width="1*"
 											HeaderStyle="{StaticResource RightHeaderStyle}">
 							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Right" />
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource CellRight}">
 									<Setter Property="FontWeight"
 											Value="Bold" />
 									<Setter Property="Foreground"
@@ -677,7 +625,7 @@
 				</DataGrid>
 			</Border>
 
-			
+
 			<!-- FOOTER -->
 			<Border Grid.Row="3"
 					Margin="0,12,0,0"
@@ -738,7 +686,8 @@
 				</StackPanel>
 			</Border>
 
-			<components:ReceiptPopupControl DataContext="{Binding PopupThuTienVM}" />
 		</Grid>
+		
+		<components:ReceiptPopup DataContext="{Binding PopupThuTienVM}" />
 	</Grid>
 </UserControl>
