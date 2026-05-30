@@ -1,5 +1,6 @@
 ﻿using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -19,7 +20,6 @@ namespace Bookstore.WPF.ViewModels
         private string _popupTitle = "PHIẾU THU TIỀN";
         public string PopupTitle { get => _popupTitle; set { _popupTitle = value; OnPropertyChanged(); } }
 
-        public bool IsKhachHangEnable { get; set; } = true;
         private bool _dangSua = false;
 
         // --- 2. CÁC BIẾN DỮ LIỆU ---
@@ -29,8 +29,8 @@ namespace Bookstore.WPF.ViewModels
         private bool _isMaPhieuVisible;
         public bool IsMaPhieuVisible { get => _isMaPhieuVisible; set { _isMaPhieuVisible = value; OnPropertyChanged(); } }
 
-        private string _maPhieuThu;
-        public string MaPhieuThu { get => _maPhieuThu; set { _maPhieuThu = value; OnPropertyChanged(); } }
+        //private string _maPhieuThu;
+        //public string MaPhieuThu { get => _maPhieuThu; set { _maPhieuThu = value; OnPropertyChanged(); } }
 
         private ObservableCollection<CustomerResponse> _danhSachKhachHangCombobox = new();
         public ObservableCollection<CustomerResponse> DanhSachKhachHangCombobox
@@ -47,7 +47,18 @@ namespace Bookstore.WPF.ViewModels
             {
                 _selectedKhachHangForm = value;
                 OnPropertyChanged();
-                if (value != null) ConNoSauKhiThu = Math.Max(0, value.CongNo - FormSoTienThu);
+                decimal noHienTai = value?.CongNo ?? 0;
+                ConNoSauKhiThu = Math.Max(0, noHienTai - FormSoTienThu);
+            }
+        }
+        private bool _isKhachHangEnable = true;
+        public bool IsKhachHangEnable
+        {
+            get => _isKhachHangEnable;
+            set
+            {
+                _isKhachHangEnable = value;
+                OnPropertyChanged(); 
             }
         }
 
@@ -61,7 +72,7 @@ namespace Bookstore.WPF.ViewModels
             set
             {
                 _formSoTienThu = value;
-                if (PhieuThuForm != null) PhieuThuForm.SoTienThu = (int)value;
+                if (PhieuThuForm != null) PhieuThuForm.SoTienThu = value;
                 OnPropertyChanged();
                 decimal noHienTai = SelectedKhachHangForm?.CongNo ?? 0;
                 ConNoSauKhiThu = Math.Max(0, noHienTai - value);
@@ -83,7 +94,8 @@ namespace Bookstore.WPF.ViewModels
         {
             DongPopupCommand = new RelayCommand<object>(p => IsOpen = false);
             LuuPhieuThuCommand = new RelayCommand<object>(ExecuteLuuPhieuThu);
-            _ = LoadCustomersAsync();
+            
+            //_ = LoadCustomersAsync();
         }
 
         private async Task LoadCustomersAsync()
@@ -100,45 +112,46 @@ namespace Bookstore.WPF.ViewModels
         }
 
         // HÀM MỞ POPUP THÊM MỚI (Dùng cho cả trang Khách Hàng và Phiếu Thu)
-        public void MoPopupThemMoi(CustomerResponse? khachHangMacDinh = null)
+        public async void MoPopupThemMoi(CustomerResponse? khachHangMacDinh = null)
         {
             _dangSua = false;
             PopupTitle = "TẠO PHIẾU THU MỚI";
 
             IsMaPhieuVisible = false;
-            MaPhieuThu = "";
 
-            PhieuThuForm = new ReceiptResponse
-            {
-                NgayTao = DateTime.Now,
-                TenNguoiTao = "admin",
-                LyDoThu = "Thu tiền"
-            };
-            FormSoTienThu = 0;
+            await LoadCustomersAsync();
 
             if (khachHangMacDinh != null)
             {
-                // Mở từ trang Khách Hàng -> Khóa ComboBox, tự gán khách hàng
                 IsKhachHangEnable = false;
-                SelectedKhachHangForm = khachHangMacDinh;
+
+                var match = DanhSachKhachHangCombobox.FirstOrDefault(x => x.MaKhachHang == khachHangMacDinh.MaKhachHang);
+                SelectedKhachHangForm = match ?? khachHangMacDinh;
             }
             else
             {
-                // Mở từ trang Phiếu Thu -> Mở ComboBox cho tự chọn
                 IsKhachHangEnable = true;
                 SelectedKhachHangForm = null;
             }
 
+            PhieuThuForm = new ReceiptResponse
+            {
+                NgayTao = DateTime.Now,
+                TenNguoiTao = AppState.CurrentUser.Name,
+                LyDoThu = "Thu tiền"
+            };
+            FormSoTienThu = 0;
             IsOpen = true;
         }
 
         // HÀM MỞ POPUP SỬA
-        public void MoPopupSua(ReceiptResponse pt)
+        public async void MoPopupSua(ReceiptResponse pt)
         {
             _dangSua = true;
             PopupTitle = "CHỈNH SỬA PHIẾU THU";
             IsMaPhieuVisible = true;
-            MaPhieuThu = $"PT{pt.NgayTao:ddMMyy}{pt.MaPhieuThuTien:D3}";
+
+            await LoadCustomersAsync();
 
             IsKhachHangEnable = true;
             PhieuThuForm = new ReceiptResponse { MaPhieuThuTien = pt.MaPhieuThuTien, NgayTao = pt.NgayTao, TenNguoiTao = pt.TenNguoiTao, LyDoThu = pt.LyDoThu, SoTienThu = pt.SoTienThu };
@@ -183,7 +196,7 @@ namespace Bookstore.WPF.ViewModels
                 // 4. CHUẨN BỊ PAYLOAD GỬI XUỐNG API
                 var requestData = new
                 {
-                    NguoiTao = "admin", // Tạm thời hardcode, sau này lấy từ User Session
+                    NguoiTao = AppState.CurrentUser.Username,
                     MaKhachHang = SelectedKhachHangForm.MaKhachHang,
                     SoTienThu = FormSoTienThu,
                     LyDoThu = PhieuThuForm.LyDoThu

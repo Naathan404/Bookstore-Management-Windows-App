@@ -6,12 +6,14 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
 			 xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
+			 xmlns:local="clr-namespace:Bookstore.WPF.Converters"
 			 mc:Ignorable="d"
 			 d:DesignHeight="600"
 			 d:DesignWidth="800"
 			 d:DataContext="{d:DesignInstance Type=vm:ReceiptPopupViewModel}">
 
 	<UserControl.Resources>
+		<local:CurrencyConverter x:Key="CurrencyConverter" />
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
 		<DropShadowEffect x:Key="PopupShadowEffect"
 						  BlurRadius="20"
@@ -155,11 +157,9 @@
 				</Grid>
 
 				<Border Grid.Row="1"
-						Visibility="{Binding IsMaPhieuVisible, Converter={StaticResource BoolToVis}}"
 						Style="{StaticResource FilterBorderStyle}"
-						Margin="0,0,0,12"
-						Background="#EEF2FF"
-						BorderBrush="#C7D2FE">
+						Margin="0,0,0,14"
+						Background="#F8FAFC">
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="36" />
@@ -168,18 +168,23 @@
 						<materialDesign:PackIcon Kind="Barcode"
 												 Width="18"
 												 Height="18"
-												 Foreground="#4318FF"
+												 Foreground="#A3AED0"
 												 VerticalAlignment="Center"
 												 HorizontalAlignment="Center" />
 						<TextBlock Grid.Column="1"
-								   Text="{Binding MaPhieuThu}"
 								   Margin="0 0 5 0"
 								   Background="Transparent"
 								   VerticalAlignment="Center"
 								   HorizontalAlignment="Stretch"
-								   FontSize="14"
-								   FontWeight="Bold"
-								   Foreground="#4318FF" />
+								   FontSize="13"
+								   Foreground="#9CA3AF">
+							<TextBlock.Text>
+								<MultiBinding StringFormat="PT{0:ddMMyy}{1:D3}">
+									<Binding Path="PhieuThuForm.NgayTao" />
+									<Binding Path="PhieuThuForm.MaPhieuThuTien" />
+								</MultiBinding>
+							</TextBlock.Text>
+						</TextBlock>
 					</Grid>
 				</Border>
 
@@ -288,25 +293,43 @@
 							<ColumnDefinition Width="36" />
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
+
 						<materialDesign:PackIcon Kind="CashMultiple"
 												 Width="20"
 												 Height="20"
 												 Foreground="#4318FF"
 												 VerticalAlignment="Center"
 												 HorizontalAlignment="Center" />
-						<TextBox Grid.Column="1"
-								 Text="{Binding FormSoTienThu, UpdateSourceTrigger=PropertyChanged}"
-								 Margin="0 0 5 0"
-								 Background="Transparent"
-								 BorderThickness="0"
-								 VerticalAlignment="Center"
-								 HorizontalAlignment="Stretch"
-								 FontSize="16"
-								 FontWeight="Bold"
-								 Foreground="#4318FF"
-								 materialDesign:HintAssist.Hint="Số tiền thu (VNĐ)" />
+
+						<DockPanel Grid.Column="1"
+								   LastChildFill="True"
+								   Margin="0,0,5,0">
+							<TextBlock Text="VNĐ"
+									   DockPanel.Dock="Right"
+									   VerticalAlignment="Center"
+									   FontWeight="Bold"
+									   Foreground="#4318FF"
+									   Margin="5,0,0,0" />
+
+							<TextBox Grid.Column="1"
+									 x:Name="txtSoTienThu"
+									 Text="{Binding FormSoTienThu, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}"
+									 PreviewTextInput="TxtSoTienThu_PreviewTextInput"
+									 TextChanged="TxtSoTienThu_TextChanged"
+									 Margin="0 0 5 0"
+									 Background="Transparent"
+									 BorderThickness="0"
+									 VerticalAlignment="Center"
+									 HorizontalAlignment="Stretch"
+									 FontSize="16"
+									 FontWeight="Bold"
+									 Foreground="#4318FF"
+									 materialDesign:HintAssist.Hint="Số tiền thu" />
+						</DockPanel>
 					</Grid>
 				</Border>
+
+				
 
 				<Border Grid.Row="5"
 						Style="{StaticResource FilterBorderStyle}"

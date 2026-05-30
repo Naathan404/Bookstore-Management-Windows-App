@@ -60,14 +60,14 @@ namespace Bookstore.API.Controllers
             }
 
             var result = await query
-                .OrderBy(p => p.NgayTao)
+                .OrderByDescending(p => p.NgayTao)
                 .Select(MapToReceipResponse)
                 .ToListAsync();
 
             return Ok(result);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReceiptResponse>> GetReceipById(int id)
         {
             var receipt = await _context.PhieuThuTien
@@ -139,7 +139,7 @@ namespace Bookstore.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReceipt(int id, [FromBody] ReceiptRequest request)
         {
             var phieuThu = await _context.PhieuThuTien.FindAsync(id);
@@ -199,7 +199,7 @@ namespace Bookstore.API.Controllers
             return Ok(new { Message = "Lưu và cập nhật tiền dư thành công" });
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> deleteReceipt(int id)
         {
             var phieuThu = await _context.PhieuThuTien.FindAsync(id);

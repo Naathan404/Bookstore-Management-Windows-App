@@ -459,35 +459,6 @@
 					</DataGrid.Resources>
 
 					<DataGrid.Columns>
-						<!--<DataGridTextColumn Header="Mã PT"
-											Width="130">
-							<DataGridTextColumn.Binding>
-								<MultiBinding StringFormat="PT{0:ddMMyy}{1:D3}">
-									<Binding Path="NgayTao" />
-									<Binding Path="MaPhieuThuTien" />
-								</MultiBinding>
-							</DataGridTextColumn.Binding>
-
-							<DataGridTextColumn.HeaderStyle>
-								<Style TargetType="DataGridColumnHeader"
-									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-									<Setter Property="HorizontalContentAlignment"
-											Value="Center" />
-								</Style>
-							</DataGridTextColumn.HeaderStyle>
-
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="FontWeight"
-											Value="Bold" />
-									<Setter Property="Foreground"
-											Value="#4318FF" />
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>-->
-
 						<DataGridTextColumn Header="Mã PT"
 											Width="1*"
 											SortMemberPath="MaPhieuThuTien">
@@ -577,13 +548,13 @@
 												BorderThickness="0"
 												Cursor="Hand"
 												ToolTip="In phiếu"
-												Command="{Binding DataContext.PrintReceiptCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+												Command="{Binding DataContext.MoPopupSuaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 												CommandParameter="{Binding}">
 											<Button.Template>
 												<ControlTemplate TargetType="Button">
 													<Border Background="{TemplateBinding Background}"
 															CornerRadius="6">
-														<materialDesign:PackIcon Kind="Printer"
+														<materialDesign:PackIcon Kind="Eye"
 																				 Width="15"
 																				 Height="15"
 																				 Foreground="#4318FF"

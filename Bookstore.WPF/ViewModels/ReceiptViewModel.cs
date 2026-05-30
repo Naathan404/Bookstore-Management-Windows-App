@@ -17,7 +17,7 @@ namespace Bookstore.WPF.ViewModels
         public ReceiptPopupViewModel PopupThuTienVM { get; set; } = new ReceiptPopupViewModel();
         #endregion
 
-        #region PROPERTIES (Biến Binding của trang Cha)
+        #region PROPERTIES
 
         // --- Danh sách & Phân trang ---
         private ObservableCollection<ReceiptResponse> _danhSachPhieuThuGoc = new();
@@ -147,7 +147,7 @@ namespace Bookstore.WPF.ViewModels
                     if (isSuccess)
                     {
                         MessageBox.Show("Đã xóa phiếu thu và hoàn lại công nợ!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
-                        _ = LoadDataAsync(); // Tải lại danh sách sau khi xóa
+                        _ = LoadDataAsync();
                     }
                 }
                 catch (Exception ex)
@@ -157,27 +157,15 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private async Task LoadDataAsync()
+        public async Task LoadDataAsync()
         {
             try
             {
-                // Tắt comment khi có API thật:
                 var result = await ApiClient.GetAsync<List<ReceiptResponse>>("api/PhieuThu");
                 if (result != null)
                 {
                     _danhSachPhieuThuGoc = new ObservableCollection<ReceiptResponse>(result);
                 }
-
-                // --- DỮ LIỆU GIẢ LẬP ĐỂ TEST ---
-                var dummyData = new List<ReceiptResponse>
-                {
-                    new ReceiptResponse { MaPhieuThuTien = 1, NgayTao = DateTime.Now.AddDays(-2), MaKhachHang = 1, TenKhachHang = "Nguyễn Văn A", TenNguoiTao = "admin", LyDoThu = "Thu tiền nợ tháng trước", SoTienThu = 1500000 },
-                    new ReceiptResponse { MaPhieuThuTien = 2, NgayTao = DateTime.Now.AddDays(-1), MaKhachHang = 2, TenKhachHang = "Công ty TNHH Vạn Phát", TenNguoiTao = "nhanvien1", LyDoThu = "Thu tiền mua sỉ", SoTienThu = 5000000 },
-                    new ReceiptResponse { MaPhieuThuTien = 3, NgayTao = DateTime.Now, MaKhachHang = 3, TenKhachHang = "Trần Thị B", TenNguoiTao = "admin", LyDoThu = "Thanh toán một phần", SoTienThu = 300000 }
-                };
-                _danhSachPhieuThuGoc = new ObservableCollection<ReceiptResponse>(dummyData);
-                // -------------------------------
-
                 _ = ApplyFilterAsync();
             }
             catch (Exception ex)
