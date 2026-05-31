@@ -10,7 +10,6 @@ namespace Bookstore.Share.DTOResponses
         public string TenNguoiTao { get; set; } = string.Empty;
         public int MaKhachHang { get; set; }
         public string TenKhachHang { get; set; } = string.Empty;
-
         public decimal TongTienTamTinh { get; set; }
         public decimal GiamGia { get; set; }
         public decimal Thue { get; set; }
