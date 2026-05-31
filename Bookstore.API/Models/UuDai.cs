@@ -10,7 +10,8 @@ namespace Bookstore.API.Models
         public DateTime NgayTao { get; set; }
         public string NguoiTao { get; set; } = string.Empty;
         public int MaLoaiUuDai { get; set; }
-        public string TenUuDai { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public string TenChuongTrinh { get; set; } = string.Empty;
         public string MoTa { get; set; }  = string.Empty;
         public DateTime NgayBatDau { get; set; }
         public DateTime NgayKetThuc { get; set; }

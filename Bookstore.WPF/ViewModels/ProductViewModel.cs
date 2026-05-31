@@ -288,6 +288,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand DeleteBookCommand { get; set; }
         public ICommand ChangeImageCommand { get; set; }
         public ICommand ClearFilterCommand { get; set; }
+        public ICommand RefreshCommand { get; set; }
         public ICommand RemoveTacGiaCommand { get; set; }
 
         // nút thêm nhanh các dannh mục
@@ -336,9 +337,9 @@ namespace Bookstore.WPF.ViewModels
 
             _ = LoadTheLoaiAsync();
             _ = LoadNhaXuatBanAsync();
+            _ = LoadTacGiaAsync();
             //_ = LoadNhaCungCapAsync();
             _ = LoadDataAsync();
-            _ = LoadTacGiaAsync();
         }
 
         public async Task LoadMasterData()
@@ -346,9 +347,9 @@ namespace Bookstore.WPF.ViewModels
             _ = LoadTheLoaiAsync();
             _ = LoadNhaXuatBanAsync();
             _ = LoadTiLeGiaBanAsync();
+            _ = LoadTacGiaAsync();
             //_ = LoadNhaCungCapAsync();
             _ = LoadDataAsync();
-            _ = LoadTacGiaAsync();
         }
 
         private void InitCommands()
@@ -698,6 +699,8 @@ namespace Bookstore.WPF.ViewModels
                 PerformSearch();
             });
 
+            RefreshCommand = new RelayCommand<object>(async p => await LoadMasterData());
+
             // Phân trang commands
             FirstPageCommand = new RelayCommand<object>((p) => GoToPage(1));
             PrevPageCommand = new RelayCommand<object>((p) => GoToPage(CurrentPage - 1));
@@ -823,6 +826,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 var danhSachTuApi = await ApiClient.GetAsync<List<SachDTO>>("api/PhienBanSach");
                 var listTacPhamGoc = await ApiClient.GetAsync<List<DauSachResponseDTO>>("api/Sach");
+                var tonKhoToiThieu = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/SoLuongTonToiThieu");
                 if (danhSachTuApi != null)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
@@ -847,7 +851,8 @@ namespace Bookstore.WPF.ViewModels
                                 NamXuatBan = item.NamXuatBan,
                                 LanTaiBan = item.LanTaiBan,
                                 NhaXuatBan = item.NhaXuatBan,
-                                HinhThucBia = item.HinhThucBia
+                                HinhThucBia = item.HinhThucBia,
+                                IsCanhBaoTonKho = item.SoLuongTonKho <= tonKhoToiThieu.GiaTri
                             };
                             if (item.DanhSachTacGia != null)
                             {
@@ -866,7 +871,8 @@ namespace Bookstore.WPF.ViewModels
                             {
                                 TenSach = b.TenSach,
                                 TheLoai = b.TenTheLoai,
-                                HinhAnh = b.ImageUrl
+                                HinhAnh = b.ImageUrl,
+                                MoTa = b.MoTa
                             };
 
                             if(b.DanhSachTacGia != null)
@@ -1104,6 +1110,13 @@ namespace Bookstore.WPF.ViewModels
                 _isManualDonGiaBan = true;
                 OnPropertyChanged();
             }
+        }
+
+        private bool _isCanhBaoTonKho;
+        public bool IsCanhBaoTonKho
+        {
+            get => _isCanhBaoTonKho;
+            set { _isCanhBaoTonKho = value; OnPropertyChanged(); }
         }
     }
 }

@@ -43,12 +43,11 @@ namespace Bookstore.WPF.ViewModels
             set
             {
                 _selectedKhachHangForm = value;
-                OnPropertyChanged(nameof(TienThuaTraKhach));
+                OnPropertyChanged();
 
                 decimal noHienTai = value?.CongNo ?? 0;
                 ConNoSauKhiThu = noHienTai - FormSoTienThu;
-
-                IsConLaiVisible = (value != null);
+                IsConLaiVisible = (value != null && !_dangSua);
             }
         }
         private bool _isKhachHangEnable = true;
@@ -85,12 +84,11 @@ namespace Bookstore.WPF.ViewModels
             {
                 _formSoTienThu = value;
                 if (PhieuThuForm != null) PhieuThuForm.SoTienThu = value;
-                OnPropertyChanged(nameof(TienThuaTraKhach));
+                OnPropertyChanged();
 
                 decimal noHienTai = SelectedKhachHangForm?.CongNo ?? 0;
                 ConNoSauKhiThu = noHienTai - value;
-
-                IsConLaiVisible = (SelectedKhachHangForm != null);
+                IsConLaiVisible = (SelectedKhachHangForm != null && !_dangSua);
             }
         }
         #endregion
@@ -113,14 +111,16 @@ namespace Bookstore.WPF.ViewModels
             //_ = LoadCustomersAsync();
         }
 
-        private async Task LoadCustomersAsync()
+        private async Task LoadCustomersAsync(int? maKhachHangBatBuoc = null)
         {
             try
             {
                 var customers = await ApiClient.GetAsync<List<CustomerResponse>>("api/KhachHang");
                 if (customers != null)
                 {
-                    DanhSachKhachHangCombobox = new ObservableCollection<CustomerResponse>(customers.Where(x => x.CongNo > 0));
+                    // Lấy người có nợ HOẶC chính là người đang được truyền vào (để sửa/xem)
+                    var filtered = customers.Where(x => x.CongNo > 0 || x.MaKhachHang == maKhachHangBatBuoc).ToList();
+                    DanhSachKhachHangCombobox = new ObservableCollection<CustomerResponse>(filtered);
                 }
             }
             catch { }
@@ -131,15 +131,15 @@ namespace Bookstore.WPF.ViewModels
         {
             _dangSua = false;
             PopupTitle = "TẠO PHIẾU THU MỚI";
-
             IsMaPhieuVisible = false;
 
-            await LoadCustomersAsync();
+            // 1. Tải danh sách
+            await LoadCustomersAsync(khachHangMacDinh?.MaKhachHang);
+            await Task.Delay(50);
 
             if (khachHangMacDinh != null)
             {
                 IsKhachHangEnable = false;
-
                 var match = DanhSachKhachHangCombobox.FirstOrDefault(x => x.MaKhachHang == khachHangMacDinh.MaKhachHang);
                 SelectedKhachHangForm = match ?? khachHangMacDinh;
             }
@@ -166,10 +166,18 @@ namespace Bookstore.WPF.ViewModels
             PopupTitle = "CHỈNH SỬA PHIẾU THU";
             IsMaPhieuVisible = true;
 
-            await LoadCustomersAsync();
+            await LoadCustomersAsync(pt.MaKhachHang);
+            IsKhachHangEnable = false;
 
-            IsKhachHangEnable = true;
-            PhieuThuForm = new ReceiptResponse { MaPhieuThuTien = pt.MaPhieuThuTien, NgayTao = pt.NgayTao, TenNguoiTao = pt.TenNguoiTao, LyDoThu = pt.LyDoThu, SoTienThu = pt.SoTienThu };
+            PhieuThuForm = new ReceiptResponse
+            {
+                MaPhieuThuTien = pt.MaPhieuThuTien,
+                NgayTao = pt.NgayTao,
+                TenNguoiTao = pt.TenNguoiTao,
+                LyDoThu = pt.LyDoThu,
+                SoTienThu = pt.SoTienThu
+            };
+
             SelectedKhachHangForm = DanhSachKhachHangCombobox.FirstOrDefault(x => x.MaKhachHang == pt.MaKhachHang);
             FormSoTienThu = pt.SoTienThu;
 

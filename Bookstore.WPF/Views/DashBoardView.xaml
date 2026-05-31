@@ -137,7 +137,7 @@
                             <Border Grid.Column="1" Style="{StaticResource DashboardCardStyle}" Height="360" Margin="0 10 0 15">
                                 <StackPanel>
                                     <TextBlock Text="TỶ TRỌNG DOANH THU THEO THỂ LOẠI" FontSize="16" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,0"/>
-                                    <lvc:PieChart x:Name="ChartCategory" Series="{Binding Data}" Height="300" LegendPosition="Bottom"/>
+                                    <lvc:PieChart x:Name="ChartCategory" Series="{Binding Data}" Height="300" LegendPosition="Bottom" LegendTextSize="11"/>
                                 </StackPanel>
                             </Border>
                         </Grid>

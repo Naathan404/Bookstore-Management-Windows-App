@@ -17,7 +17,6 @@ namespace Bookstore.WPF.Views
         public AccountView()
         {
             InitializeComponent();
-            this.DataContext = new AccountViewModel();
         }
     }
 }
