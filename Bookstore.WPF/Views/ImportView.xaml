@@ -379,20 +379,25 @@
             </Border>
 
             <!-- ==================== FOOTER / PAGINATION ==================== -->
-            <Border Grid.Row="3" Padding="20,12" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
+			<components:PaginationControl Grid.Row="3"
+										  CurrentPage="{Binding TrangHienTai}"
+										  TotalPages="{Binding TongSoTrang}"
+										  TotalRecords="{Binding TongBanGhi}"
+										  PaginationCommand="{Binding PhanTrangCommand}" />
+			<!--<Border Grid.Row="3" Padding="20,12" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
                 <Grid>
                     <TextBlock Text="{Binding PaginationInfo}" 
                                Foreground="#A3AED0" FontSize="13" VerticalAlignment="Center" 
                                HorizontalAlignment="Left"/>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <!-- First Page « -->
+                        --><!-- First Page « --><!--
                         <Button Content="«" Style="{StaticResource PageButtonStyle}" Command="{Binding FirstPageCommand}"/>
 
-                        <!-- Previous Page ‹ -->
+                        --><!-- Previous Page ‹ --><!--
                         <Button Content="‹" Style="{StaticResource PageButtonStyle}" Command="{Binding PreviousPageCommand}" Margin="4,0,0,0"/>
 
-                        <!-- Page 1 -->
+                        --><!-- Page 1 --><!--
                         <Button Content="1" Margin="4,0,0,0"
                                 Command="{Binding GoToPageCommand}" CommandParameter="1">
                             <Button.Style>
@@ -407,7 +412,7 @@
                             </Button.Style>
                         </Button>
 
-                        <!-- Page 2 -->
+                        --><!-- Page 2 --><!--
                         <Button Content="2" Margin="4,0,0,0"
                                 Visibility="{Binding Btn2Visibility}"
                                 Command="{Binding GoToPageCommand}" CommandParameter="2">
@@ -423,7 +428,7 @@
                             </Button.Style>
                         </Button>
 
-                        <!-- Page 3 -->
+                        --><!-- Page 3 --><!--
                         <Button Content="3" Margin="4,0,0,0"
                                 Visibility="{Binding Btn3Visibility}"
                                 Command="{Binding GoToPageCommand}" CommandParameter="3">
@@ -439,12 +444,12 @@
                             </Button.Style>
                         </Button>
 
-                        <!-- Ellipsis ... -->
+                        --><!-- Ellipsis ... --><!--
                         <TextBlock Text="..." Foreground="#A3AED0" FontSize="13" 
                                    Visibility="{Binding EllipsisVisibility}" Margin="4,0,4,0"
                                    VerticalAlignment="Center"/>
 
-                        <!-- Last Page N -->
+                        --><!-- Last Page N --><!--
                         <Button Margin="4,0,0,0"
                                 Visibility="{Binding BtnLastVisibility}"
                                 Command="{Binding GoToPageCommand}" 
@@ -462,14 +467,14 @@
                             </Button.Style>
                         </Button>
 
-                        <!-- Next Page › -->
+                        --><!-- Next Page › --><!--
                         <Button Content="›" Style="{StaticResource PageButtonStyle}" Command="{Binding NextPageCommand}" Margin="8,0,0,0"/>
 
-                        <!-- Last Page » -->
+                        --><!-- Last Page » --><!--
                         <Button Content="»" Style="{StaticResource PageButtonStyle}" Command="{Binding LastPageCommand}" Margin="4,0,0,0"/>
                     </StackPanel>
                 </Grid>
-            </Border>
+            </Border>-->
         </Grid>
 
         <!-- ==================== POPUP CHI TIẾT PHIẾU NHẬP ==================== -->

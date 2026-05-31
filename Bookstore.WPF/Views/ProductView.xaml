@@ -749,7 +749,12 @@
             </Border>
 
             <!-- Card 4: Pagination -->
-            <Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+			<components:PaginationControl Grid.Row="3"
+										  CurrentPage="{Binding TrangHienTai}"
+										  TotalPages="{Binding TongSoTrang}"
+										  TotalRecords="{Binding TongBanGhi}"
+										  PaginationCommand="{Binding PhanTrangCommand}" />
+			<!--<Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" CommandParameter="{Binding}" Margin="0,0,4,0">
                         <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
@@ -782,7 +787,7 @@
 
                     <TextBlock Text="{Binding CurrentPage, StringFormat='Trang {0}'}" FontSize="12" Foreground="#A3AED0" VerticalAlignment="Center" Margin="12,0,0,0"/>
                 </StackPanel>
-            </Border>
+            </Border>-->
         </Grid>
 
          <!--==================== POPUP THÊM SÁCH ====================--> 

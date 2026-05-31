@@ -519,7 +519,13 @@
 				</DataGrid>
 			</Border>
 
-			<Border Grid.Row="3"
+			<components:PaginationControl Grid.Row="3"
+										  CurrentPage="{Binding TrangHienTai}"
+										  TotalPages="{Binding TongSoTrang}"
+										  TotalRecords="{Binding TongBanGhi}"
+										  PaginationCommand="{Binding PhanTrangCommand}" />
+
+			<!--<Border Grid.Row="3"
 					Margin="0,12,0,0"
 					Padding="12,8"
 					CornerRadius="12"
@@ -576,7 +582,7 @@
 												 Foreground="#A3AED0" />
 					</Button>
 				</StackPanel>
-			</Border>
+			</Border>-->
 		</Grid>
 	</Grid>
 </UserControl>

@@ -123,14 +123,19 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region Properties - Phân Trang
-        private int _currentPage = 1;
-        public int CurrentPage { get => _currentPage; set { _currentPage = value; OnPropertyChanged(); } }
+        private int _trangHienTai = 1;
+        public int TrangHienTai { get => _trangHienTai; set { _trangHienTai = value; OnPropertyChanged(); } }
 
-        private int _totalPages = 1;
-        public int TotalPages { get => _totalPages; set { _totalPages = value; OnPropertyChanged(); } }
+        private int _tongSoTrang = 1;
+        public int TongSoTrang { get => _tongSoTrang; set { _tongSoTrang = value; OnPropertyChanged(); } }
 
-        private int _pageSize = 10;
+        private int _tongBanGhi = 0; // Thêm biến này để hiển thị "(Tổng: ...)" trên UI
+        public int TongBanGhi { get => _tongBanGhi; set { _tongBanGhi = value; OnPropertyChanged(); } }
+
+        private int _pageSize = 10; // Biến này giữ nguyên để làm tham số gọi API/Database
         #endregion
+
+        // Khai báo 1 Command duy nhất thay vì 5 cái như trước
 
         #region Properties - Popup Thêm/Sửa
         //private Visibility _isPopupVisible = Visibility.Collapsed;
@@ -301,11 +306,7 @@ namespace Bookstore.WPF.ViewModels
 
 
         // Phân trang Commands
-        public ICommand FirstPageCommand { get; set; }
-        public ICommand PrevPageCommand { get; set; }
-        public ICommand NextPageCommand { get; set; }
-        public ICommand LastPageCommand { get; set; }
-        public ICommand GoToPageCommand { get; set; }
+        public ICommand PhanTrangCommand { get; set; }
         #endregion
 
         // ===========================================================================================
@@ -702,11 +703,7 @@ namespace Bookstore.WPF.ViewModels
             RefreshCommand = new RelayCommand<object>(async p => await LoadMasterData());
 
             // Phân trang commands
-            FirstPageCommand = new RelayCommand<object>((p) => GoToPage(1));
-            PrevPageCommand = new RelayCommand<object>((p) => GoToPage(CurrentPage - 1));
-            NextPageCommand = new RelayCommand<object>((p) => GoToPage(CurrentPage + 1));
-            LastPageCommand = new RelayCommand<object>((p) => GoToPage(TotalPages));
-            GoToPageCommand = new RelayCommand<int>((page) => GoToPage(page));
+            PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
         }
 
         // ===========================================================================================
@@ -725,7 +722,7 @@ namespace Bookstore.WPF.ViewModels
             if (!string.IsNullOrWhiteSpace(SearchTacGia))
             {
                 result = result.Where(b => b.DanhSachTacGia.Any(t => t.TenTacGia.ToLower().Contains(SearchTacGia.ToLower())));
-            }    
+            }
 
             // lọc theo thể loại
             if (SelectedTheLoai != "Tất cả thể loại" && !string.IsNullOrEmpty(SelectedTheLoai))
@@ -765,33 +762,67 @@ namespace Bookstore.WPF.ViewModels
                 _filteredBooks.Add(b);
             }
 
-            TotalRecords = _filteredBooks.Count;
+            // ĐỒNG NHẤT BIẾN THEO CHUẨN MỚI
+            TongBanGhi = _filteredBooks.Count;
 
-            //CurrentPage = 1;
+            // Cực kỳ quan trọng: Khi có kết quả tìm kiếm mới, LUÔN LUÔN phải reset về trang 1
+            TrangHienTai = 1;
             UpdatePagination();
         }
 
         private void UpdatePagination()
         {
-            TotalPages = (int)Math.Ceiling((double)_filteredBooks.Count / _pageSize);
-            if (TotalPages < 1) TotalPages = 1;
+            // Tính tổng số trang (Đã đổi TotalPages -> TongSoTrang)
+            TongSoTrang = (int)Math.Ceiling((double)_filteredBooks.Count / _pageSize);
+            if (TongSoTrang < 1) TongSoTrang = 1;
 
+            // Cắt dữ liệu đưa ra Grid (Đã đổi CurrentPage -> TrangHienTai)
             PagedBooks.Clear();
-            var pagedData = _filteredBooks.Skip((CurrentPage - 1) * _pageSize).Take(_pageSize);
-            foreach (var b in pagedData) PagedBooks.Add(b);
+            var pagedData = _filteredBooks.Skip((TrangHienTai - 1) * _pageSize).Take(_pageSize);
+            foreach (var b in pagedData)
+            {
+                PagedBooks.Add(b);
+            }
 
-            PageNumbers.Clear();
-            int startPage = Math.Max(1, CurrentPage - 2);
-            int endPage = Math.Min(TotalPages, startPage + 4);
-            for (int i = startPage; i <= endPage; i++) PageNumbers.Add(i);
+            // GHI CHÚ: Mình đã xóa toàn bộ đoạn code "PageNumbers.Clear();..." cũ 
+            // vì UI mới không còn dùng danh sách nút số nữa, giúp code nhẹ đi rất nhiều!
         }
 
+        private void ExecutePhanTrang(string parameter)
+        {
+            int targetPage = TrangHienTai;
+
+            switch (parameter)
+            {
+                case "First":
+                    targetPage = 1;
+                    break;
+                case "Prev":
+                    if (TrangHienTai > 1) targetPage = TrangHienTai - 1;
+                    break;
+                case "Next":
+                    if (TrangHienTai < TongSoTrang) targetPage = TrangHienTai + 1;
+                    break;
+                case "Last":
+                    targetPage = TongSoTrang;
+                    break;
+            }
+
+            // Nếu thực sự có sự thay đổi trang thì mới gọi hàm Load
+            if (targetPage != TrangHienTai)
+            {
+                GoToPage(targetPage);
+            }
+        }
+
+        // GỘP 2 HÀM GoToPage LẠI THÀNH 1 HÀM CHUẨN DUY NHẤT
         private void GoToPage(int page)
         {
-            if (page >= 1 && page <= TotalPages)
+            // Kiểm tra an toàn để không bao giờ bị lỗi index
+            if (page >= 1 && page <= TongSoTrang)
             {
-                CurrentPage = page;
-                UpdatePagination();
+                TrangHienTai = page;
+                UpdatePagination(); // Cập nhật lại danh sách sách hiển thị trên Grid
             }
         }
         // ===========================================================================================

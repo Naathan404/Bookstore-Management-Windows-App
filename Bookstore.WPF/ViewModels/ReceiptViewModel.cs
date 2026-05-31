@@ -1,5 +1,6 @@
 ﻿using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,18 +11,19 @@ using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    public class ReceiptViewModel : BaseViewModel
+    // KẾ THỪA TỪ BASE LIST VIEW MODEL
+    public class ReceiptViewModel : BaseListViewModel
     {
-        #region COMPONENTS (Chứa bộ não Popup)
-        // Đây là Component sẽ lo việc Mở popup Thêm/Sửa và Gọi API Lưu
+        #region COMPONENTS
         public ReceiptPopupViewModel PopupThuTienVM { get; set; } = new ReceiptPopupViewModel();
         #endregion
 
-        #region PROPERTIES
+        #region PROPERTIES CHUYÊN BIỆT CỦA PHIẾU THU
 
-        // --- Danh sách & Phân trang ---
-        private ObservableCollection<ReceiptResponse> _danhSachPhieuThuGoc = new();
+        // Danh sách gốc tải từ server
+        private List<ReceiptResponse> _danhSachPhieuThuGoc = new();
 
+        // Danh sách đã cắt trang để hiển thị lên DataGrid
         private ObservableCollection<ReceiptResponse> _danhSachPhieuThu = new();
         public ObservableCollection<ReceiptResponse> DanhSachPhieuThu
         {
@@ -29,133 +31,73 @@ namespace Bookstore.WPF.ViewModels
             set { _danhSachPhieuThu = value; OnPropertyChanged(); }
         }
 
-        private int _trangHienTai = 1;
-        public int TrangHienTai
-        {
-            get => _trangHienTai;
-            set { _trangHienTai = value; OnPropertyChanged(); }
-        }
-
-        private int _tongSoTrang = 1;
-        public int TongSoTrang
-        {
-            get => _tongSoTrang;
-            set { _tongSoTrang = value; OnPropertyChanged(); }
-        }
-
-        private int _tongBanGhi;
-        public int TongBanGhi
-        {
-            get => _tongBanGhi;
-            set { _tongBanGhi = value; OnPropertyChanged(); }
-        }
-
-        private int _soDongTrenTrang = 10;
-
-        // --- Bộ lọc (Filters) ---
-        private string _searchText = "";
-        public string SearchText
-        {
-            get => _searchText;
-            set { _searchText = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
-        }
+        // Các bộ lọc riêng biệt (Từ ngày - Đến ngày)
+        // (Lưu ý: Biến SearchKeyword đã có sẵn trong BaseListViewModel)
 
         private DateTime? _fromDate;
         public DateTime? FromDate
         {
             get => _fromDate;
-            set { _fromDate = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
+            set
+            {
+                _fromDate = value;
+                OnPropertyChanged();
+                TrangHienTai = 1;             // Khi đổi ngày thì tự nhảy về trang 1
+                ApplyFilterAndPagination();
+            }
         }
 
         private DateTime? _toDate;
         public DateTime? ToDate
         {
             get => _toDate;
-            set { _toDate = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
+            set
+            {
+                _toDate = value;
+                OnPropertyChanged();
+                TrangHienTai = 1;             // Khi đổi ngày thì tự nhảy về trang 1
+                ApplyFilterAndPagination();
+            }
         }
 
         #endregion
 
-        #region COMMANDS (Các nút bấm trên lưới và tiêu đề)
+        #region COMMANDS 
 
         public ICommand MoPopupThemCommand { get; }
         public ICommand MoPopupSuaCommand { get; }
         public ICommand XoaPhieuThuCommand { get; }
         public ICommand XoaLocCommand { get; }
-        public ICommand PhanTrangCommand { get; }
+
+        // Không cần khai báo PhanTrangCommand vì Base đã có!
 
         #endregion
 
         public ReceiptViewModel()
         {
-            // --- GIAO VIỆC MỞ POPUP CHO THẰNG CON (PopupThuTienVM) ---
+            // --- GIAO VIỆC MỞ POPUP CHO THẰNG CON ---
             MoPopupThemCommand = new RelayCommand<object>(p => PopupThuTienVM.MoPopupThemMoi());
             MoPopupSuaCommand = new RelayCommand<ReceiptResponse>(p => PopupThuTienVM.MoPopupSua(p));
 
             // --- CÁC VIỆC TRANG CHA TỰ LÀM ---
             XoaPhieuThuCommand = new RelayCommand<ReceiptResponse>(ExecuteXoaPhieuThu);
-            XoaLocCommand = new RelayCommand<object>(ExecuteXoaLoc);
-            PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
 
-            // Khi thằng con (Popup) báo lưu thành công, thằng cha tự động tải lại DataGrid
+            XoaLocCommand = new RelayCommand<object>(p =>
+            {
+                SearchKeyword = "";
+                FromDate = null;
+                ToDate = null;
+                // Khi xóa lọc, các hàm set ở trên sẽ tự động gọi ApplyFilterAndPagination()
+            });
+
+            // Khi thằng con (Popup) báo lưu thành công, tải lại lưới
             PopupThuTienVM.OnSavedSuccess = () => _ = LoadDataAsync();
 
             // Lần đầu mở trang thì tự động tải dữ liệu
             _ = LoadDataAsync();
         }
 
-        #region LOGIC TRANG CHA (Tải dữ liệu, Lọc, Xóa)
-
-        private void ExecuteXoaLoc(object obj)
-        {
-            _searchText = "";
-            _fromDate = null;
-            _toDate = null;
-
-            OnPropertyChanged(nameof(SearchText));
-            OnPropertyChanged(nameof(FromDate));
-            OnPropertyChanged(nameof(ToDate));
-
-            _ = ApplyFilterAsync();
-        }
-
-        private void ExecutePhanTrang(string action)
-        {
-            switch (action)
-            {
-                case "First": TrangHienTai = 1; break;
-                case "Prev": if (TrangHienTai > 1) TrangHienTai--; break;
-                case "Next": if (TrangHienTai < TongSoTrang) TrangHienTai++; break;
-                case "Last": TrangHienTai = TongSoTrang; break;
-            }
-            _ = ApplyFilterAsync();
-        }
-
-        private async void ExecuteXoaPhieuThu(ReceiptResponse pt)
-        {
-            if (pt == null) return;
-
-            // Định dạng chuỗi hiển thị mã phiếu cho đẹp
-            string maPtFormat = $"PT{pt.NgayTao:ddMMyy}{pt.MaPhieuThuTien:D3}";
-
-            if (MessageBox.Show($"Bạn có chắc chắn muốn xóa {maPtFormat} của khách hàng {pt.TenKhachHang} không?\nSố tiền nợ sẽ bị cộng lại như cũ.",
-                                "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-            {
-                try
-                {
-                    bool isSuccess = await ApiClient.DeleteAsync($"api/PhieuThu/{pt.MaPhieuThuTien}");
-                    if (isSuccess)
-                    {
-                        MessageBox.Show("Đã xóa phiếu thu và hoàn lại công nợ!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
-                        _ = LoadDataAsync();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Lỗi xóa: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
+        #region LOGIC TẢI VÀ LỌC DỮ LIỆU
 
         public async Task LoadDataAsync()
         {
@@ -164,9 +106,11 @@ namespace Bookstore.WPF.ViewModels
                 var result = await ApiClient.GetAsync<List<ReceiptResponse>>("api/PhieuThu");
                 if (result != null)
                 {
-                    _danhSachPhieuThuGoc = new ObservableCollection<ReceiptResponse>(result);
+                    _danhSachPhieuThuGoc = result;
                 }
-                _ = ApplyFilterAsync();
+
+                // Mặc định gọi hàm chia trang của Base
+                ApplyFilterAndPagination();
             }
             catch (Exception ex)
             {
@@ -174,12 +118,17 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private async Task ApplyFilterAsync()
+        // ==========================================
+        // GHI ĐÈ HÀM LỌC TỪ BASE CLASS
+        // ==========================================
+        protected override void ApplyFilterAndPagination()
         {
             if (_danhSachPhieuThuGoc == null) return;
 
             var filtered = _danhSachPhieuThuGoc.AsEnumerable();
-            var text = SearchText.ToLower().Trim();
+
+            // Dùng SearchKeyword của BaseListViewModel
+            var text = SearchKeyword?.ToLower().Trim() ?? "";
 
             // 1. Lọc theo chữ (Tên KH hoặc Tên người thu)
             if (!string.IsNullOrEmpty(text))
@@ -201,18 +150,48 @@ namespace Bookstore.WPF.ViewModels
                 filtered = filtered.Where(pt => pt.NgayTao.Date <= ToDate.Value.Date);
             }
 
-            // Thực hiện tính toán phân trang
+            // 4. Đồng bộ số liệu cho Base (Tổng bản ghi, Tổng trang)
             var resultList = filtered.ToList();
             TongBanGhi = resultList.Count;
 
-            TongSoTrang = Math.Max(1, (int)Math.Ceiling(TongBanGhi / (double)_soDongTrenTrang));
-            if (TrangHienTai > TongSoTrang) TrangHienTai = 1;
+            TongSoTrang = (int)Math.Ceiling((double)TongBanGhi / PageSize);
+            if (TongSoTrang == 0) TongSoTrang = 1;
 
-            // Cắt data theo trang và đưa lên giao diện
+            if (TrangHienTai > TongSoTrang) TrangHienTai = TongSoTrang;
+            if (TrangHienTai < 1) TrangHienTai = 1;
+
+            // 5. Cắt data theo trang (Dùng PageSize của Base) và đẩy lên UI
             DanhSachPhieuThu = new ObservableCollection<ReceiptResponse>(
-                resultList.Skip((TrangHienTai - 1) * _soDongTrenTrang).Take(_soDongTrenTrang));
+                resultList.Skip((TrangHienTai - 1) * PageSize).Take(PageSize));
+        }
 
-            await Task.CompletedTask;
+        #endregion
+
+        #region LOGIC XÓA
+
+        private async void ExecuteXoaPhieuThu(ReceiptResponse pt)
+        {
+            if (pt == null) return;
+
+            string maPtFormat = $"PT{pt.NgayTao:ddMMyy}{pt.MaPhieuThuTien:D3}";
+
+            if (MessageBox.Show($"Bạn có chắc chắn muốn xóa {maPtFormat} của khách hàng {pt.TenKhachHang} không?\nSố tiền nợ sẽ bị cộng lại như cũ.",
+                                "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    bool isSuccess = await ApiClient.DeleteAsync($"api/PhieuThu/{pt.MaPhieuThuTien}");
+                    if (isSuccess)
+                    {
+                        MessageBox.Show("Đã xóa phiếu thu và hoàn lại công nợ!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _ = LoadDataAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi xóa: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         #endregion

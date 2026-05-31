@@ -748,65 +748,12 @@
 			</Border>
 
 			<!-- FOOTER -->
-			<Border Grid.Row="3"
-					Margin="0,12,0,0"
-					Padding="12,8"
-					CornerRadius="12"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
-
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-
-					<StackPanel Grid.Column="1"
-								Orientation="Horizontal"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center">
-						<Button Content="«"
-								Style="{StaticResource PaginationButtonStyle}"
-								Command="{Binding PhanTrangCommand}"
-								CommandParameter="First" />
-						<Button Content="‹"
-								Style="{StaticResource PaginationButtonStyle}"
-								Command="{Binding PhanTrangCommand}"
-								CommandParameter="Prev"
-								Margin="4,0,0,0" />
-						<Button Content="{Binding TrangHienTai}"
-								Style="{StaticResource ActivePageButtonStyle}"
-								Margin="4,0,0,0" />
-						<Button Content="›"
-								Style="{StaticResource PaginationButtonStyle}"
-								Command="{Binding PhanTrangCommand}"
-								CommandParameter="Next"
-								Margin="8,0,0,0" />
-						<Button Content="»"
-								Style="{StaticResource PaginationButtonStyle}"
-								Command="{Binding PhanTrangCommand}"
-								CommandParameter="Last"
-								Margin="4,0,0,0" />
-					</StackPanel>
-
-					<TextBlock Grid.Column="2"
-							   HorizontalAlignment="Left"
-							   Foreground="#A3AED0"
-							   FontSize="13"
-							   VerticalAlignment="Center"
-							   Margin="12,0,0,0">
-						<TextBlock.Text>
-							<MultiBinding StringFormat="Trang {0}/{1} ({2} khách hàng)">
-								<Binding Path="TrangHienTai" />
-								<Binding Path="TongSoTrang" />
-								<Binding Path="TongBanGhi" />
-							</MultiBinding>
-						</TextBlock.Text>
-					</TextBlock>
-				</Grid>
-			</Border>
+			<components:PaginationControl Grid.Row="3"
+										  CurrentPage="{Binding TrangHienTai}"
+										  TotalPages="{Binding TongSoTrang}"
+										  TotalRecords="{Binding TongBanGhi}"
+										  PaginationCommand="{Binding PhanTrangCommand}" />
+			
 		</Grid>
 
 		<!-- ==================== POPUP THU TIỀN ==================== -->
@@ -897,6 +844,7 @@
 						<!-- Mã KH -->
 						<Border Grid.Row="1"
 								Style="{StaticResource FilterBorderStyle}"
+								Visibility="{Binding MaKhachHangVisibility}"
 								Margin="0,0,0,14"
 								Background="#F8FAFC">
 							<Grid>

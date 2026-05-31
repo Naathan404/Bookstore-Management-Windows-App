@@ -3,6 +3,7 @@ using Bookstore.Share.DTOResponses;
 using Bookstore.Share.DTOs;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
+using Bookstore.WPF.ViewModels.Base;
 using OfficeOpenXml.Export.HtmlExport;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    public class PromotionViewModel : BaseViewModel
+    public class PromotionViewModel : BaseListViewModel
     {
         private List<PromotionDTO> _allPromotions = new List<PromotionDTO>();
 
@@ -106,19 +107,6 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        // CÁC BIẾN QUẢN LÝ PHÂN TRANG
-        private int _currentPage = 1;
-        public int CurrentPage { get => _currentPage; set { _currentPage = value; OnPropertyChanged(); } }
-
-        private int _totalPages = 1;
-        public int TotalPages { get => _totalPages; set { _totalPages = value; OnPropertyChanged(); } }
-
-        private int _pageSize = 10;
-        public int PageSize { get => _pageSize; set { _pageSize = value; OnPropertyChanged(); CurrentPage = 1; ApplyFilterAndPagination(); } }
-
-        private ObservableCollection<int> _pageNumbers = new ObservableCollection<int>();
-        public ObservableCollection<int> PageNumbers { get => _pageNumbers; set { _pageNumbers = value; OnPropertyChanged(); } }
-
         // POPUP THÊM/SỬA
         private bool _isPopupVisible;
         public bool IsPopupVisible { get => _isPopupVisible; set { _isPopupVisible = value; OnPropertyChanged(); } }
@@ -166,11 +154,6 @@ namespace Bookstore.WPF.ViewModels
         // Commands cho Filter & Pagination
         public ICommand ClearFilterCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
-        public ICommand FirstPageCommand { get; set; }
-        public ICommand PrevPageCommand { get; set; }
-        public ICommand NextPageCommand { get; set; }
-        public ICommand LastPageCommand { get; set; }
-        public ICommand GoToPageCommand { get; set; }
 
         public PromotionViewModel()
         {
@@ -326,39 +309,25 @@ namespace Bookstore.WPF.ViewModels
                 SearchDenNgay = null;
             });
             RefreshCommand = new RelayCommand<object>(async p => await LoadDataAsync());
-
-            // Khởi tạo Commands cho Phân trang
-            FirstPageCommand = new RelayCommand<object>(p => { CurrentPage = 1; ApplyFilterAndPagination(); });
-
-            PrevPageCommand = new RelayCommand<object>(p => {
-                if (CurrentPage > 1) { CurrentPage--; ApplyFilterAndPagination(); }
-            });
-
-            NextPageCommand = new RelayCommand<object>(p => {
-                if (CurrentPage < TotalPages) { CurrentPage++; ApplyFilterAndPagination(); }
-            });
-
-            LastPageCommand = new RelayCommand<object>(p => { CurrentPage = TotalPages; ApplyFilterAndPagination(); });
-
-            GoToPageCommand = new RelayCommand<int>(page => { CurrentPage = page; ApplyFilterAndPagination(); });
         }
 
-        private void ApplyFilterAndPagination()
+        protected override void ApplyFilterAndPagination()
         {
             var filtered = _allPromotions.AsEnumerable();
 
-            // Lọc theo Loại ưu đãi
+            // 1. Lọc theo Loại ưu đãi
             if (!string.IsNullOrEmpty(SelectedLoaiUuDaiFilter) && SelectedLoaiUuDaiFilter != "Tất cả loại ưu đãi")
             {
                 filtered = filtered.Where(x => x.LoaiUuDai == SelectedLoaiUuDaiFilter);
             }
 
-            // Lọc theo Trạng thái
+            // 2. Lọc theo Trạng thái
             if (!string.IsNullOrEmpty(SelectedTrangThai) && SelectedTrangThai != "Tất cả trạng thái")
             {
                 filtered = filtered.Where(x => x.TrangThai == SelectedTrangThai);
             }
 
+            // 3. Lọc theo khoảng thời gian
             if (SearchTuNgay.HasValue)
             {
                 var tuNgay = SearchTuNgay.Value.Date;
@@ -371,6 +340,7 @@ namespace Bookstore.WPF.ViewModels
                 filtered = filtered.Where(x => x.NgayBatDau.Date <= denNgay);
             }
 
+            // 4. Lọc theo Từ khóa tìm kiếm (Lưu ý: Nếu dùng BaseListViewModel, bạn có thể cân nhắc dùng biến SearchKeyword thay cho SearchTenKM)
             if (!string.IsNullOrWhiteSpace(SearchTenKM))
             {
                 var keyword = SearchTenKM.Trim();
@@ -391,29 +361,31 @@ namespace Bookstore.WPF.ViewModels
                 }
             }
 
-            // Xuất kết quả
+            // ==========================================
+            // KHU VỰC CHUẨN HÓA PHÂN TRANG (ĐÃ FIX LỖI)
+            // ==========================================
             var resultList = filtered.ToList();
-            int totalRecords = resultList.Count;
-            TotalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
-            if (TotalPages == 0) TotalPages = 1;
 
-            if (CurrentPage > TotalPages) CurrentPage = TotalPages;
-            if (CurrentPage < 1) CurrentPage = 1;
+            // Cập nhật biến Tổng bản ghi cho BaseListViewModel để hiển thị lên UI
+            TongBanGhi = resultList.Count;
 
-            PageNumbers = new ObservableCollection<int>();
-            for (int i = 1; i <= TotalPages; i++)
-            {
-                PageNumbers.Add(i);
-            }
+            // Tính tổng số trang
+            TongSoTrang = (int)Math.Ceiling((double)TongBanGhi / PageSize);
+            if (TongSoTrang == 0) TongSoTrang = 1;
 
-            var pagedData = resultList.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+            // Kiểm tra an toàn cho trang hiện tại
+            if (TrangHienTai > TongSoTrang) TrangHienTai = TongSoTrang;
+            if (TrangHienTai < 1) TrangHienTai = 1;
 
-            int index = (CurrentPage - 1) * PageSize + 1;
+            // Cắt lấy dữ liệu của trang hiện tại
+            var pagedData = resultList.Skip((TrangHienTai - 1) * PageSize).Take(PageSize).ToList();
+
+            // Đánh số thứ tự (STT)
+            int index = (TrangHienTai - 1) * PageSize + 1;
             foreach (var item in pagedData)
             {
                 item.STT = index++;
             }
-
             PagedPromotions = new ObservableCollection<PromotionDTO>(pagedData);
         }
 

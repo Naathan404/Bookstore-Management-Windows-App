@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="Bookstore.WPF.Views.Components.PaginationControl"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 x:Name="Root">
+
+	<Border Margin="0,12,0,0"
+			Padding="16,8"
+			CornerRadius="12"
+			Background="White"
+			BorderBrush="#E2E8F0"
+			BorderThickness="1">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<StackPanel Grid.Column="1"
+						Orientation="Horizontal"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center">
+
+				<Button Style="{StaticResource PaginationButtonStyle}"
+						Command="{Binding PaginationCommand, ElementName=Root}"
+						CommandParameter="First"
+						Margin="0,0,4,0">
+					<materialDesign:PackIcon Kind="ChevronDoubleLeft"
+											 Width="18"
+											 Height="18"
+											 Foreground="#A3AED0" />
+				</Button>
+
+				<Button Style="{StaticResource PaginationButtonStyle}"
+						Command="{Binding PaginationCommand, ElementName=Root}"
+						CommandParameter="Prev"
+						Margin="0,0,8,0">
+					<materialDesign:PackIcon Kind="ChevronLeft"
+											 Width="18"
+											 Height="18"
+											 Foreground="#A3AED0" />
+				</Button>
+
+				<Button Content="{Binding CurrentPage, ElementName=Root}"
+						Style="{StaticResource PaginationButtonStyle}"
+						Margin="4,0,4,0" />
+
+				<Button Style="{StaticResource PaginationButtonStyle}"
+						Command="{Binding PaginationCommand, ElementName=Root}"
+						CommandParameter="Next"
+						Margin="8,0,0,0">
+					<materialDesign:PackIcon Kind="ChevronRight"
+											 Width="18"
+											 Height="18"
+											 Foreground="#A3AED0" />
+				</Button>
+
+				<Button Style="{StaticResource PaginationButtonStyle}"
+						Command="{Binding PaginationCommand, ElementName=Root}"
+						CommandParameter="Last"
+						Margin="4,0,0,0">
+					<materialDesign:PackIcon Kind="ChevronDoubleRight"
+											 Width="18"
+											 Height="18"
+											 Foreground="#A3AED0" />
+				</Button>
+			</StackPanel>
+
+			<TextBlock Grid.Column="2"
+					   HorizontalAlignment="Right"
+					   VerticalAlignment="Center"
+					   Foreground="#A3AED0"
+					   FontSize="13"
+					   FontWeight="Medium">
+				<TextBlock.Text>
+					<MultiBinding StringFormat="Trang {0}/{1} (Tổng: {2})">
+						<Binding Path="CurrentPage"
+								 ElementName="Root" />
+						<Binding Path="TotalPages"
+								 ElementName="Root" />
+						<Binding Path="TotalRecords"
+								 ElementName="Root" />
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+		</Grid>
+	</Border>
+</UserControl>
