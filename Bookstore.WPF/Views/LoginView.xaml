@@ -61,7 +61,8 @@
                     </Grid.ColumnDefinitions>
 
                     <CheckBox Content="Ghi nhớ tôi" Foreground="#2B3674" FontWeight="SemiBold" FontSize="13"
-                              materialDesign:CheckBoxAssist.CheckBoxSize="20"/>
+                          materialDesign:CheckBoxAssist.CheckBoxSize="20"
+                          IsChecked="{Binding IsRememberMe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" 
                         Command="{Binding SwitchStateCommand}" CommandParameter="Forgot"
