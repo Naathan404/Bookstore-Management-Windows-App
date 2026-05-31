@@ -4,6 +4,7 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d"
 			 Background="#F4F7FE"
 			 HorizontalAlignment="Stretch"
@@ -72,36 +73,17 @@
 	<Grid Background="#F4F7FE">
 		<Grid Margin="5">
 			<Grid.RowDefinitions>
-				<RowDefinition Height="90" />
+				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<Border Grid.Row="0"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
-				<Grid>
-					<StackPanel Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<materialDesign:PackIcon Kind="Invoice"
-												 Width="28"
-												 Height="28"
-												 Foreground="#4318FF"
-												 VerticalAlignment="Center"
-												 Margin="0,0,10,0" />
-						<TextBlock Text="LỊCH SỬ HÓA ĐƠN"
-								   FontSize="24"
-								   FontWeight="Bold"
-								   Foreground="#2B3674"
-								   VerticalAlignment="Center" />
-					</StackPanel>
-				</Grid>
-			</Border>
+			<components:PageHeaderControl Title="LỊCH SỬ HÓA ĐƠN"
+										  HeaderIcon="Invoice"
+										  ShowAddButton="True"
+										  AddTitle="THÊM"
+										  AddIcon="Plus" />
 
 			<Border Grid.Row="1"
 					Margin="0,0,0,12"

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" 
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="1600"
              Background="#F4F7FE"
              HorizontalAlignment="Stretch"
@@ -26,49 +27,20 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Margin="0,0,0,12" Padding="20" CornerRadius="16"
-                        Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+			<components:PageHeaderControl Title="BÁO CÁO KINH DOANH"
+										  HeaderIcon="ChartAreaspline"
+										  AddTitle="XEM BÁO CÁO"
+										  AddIcon="Magnify"
+										  AddCommand="{Binding ApplyReportCommand}"
+										  AddCommandParameter="{Binding}"
+										  ShowExportExcel="True"
+										  ExportExcelCommand="{Binding ExportExcelCommand}"
+										  ExportExcelCommandParameter="{Binding}"
+										  ShowExportPdf="True"
+										  ExportPdfCommand="{Binding ExportPdfCommand}"
+										  ExportPdfCommandParameter="{Binding}" />
 
-                    <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ChartAreaspline" Width="28" Height="28"
-                                                     Foreground="#4318FF" Margin="0,0,10,0"/>
-                        <TextBlock Text="BÁO CÁO KINH DOANH" FontSize="24" FontWeight="Bold"
-                                            Foreground="#2B3674" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    
-
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-
-                        <Button Style="{StaticResource MainGradientButton}" Command="{Binding ApplyReportCommand}" CommandParameter="{Binding}" Width="130" Height="36" Margin="0,0,10,0">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Magnify" Width="16" Height="16" Foreground="White" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="XEM BÁO CÁO" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        
-                        <Button Style="{StaticResource OutlinePDFButtonStyle}" CommandParameter="{Binding}" Width="120" Margin="0,0,10,0" Command="{Binding ExportPdfCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FilePdfBox" Width="16" Height="16" Foreground="OrangeRed" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="XUẤT PDF"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource OutlineExcelButtonStyle}" CommandParameter="{Binding}" Width="120" Command="{Binding ExportExcelCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="Green" Margin="0,0,6,0"/>
-                                <TextBlock Text="XUẤT EXCEL"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Border Grid.Row="1" Margin="0,0,0,12" Padding="20" CornerRadius="16"
+			<Border Grid.Row="1" Margin="0,0,0,12" Padding="20" CornerRadius="16"
                     Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
 

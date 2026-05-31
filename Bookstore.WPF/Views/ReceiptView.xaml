@@ -178,62 +178,18 @@
 	<Grid Background="{StaticResource BackgroundColor}">
 		<Grid Margin="5">
 			<Grid.RowDefinitions>
-				<RowDefinition Height="90" />
+				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<!-- HEADER -->
-			<Border Grid.Row="0"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-
-					<StackPanel Grid.Column="0"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<materialDesign:PackIcon Kind="ReceiptText"
-												 Width="28"
-												 Height="28"
-												 Foreground="#4318FF"
-												 VerticalAlignment="Center"
-												 Margin="0,0,10,0" />
-						<TextBlock Text="QUẢN LÝ PHIẾU THU"
-								   FontSize="24"
-								   FontWeight="Bold"
-								   Foreground="#2B3674"
-								   VerticalAlignment="Center" />
-					</StackPanel>
-
-					<StackPanel Grid.Column="1"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<Button Style="{StaticResource MainGradientButton}"
-								Width="100"
-								Margin="0,0,10,0"
-								CommandParameter="{Binding}"
-								Command="{Binding MoPopupThemCommand}">
-							<StackPanel Orientation="Horizontal">
-								<materialDesign:PackIcon Kind="Plus"
-														 Width="16"
-														 Height="16"
-														 Foreground="White"
-														 Margin="0,0,6,0" />
-								<TextBlock Text="THÊM" />
-							</StackPanel>
-						</Button>
-					</StackPanel>
-				</Grid>
-			</Border>
+			<components:PageHeaderControl Title="QUẢN LÝ PHIẾU THU"
+										  HeaderIcon="ReceiptText"
+										  AddTitle="THÊM"
+										  AddIcon="Plus"
+										  AddCommand="{Binding MoPopupThemCommand}"
+										  AddCommandParameter="{Binding}"/>
 
 			<!-- FILTER -->
 			<Border Grid.Row="1"

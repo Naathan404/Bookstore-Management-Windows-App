@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d"
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 mc:Ignorable="d"
              Background="#F4F7FE"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
@@ -24,41 +25,17 @@
             </Grid.RowDefinitions>
 
             <!-- Card 1: Header -->
-            <Border Grid.Row="0" Margin="0,0,0,12" Padding="20" CornerRadius="16"
-                    Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+			<components:PageHeaderControl Title="QUẢN LÝ ƯU ĐÃI"
+										  HeaderIcon="Sale"
+										  AddTitle="TẠO ƯU ĐÃI"
+										  AddIcon="Plus"
+										  AddCommand="{Binding OpenAddPopupCommand}"
+										  AddCommandParameter="{Binding}"
+										  ShowExportExcel="True"
+										  ExportExcelCommand="{Binding ExportExcelCommand}"
+										  ExportExcelCommandParameter="{Binding}" />
 
-                    <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Sale" Width="28" Height="28"
-                                                 Foreground="#4318FF" Margin="0,0,10,0"/>
-                        <TextBlock Text="ƯU ĐÃI" FontSize="24" FontWeight="Bold"
-                                   Foreground="#2B3674" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource MainGradientButton}" 
-                                Command="{Binding OpenAddPopupCommand}" Width="130" Margin="0,0,10,0">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Plus" Width="16" Height="16" Foreground="White" Margin="0,0,6,0"/>
-                                <TextBlock Text="TẠO ƯU ĐÃI"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource OutlineButtonStyle}" 
-                                Command="{Binding ExportExcelCommand}" Width="120">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FileExcel" Width="16" Height="16" Foreground="#4318FF" Margin="0,0,6,0"/>
-                                <TextBlock Text="XUẤT EXCEL"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <!-- Card 2: Search Filters -->
+			<!-- Card 2: Search Filters -->
             <Border Grid.Row="1" Margin="0,0,0,12" Padding="20" CornerRadius="16"
                     Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <Grid>

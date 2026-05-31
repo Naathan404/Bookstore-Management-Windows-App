@@ -1,0 +1,177 @@
+﻿<UserControl x:Class="Bookstore.WPF.Views.Components.PageHeaderControl"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 x:Name="Root">
+	<b:Interaction.Triggers>
+		<b:EventTrigger EventName="Loaded">
+			<b:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+		</b:EventTrigger>
+	</b:Interaction.Triggers>
+
+	<Border Margin="0,0,0,12"
+			Padding="20"
+			CornerRadius="16"
+			Background="White"
+			BorderBrush="#E2E8F0"
+			BorderThickness="1"
+			MinHeight="82">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<StackPanel Grid.Column="0"
+						Orientation="Horizontal">
+				<materialDesign:PackIcon Kind="{Binding HeaderIcon, ElementName=Root}"
+										 Width="28"
+										 Height="28"
+										 Foreground="{StaticResource PrimaryColor}"
+										 Margin="0,0,10,0"
+										 VerticalAlignment="Center" />
+
+				<TextBlock Text="{Binding Title, ElementName=Root}"
+						   FontSize="24"
+						   FontWeight="Bold"
+						   Foreground="{StaticResource PrimaryDarkColor}"
+						   VerticalAlignment="Center" />
+			</StackPanel>
+
+			<StackPanel Grid.Column="1"
+						Orientation="Horizontal"
+						VerticalAlignment="Center">
+
+				<Button Style="{StaticResource OutlinePDFButtonStyle}"
+						Width="120"
+						Margin="0,0,10,0"
+						Command="{Binding ExportPdfCommand, ElementName=Root}"
+						CommandParameter="{Binding ExportPdfCommandParameter, ElementName=Root}"
+						Visibility="{Binding ShowExportPdf, ElementName=Root, Converter={StaticResource BoolToVis}}">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="FilePdfBox"
+												 Width="16"
+												 Height="16"
+												 Foreground="OrangeRed"
+												 Margin="0,0,6,0"
+												 VerticalAlignment="Center" />
+						<TextBlock Text="XUẤT PDF" />
+					</StackPanel>
+				</Button>
+
+				<Button Style="{StaticResource OutlineExcelButtonStyle}"
+						Width="120"
+						Margin="0,0,10,0"
+						Command="{Binding ExportExcelCommand, ElementName=Root}"
+						CommandParameter="{Binding ExportExcelCommandParameter, ElementName=Root}"
+						Visibility="{Binding ShowExportExcel, ElementName=Root, Converter={StaticResource BoolToVis}}">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="FileExcel"
+												 Width="18"
+												 Height="18"
+												 Foreground="Green"
+												 Margin="0,0,6,0" />
+						<TextBlock Text="XUẤT EXCEL" />
+					</StackPanel>
+				</Button>
+
+				<Button Style="{StaticResource OutlineButtonStyle}"
+						MinWidth="36"
+						Margin="0,0,10,0"
+						Command="{Binding SecondCommand, ElementName=Root}"
+						CommandParameter="{Binding SecondCommandParameter, ElementName=Root}"
+						Visibility="{Binding ShowSecondButton, ElementName=Root, Converter={StaticResource BoolToVis}}">
+
+					<StackPanel Orientation="Horizontal"
+								Margin="16,0"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+
+						<materialDesign:PackIcon Kind="{Binding SecondIcon, ElementName=Root}"
+												 Width="18"
+												 Height="18"
+												 Foreground="{StaticResource PrimaryColor}"
+												 VerticalAlignment="Center" />
+
+						<TextBlock Text="{Binding SecondTitle, ElementName=Root}"
+								   VerticalAlignment="Center">
+							<TextBlock.Style>
+								<Style TargetType="TextBlock">
+									<Setter Property="Margin"
+											Value="8,0,0,0" />
+									<Style.Triggers>
+										<Trigger Property="Text"
+												 Value="">
+											<Setter Property="Visibility"
+													Value="Collapsed" />
+										</Trigger>
+										<Trigger Property="Text"
+												 Value="{x:Null}">
+											<Setter Property="Visibility"
+													Value="Collapsed" />
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</TextBlock.Style>
+						</TextBlock>
+					</StackPanel>
+				</Button>
+
+
+				<Button Style="{StaticResource MainGradientButton}"
+						MinWidth="100"
+						Margin="0,0,10,0"
+						Command="{Binding AddCommand, ElementName=Root}"
+						CommandParameter="{Binding AddCommandParameter, ElementName=Root}"
+						Visibility="{Binding ShowAddButton, ElementName=Root, Converter={StaticResource BoolToVis}}">
+
+					<StackPanel Orientation="Horizontal"
+								Margin="16,0"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+
+						<materialDesign:PackIcon Kind="{Binding AddIcon, ElementName=Root}"
+												 Width="18"
+												 Height="18"
+												 Foreground="White"
+												 VerticalAlignment="Center" />
+
+						<TextBlock Text="{Binding AddTitle, ElementName=Root}"
+								   VerticalAlignment="Center">
+							<TextBlock.Style>
+								<Style TargetType="TextBlock">
+									<Setter Property="Margin"
+											Value="8,0,0,0" />
+									<Style.Triggers>
+										<Trigger Property="Text"
+												 Value="">
+											<Setter Property="Visibility"
+													Value="Collapsed" />
+										</Trigger>
+										<Trigger Property="Text"
+												 Value="{x:Null}">
+											<Setter Property="Visibility"
+													Value="Collapsed" />
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</TextBlock.Style>
+						</TextBlock>
+					</StackPanel>
+				</Button>
+
+				<Button Style="{StaticResource OutlineButtonStyle}"
+						Width="36"
+						Visibility="{Binding ShowReloadButton, ElementName=Root, Converter={StaticResource BoolToVis}}"
+						Command="{Binding ReloadCommand, ElementName=Root}">
+					<materialDesign:PackIcon Kind="Reload"
+											 Width="18"
+											 Height="18"
+											 Foreground="{StaticResource PrimaryColor}" />
+				</Button>
+
+			</StackPanel>
+		</Grid>
+	</Border>
+</UserControl>

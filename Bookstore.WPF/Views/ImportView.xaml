@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewmodels="clr-namespace:Bookstore.WPF.ViewModels"
-             mc:Ignorable="d"
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 mc:Ignorable="d"
              Background="#F4F7FE"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
@@ -96,28 +97,21 @@
 
         <Grid Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="90"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- ==================== HEADER ==================== -->
-            <Border Grid.Row="0" Margin="0,0,0,16" Padding="24,16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">
-                <Grid>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <materialDesign:PackIcon Kind="TruckDelivery" Width="32" Height="32" Foreground="#4318FF" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="NHẬP KHO" FontSize="26" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <Button Style="{StaticResource MainGradientButton}" Width="140" HorizontalAlignment="Right"
-                            Command="{Binding OpenAddImportCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Plus" Width="18" Height="18" Foreground="White" Margin="0,0,8,0"/>
-                            <TextBlock Text="THÊM MỚI"/>
-                        </StackPanel>
-                    </Button>
-                </Grid>
-            </Border>
+			<!-- ==================== HEADER ==================== -->
+			<components:PageHeaderControl Title="NHẬP KHO"
+										  HeaderIcon="TruckDelivery"
+										  ShowAddButton="True"
+										  AddTitle="THÊM"
+										  AddIcon="Plus"
+										  AddCommand="{Binding OpenAddImportCommand}"
+										  AddCommandParameter="{Binding}"/>
+
 
             <!-- ==================== FILTER ==================== -->
             <Border Grid.Row="1" Margin="0,0,0,16" Padding="20,16" CornerRadius="20" Background="White" Effect="{StaticResource CardShadowEffect}">

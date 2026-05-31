@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" 
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 mc:Ignorable="d" 
              Background="{StaticResource BackgroundColor}">
 
     <UserControl.Resources>
@@ -17,30 +18,18 @@
 
         <Grid Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="90"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Margin="0,0,0,12" Padding="20" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
-                <Grid>
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="TruckDelivery" Width="28" Height="28" Foreground="#4318FF" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="NHÀ CUNG CẤP" FontSize="24" FontWeight="Bold" Foreground="#2B3674" VerticalAlignment="Center"/>
-                    </StackPanel>
+			<components:PageHeaderControl Title="NHÀ CUNG CẤP"
+										  HeaderIcon="TruckDelivery"
+										  AddCommand="{Binding OpenAddPopupCommand}"
+										  AddCommandParameter="{Binding}" />
 
-                    <Button Style="{StaticResource MainGradientButton}" HorizontalAlignment="Right" Width="150" Height="36"
-                            Command="{Binding OpenAddPopupCommand}" CommandParameter="{Binding}">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Plus" Width="18" Height="18" Foreground="White" Margin="0,0,6,0"/>
-                            <TextBlock Text="THÊM MỚI"/>
-                        </StackPanel>
-                    </Button>
-                </Grid>
-            </Border>
-
-            <Border Grid.Row="1" Margin="0,0,0,12" Padding="20" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+			<Border Grid.Row="1" Margin="0,0,0,12" Padding="20" CornerRadius="16" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
