@@ -808,7 +808,7 @@ namespace Bookstore.WPF.ViewModels
             try
             {
                 // ThamSo API trả về object { TenThamSo, GiaTri } — đọc GiaTri
-                var thamSo = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/ti-le-gia-ban");
+                var thamSo = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/TiLeDonGiaBan");
                 if (thamSo != null && thamSo.GiaTri > 0)
                 {
                     _tiLeGiaBan = thamSo.GiaTri;

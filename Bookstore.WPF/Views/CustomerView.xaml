@@ -10,6 +10,7 @@
 			 HorizontalAlignment="Stretch"
 			 VerticalAlignment="Stretch"
 			 xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 d:DataContext="{d:DesignInstance Type=vm:CustomerViewModel}">
 
 	<UserControl.Resources>
@@ -218,7 +219,8 @@
 					</Grid.ColumnDefinitions>
 
 					<StackPanel Grid.Column="0"
-								Orientation="Horizontal">
+								Orientation="Horizontal"
+								VerticalAlignment="Center">
 						<materialDesign:PackIcon Kind="AccountGroup"
 												 Width="28"
 												 Height="28"
@@ -239,7 +241,7 @@
 								Width="110"
 								Margin="0,0,10,0"
 								Command="{Binding MoPopupThemCommand}"
-								CommandParameter="1">
+								CommandParameter="{Binding}">
 							<StackPanel Orientation="Horizontal">
 								<materialDesign:PackIcon Kind="AccountPlus"
 														 Width="16"
@@ -263,172 +265,135 @@
 					BorderThickness="1">
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="2*" />
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="120" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<Grid Grid.Column="0"
-						  Margin="0,0,16,0">
-						<Border Style="{StaticResource FilterBorderStyle}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="36" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="Magnify"
-														 Width="18"
-														 Height="18"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<TextBox Grid.Column="1"
-										 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-										 materialDesign:HintAssist.Hint="Tìm kiếm khách hàng..."
-										 FontSize="13"
-										 Foreground="#2B3674"
-										 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-										 Background="Transparent"
-										 BorderThickness="0"
-										 VerticalAlignment="Center"
-										 Padding="0" />
-							</Grid>
-						</Border>
-					</Grid>
+					<Border Grid.Column="0"
+							Style="{StaticResource FilterBorderStyle}"
+							Margin="0,0,8,0">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="36" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<materialDesign:PackIcon Kind="Magnify"
+													 Width="18"
+													 Height="18"
+													 Foreground="#A3AED0"
+													 VerticalAlignment="Center"
+													 HorizontalAlignment="Center" />
+							<TextBox Grid.Column="1"
+									 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+									 Margin="0 0 5 0"
+									 Background="Transparent"
+									 BorderThickness="0"
+									 VerticalAlignment="Center"
+									 FontSize="13"
+									 Foreground="#2B3674"
+									 materialDesign:HintAssist.Hint="Tìm kiếm..." />
+						</Grid>
+					</Border>
 
-					<StackPanel Grid.Column="1"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
+					<Border Grid.Column="1"
+							Style="{StaticResource FilterBorderStyle}"
+							Margin="0,0,8,0">
+						<ComboBox Margin="10,0,5,0"
+								  Background="Transparent"
+								  BorderThickness="0"
+								  VerticalAlignment="Center"
+								  FontSize="13"
+								  Foreground="#2B3674"
+								  materialDesign:HintAssist.Hint="Tìm theo"
+								  SelectedValue="{Binding KieuTimKiem}"
+								  SelectedValuePath="Content">
+							<ComboBoxItem Content="Số điện thoại"
+										  IsSelected="True" />
+							<ComboBoxItem Content="Tên khách hàng" />
+							<ComboBoxItem Content="Email" />
+						</ComboBox>
+					</Border>
 
-						<Border Style="{StaticResource FilterBorderStyle}"
-								Margin="0,0,12,0"
-								Width="150">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="32" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="FormatListBulleted"
-														 Width="16"
-														 Height="16"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<ComboBox Grid.Column="1"
-										  x:Name="cboKieuTimKiem"
-										  Margin="0 0 5 0"
-										  Background="Transparent"
-										  BorderThickness="0"
-										  VerticalAlignment="Center"
-										  HorizontalAlignment="Stretch"
-										  FontSize="13"
-										  Foreground="#2B3674"
-										  materialDesign:HintAssist.Hint="Tìm theo"
-										  SelectedValue="{Binding KieuTimKiem}"
-										  SelectedValuePath="Content">
-									<ComboBoxItem Content="Số điện thoại"
-												  IsSelected="True" />
-									<ComboBoxItem Content="Tên khách hàng" />
-									<ComboBoxItem Content="Email" />
-								</ComboBox>
-							</Grid>
-						</Border>
+					<Border Grid.Column="2"
+							Style="{StaticResource FilterBorderStyle}"
+							Margin="0,0,8,0">
+						<ComboBox Margin="10,0,5,0"
+								  Background="Transparent"
+								  BorderThickness="0"
+								  VerticalAlignment="Center"
+								  FontSize="13"
+								  Foreground="#2B3674"
+								  materialDesign:HintAssist.Hint="Loại KH"
+								  ItemsSource="{Binding DanhSachLoaiKhachLoc}"
+								  SelectedItem="{Binding LocLoaiKhach, UpdateSourceTrigger=PropertyChanged}" />
+					</Border>
 
-						<Border Style="{StaticResource FilterBorderStyle}"
-								Margin="0,0,12,0"
-								Width="140">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="32" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="AccountStar"
-														 Width="16"
-														 Height="16"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<ComboBox Grid.Column="1"
-										  Margin="0 0 5 0"
-										  Background="Transparent"
-										  BorderThickness="0"
-										  VerticalAlignment="Center"
-										  HorizontalAlignment="Stretch"
-										  FontSize="13"
-										  Foreground="#2B3674"
-										  materialDesign:HintAssist.Hint="Loại KH"
-										  ItemsSource="{Binding DanhSachLoaiKhachLoc}"
-										  SelectedItem="{Binding LocLoaiKhach, UpdateSourceTrigger=PropertyChanged}" />
-							</Grid>
-						</Border>
+					<Border Grid.Column="3"
+							Style="{StaticResource FilterBorderStyle}"
+							Margin="0,0,8,0">
+						<ComboBox Margin="10,0,5,0"
+								  Background="Transparent"
+								  BorderThickness="0"
+								  VerticalAlignment="Center"
+								  FontSize="13"
+								  Foreground="#2B3674"
+								  materialDesign:HintAssist.Hint="Công nợ"
+								  SelectedValue="{Binding LocCongNo, UpdateSourceTrigger=PropertyChanged}"
+								  SelectedValuePath="Content">
+							<ComboBoxItem Content="Tất cả"
+										  IsSelected="True" />
+							<ComboBoxItem Content="Không nợ" />
+							<ComboBoxItem Content="Dưới 1 triệu" />
+							<ComboBoxItem Content="Trên 5 triệu" />
+						</ComboBox>
+					</Border>
 
-						<Border Style="{StaticResource FilterBorderStyle}"
-								Margin="0,0,12,0"
-								Width="160">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="32" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="CashMinus"
-														 Width="16"
-														 Height="16"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<ComboBox Grid.Column="1"
-										  Margin="0 0 5 0"
-										  Background="Transparent"
-										  BorderThickness="0"
-										  VerticalAlignment="Center"
-										  HorizontalAlignment="Stretch"
-										  FontSize="13"
-										  Foreground="#2B3674"
-										  materialDesign:HintAssist.Hint="Công nợ"
-										  SelectedValue="{Binding LocCongNo, UpdateSourceTrigger=PropertyChanged}"
-										  SelectedValuePath="Content">
-									<ComboBoxItem Content="Tất cả"
-												  IsSelected="True" />
-									<ComboBoxItem Content="Không nợ" />
-									<ComboBoxItem Content="Dưới 1 triệu" />
-									<ComboBoxItem Content="1 - 2 triệu" />
-									<ComboBoxItem Content="2 - 3 triệu" />
-									<ComboBoxItem Content="3 - 4 triệu" />
-									<ComboBoxItem Content="4 - 5 triệu" />
-									<ComboBoxItem Content="Trên 5 triệu" />
-								</ComboBox>
-							</Grid>
-						</Border>
+					<Border Grid.Column="4"
+							Background="#F4F7FE"
+							CornerRadius="10"
+							Padding="15,0"
+							Margin="0,0,10,0">
+						<StackPanel Orientation="Horizontal"
+									VerticalAlignment="Center">
+							<TextBlock Text="Tổng:"
+									   Foreground="#A3AED0"
+									   FontSize="12"
+									   VerticalAlignment="Center" />
+							<TextBlock Text="{Binding TongBanGhi}"
+									   FontWeight="Bold"
+									   Foreground="#4318FF"
+									   FontSize="15"
+									   Margin="8,0,0,0"
+									   VerticalAlignment="Center" />
+						</StackPanel>
+					</Border>
 
-						<Border Background="#F4F7FE"
-								CornerRadius="10"
-								Padding="12,10"
-								Margin="0,0,12,0">
-							<StackPanel Orientation="Horizontal"
-										VerticalAlignment="Center">
-								<TextBlock Text="Tổng:"
-										   Foreground="#A3AED0"
-										   FontSize="12"
-										   Margin="0,0,6,0" />
-								<TextBlock Text="{Binding TongBanGhi}"
-										   FontWeight="Bold"
-										   FontSize="14"
-										   Foreground="#4318FF" />
-							</StackPanel>
-						</Border>
-
-						<Button x:Name="btnXoaLoc"
-								Width="42"
-								Height="42"
-								Style="{StaticResource MaterialDesignIconForegroundButton}"
-								Foreground="#EF4444"
-								ToolTip="Xóa bộ lọc"
-								Command="{Binding XoaLocCommand}"
-								CommandParameter="1">
-							<materialDesign:PackIcon Kind="FilterRemove"
-													 Width="22"
-													 Height="22" />
-						</Button>
-					</StackPanel>
+					<Button Grid.Column="5"
+							Width="42"
+							Height="42"
+							ToolTip="Xóa tất cả bộ lọc"
+							Command="{Binding XoaLocCommand}"
+							Background="#FEE2E2"
+							BorderThickness="0"
+							Cursor="Hand">
+						<Button.Template>
+							<ControlTemplate TargetType="Button">
+								<Border Background="{TemplateBinding Background}"
+										CornerRadius="10">
+									<materialDesign:PackIcon Kind="FilterRemove"
+															 Width="20"
+															 Height="20"
+															 Foreground="#EF4444"
+															 HorizontalAlignment="Center"
+															 VerticalAlignment="Center" />
+								</Border>
+							</ControlTemplate>
+						</Button.Template>
+					</Button>
 				</Grid>
 			</Border>
 
@@ -557,7 +522,7 @@
 									<Binding Path="MaKhachHang" />
 								</MultiBinding>
 							</DataGridTextColumn.Binding>
-
+							
 							<DataGridTextColumn.HeaderStyle>
 								<Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
@@ -565,11 +530,10 @@
 											Value="Center" />
 								</Style>
 							</DataGridTextColumn.HeaderStyle>
-
+							
 							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Center" />
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource CellCenter}">
 									<Setter Property="Foreground"
 											Value="#4318FF" />
 									<Setter Property="FontWeight"
@@ -583,17 +547,19 @@
 											Binding="{Binding TenKhachHang}"
 											Width="*">
 							<DataGridTextColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader"
+								<Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment"
+									<Setter Property="HorizontalContentAlignment"
 											Value="Left" />
-                                </Style>
-                            </DataGridTextColumn.HeaderStyle>
+								</Style>
+							</DataGridTextColumn.HeaderStyle>
 							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock" BasedOn="{StaticResource CellLeft}">
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource CellLeft}">
 									<Setter Property="TextTrimming"
 											Value="CharacterEllipsis" />
-                                    <Setter Property="TextWrapping" Value="Wrap"></Setter>
+									<Setter Property="TextWrapping"
+											Value="Wrap" />
 								</Style>
 							</DataGridTextColumn.ElementStyle>
 						</DataGridTextColumn>
@@ -624,16 +590,17 @@
 							<DataGridTextColumn.HeaderStyle>
 								<Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                    <Setter Property="HorizontalContentAlignment"
+									<Setter Property="HorizontalContentAlignment"
 											Value="Left" />
-                                </Style>
-                                
+								</Style>
+
 							</DataGridTextColumn.HeaderStyle>
 							<DataGridTextColumn.ElementStyle>
 								<Style TargetType="TextBlock">
 									<Setter Property="TextTrimming"
 											Value="CharacterEllipsis" />
-                                    <Setter Property="TextWrapping" Value="Wrap"></Setter>
+									<Setter Property="TextWrapping"
+											Value="Wrap"></Setter>
 								</Style>
 							</DataGridTextColumn.ElementStyle>
 						</DataGridTextColumn>
@@ -722,9 +689,28 @@
 												Background="#D1FAE5"
 												BorderThickness="0"
 												Cursor="Hand"
-												ToolTip="Lập phiếu thu tiền"
 												Command="{Binding DataContext.MoPopupThuTienCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 												CommandParameter="{Binding}">
+
+											<Button.Style>
+												<Style TargetType="Button">
+													<Setter Property="ToolTip"
+															Value="Lập phiếu thu tiền" />
+
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding CongNo}"
+																	 Value="0">
+															<Setter Property="IsEnabled"
+																	Value="False" />
+															<Setter Property="Opacity"
+																	Value="0.4" />
+															<Setter Property="ToolTip"
+																	Value="Khách hàng không có nợ" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Button.Style>
+
 											<Button.Template>
 												<ControlTemplate TargetType="Button">
 													<Border x:Name="border"
@@ -868,264 +854,7 @@
 		</Grid>
 
 		<!-- ==================== POPUP THU TIỀN ==================== -->
-		<Grid x:Name="popupThuTien"
-			  Background="#80000000"
-			  Visibility="{Binding IsThuTienPopupOpen, Converter={StaticResource BoolToVis}}"
-			  VerticalAlignment="Stretch"
-			  HorizontalAlignment="Stretch"
-			  Panel.ZIndex="1000">
-			<Border Background="Transparent">
-				<Border.InputBindings>
-					<MouseBinding MouseAction="LeftClick"
-								  Command="{Binding DongPopupThuTienCommand}" />
-				</Border.InputBindings>
-			</Border>
-
-			<Border Width="500"
-					Background="White"
-					CornerRadius="16"
-					Effect="{StaticResource PopupShadowEffect}"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center">
-				<Grid Margin="28">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<!-- Header -->
-					<Grid Grid.Row="0"
-						  Margin="0,0,0,20">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="40" />
-						</Grid.ColumnDefinitions>
-						<StackPanel Orientation="Horizontal"
-									VerticalAlignment="Center">
-							<materialDesign:PackIcon Kind="Cash"
-													 Width="22"
-													 Height="22"
-													 Foreground="#4318FF"
-													 Margin="0,0,8,0" />
-							<TextBlock Text="PHIẾU THU TIỀN"
-									   FontSize="18"
-									   FontWeight="Bold"
-									   Foreground="#2B3674"
-									   VerticalAlignment="Center" />
-						</StackPanel>
-						<Button Grid.Column="1"
-								Content="✕"
-								Width="30"
-								Height="30"
-								HorizontalAlignment="Right"
-								VerticalAlignment="Top"
-								Background="Transparent"
-								BorderThickness="0"
-								Foreground="#A3AED0"
-								Command="{Binding DongPopupThuTienCommand}" />
-					</Grid>
-
-					<!-- Mã phiếu -->
-					<Border Grid.Row="1"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,0,12"
-							Background="#F8FAFC">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Barcode"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBlock Grid.Column="1"
-									   Text="{Binding MaPhieuThu}"
-									   Margin="0 0 5 0"
-									   Background="Transparent"
-									   VerticalAlignment="Center"
-									   HorizontalAlignment="Stretch"
-									   FontSize="13"
-									   Foreground="#9CA3AF"
-									   materialDesign:HintAssist.Hint="Mã phiếu">
-
-							</TextBlock>
-						</Grid>
-					</Border>
-					
-					<!-- Ngày lập + Người lập -->
-					<Grid Grid.Row="2"
-						  Margin="0,0,0,12">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="12" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-
-						<Border Grid.Column="0"
-								Style="{StaticResource FilterBorderStyle}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="36" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="CalendarClock"
-														 Width="18"
-														 Height="18"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<DatePicker Grid.Column="1"
-											SelectedDate="{x:Static sys:DateTime.Now}"
-											IsEnabled="False"
-											Margin="0 0 5 0"
-											Background="Transparent"
-											BorderThickness="0"
-											VerticalAlignment="Center"
-											HorizontalAlignment="Stretch"
-											FontSize="13"
-											Foreground="#2B3674"
-											materialDesign:HintAssist.Hint="Ngày lập" />
-							</Grid>
-						</Border>
-
-						<Border Grid.Column="2"
-								Style="{StaticResource FilterBorderStyle}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="36" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="AccountTie"
-														 Width="18"
-														 Height="18"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<TextBox Grid.Column="1"
-										 Text="Admin"
-										 IsReadOnly="True"
-										 Margin="0 0 5 0"
-										 Background="Transparent"
-										 BorderThickness="0"
-										 VerticalAlignment="Center"
-										 HorizontalAlignment="Stretch"
-										 FontSize="13"
-										 Foreground="#2B3674"
-										 materialDesign:HintAssist.Hint="Người lập" />
-							</Grid>
-						</Border>
-					</Grid>
-
-					<!-- Khách hàng -->
-					<Border Grid.Row="3"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,0,12"
-							Background="#F8FAFC">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Account"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBlock Grid.Column="1"
-									 Text="{Binding KhachHangForm.TenKhachHang}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#9CA3AF"
-									 materialDesign:HintAssist.Hint="Khách hàng" />
-						</Grid>
-					</Border>
-
-					<!-- Số tiền thu -->
-					<Border Grid.Row="4"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,0,12"
-							BorderBrush="#4318FF"
-							BorderThickness="2">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CashMultiple"
-													 Width="20"
-													 Height="20"
-													 Foreground="#4318FF"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SoTienThu, UpdateSourceTrigger=PropertyChanged}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="16"
-									 FontWeight="Bold"
-									 Foreground="#4318FF"
-									 materialDesign:HintAssist.Hint="Số tiền thu (VNĐ)" />
-						</Grid>
-					</Border>
-
-					<!-- Công nợ sau khi thu -->
-					<Border Grid.Row="5"
-							CornerRadius="8"
-							Background="#DCFCE7"
-							Padding="14"
-							Margin="0,0,0,20">
-						<Grid>
-							<TextBlock Text="Công nợ sau khi thu:"
-									   Foreground="#166534"
-									   FontWeight="SemiBold" />
-							<TextBlock Text="{Binding ConNoSauKhiThu, StringFormat={}{0:N0} VNĐ}"
-									   HorizontalAlignment="Right"
-									   Foreground="#EF4444"
-									   FontWeight="Bold"
-									   FontSize="16" />
-						</Grid>
-					</Border>
-
-					<!-- Buttons -->
-					<StackPanel Grid.Row="6"
-								Orientation="Horizontal"
-								HorizontalAlignment="Right">
-						<Button Content="HỦY"
-								Width="100"
-								Height="40"
-								Margin="0,0,10,0"
-								Foreground="#A3AED0"
-								Background="Transparent"
-								BorderBrush="#E2E8F0"
-								BorderThickness="1"
-								Command="{Binding DongPopupThuTienCommand}"
-								CommandParameter="1" />
-						<Button Content="LƯU PHIẾU"
-								Width="130"
-								Height="40"
-								Foreground="White"
-								Background="#10B981"
-								Command="{Binding XacNhanThuTienCommand}"
-								CommandParameter="1" />
-					</StackPanel>
-				</Grid>
-			</Border>
-		</Grid>
+		<components:ReceiptPopup DataContext="{Binding PopupThuTienVM}" />
 
 		<!-- ==================== POPUP THÊM/SỬA KHÁCH HÀNG ==================== -->
 		<Grid x:Name="popupThemSua"
@@ -1169,6 +898,7 @@
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="40" />
 							</Grid.ColumnDefinitions>
+
 							<StackPanel Orientation="Horizontal"
 										VerticalAlignment="Center">
 								<materialDesign:PackIcon Width="22"
@@ -1209,11 +939,6 @@
 						</Grid>
 
 						<!-- Mã KH -->
-						<TextBlock Grid.Row="1"
-								   Text="Mã khách hàng"
-								   FontSize="13"
-								   Foreground="#6B7280"
-								   Margin="0,0,0,6" />
 						<Border Grid.Row="1"
 								Style="{StaticResource FilterBorderStyle}"
 								Margin="0,0,0,14"
@@ -1517,26 +1242,25 @@
 						<!-- Buttons -->
 						<StackPanel Grid.Row="7"
 									Orientation="Horizontal"
+									Margin="0,20,0,0"
 									HorizontalAlignment="Right">
-							<Button x:Name="btnPopupQuayLai"
-									Content="QUAY LẠI"
-									Width="120"
-									Height="42"
-									Margin="0,0,10,0"
-									Foreground="#A3AED0"
-									Background="Transparent"
-									BorderBrush="#E2E8F0"
-									BorderThickness="1"
+
+							<Button Content="HỦY BỎ"
 									Command="{Binding DongPopupKhachHangCommand}"
-									CommandParameter="1" />
-							<Button x:Name="btnPopupLuu"
-									Content="LƯU"
+									CommandParameter="Close"
 									Width="120"
-									Height="42"
-									Foreground="White"
-									Background="#10B981"
+									Height="40"
+									Margin="0,0,10,0"
+									Cursor="Hand"
+									Style="{StaticResource OutlineButtonStyle}" />
+
+							<Button Content="LƯU THÔNG TIN"
 									Command="{Binding LuuKhachHangCommand}"
-									CommandParameter="1" />
+									CommandParameter="Save"
+									Width="140"
+									Height="40"
+									Style="{StaticResource MainGradientButton}"
+									Cursor="Hand" />
 						</StackPanel>
 					</Grid>
 				</ScrollViewer>

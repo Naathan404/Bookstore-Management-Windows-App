@@ -20,7 +20,11 @@
             <views:SaleView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewmodels:SupplierViewModel}">
+		<DataTemplate DataType="{x:Type viewmodels:InvoiceViewModel}">
+			<views:InvoiceView />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type viewmodels:SupplierViewModel}">
             <views:SupplierView />
         </DataTemplate>
 
@@ -52,10 +56,15 @@
             <views:AccountView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewmodels:SettingViewModel}">
+		<DataTemplate DataType="{x:Type viewmodels:SettingViewModel}">
             <views:SettingView />
         </DataTemplate>
-    </Window.Resources>
+
+		<DataTemplate DataType="{x:Type viewmodels:ReceiptViewModel}">
+			<views:ReceiptView />
+		</DataTemplate>
+		
+	</Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>

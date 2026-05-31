@@ -203,7 +203,8 @@
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="BookSearch" Width="28" Height="28"
-                                                 Foreground="#4318FF" Margin="0,0,10,0"/>
+                                                 Foreground="#4318FF" Margin="0,0,10,0"
+												 VerticalAlignment="Center"/>
                         <TextBlock Text="TRA CỨU SÁCH" FontSize="24" FontWeight="Bold"
                                    Foreground="#2B3674" VerticalAlignment="Center"/>
                     </StackPanel>
