@@ -5,6 +5,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Windows;
@@ -681,12 +682,18 @@ namespace Bookstore.WPF.ViewModels
                     Fill = new SolidColorPaint(new SKColor(67, 24, 255)),       // #4318FF tím
                     MaxBarWidth = 20,
 
-                    XToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue / 1_000:N0}K đ",
+                    XToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue:N0} đ",
             
                     // Giữ nguyên các dòng định dạng nhãn hiển thị trực tiếp trên thanh
                     DataLabelsPaint = new SolidColorPaint(new SKColor(43, 54, 116)),
-                    DataLabelsSize = 10,
-                    DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue / 1_000:N0}K đ"
+                    DataLabelsSize = 11,
+                    DataLabelsFormatter = point =>
+                    {
+                        double val = point.Coordinate.PrimaryValue;
+                        if (val >= 1_000_000) return $"{val / 1_000_000:N1}M"; // Hiện chữ M nếu > 1 triệu
+                        if (val >= 1_000) return $"{val / 1_000:N0}K"; // Hiện chữ K nếu > 1 ngàn
+                        return $"{val:N0}";
+                    },
                 }
             };
 
@@ -704,7 +711,13 @@ namespace Bookstore.WPF.ViewModels
             {
                 new Axis
                 {
-                    Labeler = value => $"{value / 1_000:N0}K đ",
+                    Labeler = value =>
+                    {
+                        double val = value;
+                        if (val >= 1_000_000) return $"{val / 1_000_000:N1}M"; // Hiện chữ M nếu > 1 triệu
+                        if (val >= 1_000) return $"{val / 1_000:N0}K"; // Hiện chữ K nếu > 1 ngàn
+                        return $"{val:N0}";
+                    },
                     //Labeler = value => $"{value:N0}" + " đ",
                     TextSize = 10,
                     LabelsPaint = new SolidColorPaint(new SKColor(163, 174, 208))
