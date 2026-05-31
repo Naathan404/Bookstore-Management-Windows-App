@@ -9,90 +9,6 @@
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
 
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        <SolidColorBrush x:Key="PrimaryDarkColor" Color="#2B3674"/>
-        <SolidColorBrush x:Key="PrimaryColor" Color="#4318FF"/>
-        <SolidColorBrush x:Key="TextLightColor" Color="#A3AED0"/>
-        <SolidColorBrush x:Key="BackgroundColor" Color="#F4F7FE"/>
-
-        <LinearGradientBrush x:Key="GradientButtonBrush" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#4318FF" Offset="0"/>
-            <GradientStop Color="#5B3CFF" Offset="1"/>
-        </LinearGradientBrush>
-
-        <Style x:Key="MainGradientButton" TargetType="Button">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{StaticResource GradientButtonBrush}" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="OutlineButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#4318FF"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="Transparent" BorderBrush="#4318FF" BorderThickness="1.5" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="PaginationButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="36"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#2B3674"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F4F7FE"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="FilterBorderStyle" TargetType="Border">
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E2E8F0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Height" Value="42"/>
-        </Style>
-
-        <Style x:Key="PermissionCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#2B3674"/>
-            <Setter Property="Margin" Value="10"/>
-        </Style>
-    </UserControl.Resources>
 
     <Grid Background="{StaticResource BackgroundColor}">
         <Ellipse Width="400" Height="400" Fill="#4318FF" Opacity="0.03" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-150,-150,0,0" IsHitTestVisible="False"/>
@@ -174,6 +90,7 @@
                                     <ColumnDefinition Width="200"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <Border Grid.Column="0" Style="{StaticResource FilterBorderStyle}" Margin="0,0,10,0">
@@ -213,11 +130,61 @@
 
                                 <Button Grid.Column="3" Width="42" Height="42" ToolTip="Xóa bộ lọc" 
                                         Command="{Binding ClearFilterCommand}" CommandParameter="{Binding}"
-                                        Background="#FEE2E2" BorderThickness="0" Cursor="Hand">
+                                       BorderThickness="0" Cursor="Hand">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#FEE2E2"/>
+                                            <Setter Property="Foreground" Value="#EF4444"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FECACA"/>
+                                                    <Setter Property="Foreground" Value="#DC2626"/>
+                                                </Trigger>
+
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FCA5A5"/>
+                                                    <Setter Property="Opacity" Value="0.8"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" CornerRadius="10">
                                                 <materialDesign:PackIcon Kind="FilterOff" Width="20" Height="20" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <Button Grid.Column="4" Width="42" Height="42" 
+                                            ToolTip="Làm mới"
+                                            Command="{Binding RefreshCommand}" CommandParameter="{Binding}"
+                                            BorderThickness="0" Cursor="Hand"
+                                        Margin="10 0 0 0">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#E0E7FF"/>
+                                            <Setter Property="Foreground" Value="#4318FF"/>
+
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#C7D2FE"/>
+                                                    <Setter Property="Foreground" Value="#250AA0"/>
+                                                </Trigger>
+
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#A5B4FC"/>
+                                                    <Setter Property="Opacity" Value="0.8"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                                <materialDesign:PackIcon Kind="Refresh" Width="20" Height="20" 
+                                                             Foreground="#4318FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                         </ControlTemplate>
                                     </Button.Template>
@@ -425,7 +392,27 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                    <Button Width="32" Height="32" Background="#E0E7FF" BorderThickness="0" Cursor="Hand" ToolTip="Chỉnh sửa" Command="{Binding DataContext.OpenEditAccountPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                    <Button Width="32" Height="32" BorderThickness="0" Cursor="Hand" ToolTip="Chỉnh sửa" 
+                                                            Command="{Binding DataContext.OpenEditAccountPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                            CommandParameter="{Binding}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Background" Value="#E0E7FF"/>
+                                                                <Setter Property="Foreground" Value="#4318FF"/>
+
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#C7D2FE"/>
+                                                                        <Setter Property="Foreground" Value="#250AA0"/>
+                                                                    </Trigger>
+
+                                                                    <Trigger Property="IsPressed" Value="True">
+                                                                        <Setter Property="Background" Value="#A5B4FC"/>
+                                                                        <Setter Property="Opacity" Value="0.8"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">
                                                                 <Border Background="{TemplateBinding Background}" CornerRadius="6">
@@ -434,7 +421,26 @@
                                                             </ControlTemplate>
                                                         </Button.Template>
                                                     </Button>
-                                                    <Button Width="32" Height="32" Background="#FEF3C7" BorderThickness="0" Cursor="Hand" ToolTip="Khôi phục mật khẩu mặc định" Margin="6,0,0,0" Command="{Binding DataContext.ResetPasswordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                    <Button Width="32" Height="32" Background="#FEF3C7" BorderThickness="0" Cursor="Hand" ToolTip="Khôi phục mật khẩu mặc định" Margin="6,0,0,0" 
+                                                            Command="{Binding DataContext.ResetPasswordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                            CommandParameter="{Binding}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Background" Value="LightYellow"/>
+                                                                <Setter Property="Foreground" Value="LightGoldenrodYellow"/>
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#FEF3C7"/>
+                                                                        <Setter Property="Foreground" Value="Yellow"/>
+                                                                    </Trigger>
+
+                                                                    <Trigger Property="IsPressed" Value="True">
+                                                                        <Setter Property="Background" Value="#FEF3C7"/>
+                                                                        <Setter Property="Opacity" Value="0.8"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">
                                                                 <Border Background="{TemplateBinding Background}" CornerRadius="6">
@@ -443,7 +449,26 @@
                                                             </ControlTemplate>
                                                         </Button.Template>
                                                     </Button>
-                                                    <Button Width="32" Height="32" Background="#FEE2E2" BorderThickness="0" Cursor="Hand" ToolTip="Xóa tài khoản" Margin="6,0,0,0" Command="{Binding DataContext.DeleteAccountCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                    <Button Width="32" Height="32" BorderThickness="0" Cursor="Hand" ToolTip="Xóa tài khoản" Margin="6,0,0,0" 
+                                                            Command="{Binding DataContext.DeleteAccountCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                            CommandParameter="{Binding}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Background" Value="#FEE2E2"/>
+                                                                <Setter Property="Foreground" Value="#EF4444"/>
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#FECACA"/>
+                                                                        <Setter Property="Foreground" Value="#DC2626"/>
+                                                                    </Trigger>
+
+                                                                    <Trigger Property="IsPressed" Value="True">
+                                                                        <Setter Property="Background" Value="#FCA5A5"/>
+                                                                        <Setter Property="Opacity" Value="0.8"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">
                                                                 <Border Background="{TemplateBinding Background}" CornerRadius="6">

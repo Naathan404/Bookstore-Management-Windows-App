@@ -145,6 +145,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand DeleteSupplierCommand { get; set; }
         public ICommand ClosePopupCommand { get; set; }
         public ICommand SaveSupplierCommand { get; set; }
+        public ICommand RefreshCommand { get; set; }
         #endregion
 
         public SupplierViewModel()
@@ -205,6 +206,7 @@ namespace Bookstore.WPF.ViewModels
             });
 
             ClosePopupCommand = new RelayCommand<object>(p => IsPopupVisible = false);
+            RefreshCommand = new RelayCommand<object>(async p => await LoadSuppliersAsync());
 
             // Nghiệp vụ
             SaveSupplierCommand = new RelayCommand<object>(async p => await SaveSupplierAsync());

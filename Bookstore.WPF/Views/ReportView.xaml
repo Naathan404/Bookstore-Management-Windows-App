@@ -390,7 +390,7 @@
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Tựa sách" Binding="{Binding BookName}" Width="200" HeaderStyle="{StaticResource LeftHeaderStyle}">
+                                        <DataGridTextColumn Header="Tựa sách" Binding="{Binding BookName}" Width="*" HeaderStyle="{StaticResource LeftHeaderStyle}">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource CellLeft}">
                                                     <Setter Property="FontWeight" Value="SemiBold"/>
@@ -518,7 +518,7 @@
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Giá trị tồn" Binding="{Binding StockValue, StringFormat='{}{0:#,0} đ'}" Width="*" HeaderStyle="{StaticResource RightHeaderStyle}">
+                                        <DataGridTextColumn Header="Giá trị tồn" Binding="{Binding StockValue, StringFormat='{}{0:#,0} đ'}" Width="150" HeaderStyle="{StaticResource RightHeaderStyle}">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource CellMoney}">
                                                     <Setter Property="Foreground" Value="Green"/>

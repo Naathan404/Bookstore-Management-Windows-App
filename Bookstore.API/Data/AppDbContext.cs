@@ -730,49 +730,50 @@ namespace Bookstore.API.Data
             );
 
             modelBuilder.Entity<UuDai>().HasData(
-                // Giảm 10% (Tối đa 100k) cho hóa đơn từ 500k
-                new UuDai { MaUuDai = 1, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "admin", MaLoaiUuDai = 1, TenUuDai = "Giảm 10% Hóa đơn > 500k", MoTa = "Chương trình kích cầu", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 1000, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true },
+                            // Trạng thái 1: ĐANG ÁP DỤNG 
+                            new UuDai { MaUuDai = 1, NgayTao = DateTime.Now.AddDays(-10), NguoiTao = "admin", MaLoaiUuDai = 1, Code = "PROMO10", TenChuongTrinh = "Giảm 10% Hóa đơn > 500k", MoTa = "Chương trình kích cầu", NgayBatDau = DateTime.Now.AddDays(-5), NgayKetThuc = DateTime.Now.AddDays(30), SoLuongToiDa = 1000, SoLuongDaDung = 136, MaLoaiKhachHang = 1, CoTheSuDung = true },
 
-                // Hóa đơn từ 1 Triệu tặng cuốn "Đắc Nhân Tâm"
-                new UuDai { MaUuDai = 2, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "quanlh", MaLoaiUuDai = 2, TenUuDai = "Hóa đơn 1Tr tặng Đắc Nhân Tâm", MoTa = "Tri ân khách VIP", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 50, SoLuongDaDung = 0, MaLoaiKhachHang = 2, CoTheSuDung = true },
+                            // Trạng thái 2: HẾT HẠN 
+                            new UuDai { MaUuDai = 2, NgayTao = new DateTime(2023, 1, 1), NguoiTao = "quanlh", MaLoaiUuDai = 2, Code = "DTN1M", TenChuongTrinh = "Hóa đơn 1Tr tặng Đắc Nhân Tâm", MoTa = "Tri ân khách VIP", NgayBatDau = new DateTime(2023, 1, 1), NgayKetThuc = new DateTime(2023, 12, 31), SoLuongToiDa = 50, SoLuongDaDung = 50, MaLoaiKhachHang = 2, CoTheSuDung = true },
 
-                // Giảm 20k trực tiếp khi mua cuốn "Mắt Biếc"
-                new UuDai { MaUuDai = 3, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "hungng", MaLoaiUuDai = 3, TenUuDai = "Giảm 20k Mắt Biếc", MoTa = "Sale sách Hot", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 200, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true },
+                            // Trạng thái 3: TẠM DỪNG 
+                            new UuDai { MaUuDai = 3, NgayTao = DateTime.Now.AddDays(-2), NguoiTao = "hungng", MaLoaiUuDai = 3, Code = "MATBIEC20K", TenChuongTrinh = "Giảm 20k Mắt Biếc", MoTa = "Sale sách Hot", NgayBatDau = DateTime.Now.AddDays(-1), NgayKetThuc = DateTime.Now.AddDays(60), SoLuongToiDa = 200, SoLuongDaDung = 20, MaLoaiKhachHang = 1, CoTheSuDung = false },
 
-                // Mua 2 cuốn "Clean Code" tặng 1 cuốn "300 Bài Code"
-                new UuDai { MaUuDai = 4, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "sonph", MaLoaiUuDai = 4, TenUuDai = "Combo Dev: Mua 2 tặng 1", MoTa = "Đồng hành cùng IT", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 100, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true }
-            );
+                            // Trạng thái 4: CHƯA ÁP DỤNG 
+                            new UuDai { MaUuDai = 4, NgayTao = DateTime.Now, NguoiTao = "sonph", MaLoaiUuDai = 4, Code = "CODESTACK300", TenChuongTrinh = "Combo Dev: Mua 2 tặng 1", MoTa = "Đồng hành cùng IT", NgayBatDau = DateTime.Now.AddDays(15), NgayKetThuc = DateTime.Now.AddDays(45), SoLuongToiDa = 100, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true }
+                        );
 
-            // ct giảm theo hd
+
+            // Loại 1: Giảm theo hóa đơn
             modelBuilder.Entity<CTUD_HoaDon_Giam>().HasData(
-                new CTUD_HoaDon_Giam { MaCT = 1, MaUuDai = 1, SoTienToiThieu = 500000m, SoTienToiDa = 999999999m, SoTienGiam = 0m, TiLeGiam = 0.1f, GiamToiDa = 100m}
+                new CTUD_HoaDon_Giam { MaCT = 1, MaUuDai = 1, SoTienToiThieu = 500000m, SoTienToiDa = 999999999m, SoTienGiam = 0m, TiLeGiam = 10, GiamToiDa = 100000 }
             );
 
-            // ct tặng quà theo hd
+            // Loại 2: Tặng quà theo hóa đơn
             modelBuilder.Entity<CTUD_HoaDon_Qua>().HasData(
                 new CTUD_HoaDon_Qua { MaCT = 1, MaUuDai = 2, SoTienToiThieu = 1000000m, SoTienToiDa = 999999999m }
             );
-            modelBuilder.Entity<UuDai_SachTang>().HasData(
-                new UuDai_SachTang { MaUuDai = 2, ISBN = "978-604-4-33333-1", SoLuongTang = 1 } // Đắc Nhân Tâm
-            );
 
-            /// ct giảm tía theo sách
+            // Loại 3: Giảm giá theo sách 
             modelBuilder.Entity<CTUD_Sach_Giam>().HasData(
-                new CTUD_Sach_Giam { MaCT = 1, MaUuDai = 3, SoTienGiam = 20000m, TiLeGiam = 0, GiamToiDa = 20000m }
-            );
-            modelBuilder.Entity<UuDai_SachDieuKien>().HasData(
-                new UuDai_SachDieuKien { MaUuDai = 3, ISBN = "978-604-1-09887-1", SoLuongMua = 1 } // Mắt Biếc bìa mềm
+                new CTUD_Sach_Giam { MaCT = 1, MaUuDai = 3, SoTienGiam = 20000m, TiLeGiam = 0, GiamToiDa = 0 }
             );
 
-            // ct mua sách tặng sách
+            // Loại 4: Tặng quà theo sách
             modelBuilder.Entity<CTUD_Sach_Qua>().HasData(
                 new CTUD_Sach_Qua { MaCT = 1, MaUuDai = 4 }
             );
+
+
             modelBuilder.Entity<UuDai_SachDieuKien>().HasData(
-                new UuDai_SachDieuKien { MaUuDai = 4, ISBN = "978-0132350884", SoLuongMua = 2 } // Điều kiện: Mua 2 cuốn Clean Code
+                new UuDai_SachDieuKien { MaUuDai = 3, ISBN = "978-604-1-09887-1", SoLuongMua = 1 }, // Điều kiện ưu đãi 3
+                new UuDai_SachDieuKien { MaUuDai = 4, ISBN = "978-0132350884", SoLuongMua = 2 }      // Điều kiện ưu đãi 4
             );
+
+            // Bảng sách tặng (Cho ưu đãi số 2 và 4)
             modelBuilder.Entity<UuDai_SachTang>().HasData(
-                new UuDai_SachTang { MaUuDai = 4, ISBN = "978-604-MEME-01", SoLuongTang = 1 } // Quà tặng: 1 cuốn 300 Bài code thíu nhi
+                new UuDai_SachTang { MaUuDai = 2, ISBN = "978-604-4-33333-1", SoLuongTang = 1 }, // Quà tặng ưu đãi 2
+                new UuDai_SachTang { MaUuDai = 4, ISBN = "978-604-MEME-01", SoLuongTang = 1 }     // Quà tặng ưu đãi 4
             );
 
             // BẢNG HÓA ĐƠN 

@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260531060748_UpdateUuDaiSeedData_2")]
+    partial class UpdateUuDaiSeedData_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -599,66 +602,54 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaChucNang = 3,
-                            TenChucNang = "Hóa đơn",
-                            TenManHinh = "InvoiceView"
-                        },
-                        new
-                        {
-                            MaChucNang = 4,
                             TenChucNang = "Tra cứu sách",
                             TenManHinh = "ProductView"
                         },
                         new
                         {
-                            MaChucNang = 5,
+                            MaChucNang = 4,
                             TenChucNang = "Khách hàng",
                             TenManHinh = "CustomerView"
                         },
                         new
                         {
-                            MaChucNang = 6,
-                            TenChucNang = "Phiếu nhập",
-                            TenManHinh = "ReceiptView"
-                        },
-                        new
-                        {
-                            MaChucNang = 7,
+                            MaChucNang = 5,
                             TenChucNang = "Nhập kho",
                             TenManHinh = "ImportView"
                         },
                         new
                         {
-                            MaChucNang = 8,
+                            MaChucNang = 6,
                             TenChucNang = "Nhà cung cấp",
                             TenManHinh = "SupplierView"
                         },
                         new
                         {
-                            MaChucNang = 9,
+                            MaChucNang = 7,
                             TenChucNang = "Ưu đãi",
                             TenManHinh = "PromotionView"
                         },
                         new
                         {
-                            MaChucNang = 10,
+                            MaChucNang = 8,
                             TenChucNang = "Danh mục",
                             TenManHinh = "CategoryView"
                         },
                         new
                         {
-                            MaChucNang = 11,
+                            MaChucNang = 9,
                             TenChucNang = "Báo cáo",
                             TenManHinh = "ReportView"
                         },
                         new
                         {
-                            MaChucNang = 12,
+                            MaChucNang = 10,
                             TenChucNang = "Tài khoản",
                             TenManHinh = "AccountView"
                         },
                         new
                         {
-                            MaChucNang = 13,
+                            MaChucNang = 11,
                             TenChucNang = "Cài đặt",
                             TenManHinh = "SettingView"
                         });
@@ -1410,16 +1401,6 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaChucNang = 12,
-                            MaNhomNguoiDung = 1
-                        },
-                        new
-                        {
-                            MaChucNang = 13,
-                            MaNhomNguoiDung = 1
-                        },
-                        new
-                        {
                             MaChucNang = 1,
                             MaNhomNguoiDung = 3
                         },
@@ -1460,17 +1441,12 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaChucNang = 10,
-                            MaNhomNguoiDung = 3
-                        },
-                        new
-                        {
-                            MaChucNang = 11,
-                            MaNhomNguoiDung = 3
-                        },
-                        new
-                        {
                             MaChucNang = 2,
+                            MaNhomNguoiDung = 2
+                        },
+                        new
+                        {
+                            MaChucNang = 3,
                             MaNhomNguoiDung = 2
                         },
                         new
@@ -1480,12 +1456,7 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaChucNang = 5,
-                            MaNhomNguoiDung = 2
-                        },
-                        new
-                        {
-                            MaChucNang = 10,
+                            MaChucNang = 8,
                             MaNhomNguoiDung = 2
                         });
                 });
@@ -1940,7 +1911,7 @@ namespace Bookstore.API.Data.Migrations
 
                     b.Property<string>("NguoiTao")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("SoTienThu")
                         .HasColumnType("decimal(18,2)");
@@ -1948,8 +1919,6 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaPhieuThuTien");
 
                     b.HasIndex("MaKhachHang");
-
-                    b.HasIndex("NguoiTao");
 
                     b.ToTable("PhieuThuTien");
 
@@ -2483,7 +2452,7 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            TenThamSo = "CoKhoangCachCacKhoangGia",
+                            TenThamSo = "CoKhoangachCacKhoangGia",
                             GiaTri = 1
                         },
                         new
@@ -2994,15 +2963,7 @@ namespace Bookstore.API.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.NguoiDung", "NguoiDung")
-                        .WithMany()
-                        .HasForeignKey("NguoiTao")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("KhachHang");
-
-                    b.Navigation("NguoiDung");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.Sach", b =>
