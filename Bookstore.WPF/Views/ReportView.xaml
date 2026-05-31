@@ -264,7 +264,7 @@
                                           ItemsSource="{Binding RevenueRows}" Visibility="{Binding RevenueGridVisibility}" 
                                           PreviewMouseWheel="DataGrid_PreviewMouseWheel"
                                           CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
-                                          CanUserSortColumns="False" CanUserResizeColumns="False"
+                                          CanUserSortColumns="True" CanUserResizeColumns="False"
                                           SelectionMode="Extended" >
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow">
@@ -363,7 +363,7 @@
                                 <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding InventoryRows}" Visibility="{Binding InventoryGridVisibility}" 
                                           PreviewMouseWheel="DataGrid_PreviewMouseWheel"
                                           CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
-                                          CanUserSortColumns="False" CanUserResizeColumns="False"
+                                          CanUserSortColumns="True" CanUserResizeColumns="False"
                                           SelectionMode="Extended" SelectionUnit="FullRow"
                                           >
                                     <DataGrid.RowStyle>
@@ -538,7 +538,7 @@
                                 <DataGrid Style="{StaticResource CleanDataGrid}" ItemsSource="{Binding DebtRows}" Visibility="{Binding DebtGridVisibility}" 
                                           PreviewMouseWheel="DataGrid_PreviewMouseWheel"
                                           CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
-                                          CanUserSortColumns="False" CanUserResizeColumns="False"
+                                          CanUserSortColumns="True" CanUserResizeColumns="False"
                                           HorizontalAlignment="Center" SelectionMode="Extended" >
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow">

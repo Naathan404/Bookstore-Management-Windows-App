@@ -91,15 +91,17 @@ namespace Bookstore.WPF.ViewModels
 
         #region Properties Phân trang
         private int _currentPage = 1;
-        private int _pageSize = 10;
+        public int CurrentPage { get => _currentPage; set { _currentPage = value; OnPropertyChanged(); } }
+
         private int _totalPages = 1;
+        public int TotalPages { get => _totalPages; set { _totalPages = value; OnPropertyChanged(); } }
+
+        private int _pageSize = 10;
+        public int PageSize { get => _pageSize; set { _pageSize = value; OnPropertyChanged(); CurrentPage = 1; ApplyFilterAndPagination(); } }
 
         private ObservableCollection<int> _pageNumbers = new ObservableCollection<int>();
-        public ObservableCollection<int> PageNumbers
-        {
-            get => _pageNumbers;
-            set { _pageNumbers = value; OnPropertyChanged(); }
-        }
+        public ObservableCollection<int> PageNumbers { get => _pageNumbers; set { _pageNumbers = value; OnPropertyChanged(); } }
+
         #endregion
 
         #region Properties Popup Form
@@ -211,6 +213,22 @@ namespace Bookstore.WPF.ViewModels
             // Nghiệp vụ
             SaveSupplierCommand = new RelayCommand<object>(async p => await SaveSupplierAsync());
             DeleteSupplierCommand = new RelayCommand<SupplierDTO>(async supplier => await DeleteSupplierAsync(supplier));
+
+
+            // Khởi tạo Commands cho Phân trang
+            FirstPageCommand = new RelayCommand<object>(p => { CurrentPage = 1; ApplyFilterAndPagination(); });
+
+            PrevPageCommand = new RelayCommand<object>(p => {
+                if (CurrentPage > 1) { CurrentPage--; ApplyFilterAndPagination(); }
+            });
+
+            NextPageCommand = new RelayCommand<object>(p => {
+                if (CurrentPage < TotalPages) { CurrentPage++; ApplyFilterAndPagination(); }
+            });
+
+            LastPageCommand = new RelayCommand<object>(p => { CurrentPage = TotalPages; ApplyFilterAndPagination(); });
+
+            GoToPageCommand = new RelayCommand<int>(page => { CurrentPage = page; ApplyFilterAndPagination(); });
         }
 
         private void ApplyFilterAndPagination()
@@ -254,16 +272,30 @@ namespace Bookstore.WPF.ViewModels
                 b.STT = stt++;
             }
 
-            TotalRecords = filtered.Count();
-            _totalPages = (int)Math.Ceiling((double)TotalRecords / _pageSize);
-            if (_totalPages < 1) _totalPages = 1;
-            if (_currentPage > _totalPages) _currentPage = _totalPages;
+            var resultList = filtered.ToList();
+            int totalRecords = resultList.Count;
+            TotalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+            if (TotalPages == 0) TotalPages = 1;
 
-            var pagedList = filtered.Skip((_currentPage - 1) * _pageSize).Take(_pageSize).ToList();
-            PagedSuppliers = new ObservableCollection<SupplierDTO>(pagedList);
+            if (CurrentPage > TotalPages) CurrentPage = TotalPages;
+            if (CurrentPage < 1) CurrentPage = 1;
 
-            PageNumbers.Clear();
-            for (int i = 1; i <= _totalPages; i++) PageNumbers.Add(i);
+            PageNumbers = new ObservableCollection<int>();
+            for (int i = 1; i <= TotalPages; i++)
+            {
+                PageNumbers.Add(i);
+            }
+
+            var pagedData = resultList.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+
+            int index = (CurrentPage - 1) * PageSize + 1;
+            foreach (var item in pagedData)
+            {
+                item.STT = index++;
+            }
+
+            PagedSuppliers = new ObservableCollection<SupplierDTO>(pagedData);
+
         }
 
         // --- HÀM TẢI DỮ LIỆU TỪ SERVER ---

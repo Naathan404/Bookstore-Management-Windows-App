@@ -321,6 +321,10 @@
                     <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}">
                         <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
                     </Button>
+                    <TextBlock FontSize="12" Foreground="#A3AED0" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <Run Text="Trang "/>
+                        <Run Text="{Binding CurrentPage}"/>
+                    </TextBlock>
                 </StackPanel>
             </Border>
         </Grid>
