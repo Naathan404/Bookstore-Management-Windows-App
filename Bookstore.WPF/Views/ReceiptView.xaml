@@ -176,7 +176,7 @@
 	</UserControl.Resources>
 
 	<Grid Background="{StaticResource BackgroundColor}">
-		<Grid Margin="5">
+		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />

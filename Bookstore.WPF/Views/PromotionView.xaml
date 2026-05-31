@@ -16,9 +16,9 @@
         <Ellipse Width="300" Height="300" Fill="#EF4444" Opacity="0.03"
                  VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,-100,-100" IsHitTestVisible="False"/>
 
-        <Grid Margin="5">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="90"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -481,47 +481,7 @@
 										  TotalPages="{Binding TongSoTrang}"
 										  TotalRecords="{Binding TongBanGhi}"
 										  PaginationCommand="{Binding PhanTrangCommand}" />
-			
-			<!--<Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" 
-                    Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" CommandParameter="{Binding}"
-                            Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" CommandParameter="{Binding}"
-                            Margin="0,0,8,0">
-                        <materialDesign:PackIcon Kind="ChevronLeft" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-                    <ItemsControl ItemsSource="{Binding PageNumbers}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Content="{Binding}" Margin="0,0,4,0" Style="{StaticResource PaginationButtonStyle}" 
-                                        Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" CommandParameter="{Binding}"
-                            Margin="8,0,0,0">
-                        <materialDesign:PackIcon Kind="ChevronRight" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" CommandParameter="{Binding}"
-                            Margin="4,0,0,0">
-                        <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-                    <TextBlock FontSize="12" Foreground="#A3AED0" VerticalAlignment="Center" Margin="12,0,0,0">
-                        <Run Text="Trang "/>
-                        <Run Text="{Binding CurrentPage}"/>
-                    </TextBlock>
-                </StackPanel>
-            </Border>-->
-        </Grid>
+		</Grid>
 
         <!-- Pop up -->
         <Grid Background="Transparent" 

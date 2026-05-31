@@ -11,9 +11,9 @@
              Background="#F4F7FE"
              Unloaded="UserControl_Unloaded">
 
-    <Grid Margin="5">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
