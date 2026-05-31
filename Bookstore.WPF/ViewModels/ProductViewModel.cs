@@ -129,7 +129,7 @@ namespace Bookstore.WPF.ViewModels
         private int _totalPages = 1;
         public int TotalPages { get => _totalPages; set { _totalPages = value; OnPropertyChanged(); } }
 
-        private int _pageSize = 1;
+        private int _pageSize = 10;
         #endregion
 
         #region Properties - Popup Thêm/Sửa

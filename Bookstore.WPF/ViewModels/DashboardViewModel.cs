@@ -272,7 +272,10 @@ namespace Bookstore.WPF.ViewModels
                 pieSeriesList.Add(new PieSeries<double>
                 {
                     Values = new double[] { item.Percentage },
-                    Name = item.CategoryName
+                    Name = item.CategoryName,
+
+                    // GỌI THẲNG POINT.MODEL
+                    ToolTipLabelFormatter = point => $"{point.Model}%"
                 });
             }
             Data = pieSeriesList;
