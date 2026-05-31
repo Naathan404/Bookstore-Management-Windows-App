@@ -6,7 +6,6 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d"
-			 Background="#F4F7FE"
 			 HorizontalAlignment="Stretch"
 			 VerticalAlignment="Stretch">
 
@@ -91,8 +90,8 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Grid Background="{StaticResource BackgroundColor}">
-		<Grid>
+	<Grid>
+		<Grid x:Name="MainSettingView">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />

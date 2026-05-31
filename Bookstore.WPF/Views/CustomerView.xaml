@@ -6,7 +6,7 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
 			 mc:Ignorable="d"
-			 Background="#F4F7FE"
+			 Background="Transparent"
 			 HorizontalAlignment="Stretch"
 			 VerticalAlignment="Stretch"
 			 xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
@@ -177,26 +177,8 @@
 					Value="Transparent" />
 		</Style>
 	</UserControl.Resources>
-
-	<Grid Background="{StaticResource BackgroundColor}">
-		<Ellipse Width="600"
-				 Height="600"
-				 Fill="#4318FF"
-				 Opacity="0.03"
-				 VerticalAlignment="Top"
-				 HorizontalAlignment="Left"
-				 Margin="-200,-200,0,0"
-				 IsHitTestVisible="False" />
-		<Ellipse Width="500"
-				 Height="500"
-				 Fill="#2B3674"
-				 Opacity="0.03"
-				 VerticalAlignment="Bottom"
-				 HorizontalAlignment="Right"
-				 Margin="0,0,-150,-150"
-				 IsHitTestVisible="False" />
-
-		<Grid>
+	<Grid>
+		<Grid x:Name="MainCustomerView">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
@@ -478,7 +460,7 @@
 									<Binding Path="MaKhachHang" />
 								</MultiBinding>
 							</DataGridTextColumn.Binding>
-							
+
 							<DataGridTextColumn.HeaderStyle>
 								<Style TargetType="DataGridColumnHeader"
 									   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
@@ -486,7 +468,7 @@
 											Value="Center" />
 								</Style>
 							</DataGridTextColumn.HeaderStyle>
-							
+
 							<DataGridTextColumn.ElementStyle>
 								<Style TargetType="TextBlock"
 									   BasedOn="{StaticResource CellCenter}">
@@ -753,7 +735,7 @@
 										  TotalPages="{Binding TongSoTrang}"
 										  TotalRecords="{Binding TongBanGhi}"
 										  PaginationCommand="{Binding PhanTrangCommand}" />
-			
+
 		</Grid>
 
 		<!-- ==================== POPUP THU TIỀN ==================== -->

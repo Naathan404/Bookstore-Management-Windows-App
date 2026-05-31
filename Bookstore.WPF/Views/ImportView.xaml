@@ -7,7 +7,6 @@
 			 xmlns:viewmodels="clr-namespace:Bookstore.WPF.ViewModels"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d"
-			 Background="#F4F7FE"
 			 HorizontalAlignment="Stretch"
 			 VerticalAlignment="Stretch">
 
@@ -143,24 +142,8 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Grid Background="{StaticResource BackgroundColor}">
-		<!-- Background Decor -->
-		<Ellipse Width="600"
-				 Height="600"
-				 Fill="#4318FF"
-				 Opacity="0.03"
-				 VerticalAlignment="Top"
-				 HorizontalAlignment="Left"
-				 Margin="-200,-200,0,0" />
-		<Ellipse Width="500"
-				 Height="500"
-				 Fill="#2B3674"
-				 Opacity="0.03"
-				 VerticalAlignment="Bottom"
-				 HorizontalAlignment="Right"
-				 Margin="0,0,-150,-150" />
-
-		<Grid>
+	<Grid>
+		<Grid x:Name="MainImportView">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />

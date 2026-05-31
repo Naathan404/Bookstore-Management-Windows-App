@@ -5,7 +5,6 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 mc:Ignorable="d"
-			 Background="#F4F7FE"
 			 HorizontalAlignment="Stretch"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 VerticalAlignment="Stretch">
@@ -175,8 +174,8 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Grid Background="{StaticResource BackgroundColor}">
-		<Grid>
+	<Grid>
+		<Grid x:Name="MainReceipView">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />

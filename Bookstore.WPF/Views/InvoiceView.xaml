@@ -6,7 +6,7 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d"
-			 Background="#F4F7FE"
+			 Background="Transparent"
 			 HorizontalAlignment="Stretch"
 			 VerticalAlignment="Stretch">
 
@@ -69,9 +69,8 @@
 					Value="42" />
 		</Style>
 	</UserControl.Resources>
-
-	<Grid Background="{StaticResource BackgroundColor}">
-		<Grid>
+	<Grid>
+		<Grid x:Name="MainInvoiceView">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />

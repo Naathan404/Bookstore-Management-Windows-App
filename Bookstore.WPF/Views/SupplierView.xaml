@@ -5,32 +5,14 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
-			 mc:Ignorable="d"
-			 Background="{StaticResource BackgroundColor}">
+			 mc:Ignorable="d">
 
 	<UserControl.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
 	</UserControl.Resources>
 
 	<Grid>
-		<Ellipse Width="400"
-				 Height="400"
-				 Fill="#4318FF"
-				 Opacity="0.03"
-				 VerticalAlignment="Top"
-				 HorizontalAlignment="Left"
-				 Margin="-150,-150,0,0"
-				 IsHitTestVisible="False" />
-		<Ellipse Width="300"
-				 Height="300"
-				 Fill="#2B3674"
-				 Opacity="0.03"
-				 VerticalAlignment="Bottom"
-				 HorizontalAlignment="Right"
-				 Margin="0,0,-100,-100"
-				 IsHitTestVisible="False" />
-
-		<Grid>
+		<Grid x:Name="MainSupplierView">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
