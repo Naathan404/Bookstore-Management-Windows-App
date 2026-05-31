@@ -37,6 +37,15 @@ namespace Bookstore.WPF.ViewModels
             set { _selectedRoleFilter = value; OnPropertyChanged(); CurrentPage = 1; ApplyFilterAndPagination(); }
         }
 
+        public ObservableCollection<string> StatusFilterList { get; set; } = new ObservableCollection<string>  { "Tất cả trạng thái", "Đang làm việc", "Đã nghỉ việc" };
+
+        private string _selectedStatusFilter = "Tất cả trạng thái";
+        public string SelectedStatusFilter
+        {
+            get => _selectedStatusFilter;
+            set { _selectedStatusFilter = value; OnPropertyChanged(); CurrentPage = 1; ApplyFilterAndPagination(); }
+        }
+
         // Phân trang
         private int _currentPage = 1;
         public int CurrentPage { get => _currentPage; set { _currentPage = value; OnPropertyChanged(); } }
@@ -327,6 +336,19 @@ namespace Bookstore.WPF.ViewModels
             // Bỏ qua filter nếu chọn "Tất cả" (MaNhomNguoiDung == 0)
             if (SelectedRoleFilter != null && SelectedRoleFilter.MaNhomNguoiDung != 0)
                 query = query.Where(x => x.RoleName == SelectedRoleFilter.TenNhomNguoiDung);
+
+            if (SelectedStatusFilter != "Tất cả trạng thái")
+            {
+                if (SelectedStatusFilter == "Đang làm việc")
+                {
+                    query = query.Where(x => x.DangLamViec == true);
+                }    
+                else if (SelectedStatusFilter == "Đã nghỉ việc")
+                {
+                    query = query.Where(x => x.DangLamViec == false);
+                }    
+            }
+            
 
             var filtered = query.ToList();
 
