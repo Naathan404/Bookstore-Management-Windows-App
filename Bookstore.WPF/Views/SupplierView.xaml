@@ -26,20 +26,12 @@
 										  AddCommandParameter="{Binding}" />
 
 			<Border Grid.Row="1"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
+					Style="{StaticResource FilterCardStyle}">
 				<Grid>
 					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="2*" />
 						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="200" />
-						<ColumnDefinition Width="200" />
-						<ColumnDefinition Width="100"></ColumnDefinition>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
@@ -95,122 +87,10 @@
 								  Margin="5 0 5 0" />
 					</Border>
 
-					<Border Grid.Column="4"
-							Background="#F4F7FE"
-							CornerRadius="10"
-							Padding="15,0"
-							Margin="0,0,10,0">
-						<StackPanel Orientation="Horizontal"
-									VerticalAlignment="Center">
-							<TextBlock Text="Tổng:"
-									   FontSize="12"
-									   VerticalAlignment="Center" />
-							<TextBlock Text="{Binding TotalRecords}"
-									   FontWeight="Bold"
-									   Foreground="#4318FF"
-									   FontSize="15"
-									   Margin="8,0,0,0"
-									   VerticalAlignment="Center" />
-						</StackPanel>
-					</Border>
-
-					<Button Grid.Column="5"
-							Width="42"
-							Height="42"
-							ToolTip="Xóa tất cả bộ lọc"
-							Command="{Binding ClearFilterCommand}"
-							CommandParameter="{Binding}"
-							BorderThickness="0"
-							Cursor="Hand">
-						<Button.Style>
-							<Style TargetType="Button">
-								<Setter Property="Background"
-										Value="#FEE2E2" />
-								<Setter Property="Foreground"
-										Value="#EF4444" />
-								<Style.Triggers>
-									<Trigger Property="IsMouseOver"
-											 Value="True">
-										<Setter Property="Background"
-												Value="#FECACA" />
-										<Setter Property="Foreground"
-												Value="#DC2626" />
-									</Trigger>
-
-									<Trigger Property="IsPressed"
-											 Value="True">
-										<Setter Property="Background"
-												Value="#FCA5A5" />
-										<Setter Property="Opacity"
-												Value="0.8" />
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</Button.Style>
-						<Button.Template>
-							<ControlTemplate TargetType="Button">
-								<Border Background="{TemplateBinding Background}"
-										CornerRadius="10">
-									<materialDesign:PackIcon Kind="FilterOff"
-															 Width="20"
-															 Height="20"
-															 Foreground="#EF4444"
-															 HorizontalAlignment="Center"
-															 VerticalAlignment="Center" />
-								</Border>
-							</ControlTemplate>
-						</Button.Template>
-					</Button>
-
-					<Button Grid.Column="7"
-							Width="42"
-							Height="42"
-							ToolTip="Làm mới"
-							Command="{Binding RefreshCommand}"
-							CommandParameter="{Binding}"
-							BorderThickness="0"
-							Cursor="Hand"
-							Margin="10 0 0 0">
-						<Button.Style>
-							<Style TargetType="Button">
-								<Setter Property="Background"
-										Value="#E0E7FF" />
-								<Setter Property="Foreground"
-										Value="#4318FF" />
-
-								<Style.Triggers>
-									<Trigger Property="IsMouseOver"
-											 Value="True">
-										<Setter Property="Background"
-												Value="#C7D2FE" />
-										<Setter Property="Foreground"
-												Value="#250AA0" />
-									</Trigger>
-
-									<Trigger Property="IsPressed"
-											 Value="True">
-										<Setter Property="Background"
-												Value="#A5B4FC" />
-										<Setter Property="Opacity"
-												Value="0.8" />
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</Button.Style>
-						<Button.Template>
-							<ControlTemplate TargetType="Button">
-								<Border Background="{TemplateBinding Background}"
-										CornerRadius="10">
-									<materialDesign:PackIcon Kind="Refresh"
-															 Width="20"
-															 Height="20"
-															 Foreground="#4318FF"
-															 HorizontalAlignment="Center"
-															 VerticalAlignment="Center" />
-								</Border>
-							</ControlTemplate>
-						</Button.Template>
-					</Button>
+					<components:FilterActionPanel Grid.Column="3"
+												  ClearCommand="{Binding ClearFilterCommand}"
+												  RefreshCommand="{Binding RefreshCommand}"
+												  ShowRefreshButton="True" />
 				</Grid>
 			</Border>
 

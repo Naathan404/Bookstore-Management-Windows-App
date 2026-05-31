@@ -4,10 +4,8 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-			 mc:Ignorable="d"
-			 HorizontalAlignment="Stretch"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
-			 VerticalAlignment="Stretch">
+			 mc:Ignorable="d">
 
 	<UserControl.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -192,18 +190,12 @@
 
 			<!-- FILTER -->
 			<Border Grid.Row="1"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
+					Style="{StaticResource FilterCardStyle}">
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="1.5*" />
-						<ColumnDefinition Width="1.5*" />
-						<ColumnDefinition Width="120" />
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
@@ -288,49 +280,10 @@
 						</Grid>
 					</Border>
 
-					<Border Grid.Column="3"
-							Background="#F4F7FE"
-							CornerRadius="10"
-							Padding="15,0"
-							Margin="0,0,10,0">
-						<StackPanel Orientation="Horizontal"
-									VerticalAlignment="Center">
-							<TextBlock Text="Tổng:"
-									   Foreground="#A3AED0"
-									   FontSize="12"
-									   VerticalAlignment="Center" />
-							<TextBlock Text="{Binding TongBanGhi}"
-									   FontWeight="Bold"
-									   Foreground="#4318FF"
-									   FontSize="15"
-									   Margin="8,0,0,0"
-									   VerticalAlignment="Center" />
-						</StackPanel>
-					</Border>
-
-					<Button Grid.Column="4"
-							Width="42"
-							Height="42"
-							ToolTip="Xóa tất cả bộ lọc"
-							Command="{Binding XoaLocCommand}"
-							CommandParameter="{Binding}"
-							Background="#FEE2E2"
-							BorderThickness="0"
-							Cursor="Hand">
-						<Button.Template>
-							<ControlTemplate TargetType="Button">
-								<Border Background="{TemplateBinding Background}"
-										CornerRadius="10">
-									<materialDesign:PackIcon Kind="FilterOff"
-															 Width="20"
-															 Height="20"
-															 Foreground="#EF4444"
-															 HorizontalAlignment="Center"
-															 VerticalAlignment="Center" />
-								</Border>
-							</ControlTemplate>
-						</Button.Template>
-					</Button>
+					<components:FilterActionPanel Grid.Column="3"
+												  ClearCommand="{Binding XoaLocCommand}"
+												  RefreshCommand="{Binding RefreshCommand}"
+												  ShowRefreshButton="True" />
 				</Grid>
 			</Border>
 

@@ -109,7 +109,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="100" />
 			<RowDefinition Height="*" />
-			<RowDefinition Height="100" />
+			<RowDefinition Height="70" />
 		</Grid.RowDefinitions>
 
 		<Grid Grid.Row="0">

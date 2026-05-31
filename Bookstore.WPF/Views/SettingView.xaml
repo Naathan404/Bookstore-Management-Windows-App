@@ -5,9 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
-			 mc:Ignorable="d"
-			 HorizontalAlignment="Stretch"
-			 VerticalAlignment="Stretch">
+			 mc:Ignorable="d">
 
 	<UserControl.Resources>
 		<SolidColorBrush x:Key="BackgroundColor"

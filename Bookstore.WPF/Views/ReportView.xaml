@@ -8,9 +8,7 @@
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d"
 			 d:DesignHeight="1200"
-			 d:DesignWidth="1600"
-			 HorizontalAlignment="Stretch"
-			 VerticalAlignment="Stretch">
+			 d:DesignWidth="1600">
 
 	<Grid>
 		<Grid x:Name="MainReportView">

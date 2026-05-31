@@ -9,7 +9,6 @@
 			 mc:Ignorable="d"
 			 d:DesignHeight="1200"
 			 d:DesignWidth="1600"
-			 Background="Transparent"
 			 Unloaded="UserControl_Unloaded">
 
 	<Grid>

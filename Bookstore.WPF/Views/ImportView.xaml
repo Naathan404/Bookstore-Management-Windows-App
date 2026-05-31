@@ -6,9 +6,7 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:viewmodels="clr-namespace:Bookstore.WPF.ViewModels"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
-			 mc:Ignorable="d"
-			 HorizontalAlignment="Stretch"
-			 VerticalAlignment="Stretch">
+			 mc:Ignorable="d">
 
 	<UserControl.DataContext>
 		<viewmodels:ImportViewModel />
@@ -17,129 +15,6 @@
 	<UserControl.Resources>
 		<!-- Converters -->
 		<BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-
-		<!-- Colors -->
-		<SolidColorBrush x:Key="PrimaryDarkColor"
-						 Color="#2B3674" />
-		<SolidColorBrush x:Key="PrimaryColor"
-						 Color="#4318FF" />
-		<SolidColorBrush x:Key="TextLightColor"
-						 Color="#A3AED0" />
-		<SolidColorBrush x:Key="BackgroundColor"
-						 Color="#F4F7FE" />
-		<SolidColorBrush x:Key="WhiteColor"
-						 Color="White" />
-		<SolidColorBrush x:Key="DangerColor"
-						 Color="#EF4444" />
-		<SolidColorBrush x:Key="SuccessColor"
-						 Color="#10B981" />
-		<SolidColorBrush x:Key="WarningColor"
-						 Color="#F59E0B" />
-
-		<!-- Gradients -->
-		<LinearGradientBrush x:Key="GradientButtonBrush"
-							 StartPoint="0,0"
-							 EndPoint="1,0">
-			<GradientStop Color="#4318FF"
-						  Offset="0" />
-			<GradientStop Color="#5B3CFF"
-						  Offset="1" />
-		</LinearGradientBrush>
-		<LinearGradientBrush x:Key="GradientSuccessBrush"
-							 StartPoint="0,0"
-							 EndPoint="1,0">
-			<GradientStop Color="#10B981"
-						  Offset="0" />
-			<GradientStop Color="#059669"
-						  Offset="1" />
-		</LinearGradientBrush>
-
-		<!-- Effects -->
-		<DropShadowEffect x:Key="CardShadowEffect"
-						  BlurRadius="20"
-						  ShadowDepth="0"
-						  Opacity="0.08"
-						  Color="#4318FF" />
-		<DropShadowEffect x:Key="ButtonShadowEffect"
-						  BlurRadius="10"
-						  ShadowDepth="2"
-						  Opacity="0.25"
-						  Color="#4318FF" />
-		<DropShadowEffect x:Key="PopupShadowEffect"
-						  BlurRadius="30"
-						  ShadowDepth="0"
-						  Opacity="0.15"
-						  Color="#2B3674" />
-
-		<!-- Styles -->
-		<Style x:Key="MainGradientButton"
-			   TargetType="Button">
-			<Setter Property="Height"
-					Value="42" />
-			<Setter Property="FontSize"
-					Value="14" />
-			<Setter Property="FontWeight"
-					Value="SemiBold" />
-			<Setter Property="Foreground"
-					Value="White" />
-			<Setter Property="Cursor"
-					Value="Hand" />
-			<Setter Property="Effect"
-					Value="{StaticResource ButtonShadowEffect}" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border Background="{StaticResource GradientButtonBrush}"
-								CornerRadius="12">
-							<ContentPresenter HorizontalAlignment="Center"
-											  VerticalAlignment="Center" />
-						</Border>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-
-		<Style x:Key="PageButtonStyle"
-			   TargetType="Button">
-			<Setter Property="Width"
-					Value="38" />
-			<Setter Property="Height"
-					Value="38" />
-			<Setter Property="FontSize"
-					Value="14" />
-			<Setter Property="FontWeight"
-					Value="SemiBold" />
-			<Setter Property="Foreground"
-					Value="#2B3674" />
-			<Setter Property="Background"
-					Value="Transparent" />
-			<Setter Property="BorderThickness"
-					Value="0" />
-			<Setter Property="Cursor"
-					Value="Hand" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border x:Name="border"
-								Background="{TemplateBinding Background}"
-								CornerRadius="10">
-							<ContentPresenter HorizontalAlignment="Center"
-											  VerticalAlignment="Center" />
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver"
-									 Value="True">
-								<Setter TargetName="border"
-										Property="Background"
-										Value="#E0E7FF" />
-								<Setter Property="Foreground"
-										Value="#4318FF" />
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
 	</UserControl.Resources>
 
 	<Grid>
@@ -162,13 +37,12 @@
 
 			<!-- ==================== FILTER ==================== -->
 			<Border Grid.Row="1"
-					Margin="0,0,0,16"
-					Padding="20,16"
-					CornerRadius="20"
-					Background="White"
-					Effect="{StaticResource CardShadowEffect}">
+					Style="{StaticResource FilterCardStyle}">
 				<Grid>
 					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="2*" />
+						<ColumnDefinition Width="2*" />
+						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
@@ -189,76 +63,50 @@
 												 Margin="0,0,12,0" />
 					</Grid>
 
-					<StackPanel Grid.Column="1"
-								Orientation="Horizontal">
-						<ComboBox Width="170"
-								  Height="48"
-								  materialDesign:HintAssist.Hint="Nhà cung cấp"
-								  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-								  FontSize="13"
-								  Foreground="#2B3674"
-								  Margin="0,0,12,0"
-								  ItemsSource="{Binding SupplierList}"
-								  SelectedItem="{Binding SelectedSupplier}"
-								  DisplayMemberPath="TenNhaCungCap" />
+					<ComboBox Grid.Column="1"
+							  Width="170"
+							  Height="48"
+							  materialDesign:HintAssist.Hint="Nhà cung cấp"
+							  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+							  FontSize="13"
+							  Foreground="#2B3674"
+							  Margin="0,0,12,0"
+							  ItemsSource="{Binding SupplierList}"
+							  SelectedItem="{Binding SelectedSupplier}"
+							  DisplayMemberPath="TenNhaCungCap" />
 
-						<DatePicker Width="140"
-									Height="48"
-									materialDesign:HintAssist.Hint="Từ ngày"
-									Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
-									FontSize="13"
-									Margin="0,0,12,0"
-									SelectedDate="{Binding FilterFromDate}"
-									VerticalAlignment="Center" />
+					<DatePicker Grid.Column="2"
+								Width="140"
+								Height="48"
+								materialDesign:HintAssist.Hint="Từ ngày"
+								Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+								FontSize="13"
+								Margin="0,0,12,0"
+								SelectedDate="{Binding FilterFromDate}"
+								VerticalAlignment="Center" />
 
-						<DatePicker Width="140"
-									Height="48"
-									materialDesign:HintAssist.Hint="Đến ngày"
-									Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
-									FontSize="13"
-									Margin="0,0,12,0"
-									SelectedDate="{Binding FilterToDate}"
-									VerticalAlignment="Center" />
+					<DatePicker Grid.Column="3"
+								Width="140"
+								Height="48"
+								materialDesign:HintAssist.Hint="Đến ngày"
+								Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+								FontSize="13"
+								Margin="0,0,12,0"
+								SelectedDate="{Binding FilterToDate}"
+								VerticalAlignment="Center" />
 
-						<Border Background="#F4F7FE"
-								CornerRadius="10"
-								Padding="12,10"
-								Margin="8,0,8,0">
-							<StackPanel Orientation="Horizontal"
-										VerticalAlignment="Center">
-								<TextBlock Text="Tổng:"
-										   Foreground="#A3AED0"
-										   FontSize="12"
-										   Margin="0,0,6,0" />
-								<TextBlock Text="{Binding TotalRecords}"
-										   FontWeight="Bold"
-										   FontSize="14"
-										   Foreground="#4318FF" />
-							</StackPanel>
-						</Border>
-
-						<Button Width="42"
-								Height="42"
-								Style="{StaticResource MaterialDesignIconForegroundButton}"
-								Foreground="#EF4444"
-								ToolTip="Xóa bộ lọc"
-								Command="{Binding ClearFilterCommand}"
-								VerticalAlignment="Center">
-							<materialDesign:PackIcon Kind="FilterRemove"
-													 Width="22"
-													 Height="22" />
-						</Button>
-					</StackPanel>
+					<components:FilterActionPanel Grid.Column="4"
+												  ClearCommand="{Binding ClearFilterCommand}"
+												  RefreshCommand="{Binding RefreshCommand}"
+												  ShowRefreshButton="True" />
 				</Grid>
 			</Border>
 
 			<!-- ==================== DATAGRID ==================== -->
 			<Border Grid.Row="2"
-					Margin="0,0,0,16"
 					Padding="20"
 					CornerRadius="20"
-					Background="White"
-					Effect="{StaticResource CardShadowEffect}">
+					Background="White">
 				<DataGrid ItemsSource="{Binding ImportOrders}"
 						  SelectedItem="{Binding SelectedImportOrder}"
 						  AutoGenerateColumns="False"
@@ -568,7 +416,6 @@
 			<Border Width="680"
 					Background="White"
 					CornerRadius="16"
-					Effect="{StaticResource PopupShadowEffect}"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
 					MaxHeight="600">
@@ -1017,6 +864,7 @@
 				</Grid>
 			</Border>
 		</Grid>
+
 		<!-- ==================== POPUP THÊM MỚI PHIẾU NHẬP ==================== -->
 		<Grid Background="#80000000"
 			  Visibility="{Binding IsAddPopupOpen, Converter={StaticResource BoolToVisibilityConverter}}"
@@ -1029,7 +877,6 @@
 			<Border Width="850"
 					Background="White"
 					CornerRadius="16"
-					Effect="{StaticResource PopupShadowEffect}"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
 					MaxHeight="750">
