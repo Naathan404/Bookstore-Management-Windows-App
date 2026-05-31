@@ -767,14 +767,17 @@
                                                             </Style>
                                                         </TextBlock.Style>
                                                     </TextBlock>
-                                                    <TextBox x:Name="txtSoTienToiThieu" Text="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                                    <TextBox x:Name="txtSoTienToiThieu" Text="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" 
+                                                             VerticalAlignment="Bottom"  Margin="10,0,10,6" Padding="0"/>
                                                 </Grid>
                                             </Border>
 
                                             <Border Grid.Column="2" Style="{StaticResource BaseInputBorder}" Height="50" Margin="0">
                                                 <Grid>
                                                     <TextBlock Text="Số tiền tối đa (VNĐ)" FontSize="10" Foreground="#A3AED0" Margin="12,4,0,0" VerticalAlignment="Top"/>
-                                                    <TextBox Text="{Binding EditingPromotion.SoTienToiDa}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" VerticalAlignment="Bottom" Margin="10,0,10,6" Padding="0"/>
+                                                    <TextBox Text="{Binding EditingPromotion.SoTienToiDa}" FontSize="13" FontWeight="SemiBold" Foreground="#2B3674" BorderThickness="0" Background="Transparent" 
+                                                             VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                                             Margin="10,0,10,6" Padding="0"/>
                                                 </Grid>
                                             </Border>
                                         </Grid>
@@ -875,7 +878,7 @@
 
                                         <RadioButton x:Name="radGiamTien" GroupName="HinhThucGiam" Content="Giảm theo số tiền trực tiếp" IsChecked="{Binding IsGiamTienMode}" Foreground="#2B3674" FontWeight="Bold" Margin="0,0,0,8"/>
                                         <Grid Margin="0,0,0,15">
-                                            <Border Style="{StaticResource BaseInputBorder}" Height="50" Margin="0" Width="380" HorizontalAlignment="Left"
+                                            <Border Style="{StaticResource BaseInputBorder}" Height="50" Margin="0" Width="350" HorizontalAlignment="Left"
                 IsEnabled="{Binding IsChecked, ElementName=radGiamTien}">
                                                 <Grid>
                                                     <TextBlock Text="Số tiền giảm (VNĐ) *" FontSize="10" Margin="12,4,0,0" VerticalAlignment="Top">

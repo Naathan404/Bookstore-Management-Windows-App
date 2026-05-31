@@ -826,7 +826,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 var danhSachTuApi = await ApiClient.GetAsync<List<SachDTO>>("api/PhienBanSach");
                 var listTacPhamGoc = await ApiClient.GetAsync<List<DauSachResponseDTO>>("api/Sach");
-                var tonKhoToiThieu = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/ton-kho-toi-thieu");
+                var tonKhoToiThieu = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/SoLuongTonToiThieu");
                 if (danhSachTuApi != null)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
