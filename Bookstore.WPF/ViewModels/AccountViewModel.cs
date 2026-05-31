@@ -120,6 +120,8 @@ namespace Bookstore.WPF.ViewModels
         public ICommand SavePermissionsCommand { get; private set; }
         public ICommand DeleteRoleCommand { get; private set; }
 
+        public ICommand RefreshCommand { get; private set; }
+
 
         // CONSTRUCTOR
         public AccountViewModel()
@@ -232,6 +234,8 @@ namespace Bookstore.WPF.ViewModels
                 IsRolePopupVisible = true;
                 IsAccountPopupVisible = false;
             });
+
+            RefreshCommand = new RelayCommand<object>(async p => await LoadAccountsAsync());
 
             SaveNewRoleCommand = new RelayCommand<object>(async _ => await SaveNewRoleAsync());
             SavePermissionsCommand = new RelayCommand<object>(async _ => await SavePermissionsAsync());

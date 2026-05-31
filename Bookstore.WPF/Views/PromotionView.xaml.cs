@@ -25,10 +25,5 @@ namespace Bookstore.WPF.Views
         {
             InitializeComponent();
         }
-        private void PromotionDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DataContext is ViewModels.PromotionViewModel viewModel)
-                viewModel.UpdateSelectedPromotions(PromotionDataGrid.SelectedItems);
-        }
     }
 }

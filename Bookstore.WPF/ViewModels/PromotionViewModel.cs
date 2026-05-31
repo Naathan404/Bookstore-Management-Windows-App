@@ -1,688 +1,572 @@
-﻿using System;
+﻿using Bookstore.Share.DTO;
+using Bookstore.Share.DTOResponses;
+using Bookstore.Share.DTOs;
+using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
+using OfficeOpenXml.Export.HtmlExport;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    // ==================== MODEL ====================
-    public class PromotionModel : INotifyPropertyChanged
+    public class PromotionViewModel : BaseViewModel
     {
-        public int Id { get; set; }
-        public int STT { get; set; }
+        private List<PromotionDTO> _allPromotions = new List<PromotionDTO>();
 
-        private string _maUuDai;
-        public string MaUuDai { get => _maUuDai; set { _maUuDai = value; OnPropertyChanged(); } }
-
-        private string _tenChuongTrinh;
-        public string TenChuongTrinh { get => _tenChuongTrinh; set { _tenChuongTrinh = value; OnPropertyChanged(); } }
-
-        private string _loaiUuDai;
-        public string LoaiUuDai { get => _loaiUuDai; set { _loaiUuDai = value; OnPropertyChanged(); } }
-
-        private string _loaiKhachHangApDung;
-        public string LoaiKhachHangApDung { get => _loaiKhachHangApDung; set { _loaiKhachHangApDung = value; OnPropertyChanged(); } }
-
-        private DateTime _thoiGianBatDau = DateTime.Today;
-        public DateTime ThoiGianBatDau { get => _thoiGianBatDau; set { _thoiGianBatDau = value; OnPropertyChanged(); } }
-
-        private DateTime _thoiGianKetThuc = DateTime.Today.AddDays(30);
-        public DateTime ThoiGianKetThuc { get => _thoiGianKetThuc; set { _thoiGianKetThuc = value; OnPropertyChanged(); } }
-
-        public int SoLuongDaDung { get; set; }
-
-        private int _soLuongToiDa;
-        public int SoLuongToiDa { get => _soLuongToiDa; set { _soLuongToiDa = value; OnPropertyChanged(); OnPropertyChanged(nameof(SoLuongToiDaDisplay)); } }
-        public string SoLuongToiDaDisplay => SoLuongToiDa == 0 ? "∞" : SoLuongToiDa.ToString();
-
-        private string _moTa;
-        public string MoTa { get => _moTa; set { _moTa = value; OnPropertyChanged(); } }
-
-        private string _trangThai;
-        public string TrangThai
+        private ObservableCollection<PromotionDTO> _pagedPromotions = new ObservableCollection<PromotionDTO>();
+        public ObservableCollection<PromotionDTO> PagedPromotions
         {
-            get => _trangThai;
-            set
-            {
-                _trangThai = value;
+            get => _pagedPromotions;
+            set { _pagedPromotions = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<LoaiKhachHangItem> _listLoaiKhachHang = new ObservableCollection<LoaiKhachHangItem>();
+        public ObservableCollection<LoaiKhachHangItem> ListLoaiKhachHang
+        {
+            get => _listLoaiKhachHang;
+            set { _listLoaiKhachHang = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<SachItem> _listSach = new ObservableCollection<SachItem>();
+        public ObservableCollection<SachItem> ListSach
+        {
+            get => _listSach;
+            set { _listSach = value; OnPropertyChanged(); }
+        }
+
+        private string _searchTenKM;
+        public string SearchTenKM 
+        { 
+            get => _searchTenKM; 
+            set 
+            { _searchTenKM = value; 
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(TrangThaiBackground));
-                OnPropertyChanged(nameof(TrangThaiForeground));
-                OnPropertyChanged(nameof(ToggleButtonBackground));
-                OnPropertyChanged(nameof(ToggleButtonIcon));
-                OnPropertyChanged(nameof(ToggleButtonForeground));
+                ApplyFilterAndPagination();
+            } 
+        }
+
+        public ObservableCollection<string> ListTieuChiTimKiem { get; set; } = new ObservableCollection<string> { "Tất cả", "Tên chương trình", "Mã Code" };
+        private string _selectedTieuChiTimKiem = "Tất cả";
+        public string SelectedTieuChiTimKiem
+        {
+            get => _selectedTieuChiTimKiem;
+            set { _selectedTieuChiTimKiem = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
+        }
+
+        public ObservableCollection<string> ListLoaiUuDai { get; set; } = new ObservableCollection<string>();
+        private string _selectedLoaiUuDaiFilter;
+        public string SelectedLoaiUuDaiFilter 
+        { 
+            get => _selectedLoaiUuDaiFilter; 
+            set 
+            { 
+                _selectedLoaiUuDaiFilter = value; 
+                OnPropertyChanged();
+                ApplyFilterAndPagination();
+            } 
+        }
+
+        public ObservableCollection<string> ListTrangThai { get; set; } = new ObservableCollection<string>();
+        private string _selectedTrangThai;
+        public string SelectedTrangThai 
+        { 
+            get => _selectedTrangThai; 
+            set 
+            { 
+                _selectedTrangThai = value; OnPropertyChanged();
+                ApplyFilterAndPagination();
             }
         }
 
-        public string TrangThaiBackground => TrangThai switch
+        private DateTime? _searchTuNgay;
+        public DateTime? SearchTuNgay
         {
-            "Đang chạy" => "#D1FAE5",
-            "Sắp diễn ra" => "#DBEAFE",
-            "Đã kết thúc" => "#FEE2E2",
-            "Tạm dừng" => "#FEF3C7",
-            _ => "#F3F4F6"
-        };
-
-        public string TrangThaiForeground => TrangThai switch
-        {
-            "Đang chạy" => "#047857",
-            "Sắp diễn ra" => "#1E40AF",
-            "Đã kết thúc" => "#B91C1C",
-            "Tạm dừng" => "#92400E",
-            _ => "#6B7280"
-        };
-
-        public string ToggleButtonBackground => TrangThai == "Đang chạy" ? "#FEF3C7" : "#D1FAE5";
-        public string ToggleButtonIcon => TrangThai == "Đang chạy" ? "Pause" : "Play";
-        public string ToggleButtonForeground => TrangThai == "Đang chạy" ? "#F59E0B" : "#10B981";
-
-        // Chi tiết ưu đãi - Loại 1: Giảm giá trên tổng hóa đơn
-        private string _giaTriApDungTu;
-        public string GiaTriApDungTu { get => _giaTriApDungTu; set { _giaTriApDungTu = value; OnPropertyChanged(); } }
-
-        private string _giaTriApDungDen;
-        public string GiaTriApDungDen { get => _giaTriApDungDen; set { _giaTriApDungDen = value; OnPropertyChanged(); } }
-
-        private string _mucGiamGia;
-        public string MucGiamGia { get => _mucGiamGia; set { _mucGiamGia = value; OnPropertyChanged(); } }
-
-        private string _giamToiDa;
-        public string GiamToiDa { get => _giamToiDa; set { _giamToiDa = value; OnPropertyChanged(); } }
-
-        // Chi tiết ưu đãi - Loại 2: Giảm giá cho các sản phẩm
-        private string _sachApDung;
-        public string SachApDung { get => _sachApDung; set { _sachApDung = value; OnPropertyChanged(); } }
-
-        private string _soLuongApDung;
-        public string SoLuongApDung { get => _soLuongApDung; set { _soLuongApDung = value; OnPropertyChanged(); } }
-
-        // Chi tiết ưu đãi - Loại 3: Tặng quà trên tổng hóa đơn
-        private string _sachTang;
-        public string SachTang { get => _sachTang; set { _sachTang = value; OnPropertyChanged(); } }
-
-        private string _soLuongTang;
-        public string SoLuongTang { get => _soLuongTang; set { _soLuongTang = value; OnPropertyChanged(); } }
-
-        // Chi tiết ưu đãi - Loại 4: Tặng quà khi mua sản phẩm
-        private string _sachQuaTang;
-        public string SachQuaTang { get => _sachQuaTang; set { _sachQuaTang = value; OnPropertyChanged(); } }
-
-        private string _soLuongApDungTu;
-        public string SoLuongApDungTu { get => _soLuongApDungTu; set { _soLuongApDungTu = value; OnPropertyChanged(); } }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    // ==================== VIEWMODEL ====================
-    public class PromotionViewModel : INotifyPropertyChanged
-    {
-        private const int PageSize = 10;
-
-        public PromotionViewModel()
-        {
-            PagedPromotions = new ObservableCollection<PromotionModel>();
-            PageNumbers = new ObservableCollection<int>();
-            SelectedPromotions = new ObservableCollection<PromotionModel>();
-            ChiTietGiamGiaHoaDon = new ObservableCollection<PromotionModel>();
-            ChiTietTangQuaHoaDon = new ObservableCollection<PromotionModel>();
-            ChiTietGiamGiaSach = new ObservableCollection<PromotionModel>();
-            ChiTietTangQuaSach = new ObservableCollection<PromotionModel>();
-
-            ListLoaiUuDai = new ObservableCollection<string>
-            {
-                "Giảm giá trên tổng hóa đơn",
-                "Giảm giá cho các sản phẩm",
-                "Tặng quà trên tổng hóa đơn",
-                "Tặng quà khi mua sản phẩm"
-            };
-            ListTrangThai = new ObservableCollection<string> { "Tất cả", "Đang chạy", "Sắp diễn ra", "Đã kết thúc", "Tạm dừng" };
-            ListLoaiKhachHang = new ObservableCollection<string> { "Tất cả", "Thành viên", "VIP", "Khách lẻ" };
-            ListSach = new ObservableCollection<string> { "Sách Văn học", "Sách Thiếu nhi", "Sách Khoa học", "Sách Kỹ năng", "Sách Ngoại ngữ" };
-
-            // Commands
-            OpenAddPopupCommand = new RelayCommand(OpenAddPopup);
-            ClosePopupCommand = new RelayCommand(ClosePopup);
-            SavePromotionCommand = new RelayCommand(SavePromotion);
-            ClearFilterCommand = new RelayCommand(ClearFilters);
-            RefreshCommand = new RelayCommand(RefreshData);
-            ExportExcelCommand = new RelayCommand(ExportExcel);
-            GenerateCodeCommand = new RelayCommand(GenerateCode);
-            FirstPageCommand = new RelayCommand(FirstPage);
-            PrevPageCommand = new RelayCommand(PrevPage);
-            NextPageCommand = new RelayCommand(NextPage);
-            LastPageCommand = new RelayCommand(LastPage);
-            BulkActivateCommand = new RelayCommand(BulkActivate);
-            BulkDeactivateCommand = new RelayCommand(BulkDeactivate);
-            AddGiamGiaHoaDonRowCommand = new RelayCommand(AddGiamGiaHoaDonRow);
-            AddTangQuaHoaDonRowCommand = new RelayCommand(AddTangQuaHoaDonRow);
-            AddGiamGiaSachRowCommand = new RelayCommand(AddGiamGiaSachRow);
-            AddTangQuaSachRowCommand = new RelayCommand(AddTangQuaSachRow);
-
-            OpenEditPopupCommand = new RelayCommand<PromotionModel>(OpenEditPopup);
-            DeletePromotionCommand = new RelayCommand<PromotionModel>(DeletePromotion);
-            ToggleStatusCommand = new RelayCommand<PromotionModel>(ToggleStatus);
-            GoToPageCommand = new RelayCommand<int>(GoToPage);
-
-            LoadSampleData();
-            UpdateStatistics();
-            UpdatePagination();
+            get => _searchTuNgay;
+            set 
+            { _searchTuNgay = value; 
+                OnPropertyChanged(); 
+                ApplyFilterAndPagination(); 
+            }
         }
 
-        // ============ COLLECTIONS ============
-        public ObservableCollection<PromotionModel> PagedPromotions { get; set; }
-        public ObservableCollection<int> PageNumbers { get; set; }
-        public ObservableCollection<PromotionModel> SelectedPromotions { get; set; }
-        public ObservableCollection<PromotionModel> ChiTietGiamGiaHoaDon { get; set; }
-        public ObservableCollection<PromotionModel> ChiTietTangQuaHoaDon { get; set; }
-        public ObservableCollection<PromotionModel> ChiTietGiamGiaSach { get; set; }
-        public ObservableCollection<PromotionModel> ChiTietTangQuaSach { get; set; }
-        public ObservableCollection<string> ListLoaiUuDai { get; set; }
-        public ObservableCollection<string> ListTrangThai { get; set; }
-        public ObservableCollection<string> ListLoaiKhachHang { get; set; }
-        public ObservableCollection<string> ListSach { get; set; }
-
-        // ============ SEARCH/FILTER (Dùng cho filter ở ngoài DataGrid) ============
-        private string _searchTenKM;
-        public string SearchTenKM { get => _searchTenKM; set { _searchTenKM = value; OnPropertyChanged(); ApplyFilters(); } }
-
-        private string _selectedLoaiUuDaiFilter;
-        public string SelectedLoaiUuDaiFilter
+        private DateTime? _searchDenNgay;
+        public DateTime? SearchDenNgay
         {
-            get => _selectedLoaiUuDaiFilter;
-            set { _selectedLoaiUuDaiFilter = value; OnPropertyChanged(); ApplyFilters(); }
+            get => _searchDenNgay;
+            set 
+            { 
+                _searchDenNgay = value; 
+                OnPropertyChanged(); 
+                ApplyFilterAndPagination(); 
+            }
         }
 
-        private string _selectedTrangThai;
-        public string SelectedTrangThai { get => _selectedTrangThai; set { _selectedTrangThai = value; OnPropertyChanged(); ApplyFilters(); } }
+        // CÁC BIẾN QUẢN LÝ PHÂN TRANG
+        private int _currentPage = 1;
+        public int CurrentPage { get => _currentPage; set { _currentPage = value; OnPropertyChanged(); } }
 
-        private DateTime? _searchNgayApDung;
-        public DateTime? SearchNgayApDung { get => _searchNgayApDung; set { _searchNgayApDung = value; OnPropertyChanged(); ApplyFilters(); } }
+        private int _totalPages = 1;
+        public int TotalPages { get => _totalPages; set { _totalPages = value; OnPropertyChanged(); } }
 
-        // ============ POPUP (Dùng riêng cho combobox trong Popup) ============
-        private string _selectedLoaiUuDaiInPopup;
-        public string SelectedLoaiUuDaiInPopup
-        {
-            get => _selectedLoaiUuDaiInPopup;
-            set { _selectedLoaiUuDaiInPopup = value; OnPropertyChanged(); }
-        }
+        private int _pageSize = 10;
+        public int PageSize { get => _pageSize; set { _pageSize = value; OnPropertyChanged(); CurrentPage = 1; ApplyFilterAndPagination(); } }
 
-        // ============ STATISTICS ============
-        private int _activePromotionsCount;
-        public int ActivePromotionsCount { get => _activePromotionsCount; set { _activePromotionsCount = value; OnPropertyChanged(); } }
+        private ObservableCollection<int> _pageNumbers = new ObservableCollection<int>();
+        public ObservableCollection<int> PageNumbers { get => _pageNumbers; set { _pageNumbers = value; OnPropertyChanged(); } }
 
-        private int _upcomingPromotionsCount;
-        public int UpcomingPromotionsCount { get => _upcomingPromotionsCount; set { _upcomingPromotionsCount = value; OnPropertyChanged(); } }
-
-        // ============ POPUP ============
+        // POPUP THÊM/SỬA
         private bool _isPopupVisible;
         public bool IsPopupVisible { get => _isPopupVisible; set { _isPopupVisible = value; OnPropertyChanged(); } }
 
-        private string _popupTitle = "PHIẾU THÔNG TIN ƯU ĐÃI";
+        private string _popupTitle = string.Empty;
         public string PopupTitle { get => _popupTitle; set { _popupTitle = value; OnPropertyChanged(); } }
 
-        private string _saveButtonText = "LƯU PHIẾU ƯU ĐÃI";
+        private string _saveButtonText = string.Empty;
         public string SaveButtonText { get => _saveButtonText; set { _saveButtonText = value; OnPropertyChanged(); } }
 
-        private PromotionModel _editingPromotion;
-        public PromotionModel EditingPromotion { get => _editingPromotion; set { _editingPromotion = value; OnPropertyChanged(); } }
+        private PromotionDTO _editingPromotion = new PromotionDTO();
+        public PromotionDTO EditingPromotion { get => _editingPromotion; set { _editingPromotion = value; OnPropertyChanged(); } }
 
-        public string NgayLap => DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+        private bool _isAddMode;
 
-        // ============ PAGINATION ============
-        private int _currentPage = 1;
-        public int CurrentPage { get => _currentPage; set { _currentPage = value; OnPropertyChanged(); UpdatePagedData(); } }
-
-        private int _totalPages;
-        public int TotalPages { get => _totalPages; set { _totalPages = value; OnPropertyChanged(); } }
-
-        private ObservableCollection<PromotionModel> _allPromotions = new ObservableCollection<PromotionModel>();
-        private ObservableCollection<PromotionModel> _filteredPromotions = new ObservableCollection<PromotionModel>();
-
-        // ============ MULTI-SELECT ============
-        private bool _isMultipleSelected;
-        public bool IsMultipleSelected { get => _isMultipleSelected; set { _isMultipleSelected = value; OnPropertyChanged(); } }
-
-        private int _selectedCount;
-        public int SelectedCount { get => _selectedCount; set { _selectedCount = value; OnPropertyChanged(); } }
-
-        // ============ COMMANDS ============
-        public ICommand OpenAddPopupCommand { get; }
-        public ICommand OpenEditPopupCommand { get; }
-        public ICommand ClosePopupCommand { get; }
-        public ICommand SavePromotionCommand { get; }
-        public ICommand DeletePromotionCommand { get; }
-        public ICommand ToggleStatusCommand { get; }
-        public ICommand BulkActivateCommand { get; }
-        public ICommand BulkDeactivateCommand { get; }
-        public ICommand ClearFilterCommand { get; }
-        public ICommand RefreshCommand { get; }
-        public ICommand ExportExcelCommand { get; }
-        public ICommand GenerateCodeCommand { get; }
-        public ICommand FirstPageCommand { get; }
-        public ICommand PrevPageCommand { get; }
-        public ICommand NextPageCommand { get; }
-        public ICommand LastPageCommand { get; }
-        public ICommand GoToPageCommand { get; }
-        public ICommand AddGiamGiaHoaDonRowCommand { get; }
-        public ICommand AddTangQuaHoaDonRowCommand { get; }
-        public ICommand AddGiamGiaSachRowCommand { get; }
-        public ICommand AddTangQuaSachRowCommand { get; }
-
-        // ============ METHODS ============
-        public void UpdateSelectedPromotions(System.Collections.IList selectedItems)
+        private bool _isCoreEditingAllowed;
+        public bool IsCoreEditingAllowed
         {
-            SelectedPromotions.Clear();
-            if (selectedItems != null)
-            {
-                foreach (var item in selectedItems)
-                    if (item is PromotionModel pm) SelectedPromotions.Add(pm);
-            }
-            IsMultipleSelected = SelectedPromotions.Count > 0;
-            SelectedCount = SelectedPromotions.Count;
+            get => _isCoreEditingAllowed;
+            set { _isCoreEditingAllowed = value; OnPropertyChanged(); }
         }
 
-        private void OpenAddPopup()
+        private bool _isGiamTienMode;
+        public bool IsGiamTienMode
         {
-            EditingPromotion = new PromotionModel();
-            PopupTitle = "PHIẾU THÔNG TIN ƯU ĐÃI";
-            SaveButtonText = "LƯU PHIẾU ƯU ĐÃI";
-            SelectedLoaiUuDaiInPopup = "Giảm giá trên tổng hóa đơn";
-            IsPopupVisible = true;
+            get => _isGiamTienMode;
+            set { _isGiamTienMode = value; OnPropertyChanged(); }
         }
 
-        private void OpenEditPopup(PromotionModel p)
+        private bool _isGiamPhanTramMode;
+        public bool IsGiamPhanTramMode
         {
-            if (p == null) return;
-            EditingPromotion = new PromotionModel
-            {
-                Id = p.Id,
-                MaUuDai = p.MaUuDai,
-                TenChuongTrinh = p.TenChuongTrinh,
-                LoaiUuDai = p.LoaiUuDai,
-                ThoiGianBatDau = p.ThoiGianBatDau,
-                ThoiGianKetThuc = p.ThoiGianKetThuc,
-                SoLuongToiDa = p.SoLuongToiDa,
-                LoaiKhachHangApDung = p.LoaiKhachHangApDung,
-                MoTa = p.MoTa,
-                GiaTriApDungTu = p.GiaTriApDungTu,
-                GiaTriApDungDen = p.GiaTriApDungDen,
-                MucGiamGia = p.MucGiamGia,
-                GiamToiDa = p.GiamToiDa,
-                SachApDung = p.SachApDung,
-                SoLuongApDung = p.SoLuongApDung,
-                SachTang = p.SachTang,
-                SoLuongTang = p.SoLuongTang,
-                SachQuaTang = p.SachQuaTang,
-                SoLuongApDungTu = p.SoLuongApDungTu
-            };
-            PopupTitle = "CHỈNH SỬA PHIẾU ƯU ĐÃI";
-            SaveButtonText = "CẬP NHẬT";
-            SelectedLoaiUuDaiInPopup = p.LoaiUuDai;
-            IsPopupVisible = true;
+            get => _isGiamPhanTramMode;
+            set { _isGiamPhanTramMode = value; OnPropertyChanged(); }
         }
 
-        private void ClosePopup() { IsPopupVisible = false; }
+        // commands
+        public ICommand OpenAddPopupCommand { get; set; }
+        public ICommand OpenEditPopupCommand { get; set; }
+        public ICommand ClosePopupCommand { get; set; }
+        public ICommand SavePromotionCommand { get; set; }
+        public ICommand DeletePromotionCommand { get; set; }
+        public ICommand ToggleStatusCommand { get; set; }
 
-        private void SavePromotion()
+        // Commands cho Filter & Pagination
+        public ICommand ClearFilterCommand { get; set; }
+        public ICommand RefreshCommand { get; set; }
+        public ICommand FirstPageCommand { get; set; }
+        public ICommand PrevPageCommand { get; set; }
+        public ICommand NextPageCommand { get; set; }
+        public ICommand LastPageCommand { get; set; }
+        public ICommand GoToPageCommand { get; set; }
+
+        public PromotionViewModel()
         {
-            if (EditingPromotion == null) return;
-            if (string.IsNullOrWhiteSpace(EditingPromotion.TenChuongTrinh))
-            {
-                MessageBox.Show("Vui lòng nhập tên chương trình!");
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(EditingPromotion.MaUuDai))
-            {
-                GenerateCode();
-            }
+            InitCommands();
+            _ = InitDropdownData();
+            _ = LoadDataAsync();
+        }
 
-            // Lấy giá trị từ biến popup, không phải từ biến filter
-            EditingPromotion.LoaiUuDai = SelectedLoaiUuDaiInPopup;
-
-            if (!ValidatePromotionDetail()) return;
-
-            if (EditingPromotion.Id == 0)
+        private async Task InitDropdownData()
+        {
+            var customerTypes = await ApiClient.GetAsync<List<CustomerTierResponse>>("api/LoaiKhachHang");
+            if (customerTypes != null)
             {
-                EditingPromotion.Id = _allPromotions.Count + 1;
-                EditingPromotion.STT = _allPromotions.Count + 1;
-                EditingPromotion.TrangThai = DetermineTrangThai(EditingPromotion.ThoiGianBatDau, EditingPromotion.ThoiGianKetThuc);
-                _allPromotions.Add(EditingPromotion);
-            }
-            else
-            {
-                var existing = _allPromotions.FirstOrDefault(p => p.Id == EditingPromotion.Id);
-                if (existing != null)
+                foreach (var c in customerTypes)
                 {
-                    existing.MaUuDai = EditingPromotion.MaUuDai;
-                    existing.TenChuongTrinh = EditingPromotion.TenChuongTrinh;
-                    existing.LoaiUuDai = EditingPromotion.LoaiUuDai;
-                    existing.ThoiGianBatDau = EditingPromotion.ThoiGianBatDau;
-                    existing.ThoiGianKetThuc = EditingPromotion.ThoiGianKetThuc;
-                    existing.SoLuongToiDa = EditingPromotion.SoLuongToiDa;
-                    existing.LoaiKhachHangApDung = EditingPromotion.LoaiKhachHangApDung;
-                    existing.MoTa = EditingPromotion.MoTa;
-                    existing.TrangThai = DetermineTrangThai(EditingPromotion.ThoiGianBatDau, EditingPromotion.ThoiGianKetThuc);
-                    existing.GiaTriApDungTu = EditingPromotion.GiaTriApDungTu;
-                    existing.GiaTriApDungDen = EditingPromotion.GiaTriApDungDen;
-                    existing.MucGiamGia = EditingPromotion.MucGiamGia;
-                    existing.GiamToiDa = EditingPromotion.GiamToiDa;
-                    existing.SachApDung = EditingPromotion.SachApDung;
-                    existing.SoLuongApDung = EditingPromotion.SoLuongApDung;
-                    existing.SachTang = EditingPromotion.SachTang;
-                    existing.SoLuongTang = EditingPromotion.SoLuongTang;
-                    existing.SachQuaTang = EditingPromotion.SachQuaTang;
-                    existing.SoLuongApDungTu = EditingPromotion.SoLuongApDungTu;
+                    ListLoaiKhachHang.Add(new LoaiKhachHangItem { Id = c.MaLoaiKhachHang, TenLoai = c.TenLoaiKhachHang });
                 }
             }
-            IsPopupVisible = false;
-            ApplyFilters();
-            RefreshData();
-            MessageBox.Show("Lưu thành công!");
-        }
 
-        private bool ValidatePromotionDetail()
-        {
-            // Dùng SelectedLoaiUuDaiInPopup thay vì SelectedLoaiUuDai
-            if (SelectedLoaiUuDaiInPopup == "Giảm giá trên tổng hóa đơn")
+            var books = await ApiClient.GetAsync<List<SachDTO>>("api/PhienBanSach");
+            if (books != null)
             {
-                if (string.IsNullOrWhiteSpace(EditingPromotion.GiaTriApDungTu) ||
-                    string.IsNullOrWhiteSpace(EditingPromotion.GiaTriApDungDen))
+                foreach (var b in books)
                 {
-                    MessageBox.Show("Vui lòng nhập giá trị áp dụng!");
-                    return false;
-                }
-                if (string.IsNullOrWhiteSpace(EditingPromotion.MucGiamGia))
-                {
-                    MessageBox.Show("Vui lòng nhập mức giảm giá!");
-                    return false;
+                    if (string.IsNullOrEmpty(b.ISBN))
+                    {
+                        MessageBox.Show($"Báo động: Cuốn sách '{b.TenSach}' bị mất mã ISBN từ Backend trả về! Kiểm tra lại SachDTO ngay!", "Lỗi mapping JSON");
+                    }
+                    ListSach.Add(new SachItem { ISBN = b.ISBN, TenSach = b.TenSach });
                 }
             }
-            else if (SelectedLoaiUuDaiInPopup == "Giảm giá cho các sản phẩm")
+
+
+            
+            ListLoaiUuDai.Add("Tất cả loại ưu đãi");
+            ListLoaiUuDai.Add("Giảm giá/ Tổng hóa đơn");
+            ListLoaiUuDai.Add("Tặng quà / Tổng hóa đơn");
+            ListLoaiUuDai.Add("Giảm giá / Đầu sách");
+            ListLoaiUuDai.Add("Tặng quà / Đầu sách");
+            SelectedLoaiUuDaiFilter = "Tất cả loại ưu đãi";
+
+            ListTrangThai.Add("Tất cả trạng thái");
+            ListTrangThai.Add("Đang áp dụng");
+            ListTrangThai.Add("Chưa áp dụng");
+            ListTrangThai.Add("Tạm dừng");
+            ListTrangThai.Add("Hết hạn");
+            SelectedTrangThai = "Tất cả trạng thái";
+        }
+
+        private void InitCommands()
+        {
+            OpenAddPopupCommand = new RelayCommand<object>(p =>
             {
-                if (string.IsNullOrWhiteSpace(EditingPromotion.SachApDung))
+                _isAddMode = true;
+                PopupTitle = "LẬP PHIẾU THÔNG TIN ƯU ĐÃI MỚI";
+                SaveButtonText = "LƯU PHIẾU ƯU ĐÃI";
+                EditingPromotion = new PromotionDTO
                 {
-                    MessageBox.Show("Vui lòng chọn sách áp dụng!");
-                    return false;
-                }
-                if (string.IsNullOrWhiteSpace(EditingPromotion.MucGiamGia))
-                {
-                    MessageBox.Show("Vui lòng nhập mức giảm giá!");
-                    return false;
-                }
-            }
-            else if (SelectedLoaiUuDaiInPopup == "Tặng quà trên tổng hóa đơn")
+                    NgayTao = DateTime.Now,
+                    NgayBatDau = DateTime.Today,
+                    NgayKetThuc = DateTime.Today.AddDays(30),
+                    SoLuongToiDa = 50,
+                    MaLoaiUuDai = 0,
+                    MaLoaiKhachHang = 1 
+                };
+                IsPopupVisible = true;
+                IsCoreEditingAllowed = true;
+                IsGiamTienMode = true;
+                IsGiamPhanTramMode = false;
+            });
+
+            OpenEditPopupCommand = new RelayCommand<PromotionDTO>(promo =>
             {
-                if (string.IsNullOrWhiteSpace(EditingPromotion.GiaTriApDungTu) ||
-                    string.IsNullOrWhiteSpace(EditingPromotion.GiaTriApDungDen))
+                if (promo == null) return;
+                _isAddMode = false;
+                PopupTitle = "CẬP NHẬT CHI TIẾT PHIẾU ƯU ĐÃI";
+                SaveButtonText = "CẬP NHẬT PHIẾU";
+
+                IsCoreEditingAllowed = promo.SoLuongDaDung == 0;
+                if (promo.TiLeGiam > 0)
                 {
-                    MessageBox.Show("Vui lòng nhập giá trị áp dụng!");
-                    return false;
+                    IsGiamTienMode = false;
+                    IsGiamPhanTramMode = true;
                 }
-                if (string.IsNullOrWhiteSpace(EditingPromotion.SachTang))
+                else
                 {
-                    MessageBox.Show("Vui lòng chọn sách tặng!");
-                    return false;
+                    IsGiamTienMode = true;
+                    IsGiamPhanTramMode = false;
                 }
-                if (string.IsNullOrWhiteSpace(EditingPromotion.SoLuongTang))
+
+                EditingPromotion = new PromotionDTO
                 {
-                    MessageBox.Show("Vui lòng nhập số lượng tặng!");
-                    return false;
-                }
-            }
-            else if (SelectedLoaiUuDaiInPopup == "Tặng quà khi mua sản phẩm")
+                    MaUuDai = promo.MaUuDai,
+                    NgayTao = promo.NgayTao,
+                    Code = promo.Code,
+                    TenChuongTrinh = promo.TenChuongTrinh,
+                    MoTa = promo.MoTa,
+                    NgayBatDau = promo.NgayBatDau,
+                    NgayKetThuc = promo.NgayKetThuc,
+                    SoLuongToiDa = promo.SoLuongToiDa,
+                    MaLoaiKhachHang = promo.MaLoaiKhachHang,
+                    MaLoaiUuDai = promo.MaLoaiUuDai,
+                    SoTienToiThieu = promo.SoTienToiThieu,
+                    SoTienToiDa = promo.SoTienToiDa,
+                    SoTienGiam = promo.SoTienGiam,
+                    TiLeGiam = promo.TiLeGiam,
+                    GiamToiDa = promo.GiamToiDa,
+                    ISBNDieuKien = promo.ISBNDieuKien,
+                    SoLuongMua = promo.SoLuongMua,
+                    ISBNTang = promo.ISBNTang,
+                    SoLuongTang = promo.SoLuongTang,
+                    CoTheSuDung = promo.CoTheSuDung
+                };
+                IsPopupVisible = true;
+            });
+
+            ClosePopupCommand = new RelayCommand<object>(p => IsPopupVisible = false);
+            SavePromotionCommand = new RelayCommand<object>(async p => await SavePromotionAsync());
+
+            ToggleStatusCommand = new RelayCommand<PromotionDTO>(async promo =>
             {
-                if (string.IsNullOrWhiteSpace(EditingPromotion.SachApDung))
+                if (promo == null) return;
+                try
                 {
-                    MessageBox.Show("Vui lòng chọn sách áp dụng!");
-                    return false;
+                    bool success = await ApiClient.PutAsync<object, bool>($"api/UuDai/ToggleStatus/{promo.MaUuDai}", null);
+                    if (success) await LoadDataAsync();
                 }
-                if (string.IsNullOrWhiteSpace(EditingPromotion.SachQuaTang))
-                {
-                    MessageBox.Show("Vui lòng chọn sách quà tặng!");
-                    return false;
-                }
-                if (string.IsNullOrWhiteSpace(EditingPromotion.SoLuongTang))
-                {
-                    MessageBox.Show("Vui lòng nhập số lượng tặng!");
-                    return false;
-                }
-            }
-            return true;
-        }
+                catch { promo.CoTheSuDung = !promo.CoTheSuDung; PagedPromotions = new ObservableCollection<PromotionDTO>(_allPromotions); }
+            });
 
-        private string DetermineTrangThai(DateTime start, DateTime end)
-        {
-            var today = DateTime.Today;
-            if (today < start) return "Sắp diễn ra";
-            if (today > end) return "Đã kết thúc";
-            return "Đang chạy";
-        }
-
-        private void DeletePromotion(PromotionModel p)
-        {
-            if (p == null) return;
-            if (MessageBox.Show($"Xóa '{p.TenChuongTrinh}'?", "Xác nhận",
-                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            DeletePromotionCommand = new RelayCommand<PromotionDTO>(async promo =>
             {
-                _allPromotions.Remove(p);
-                UpdateStatistics();
-                ApplyFilters();
-            }
+                if (promo == null) return;
+                var res = MessageBox.Show($"Xóa vĩnh viễn mã ưu đãi {promo.Code}?", "Cảnh báo", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (res == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        bool success = await ApiClient.DeleteAsync($"api/UuDai/{promo.MaUuDai}");
+                        if (success) await LoadDataAsync();
+                    }
+                    catch (Exception ex) { MessageBox.Show(ex.Message, "Lỗi"); }
+                }
+            });
+
+            // Khởi tạo Commands giả cho thanh Tìm kiếm & Phân trang
+            ClearFilterCommand = new RelayCommand<object>(p => { 
+                SearchTenKM = ""; 
+                SelectedTieuChiTimKiem = "Tất cả";
+                SelectedLoaiUuDaiFilter = "Tất cả loại ưu đãi";
+                SelectedTrangThai = "Tất cả trạng thái";
+                SearchTuNgay = null;  
+                SearchDenNgay = null;
+            });
+            RefreshCommand = new RelayCommand<object>(async p => await LoadDataAsync());
+
+            // Khởi tạo Commands cho Phân trang
+            FirstPageCommand = new RelayCommand<object>(p => { CurrentPage = 1; ApplyFilterAndPagination(); });
+
+            PrevPageCommand = new RelayCommand<object>(p => {
+                if (CurrentPage > 1) { CurrentPage--; ApplyFilterAndPagination(); }
+            });
+
+            NextPageCommand = new RelayCommand<object>(p => {
+                if (CurrentPage < TotalPages) { CurrentPage++; ApplyFilterAndPagination(); }
+            });
+
+            LastPageCommand = new RelayCommand<object>(p => { CurrentPage = TotalPages; ApplyFilterAndPagination(); });
+
+            GoToPageCommand = new RelayCommand<int>(page => { CurrentPage = page; ApplyFilterAndPagination(); });
         }
 
-        private void ToggleStatus(PromotionModel p)
-        {
-            if (p == null) return;
-            p.TrangThai = p.TrangThai switch
-            {
-                "Đang chạy" => "Tạm dừng",
-                "Tạm dừng" => "Đang chạy",
-                "Sắp diễn ra" => "Đang chạy",
-                _ => p.TrangThai
-            };
-            UpdateStatistics();
-        }
-
-        private void BulkActivate()
-        {
-            foreach (var p in SelectedPromotions)
-                if (p.TrangThai != "Đã kết thúc") p.TrangThai = "Đang chạy";
-            UpdateStatistics();
-        }
-
-        private void BulkDeactivate()
-        {
-            foreach (var p in SelectedPromotions)
-                if (p.TrangThai == "Đang chạy") p.TrangThai = "Tạm dừng";
-            UpdateStatistics();
-        }
-
-        private void GenerateCode()
-        {
-            if (EditingPromotion != null)
-                EditingPromotion.MaUuDai = "KM" + new Random().Next(100000, 999999);
-        }
-
-        private void AddGiamGiaHoaDonRow() => ChiTietGiamGiaHoaDon.Add(new PromotionModel { STT = ChiTietGiamGiaHoaDon.Count + 1 });
-        private void AddTangQuaHoaDonRow() => ChiTietTangQuaHoaDon.Add(new PromotionModel { STT = ChiTietTangQuaHoaDon.Count + 1 });
-        private void AddGiamGiaSachRow() => ChiTietGiamGiaSach.Add(new PromotionModel { STT = ChiTietGiamGiaSach.Count + 1 });
-        private void AddTangQuaSachRow() => ChiTietTangQuaSach.Add(new PromotionModel { STT = ChiTietTangQuaSach.Count + 1 });
-
-        private void ClearFilters()
-        {
-            SearchTenKM = null;
-            SelectedLoaiUuDaiFilter = null;
-            SelectedTrangThai = null;
-            SearchNgayApDung = null;
-        }
-
-        private void ApplyFilters()
+        private void ApplyFilterAndPagination()
         {
             var filtered = _allPromotions.AsEnumerable();
 
-            if (!string.IsNullOrWhiteSpace(SearchTenKM))
-                filtered = filtered.Where(p => p.TenChuongTrinh.ToLower().Contains(SearchTenKM.ToLower()));
-
-            if (!string.IsNullOrWhiteSpace(SelectedLoaiUuDaiFilter) && SelectedLoaiUuDaiFilter != "Tất cả")
-                filtered = filtered.Where(p => p.LoaiUuDai == SelectedLoaiUuDaiFilter);
-
-            if (!string.IsNullOrWhiteSpace(SelectedTrangThai) && SelectedTrangThai != "Tất cả")
-                filtered = filtered.Where(p => p.TrangThai == SelectedTrangThai);
-
-            if (SearchNgayApDung.HasValue)
+            // Lọc theo Loại ưu đãi
+            if (!string.IsNullOrEmpty(SelectedLoaiUuDaiFilter) && SelectedLoaiUuDaiFilter != "Tất cả loại ưu đãi")
             {
-                var date = SearchNgayApDung.Value.Date;
-                filtered = filtered.Where(p => p.ThoiGianBatDau <= date && p.ThoiGianKetThuc >= date);
+                filtered = filtered.Where(x => x.LoaiUuDai == SelectedLoaiUuDaiFilter);
             }
 
-            _filteredPromotions.Clear();
-            foreach (var item in filtered)
-                _filteredPromotions.Add(item);
+            // Lọc theo Trạng thái
+            if (!string.IsNullOrEmpty(SelectedTrangThai) && SelectedTrangThai != "Tất cả trạng thái")
+            {
+                filtered = filtered.Where(x => x.TrangThai == SelectedTrangThai);
+            }
 
-            CurrentPage = 1;
-            UpdatePagination();
-            UpdateStatistics();
-        }
+            if (SearchTuNgay.HasValue)
+            {
+                var tuNgay = SearchTuNgay.Value.Date;
+                filtered = filtered.Where(x => x.NgayKetThuc.Date >= tuNgay);
+            }
 
-        private void RefreshData()
-        {
-            ApplyFilters();
-        }
+            if (SearchDenNgay.HasValue)
+            {
+                var denNgay = SearchDenNgay.Value.Date;
+                filtered = filtered.Where(x => x.NgayBatDau.Date <= denNgay);
+            }
 
-        private void UpdateStatistics()
-        {
-            ActivePromotionsCount = _filteredPromotions.Count(p => p.TrangThai == "Đang chạy");
-            UpcomingPromotionsCount = _filteredPromotions.Count(p => p.TrangThai == "Sắp diễn ra");
-        }
+            if (!string.IsNullOrWhiteSpace(SearchTenKM))
+            {
+                var keyword = SearchTenKM.Trim();
+                if (SelectedTieuChiTimKiem == "Tên chương trình")
+                {
+                    filtered = filtered.Where(x => x.TenChuongTrinh != null && x.TenChuongTrinh.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+                }
+                else if (SelectedTieuChiTimKiem == "Mã Code")
+                {
+                    filtered = filtered.Where(x => x.Code != null && x.Code.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                {
+                    filtered = filtered.Where(x =>
+                        (x.TenChuongTrinh != null && x.TenChuongTrinh.Contains(keyword, StringComparison.OrdinalIgnoreCase)) ||
+                        (x.Code != null && x.Code.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                    );
+                }
+            }
 
-        private void UpdatePagination()
-        {
-            TotalPages = Math.Max(1, (int)Math.Ceiling((double)_filteredPromotions.Count / PageSize));
+            // Xuất kết quả
+            var resultList = filtered.ToList();
+            int totalRecords = resultList.Count;
+            TotalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+            if (TotalPages == 0) TotalPages = 1;
+
             if (CurrentPage > TotalPages) CurrentPage = TotalPages;
-            PageNumbers.Clear();
-            for (int i = 1; i <= TotalPages; i++) PageNumbers.Add(i);
-            UpdatePagedData();
+            if (CurrentPage < 1) CurrentPage = 1;
+
+            PageNumbers = new ObservableCollection<int>();
+            for (int i = 1; i <= TotalPages; i++)
+            {
+                PageNumbers.Add(i);
+            }
+
+            var pagedData = resultList.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+
+            int index = (CurrentPage - 1) * PageSize + 1;
+            foreach (var item in pagedData)
+            {
+                item.STT = index++;
+            }
+
+            PagedPromotions = new ObservableCollection<PromotionDTO>(pagedData);
         }
 
-        private void UpdatePagedData()
+        private async Task LoadDataAsync()
         {
-            PagedPromotions.Clear();
-            var paged = _filteredPromotions.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
-            foreach (var item in paged)
-                PagedPromotions.Add(item);
+            try
+            {
+                var response = await ApiClient.GetAsync<List<PromotionDTO>>("api/UuDai");
+
+                if (response != null)
+                {
+                    _allPromotions = response;
+                }
+                else
+                {
+                    MessageBox.Show("API trả về NULL. Vui lòng kiểm tra lại Swagger (Backend) xem có bị lỗi 500 không, hoặc kiểm tra các trường DTO có khớp chữ Hoa/Thường với JSON không!", "Lỗi Binding DTO");
+                }
+
+                ApplyFilterAndPagination();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi gọi API: {ex.Message}\nChi tiết: {ex.StackTrace}", "Phát hiện lỗi nghiêm trọng", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void FirstPage() => CurrentPage = 1;
-        private void PrevPage() { if (CurrentPage > 1) CurrentPage--; }
-        private void NextPage() { if (CurrentPage < TotalPages) CurrentPage++; }
-        private void LastPage() => CurrentPage = TotalPages;
-        private void GoToPage(int page) { if (page >= 1 && page <= TotalPages) CurrentPage = page; }
-        private void ExportExcel() => MessageBox.Show("Xuất Excel thành công!");
-
-        private void LoadSampleData()
+        private async Task SavePromotionAsync()
         {
-            var today = DateTime.Today;
-            _allPromotions.Add(new PromotionModel
+            MessageBox.Show($"Mã sách tặng đang là: '{EditingPromotion.ISBNTang}'");
+            if (string.IsNullOrWhiteSpace(EditingPromotion.Code) || string.IsNullOrWhiteSpace(EditingPromotion.TenChuongTrinh))
             {
-                Id = 1,
-                STT = 1,
-                MaUuDai = "KM001",
-                TenChuongTrinh = "Giảm 20% tổng hóa đơn",
-                LoaiUuDai = "Giảm giá trên tổng hóa đơn",
-                LoaiKhachHangApDung = "Tất cả",
-                ThoiGianBatDau = today.AddDays(-5),
-                ThoiGianKetThuc = today.AddDays(25),
-                SoLuongDaDung = 15,
-                SoLuongToiDa = 100,
-                TrangThai = DetermineTrangThai(today.AddDays(-5), today.AddDays(25)),
-                GiaTriApDungTu = "500000",
-                GiaTriApDungDen = "1000000",
-                MucGiamGia = "20%",
-                GiamToiDa = "200000"
-            });
-            _allPromotions.Add(new PromotionModel
-            {
-                Id = 2,
-                STT = 2,
-                MaUuDai = "KM002",
-                TenChuongTrinh = "Tặng sách thiếu nhi",
-                LoaiUuDai = "Tặng quà trên tổng hóa đơn",
-                LoaiKhachHangApDung = "Thành viên",
-                ThoiGianBatDau = today,
-                ThoiGianKetThuc = today.AddDays(15),
-                SoLuongDaDung = 0,
-                SoLuongToiDa = 50,
-                TrangThai = DetermineTrangThai(today, today.AddDays(15)),
-                GiaTriApDungTu = "300000",
-                GiaTriApDungDen = "500000",
-                SachTang = "Sách Thiếu nhi",
-                SoLuongTang = "1"
-            });
-            _allPromotions.Add(new PromotionModel
-            {
-                Id = 3,
-                STT = 3,
-                MaUuDai = "KM003",
-                TenChuongTrinh = "Giảm giá sách văn học",
-                LoaiUuDai = "Giảm giá cho các sản phẩm",
-                LoaiKhachHangApDung = "VIP",
-                ThoiGianBatDau = today.AddDays(-10),
-                ThoiGianKetThuc = today.AddDays(-1),
-                SoLuongDaDung = 30,
-                SoLuongToiDa = 200,
-                TrangThai = DetermineTrangThai(today.AddDays(-10), today.AddDays(-1)),
-                SachApDung = "Sách Văn học",
-                SoLuongApDung = "2",
-                MucGiamGia = "15%",
-                GiamToiDa = "50000"
-            });
-            _allPromotions.Add(new PromotionModel
-            {
-                Id = 4,
-                STT = 4,
-                MaUuDai = "KM004",
-                TenChuongTrinh = "Tặng bookmark",
-                LoaiUuDai = "Tặng quà khi mua sản phẩm",
-                LoaiKhachHangApDung = "Tất cả",
-                ThoiGianBatDau = today.AddDays(-3),
-                ThoiGianKetThuc = today.AddDays(2),
-                SoLuongDaDung = 45,
-                SoLuongToiDa = 0,
-                TrangThai = DetermineTrangThai(today.AddDays(-3), today.AddDays(2)),
-                SachApDung = "Sách Khoa học",
-                SoLuongApDungTu = "2",
-                SachQuaTang = "Bookmark",
-                SoLuongTang = "1"
-            });
-            _allPromotions.Add(new PromotionModel
-            {
-                Id = 5,
-                STT = 5,
-                MaUuDai = "KM005",
-                TenChuongTrinh = "Flash Sale 30%",
-                LoaiUuDai = "Giảm giá trên tổng hóa đơn",
-                LoaiKhachHangApDung = "Khách lẻ",
-                ThoiGianBatDau = today.AddDays(1),
-                ThoiGianKetThuc = today.AddDays(30),
-                SoLuongDaDung = 0,
-                SoLuongToiDa = 50,
-                TrangThai = DetermineTrangThai(today.AddDays(1), today.AddDays(30)),
-                GiaTriApDungTu = "200000",
-                GiaTriApDungDen = "500000",
-                MucGiamGia = "30%",
-                GiamToiDa = "150000"
-            });
+                MessageBox.Show("Mã Code và Tên chương trình ưu đãi không được bỏ trống!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            ApplyFilters();
+            if (EditingPromotion.NgayBatDau.Date > EditingPromotion.NgayKetThuc.Date)
+            {
+                MessageBox.Show("Ngày kết thúc không được nhỏ hơn ngày bắt đầu!", "Lỗi logic thời gian", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (EditingPromotion.SoLuongToiDa <= 0)
+            {
+                MessageBox.Show("Số lượng phát hành tối đa phải là số dương (> 0)!", "Lỗi số liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int loai = EditingPromotion.MaLoaiUuDai;
+            if (loai == 0 || loai == 1)
+            {
+                if (EditingPromotion.SoTienToiThieu < 0 || EditingPromotion.SoTienToiDa < 0)
+                {
+                    MessageBox.Show("Số tiền hóa đơn yêu cầu không được là số âm!", "Lỗi số liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                if (EditingPromotion.SoTienToiDa > 0 && EditingPromotion.SoTienToiThieu > EditingPromotion.SoTienToiDa)
+                {
+                    MessageBox.Show("Số tiền tối đa không được nhỏ hơn số tiền tối thiểu!", "Lỗi logic", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
+            if (loai == 2 || loai == 3)
+            {
+                if (string.IsNullOrWhiteSpace(EditingPromotion.ISBNDieuKien))
+                {
+                    MessageBox.Show("Vui lòng chọn [Sách bắt buộc mua] đối với loại ưu đãi này!", "Thiếu dữ kiện", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                if (EditingPromotion.SoLuongMua <= 0)
+                {
+                    MessageBox.Show("Số lượng sách yêu cầu mua phải từ 1 trở lên!", "Lỗi số liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
+
+            // Nhóm Giảm Giá (Loại 0 và 2)
+            if (loai == 0 || loai == 2)
+            {
+                if (IsGiamTienMode)
+                {
+                    if (EditingPromotion.SoTienGiam <= 0)
+                    {
+                        MessageBox.Show("Vui lòng nhập Số tiền giảm hợp lệ (> 0)!", "Lỗi số liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    // Dọn rác dữ liệu ẩn
+                    EditingPromotion.TiLeGiam = 0;
+                    EditingPromotion.GiamToiDa = 0;
+                    EditingPromotion.ISBNTang = null;
+                    EditingPromotion.SoLuongTang = 0;
+                }
+                else if (IsGiamPhanTramMode)
+                {
+                    if (EditingPromotion.TiLeGiam <= 0 || EditingPromotion.TiLeGiam > 100)
+                    {
+                        MessageBox.Show("Tỉ lệ phần trăm giảm giá phải nằm trong khoảng từ 1% đến 100%!", "Lỗi tỉ lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    if (EditingPromotion.GiamToiDa <= 0)
+                    {
+                        MessageBox.Show("Vui lòng nhập Mức giảm tối đa hợp lệ (> 0)!", "Lỗi số liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    // Dọn rác dữ liệu ẩn
+                    EditingPromotion.SoTienGiam = 0;
+                    EditingPromotion.ISBNTang = null;
+                    EditingPromotion.SoLuongTang = 0;
+                }
+            }
+
+            else if (loai == 1 || loai == 3)
+            {
+                if (string.IsNullOrWhiteSpace(EditingPromotion.ISBNTang))
+                {
+                    MessageBox.Show("Vui lòng chọn Sách làm quà tặng!", "Thiếu dữ kiện", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                if (EditingPromotion.SoLuongTang <= 0)
+                {
+                    MessageBox.Show("Số lượng sách tặng phải từ 1 trở lên!", "Lỗi số liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                EditingPromotion.SoTienGiam = 0;
+                EditingPromotion.TiLeGiam = 0;
+                EditingPromotion.GiamToiDa = 0;
+            }
+
+            try
+            {
+                bool success;
+                if (_isAddMode) success = await ApiClient.PostAsync<PromotionDTO, bool>("api/UuDai", EditingPromotion);
+                else success = await ApiClient.PutAsync<PromotionDTO, bool>($"api/UuDai/{EditingPromotion.MaUuDai}", EditingPromotion);
+
+                if (success)
+                {
+                    IsPopupVisible = false;
+                    if (_isAddMode) MessageBox.Show("Thêm phiếu ưu đãi thành công", "Thông báo", MessageBoxButton.OK);
+                    else MessageBox.Show("Cập nhật phiếu ưu đãi thành công", "Thông báo", MessageBoxButton.OK);
+                    await LoadDataAsync();
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Lỗi xử lý"); }
         }
+    }
+    public class LoaiKhachHangItem
+    {
+        public int Id { get; set; }
+        public string TenLoai { get; set; }
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    public class SachItem
+    {
+        public string ISBN { get; set; }
+        public string TenSach { get; set; }
     }
 }
