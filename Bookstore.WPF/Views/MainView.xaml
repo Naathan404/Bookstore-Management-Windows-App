@@ -74,12 +74,14 @@
 
         
         <!--cột phải-->
-        <Border Grid.Column="1" Margin="5" Background="White" CornerRadius="15">
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.02" ShadowDepth="5"/>
-            </Border.Effect>
-
+        <Border Grid.Column="1">
             <ContentControl Content="{Binding CurrentView}" Margin="10"/>
+			
+			
+            <!--<Border.Effect>
+                <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.02" ShadowDepth="5"/>
+            </Border.Effect>-->
+
             <!--
             <Grid>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -95,9 +97,9 @@
         </Border>
 
         <!--cột trái-->
-        <Border Grid.Column="0" Margin="0 5 0 5" Background="White">
+        <Border Grid.Column="0" Margin="0 0 0 0" Background="White">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.05" ShadowDepth="0"/>
+                <DropShadowEffect BlurRadius="300" Color="Black" Opacity="0.05" ShadowDepth="0"/>
             </Border.Effect>
 
             <views:SidebarView DataContext="{Binding SidebarVM}" Loaded="SidebarView_Loaded" />
