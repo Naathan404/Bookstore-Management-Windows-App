@@ -33,46 +33,31 @@
 										  ExportPdfCommandParameter="{Binding}" />
 
 			<Border Grid.Row="1"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
-				<WrapPanel Orientation="Horizontal"
-						   VerticalAlignment="Center">
+					Style="{StaticResource FilterCardStyle}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
 
-					<Border Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8, 0"
-							Width="220">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="35" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="FileChart"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<ComboBox Grid.Column="1"
-									  SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}"
-									  Background="Transparent"
-									  BorderThickness="0"
-									  FontSize="13"
-									  Foreground="#2B3674"
-									  VerticalAlignment="Center"
-									  materialDesign:HintAssist.Hint="Loại báo cáo"
-									  Margin="0 0 5 0">
-								<ComboBoxItem Content="Doanh thu &amp; Lợi nhuận" />
-								<ComboBoxItem Content="Tồn kho" />
-								<ComboBoxItem Content="Công nợ" />
-							</ComboBox>
-						</Grid>
-					</Border>
+					<ComboBox Grid.Column="0"
+							  SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}"
+							  Background="Transparent"
+							  BorderThickness="0"
+							  FontSize="13"
+							  Foreground="#2B3674"
+							  VerticalAlignment="Center"
+							  materialDesign:HintAssist.Hint="Loại báo cáo"
+							  Margin="0 0 5 0">
+						<ComboBoxItem Content="Doanh thu &amp; Lợi nhuận" />
+						<ComboBoxItem Content="Tồn kho" />
+						<ComboBoxItem Content="Công nợ" />
+					</ComboBox>
 
-					<Border Style="{StaticResource FilterBorderStyle}"
+					<Border Grid.Column="1"
+							Style="{StaticResource FilterBorderStyle}"
 							Margin="0,0,8,0"
 							Width="150">
 						<Grid>
@@ -99,7 +84,8 @@
 						</Grid>
 					</Border>
 
-					<Border Style="{StaticResource FilterBorderStyle}"
+					<Border Grid.Column="2"
+							Style="{StaticResource FilterBorderStyle}"
 							Margin="0,0,8,0"
 							Width="150">
 						<Grid>
@@ -126,97 +112,37 @@
 						</Grid>
 					</Border>
 
-					<StackPanel Orientation="Horizontal"
-								Visibility="{Binding RevenueSecondaryFilterVisibility}">
-						<Border Style="{StaticResource FilterBorderStyle}"
-								Margin="0,0,8,0"
-								Width="150">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="35" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="FilterVariant"
-														 Width="18"
-														 Height="18"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<ComboBox Grid.Column="1"
-										  SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}"
-										  Background="Transparent"
-										  BorderThickness="0"
-										  FontSize="13"
-										  Foreground="#2B3674"
-										  VerticalAlignment="Center"
-										  materialDesign:HintAssist.Hint="Lọc theo"
-										  Margin="0 0 5 0">
-									<ComboBoxItem Content="Tất cả" />
-									<ComboBoxItem Content="Nhân viên" />
-									<ComboBoxItem Content="Thể loại" />
-								</ComboBox>
-							</Grid>
-						</Border>
-
-						<Border Style="{StaticResource FilterBorderStyle}"
-								Margin="0,0,8, 0"
-								Width="180"
-								Visibility="{Binding RevenueSubItemFilterVisibility}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="35" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="SubdirectoryArrowRight"
-														 Width="18"
-														 Height="18"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<ComboBox Grid.Column="1"
-										  ItemsSource="{Binding RevenueSubItemsSource}"
-										  SelectedItem="{Binding SelectedRevenueSubItem, Mode=TwoWay}"
-										  Background="Transparent"
-										  BorderThickness="0"
-										  FontSize="13"
-										  Foreground="#2B3674"
-										  VerticalAlignment="Center"
-										  materialDesign:HintAssist.Hint="Chọn..."
-										  Margin="0 0 5 0" />
-							</Grid>
-						</Border>
-					</StackPanel>
-
-					<StackPanel Orientation="Horizontal"
-								Visibility="{Binding DebtSecondaryFilterVisibility}">
-						<Border Style="{StaticResource FilterBorderStyle}"
-								Margin="0,0,8,0"
-								Width="200">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="35" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="AccountOutline"
-														 Width="18"
-														 Height="18"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<ComboBox Grid.Column="1"
-										  ItemsSource="{Binding CustomerTypeList}"
-										  SelectedItem="{Binding SelectedCustomerType, Mode=TwoWay}"
-										  Background="Transparent"
-										  BorderThickness="0"
-										  FontSize="13"
-										  Foreground="#2B3674"
-										  VerticalAlignment="Center"
-										  materialDesign:HintAssist.Hint="Tất cả KH"
-										  Margin="0 0 5 0" />
-							</Grid>
-						</Border>
-					</StackPanel>
-				</WrapPanel>
+					<Border Grid.Column="3"
+							Style="{StaticResource FilterBorderStyle}"
+							Margin="0,0,8,0"
+							Width="150">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="35" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<materialDesign:PackIcon Kind="FilterVariant"
+													 Width="18"
+													 Height="18"
+													 Foreground="#A3AED0"
+													 VerticalAlignment="Center"
+													 HorizontalAlignment="Center" />
+							<ComboBox Grid.Column="1"
+									  SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}"
+									  Background="Transparent"
+									  BorderThickness="0"
+									  FontSize="13"
+									  Foreground="#2B3674"
+									  VerticalAlignment="Center"
+									  materialDesign:HintAssist.Hint="Lọc theo"
+									  Margin="0 0 5 0">
+								<ComboBoxItem Content="Tất cả" />
+								<ComboBoxItem Content="Nhân viên" />
+								<ComboBoxItem Content="Thể loại" />
+							</ComboBox>
+						</Grid>
+					</Border>
+				</Grid>
 			</Border>
 
 			<ScrollViewer Grid.Row="2"
