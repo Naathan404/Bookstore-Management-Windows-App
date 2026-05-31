@@ -32,5 +32,21 @@ namespace Bookstore.API.Controllers
                 GiaTri = thamSo.GiaTri / 100m
             });
         }
+
+        [HttpGet("ton-kho-toi-thieu")]
+        public async Task<IActionResult> GetTonKhoToiThieu()
+        {
+            var thamSo = await _context.ThamSo
+                .FirstOrDefaultAsync(t => t.TenThamSo == "SoLuongTonToiThieu");
+
+            if (thamSo == null)
+                return NotFound(new { message = "Không tìm thấy tham số SoLuonTonToiThieu trong DB." });
+
+            return Ok(new ThamSoDTO
+            {
+                TenThamSo = thamSo.TenThamSo,
+                GiaTri = thamSo.GiaTri
+            });
+        }
     }
 }
