@@ -16,6 +16,7 @@
     <None Remove="Resources\Images\book4.png" />
     <None Remove="Resources\Images\book5.png" />
     <None Remove="Resources\Images\Books\300baicode.jpg" />
+    <None Remove="Resources\Images\Books\300baicode.png" />
     <None Remove="Resources\Images\Books\canhdongbattan.jpg" />
     <None Remove="Resources\Images\Books\caphecungtony.jpg" />
     <None Remove="Resources\Images\Books\chipheo.jpg" />
@@ -32,6 +33,7 @@
     <None Remove="Resources\Images\Books\harrypotter2.jpg" />
     <None Remove="Resources\Images\Books\kafka.jpg" />
     <None Remove="Resources\Images\Books\matbiec.jpg" />
+    <None Remove="Resources\Images\Books\matbiec_1.jpg" />
     <None Remove="Resources\Images\Books\nhagiakim.jpg" />
     <None Remove="Resources\Images\Books\quangganhlo.jpg" />
     <None Remove="Resources\Images\Books\refactoring.jpg" />
@@ -69,6 +71,12 @@
     <Content Include="Resources\Images\book5.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Images\Books\300baicode.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Books\matbiec_1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Books\300baicode.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
