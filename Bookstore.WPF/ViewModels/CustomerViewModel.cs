@@ -73,6 +73,10 @@ namespace Bookstore.WPF.ViewModels
             set { _danhSachLoaiKhachLoc = value; OnPropertyChanged(); }
         }
 
+        public List<string> DanhSachKieuTimKiem { get; set; } = new List<string> { "Số điện thoại", "Tên khách hàng", "Email" };
+        public List<string> DanhSachLocCongNo { get; set; } = new List<string> { "Tất cả", "Không nợ", "Dưới 1 triệu", "Trên 5 triệu" };
+
+
         // --- Trạng thái Popup Khách Hàng ---
         private bool _isKhachHangPopupOpen;
         public bool IsKhachHangPopupOpen { get => _isKhachHangPopupOpen; set { _isKhachHangPopupOpen = value; OnPropertyChanged(); } }

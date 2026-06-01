@@ -29,6 +29,8 @@
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
 						</Grid.RowDefinitions>
+						
+						
 						<Grid Grid.Row="0"
 							  Margin="0,0,0,15">
 							<Grid.ColumnDefinitions>
@@ -36,26 +38,12 @@
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<Border Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="40" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Book"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding SearchDauSach, UpdateSourceTrigger=PropertyChanged}"
-											 materialDesign:HintAssist.Hint="Tìm đầu sách..."
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 Background="Transparent"
-											 Margin="0 0 10 0"
-											 Foreground="Black" />
-								</Grid>
-							</Border>
+
+
+							<components:FilterInputControl Grid.Column="0"
+														   IconKind="Book"
+														   HintText="Tìm đầu sách..."
+														   TextValue="{Binding SearchDauSach}" />
 							<Button Grid.Column="2"
 									Style="{StaticResource MainGradientButton}"
 									Width="150"
@@ -428,26 +416,12 @@
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<Border Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="40" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Person"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding SearchTacGia, UpdateSourceTrigger=PropertyChanged}"
-											 materialDesign:HintAssist.Hint="Tìm tác giả..."
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 Background="Transparent"
-											 Margin="0 0 10 0"
-											 Foreground="Black" />
-								</Grid>
-							</Border>
+
+							<components:FilterInputControl Grid.Column="0"
+														   IconKind="Person"
+														   HintText="Tìm tác giả..."
+														   TextValue="{Binding SearchTacGia}" />
+							
 							<Button Grid.Column="2"
 									Style="{StaticResource MainGradientButton}"
 									Width="150"
@@ -658,26 +632,11 @@
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<Border Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="40" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Tag"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding SearchTheLoai, UpdateSourceTrigger=PropertyChanged}"
-											 materialDesign:HintAssist.Hint="Tìm thể loại..."
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 Background="Transparent"
-											 Foreground="Black"
-											 Margin="0 0 10 0" />
-								</Grid>
-							</Border>
+
+							<components:FilterInputControl Grid.Column="0"
+														   IconKind="Tag"
+														   HintText="Tìm thể loại..."
+														   TextValue="{Binding SearchTheLoai}" />
 							<Button Grid.Column="2"
 									Style="{StaticResource MainGradientButton}"
 									Width="150"
@@ -886,26 +845,11 @@
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<Border Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="40" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Building"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding SearchNXB, UpdateSourceTrigger=PropertyChanged}"
-											 materialDesign:HintAssist.Hint="Tìm Nhà xuất bản..."
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 Background="Transparent"
-											 Foreground="Black"
-											 Margin="0 0 10 0" />
-								</Grid>
-							</Border>
+							
+							<components:FilterInputControl Grid.Column="0"
+														   IconKind="Building"
+														   HintText="Tìm Nhà xuất bản..."
+														   TextValue="{Binding SearchNXB}" />
 							<Button Grid.Column="2"
 									Style="{StaticResource MainGradientButton}"
 									Width="200"

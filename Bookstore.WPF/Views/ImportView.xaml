@@ -47,53 +47,32 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<Grid Grid.Column="0"
-						  Margin="0,0,16,0">
-						<TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-								 materialDesign:HintAssist.Hint="Tìm kiếm phiếu nhập..."
-								 FontSize="14"
-								 Foreground="#2B3674"
-								 Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />
-						<materialDesign:PackIcon Kind="Magnify"
-												 Width="20"
-												 Height="20"
-												 Foreground="#A3AED0"
-												 HorizontalAlignment="Right"
-												 VerticalAlignment="Center"
-												 Margin="0,0,12,0" />
-					</Grid>
+					<components:FilterInputControl Grid.Column="0"
+												   Margin="0,0,8,0"
+												   IconKind="Magnify"
+												   HintText="Tìm kiếm phiếu nhập..."
+												   TextValue="{Binding SearchKeyword}" />
 
-					<ComboBox Grid.Column="1"
-							  Width="170"
-							  Height="48"
-							  materialDesign:HintAssist.Hint="Nhà cung cấp"
-							  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-							  FontSize="13"
-							  Foreground="#2B3674"
-							  Margin="0,0,12,0"
-							  ItemsSource="{Binding SupplierList}"
-							  SelectedItem="{Binding SelectedSupplier}"
-							  DisplayMemberPath="TenNhaCungCap" />
+					<components:FilterComboBoxControl Grid.Column="1"
+													  Margin="0,0,8,0"
+													  IconKind="Truck"
+													  HintText="Nhà cung cấp"
+													  ItemsSource="{Binding SupplierList}"
+													  SelectedItem="{Binding SelectedSupplier}"
+													  DisplayMemberPath="TenNhaCungCap" />
 
-					<DatePicker Grid.Column="2"
-								Width="140"
-								Height="48"
-								materialDesign:HintAssist.Hint="Từ ngày"
-								Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
-								FontSize="13"
-								Margin="0,0,12,0"
-								SelectedDate="{Binding FilterFromDate}"
-								VerticalAlignment="Center" />
+					<components:FilterDatePickerControl Grid.Column="2"
+														Margin="0,0,8,0"
+														IconKind="CalendarStart"
+														HintText="Từ ngày"
+														SelectedDate="{Binding FilterFromDate}" />
 
-					<DatePicker Grid.Column="3"
-								Width="140"
-								Height="48"
-								materialDesign:HintAssist.Hint="Đến ngày"
-								Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
-								FontSize="13"
-								Margin="0,0,12,0"
-								SelectedDate="{Binding FilterToDate}"
-								VerticalAlignment="Center" />
+					<components:FilterDatePickerControl Grid.Column="3"
+														Margin="0,0,8,0"
+														IconKind="CalendarEnd"
+														HintText="Đến ngày"
+														SelectedDate="{Binding FilterToDate}" />
+
 
 					<components:FilterActionPanel Grid.Column="4"
 												  ClearCommand="{Binding ClearFilterCommand}"

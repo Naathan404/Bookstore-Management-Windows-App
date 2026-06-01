@@ -11,8 +11,12 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.WPF;component/Themes/MaterialDesignTheme.PasswordBox.xaml" />
                 
                 <!--Style chung cho toàn app-->
+				<ResourceDictionary Source="/XAMLRes/Colors.xaml"/>
                 <ResourceDictionary Source="/XAMLRes/SharedStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/XAMLRes/Buttons.xaml" />
+				<ResourceDictionary Source="/XAMLRes/DataGrids.xaml" />
+				<ResourceDictionary Source="/XAMLRes/Filters.xaml" />
+			</ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

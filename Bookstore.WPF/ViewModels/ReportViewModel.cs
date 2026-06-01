@@ -76,6 +76,18 @@ namespace Bookstore.WPF.ViewModels
         public ObservableCollection<string> StaffList { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> CategoryList { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> CustomerTypeList { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> ReportTypeList { get; set; } = new ObservableCollection<string> {
+            "Doanh thu & Lợi nhuận",
+            "Tồn kho",
+            "Công nợ"
+        };
+
+        public ObservableCollection<string> RevenueSubFilterTypeList { get; set; } = new ObservableCollection<string>
+        {
+            "Tất cả",
+            "Nhân viên",
+            "Thể loại"
+        };
 
         public ObservableCollection<string> RevenueSubItemsSource =>
             SelectedRevenueSubFilterType == 1 ? StaffList : CategoryList;

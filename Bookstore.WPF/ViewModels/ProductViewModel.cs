@@ -1,5 +1,6 @@
 ﻿using Bookstore.Share.DTOs;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.Views.Components;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using OfficeOpenXml;
@@ -53,6 +54,15 @@ namespace Bookstore.WPF.ViewModels
         public ObservableCollection<string> ListTheLoai { get; set; }
         public ObservableCollection<string> ListTheLoaiTaoSach { get; set; }
         public ObservableCollection<int> PageNumbers { get; set; }
+
+        public List<string> ListPriceRangeIndex { get; set; } = new List<string>
+        {
+            "Tất cả mức giá",
+            "Dưới 50.000đ",
+            "50.000đ - 100.000đ",
+            "100.000đ - 200.000đ",
+            "Trên 200.000đ"
+        };
         #endregion
 
         #region Properties - Tìm Kiếm

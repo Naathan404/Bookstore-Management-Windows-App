@@ -42,106 +42,31 @@
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 
-					<ComboBox Grid.Column="0"
-							  SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}"
-							  Background="Transparent"
-							  BorderThickness="0"
-							  FontSize="13"
-							  Foreground="#2B3674"
-							  VerticalAlignment="Center"
-							  materialDesign:HintAssist.Hint="Loại báo cáo"
-							  Margin="0 0 5 0">
-						<ComboBoxItem Content="Doanh thu &amp; Lợi nhuận" />
-						<ComboBoxItem Content="Tồn kho" />
-						<ComboBoxItem Content="Công nợ" />
-					</ComboBox>
+					<components:FilterComboBoxControl Grid.Column="0"
+													  Margin="0,0,8,0"
+													  IconKind="QuestionMark"
+													  HintText="Loại báo cáo"
+													  ItemsSource="{Binding ReportTypeList}"
+													  SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}" />
 
-					<Border Grid.Column="1"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0"
-							Width="150">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="35" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarStart"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding FromDate, Mode=TwoWay}"
-										Background="Transparent"
-										BorderThickness="0"
-										FontSize="13"
-										Foreground="#2B3674"
-										VerticalAlignment="Center"
-										materialDesign:HintAssist.Hint="Từ ngày"
-										materialDesign:TextFieldAssist.UnderlineBrush="Transparent"
-										Margin="0 0 5 0" />
-						</Grid>
-					</Border>
+					<components:FilterDatePickerControl Grid.Column="1"
+														Margin="0,0,8,0"
+														IconKind="CalendarStart"
+														HintText="Từ ngày"
+														SelectedDate="{Binding FromDate}" />
 
-					<Border Grid.Column="2"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0"
-							Width="150">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="35" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarEnd"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding ToDate, Mode=TwoWay}"
-										Background="Transparent"
-										BorderThickness="0"
-										FontSize="13"
-										Foreground="#2B3674"
-										VerticalAlignment="Center"
-										materialDesign:HintAssist.Hint="Đến ngày"
-										materialDesign:TextFieldAssist.UnderlineBrush="Transparent"
-										Margin="0 0 5 0" />
-						</Grid>
-					</Border>
+					<components:FilterDatePickerControl Grid.Column="2"
+														Margin="0,0,8,0"
+														IconKind="CalendarEnd"
+														HintText="Đến ngày"
+														SelectedDate="{Binding ToDate}" />
 
-					<Border Grid.Column="3"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0"
-							Width="150">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="35" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="FilterVariant"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<ComboBox Grid.Column="1"
-									  SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}"
-									  Background="Transparent"
-									  BorderThickness="0"
-									  FontSize="13"
-									  Foreground="#2B3674"
-									  VerticalAlignment="Center"
-									  materialDesign:HintAssist.Hint="Lọc theo"
-									  Margin="0 0 5 0">
-								<ComboBoxItem Content="Tất cả" />
-								<ComboBoxItem Content="Nhân viên" />
-								<ComboBoxItem Content="Thể loại" />
-							</ComboBox>
-						</Grid>
-					</Border>
+					<components:FilterComboBoxControl Grid.Column="3"
+													  Margin="0,0,8,0"
+													  IconKind="FilterVariant"
+													  HintText="Lọc theo"
+													  ItemsSource="{Binding RevenueSubFilterTypeList}"
+													  SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}" />
 				</Grid>
 			</Border>
 

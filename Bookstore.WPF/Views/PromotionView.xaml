@@ -41,157 +41,45 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<Border Grid.Column="0"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Tag"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchTenKM, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tên chương trình..." />
-						</Grid>
-					</Border>
+					<components:FilterInputControl Grid.Column="0"
+												   Margin="0,0,8,0"
+												   IconKind="Magnify"
+												   HintText="Tên chương trình..."
+												   TextValue="{Binding SearchTenKM}" />
 
-					<Border Grid.Column="1"
-							CornerRadius="8"
-							Background="White"
-							BorderBrush="#E2E8F0"
-							BorderThickness="1"
-							Height="42"
-							Margin="0 0 10 0">
-						<ComboBox ItemsSource="{Binding ListTieuChiTimKiem}"
-								  SelectedItem="{Binding SelectedTieuChiTimKiem}"
-								  materialDesign:HintAssist.Hint="Tìm theo"
-								  BorderThickness="0"
-								  Margin="10,0,10,0"
-								  VerticalAlignment="Center" />
-					</Border>
 
-					<Border Grid.Column="2"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Shape"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<ComboBox Grid.Column="1"
-									  Background="Transparent"
-									  BorderThickness="0"
-									  Margin="0 0 5 0"
-									  VerticalAlignment="Center"
-									  HorizontalAlignment="Stretch"
-									  FontSize="13"
-									  Foreground="#2B3674"
-									  materialDesign:HintAssist.Hint="Loại ưu đãi"
-									  ItemsSource="{Binding ListLoaiUuDai}"
-									  SelectedItem="{Binding SelectedLoaiUuDaiFilter, Mode=TwoWay}" />
-						</Grid>
-					</Border>
+					<components:FilterComboBoxControl Grid.Column="1"
+													  Margin="0,0,8,0"
+													  IconKind="QuestionMark"
+													  HintText="Tìm theo"
+													  ItemsSource="{Binding ListTieuChiTimKiem}"
+													  SelectedItem="{Binding SelectedTieuChiTimKiem}" />
 
-					<Border Grid.Column="3"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CheckCircle"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<ComboBox Grid.Column="1"
-									  Background="Transparent"
-									  BorderThickness="0"
-									  Margin="0 0 5 0"
-									  VerticalAlignment="Center"
-									  HorizontalAlignment="Stretch"
-									  FontSize="13"
-									  Foreground="#2B3674"
-									  materialDesign:HintAssist.Hint="Trạng thái"
-									  ItemsSource="{Binding ListTrangThai}"
-									  SelectedItem="{Binding SelectedTrangThai, Mode=TwoWay}" />
-						</Grid>
-					</Border>
+					<components:FilterComboBoxControl Grid.Column="2"
+													  Margin="0,0,8,0"
+													  IconKind="Shape"
+													  HintText="Loại ưu đãi"
+													  ItemsSource="{Binding ListLoaiUuDai}"
+													  SelectedItem="{Binding SelectedLoaiUuDaiFilter}" />
 
-					<Border Grid.Column="4"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarStart"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding SearchTuNgay, UpdateSourceTrigger=PropertyChanged}"
-										BorderThickness="0"
-										Background="Transparent"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Stretch"
-										FontSize="13"
-										Foreground="#2B3674"
-										materialDesign:HintAssist.Hint="Từ ngày..."
-										Margin="0 0 5 0" />
-						</Grid>
-					</Border>
+					<components:FilterComboBoxControl Grid.Column="3"
+													  Margin="0,0,8,0"
+													  IconKind="CheckCircle"
+													  HintText="Trạng thái"
+													  ItemsSource="{Binding ListTrangThai}"
+													  SelectedItem="{Binding SelectedTrangThai}" />
 
-					<Border Grid.Column="5"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarEnd"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding SearchDenNgay, UpdateSourceTrigger=PropertyChanged}"
-										BorderThickness="0"
-										Background="Transparent"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Stretch"
-										FontSize="13"
-										Foreground="#2B3674"
-										materialDesign:HintAssist.Hint="Đến ngày..."
-										Margin="0 0 5 0" />
-						</Grid>
-					</Border>
+					<components:FilterDatePickerControl Grid.Column="4"
+														Margin="0,0,8,0"
+														IconKind="CalendarStart"
+														HintText="Từ ngày"
+														SelectedDate="{Binding SearchTuNgay}" />
+
+					<components:FilterDatePickerControl Grid.Column="5"
+														Margin="0,0,8,0"
+														IconKind="CalendarEnd"
+														HintText="Đến ngày"
+														SelectedDate="{Binding SearchDenNgay}" />
 
 					<components:FilterActionPanel Grid.Column="6"
 												  ClearCommand="{Binding ClearFilterCommand}"

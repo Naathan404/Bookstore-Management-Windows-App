@@ -297,179 +297,37 @@
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 
-					<Border Grid.Column="0"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Book"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchTenSach, UpdateSourceTrigger=PropertyChanged}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tên sách..." />
-						</Grid>
-					</Border>
+					<components:FilterInputControl Grid.Column="0"
+												   Margin="0,0,8,0"
+												   IconKind="Book"
+												   HintText="Tên sách..."
+												   TextValue="{Binding SearchTenSach}" />
 
-					<Border Grid.Column="1"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Account"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchTacGia, UpdateSourceTrigger=PropertyChanged}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tác giả..." />
-						</Grid>
-					</Border>
+					<components:FilterInputControl Grid.Column="1"
+												   Margin="0,0,8,0"
+												   IconKind="Account"
+												   HintText="Tác giả..."
+												   TextValue="{Binding SearchTacGia}" />
 
-					<Border Grid.Column="2"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Tag"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<ComboBox Grid.Column="1"
-									  Background="Transparent"
-									  BorderThickness="0"
-									  Margin="0 0 5 0"
-									  VerticalAlignment="Center"
-									  HorizontalAlignment="Stretch"
-									  FontSize="13"
-									  Foreground="#2B3674"
-									  materialDesign:HintAssist.Hint="Thể loại"
-									  ItemsSource="{Binding ListTheLoai}"
-									  SelectedItem="{Binding SelectedTheLoai}">
-								<ComboBox.Resources>
-									<Style TargetType="ScrollBar"
-										   BasedOn="{StaticResource {x:Type ScrollBar}}">
-										<Setter Property="MinWidth"
-												Value="0" />
-										<Setter Property="MinHeight"
-												Value="0" />
+					<components:FilterComboBoxControl Grid.Column="2"
+													  Margin="0,0,8,0"
+													  IconKind="Tag"
+													  HintText="Thể loại"
+													  ItemsSource="{Binding ListTheLoai}"
+													  SelectedItem="{Binding SelectedTheLoai}" />
 
-										<Style.Triggers>
-											<Trigger Property="Orientation"
-													 Value="Vertical">
-												<Setter Property="Width"
-														Value="6" />
-												<Setter Property="MaxWidth"
-														Value="6" />
-												<Setter Property="Margin"
-														Value="0,0,2,0" />
-											</Trigger>
+					<components:FilterComboBoxControl Grid.Column="3"
+													  Margin="0,0,8,0"
+													  IconKind="CashSync"
+													  HintText="Khoảng giá"
+													  ItemsSource="{Binding ListPriceRangeIndex}"
+													  SelectedIndex="{Binding SelectedPriceRangeIndex}" />
 
-											<Trigger Property="Orientation"
-													 Value="Horizontal">
-												<Setter Property="Height"
-														Value="6" />
-												<Setter Property="MaxHeight"
-														Value="6" />
-												<Setter Property="Margin"
-														Value="0,0,0,2" />
-											</Trigger>
-										</Style.Triggers>
-									</Style>
-								</ComboBox.Resources>
-							</ComboBox>
-						</Grid>
-					</Border>
-
-					<Border Grid.Column="3"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CashSync"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<ComboBox Grid.Column="1"
-									  Background="Transparent"
-									  BorderThickness="0"
-									  VerticalAlignment="Center"
-									  HorizontalAlignment="Stretch"
-									  FontSize="13"
-									  Foreground="#2B3674"
-									  materialDesign:HintAssist.Hint="Khoảng giá"
-									  SelectedIndex="{Binding SelectedPriceRangeIndex}"
-									  Margin="0 0 5 0">
-								<ComboBoxItem Content="Tất cả mức giá" />
-								<ComboBoxItem Content="Dưới 50.000đ" />
-								<ComboBoxItem Content="50.000đ - 100.000đ" />
-								<ComboBoxItem Content="100.000đ - 200.000đ" />
-								<ComboBoxItem Content="Trên 200.000đ" />
-							</ComboBox>
-						</Grid>
-					</Border>
-
-					<Border Grid.Column="4"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="20" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="PackageVariant"
-													 Width="16"
-													 Height="16"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchTonKho, UpdateSourceTrigger=PropertyChanged}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tồn kho..." />
-						</Grid>
-					</Border>
+					<components:FilterInputControl Grid.Column="4"
+												   Margin="0,0,8,0"
+												   IconKind="PackageVariant"
+												   HintText="Tồn kho..."
+												   TextValue="{Binding SearchTonKho}" />
 
 					<components:FilterActionPanel Grid.Column="5"
 												  ClearCommand="{Binding ClearFilterCommand}"

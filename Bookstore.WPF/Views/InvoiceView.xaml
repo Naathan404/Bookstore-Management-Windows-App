@@ -32,87 +32,24 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<Border Grid.Column="0"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Magnify"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tìm kiếm khách hàng hoặc người tạo..." />
-						</Grid>
-					</Border>
+					<components:FilterInputControl Grid.Column="0"
+												   Margin="0,0,8,0"
+												   IconKind="Magnify"
+												   HintText="Tìm kiếm khách hàng hoặc người tạo..."
+												   TextValue="{Binding SearchText}" />
 
-					<Border Grid.Column="1"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarStart"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding FromDate, UpdateSourceTrigger=PropertyChanged}"
-										Margin="0 0 5 0"
-										Background="Transparent"
-										BorderThickness="0"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Stretch"
-										FontSize="13"
-										Foreground="#2B3674"
-										materialDesign:HintAssist.Hint="Từ ngày" />
-						</Grid>
-					</Border>
+					<components:FilterDatePickerControl Grid.Column="1"
+														Margin="0,0,8,0"
+														IconKind="CalendarStart"
+														HintText="Từ ngày"
+														SelectedDate="{Binding FromDate}" />
 
-					<Border Grid.Column="2"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarEnd"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding ToDate, UpdateSourceTrigger=PropertyChanged}"
-										Margin="0 0 5 0"
-										Background="Transparent"
-										BorderThickness="0"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Stretch"
-										FontSize="13"
-										Foreground="#2B3674"
-										materialDesign:HintAssist.Hint="Đến ngày" />
-						</Grid>
-					</Border>
-					
+					<components:FilterDatePickerControl Grid.Column="2"
+														Margin="0,0,8,0"
+														IconKind="CalendarEnd"
+														HintText="Đến ngày"
+														SelectedDate="{Binding ToDate}" />
+
 					<components:FilterActionPanel Grid.Column="3"
 												  ClearCommand="{Binding XoaLocCommand}"
 												  RefreshCommand="{Binding RefreshCommand}"

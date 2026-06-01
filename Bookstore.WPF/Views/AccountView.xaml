@@ -82,90 +82,28 @@
 									<ColumnDefinition Width="Auto" />
 								</Grid.ColumnDefinitions>
 
-								<Border Grid.Column="0"
-										Style="{StaticResource FilterBorderStyle}"
-										Margin="0,0,10,0">
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="30" />
-											<ColumnDefinition Width="*" />
-										</Grid.ColumnDefinitions>
-										<materialDesign:PackIcon Kind="Magnify"
-																 Width="18"
-																 Height="18"
-																 Foreground="#A3AED0"
-																 VerticalAlignment="Center"
-																 HorizontalAlignment="Center" />
-										<TextBox Grid.Column="1"
-												 Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-												 Background="Transparent"
-												 BorderThickness="0"
-												 VerticalAlignment="Center"
-												 FontSize="13"
-												 Foreground="#2B3674"
-												 materialDesign:HintAssist.Hint="Tìm tên đăng nhập, họ tên..."
-												 Margin="0 0 5 0"
-												 FontWeight="Normal" />
-									</Grid>
-								</Border>
+								<components:FilterInputControl Grid.Column="0"
+															   Margin="0,0,8,0"
+															   IconKind="Magnify"
+															   HintText="Tìm tên đăng nhập, họ tên..."
+															   TextValue="{Binding SearchKeyword}" />
 
-								<Border Grid.Column="1"
-										Style="{StaticResource FilterBorderStyle}"
-										Margin="0,0,10,0">
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="30" />
-											<ColumnDefinition Width="*" />
-										</Grid.ColumnDefinitions>
-										<materialDesign:PackIcon Kind="AccountGroup"
-																 Width="18"
-																 Height="18"
-																 Foreground="#A3AED0"
-																 VerticalAlignment="Center"
-																 HorizontalAlignment="Center" />
-										<ComboBox Grid.Column="1"
-												  ItemsSource="{Binding RoleFilterList}"
-												  SelectedItem="{Binding SelectedRoleFilter, Mode=TwoWay}"
-												  DisplayMemberPath="TenNhomNguoiDung"
-												  Background="Transparent"
-												  BorderThickness="0"
-												  VerticalAlignment="Center"
-												  FontSize="13"
-												  Foreground="#2B3674"
-												  materialDesign:HintAssist.Hint="Nhóm người dùng"
-												  FontWeight="Normal"
-												  Margin="0 0 5 0" />
-									</Grid>
-								</Border>
+								<components:FilterComboBoxControl Grid.Column="1"
+																  Margin="0,0,8,0"
+																  IconKind="AccountGroup"
+																  HintText="Nhóm người dùng"
+																  ItemsSource="{Binding RoleFilterList}"
+																  SelectedItem="{Binding SelectedRoleFilter, Mode=TwoWay}"
+																  DisplayMemberPath="TenNhomNguoiDung" />
 
-								<Border Grid.Column="2"
-										Style="{StaticResource FilterBorderStyle}"
-										Margin="0,0,10,0">
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="30" />
-											<ColumnDefinition Width="*" />
-										</Grid.ColumnDefinitions>
-										<materialDesign:PackIcon Kind="Work"
-																 Width="18"
-																 Height="18"
-																 Foreground="#A3AED0"
-																 VerticalAlignment="Center"
-																 HorizontalAlignment="Center" />
-										<ComboBox Grid.Column="1"
-												  ItemsSource="{Binding StatusFilterList}"
-												  SelectedItem="{Binding SelectedStatusFilter, Mode=TwoWay}"
-												  Background="Transparent"
-												  BorderThickness="0"
-												  VerticalAlignment="Center"
-												  FontSize="13"
-												  Foreground="#2B3674"
-												  materialDesign:HintAssist.Hint="Trạng thái làm việc"
-												  FontWeight="Normal"
-												  Margin="0 0 5 0" />
-									</Grid>
-								</Border>
+								<components:FilterComboBoxControl Grid.Column="2"
+																  Margin="0,0,8,0"
+																  IconKind="Work"
+																  HintText="Trạng thái làm việc"
+																  ItemsSource="{Binding StatusFilterList}"
+																  SelectedItem="{Binding SelectedStatusFilter, Mode=TwoWay}" />
 
+								
 								<components:FilterActionPanel Grid.Column="3"
 															  ClearCommand="{Binding ClearFilterCommand}"
 															  RefreshCommand="{Binding RefreshCommand}"

@@ -7,10 +7,6 @@
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d">
 
-	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BoolToVis" />
-	</UserControl.Resources>
-
 	<Grid>
 		<Grid x:Name="MainSupplierView">
 			<Grid.RowDefinitions>
@@ -34,58 +30,26 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
+					
+					<components:FilterInputControl Grid.Column="0"
+												   Margin="0,0,8,0"
+												   IconKind="Magnify"
+												   HintText="Tìm nhà cung cấp..."
+												   TextValue="{Binding SearchKeyword}" />
 
-					<Border Grid.Column="0"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,10,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="30" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Magnify"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tìm..."
-									 Margin="0,0,5,0" />
-						</Grid>
-					</Border>
+					<components:FilterComboBoxControl Grid.Column="1"
+													  Margin="0,0,8,0"
+													  IconKind="QuestionMark"
+													  HintText="Tìm theo"
+													  ItemsSource="{Binding SearchTypes}"
+													  SelectedItem="{Binding SelectedSearchType}" />
 
-					<Border Grid.Column="1"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,10,0">
-						<ComboBox ItemsSource="{Binding SearchTypes}"
-								  SelectedItem="{Binding SelectedSearchType}"
-								  Background="Transparent"
-								  BorderThickness="0"
-								  VerticalAlignment="Center"
-								  FontSize="13"
-								  materialDesign:HintAssist.Hint="Tìm theo"
-								  Margin="5 0 5 0" />
-					</Border>
-
-					<Border Grid.Column="2"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,10,0">
-						<ComboBox ItemsSource="{Binding SearchStatus}"
-								  SelectedItem="{Binding SelectedSearchStatus}"
-								  Background="Transparent"
-								  BorderThickness="0"
-								  VerticalAlignment="Center"
-								  FontSize="13"
-								  materialDesign:HintAssist.Hint="Lọc trạng thái"
-								  Margin="5 0 5 0" />
-					</Border>
+					<components:FilterComboBoxControl Grid.Column="2"
+													  Margin="0,0,8,0"
+													  IconKind="ListStatus"
+													  HintText="Lọc trạng thái"
+													  ItemsSource="{Binding SearchStatus}"
+													  SelectedItem="{Binding SelectedSearchStatus}" />
 
 					<components:FilterActionPanel Grid.Column="3"
 												  ClearCommand="{Binding ClearFilterCommand}"

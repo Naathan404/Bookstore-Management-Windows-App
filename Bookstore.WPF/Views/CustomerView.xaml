@@ -36,85 +36,31 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<Border Grid.Column="0"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Magnify"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-									 Margin="0,0,5,0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tìm kiếm..." />
-						</Grid>
-					</Border>
+					<components:FilterInputControl Grid.Column="0"
+												   Margin="0,0,8,0"
+												   IconKind="Magnify"
+												   HintText="Tìm kiếm khách hàng..."
+												   TextValue="{Binding SearchKeyword}" />
+					<components:FilterComboBoxControl Grid.Column="1"
+													  Margin="0,0,8,0"
+													  IconKind="Help"
+													  HintText="Kiểu tìm kiếm"
+													  ItemsSource="{Binding DanhSachKieuTimKiem}"
+													  SelectedItem="{Binding KieuTimKiem}" />
 
-					<Border Grid.Column="1"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<ComboBox Margin="10,0,5,0"
-								  Background="Transparent"
-								  BorderThickness="0"
-								  VerticalAlignment="Center"
-								  FontSize="13"
-								  Foreground="#2B3674"
-								  materialDesign:HintAssist.Hint="Tìm theo"
-								  SelectedValue="{Binding KieuTimKiem}"
-								  SelectedValuePath="Content">
-							<ComboBoxItem Content="Số điện thoại"
-										  IsSelected="True" />
-							<ComboBoxItem Content="Tên khách hàng" />
-							<ComboBoxItem Content="Email" />
-						</ComboBox>
-					</Border>
+					<components:FilterComboBoxControl Grid.Column="2"
+													  Margin="0,0,8,0"
+													  IconKind="Account"
+													  HintText="Loại khách hàng"
+													  ItemsSource="{Binding DanhSachLoaiKhachLoc}"
+													  SelectedItem="{Binding LocLoaiKhach}" />
 
-					<Border Grid.Column="2"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<ComboBox Margin="10,0,5,0"
-								  Background="Transparent"
-								  BorderThickness="0"
-								  VerticalAlignment="Center"
-								  FontSize="13"
-								  Foreground="#2B3674"
-								  materialDesign:HintAssist.Hint="Loại KH"
-								  ItemsSource="{Binding DanhSachLoaiKhachLoc}"
-								  SelectedItem="{Binding LocLoaiKhach, UpdateSourceTrigger=PropertyChanged}" />
-					</Border>
-
-					<Border Grid.Column="3"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<ComboBox Margin="10,0,5,0"
-								  Background="Transparent"
-								  BorderThickness="0"
-								  VerticalAlignment="Center"
-								  FontSize="13"
-								  Foreground="#2B3674"
-								  materialDesign:HintAssist.Hint="Công nợ"
-								  SelectedValue="{Binding LocCongNo, UpdateSourceTrigger=PropertyChanged}"
-								  SelectedValuePath="Content">
-							<ComboBoxItem Content="Tất cả"
-										  IsSelected="True" />
-							<ComboBoxItem Content="Không nợ" />
-							<ComboBoxItem Content="Dưới 1 triệu" />
-							<ComboBoxItem Content="Trên 5 triệu" />
-						</ComboBox>
-					</Border>
-
+					<components:FilterComboBoxControl Grid.Column="3"
+													  Margin="0,0,8,0"
+													  IconKind="Cash"
+													  HintText="Công nợ"
+													  ItemsSource="{Binding DanhSachLocCongNo}"
+													  SelectedItem="{Binding LocCongNo}" />
 					<components:FilterActionPanel Grid.Column="4"
 												  ClearCommand="{Binding XoaLocCommand}"
 												  RefreshCommand="{Binding RefreshCommand}"
