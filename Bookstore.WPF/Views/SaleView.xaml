@@ -150,10 +150,9 @@
                                                             <TextBlock Text="{Binding TenSach}" TextWrapping="Wrap" FontSize="13" MaxHeight="38" TextTrimming="CharacterEllipsis" FontWeight="Bold" Foreground="#2B3674" Margin="0,0,0,4"/>
                                                                 <StackPanel Orientation="Vertical">
                                                                     <TextBlock Text="{Binding DonGiaBan, StringFormat='{}{0:N0} đồng'}" FontWeight="SemiBold" FontSize="14" Foreground="#EF4444" Visibility="{Binding IsNormalPrice, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                                    <StackPanel Orientation="Horizontal" Visibility="{Binding HasPromotion, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                                    <StackPanel Orientation="Vertical" Visibility="{Binding HasPromotion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                         <TextBlock Text="{Binding PromotionPrice, StringFormat='{}{0:N0} đồng'}" FontWeight="Bold" FontSize="14" Foreground="#EF4444"/>
-                                                                        <TextBlock Text=" " />
-                                                                        <TextBlock Text="{Binding DonGiaBan, StringFormat='{}{0:N0} đồng'}" FontSize="12" Foreground="#A3AED0" TextDecorations="Strikethrough" Margin="6,0,0,0"/>
+                                                                        <TextBlock Text="{Binding DonGiaBan, StringFormat='{}{0:N0} đồng'}" FontSize="12" Foreground="#A3AED0" TextDecorations="Strikethrough"/>
                                                                     </StackPanel>
                                                                     <TextBlock Text=" (Quà tặng)" Foreground="#10B981" FontSize="12" Visibility="{Binding IsGift, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                                                 </StackPanel>
@@ -315,7 +314,7 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="% giảm:" Foreground="#707EAE" FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                        <TextBox Width="60" TextAlignment="Right" Text="{Binding PhanTramGiam, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignTextBox}"/>
+                                        <TextBox Width="60" TextAlignment="Right" Text="{Binding PhanTramGiam, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignTextBox}" IsReadOnly="True"/>
                                     </StackPanel>
                                 </Grid>
 

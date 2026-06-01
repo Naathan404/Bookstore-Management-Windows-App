@@ -12,18 +12,14 @@ using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    // Lớp trợ giúp định nghĩa Thể loại sách phục vụ hiển thị combobox lọc
     public class CategoryModel
     {
         public string TenTheLoai { get; set; }
     }
 
-    // ==========================================================================================
-    // CÁCH 2: TẠO LỚP BỌC (WRAPPER) ĐỂ BỔ SUNG ISSELECTED MÀ KHÔNG CAN THIỆP VÀO CLASS BOOKITEM GỐC
-    // ==========================================================================================
+ 
     public class BookSaleModel : BaseViewModel
     {
-        // Giữ đối tượng gốc phục vụ cho việc gửi nhận dữ liệu sau này nếu cần
         public BookItem BookData { get; set; }
 
         private bool _isSelected;
@@ -47,7 +43,18 @@ namespace Bookstore.WPF.ViewModels
         public int SoLuongTonKho => BookData?.SoLuongTonKho ?? 0;
         public string TheLoai => BookData?.TheLoai;
         public string HinhAnh => BookData?.HinhAnh; // Ánh xạ đường dẫn ảnh nếu có hiển thị trên giao diện
-        public decimal PromotionPrice { get; set; }
+        private decimal _promotionPrice;
+        public decimal PromotionPrice { 
+            get => _promotionPrice;
+            set
+            {
+                if (_promotionPrice != value)
+                {
+                    _promotionPrice = value;
+                    OnPropertyChanged(); // Thông báo giao diện WPF cập nhật ngay lập tức
+                }
+            }
+        }
         private bool _hasPromotion;
         public bool HasPromotion
         {
@@ -70,7 +77,19 @@ namespace Bookstore.WPF.ViewModels
         public string ISBN { get; set; }
         public string TenSach { get; set; }
         private decimal _giaBan;
-        public decimal GiaBan { get => _giaBan; set { _giaBan = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); } }
+        public decimal GiaBan 
+        { 
+            get => _giaBan; 
+            set 
+            { 
+                if (_giaBan != value)
+                {
+                    _giaBan = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ThanhTien));
+                }
+            } 
+        }
 
         private decimal _originalGiaBan;
         public decimal OriginalGiaBan { get => _originalGiaBan; set { _originalGiaBan = value; OnPropertyChanged(); } }
@@ -94,7 +113,7 @@ namespace Bookstore.WPF.ViewModels
                 if (_soLuongMua != value)
                 {
                     if (value > SoLuongTonKho) _soLuongMua = SoLuongTonKho;
-                    else if (value < 0) _soLuongMua = 0; // allow 0 so parent VM can remove item from cart
+                    else if (value < 0) _soLuongMua = 0; 
                     else _soLuongMua = value;
 
                     OnPropertyChanged();
@@ -129,6 +148,9 @@ namespace Bookstore.WPF.ViewModels
     {
         // ĐỊNH NGHĨA SỐ LƯỢNG THẺ HIỂN THỊ TRÊN MỖI TRANG
         private const int ItemsPerPage = 30;
+
+        // Biến cờ hiệu bảo vệ chống vòng lặp đệ quy vô hạn ngầm khi tự động cập nhật giỏ hàng
+        private bool _isUpdatingCart = false;
 
         #region PROPERTIES
         private bool _isBookDetailOpen;
@@ -178,18 +200,28 @@ namespace Bookstore.WPF.ViewModels
                     OnPropertyChanged(nameof(SdtKhachHang));
                     TenKhachHang = "Khách vãng lai";
                     KhachHangDuocChon = null;
+
+                    // Auto-apply any running promotion for guest customers
+                    var promo = _availablePromotions.FirstOrDefault(p =>
+                        p.ApplicableCustomerType == "Khách vãng lai" &&
+                        (!p.StartDate.HasValue || !p.EndDate.HasValue || (DateTime.Now.Date >= p.StartDate.Value.Date && DateTime.Now.Date <= p.EndDate.Value.Date)));
+                    MaUuDai = promo?.Code ?? string.Empty;
                 }
                 else
                 {
                     TenKhachHang = "Chưa chọn khách hàng";
+                    // If turning off guest, clear guest-only promo if it was set
+                    if (!string.IsNullOrEmpty(MaUuDai))
+                    {
+                        var currentPromo = _availablePromotions.FirstOrDefault(p => p.Code.Equals(MaUuDai, StringComparison.OrdinalIgnoreCase));
+                        if (currentPromo != null && currentPromo.ApplicableCustomerType == "Khách vãng lai") MaUuDai = string.Empty;
+                    }
                 }
-                CommandManager.InvalidateRequerySuggested(); // Cập nhật lại nút thanh toán
-                // Apply promotions that depend on customer type
-                if (!string.IsNullOrEmpty(MaUuDai)) ApplyPromotionByCode(MaUuDai);
+                CommandManager.InvalidateRequerySuggested();
+                // MaUuDai setter will call ApplyPromotionByCode for us
             }
         }
 
-        // Thay thế thuộc tính MaKhachHang cũ bằng thuộc tính này để khớp hoàn toàn với Binding XAML
         private string _sdtKhachHang = string.Empty;
         public string SdtKhachHang
         {
@@ -220,6 +252,12 @@ namespace Bookstore.WPF.ViewModels
                 if (_khachHangDuocChon != null)
                 {
                     TenKhachHang = _khachHangDuocChon.TenKhachHang;
+                    // Auto-apply promotion for this customer type if available
+                    var promo = _availablePromotions.FirstOrDefault(p =>
+                        p.ApplicableCustomerType != null &&
+                        (p.ApplicableCustomerType == "Tất cả" || p.ApplicableCustomerType == _khachHangDuocChon.LoaiKhach) &&
+                        (!p.StartDate.HasValue || !p.EndDate.HasValue || (DateTime.Now.Date >= p.StartDate.Value.Date && DateTime.Now.Date <= p.EndDate.Value.Date)));
+                    if (promo != null) MaUuDai = promo.Code;
                 }
                 CommandManager.InvalidateRequerySuggested(); // Cập nhật lại nút thanh toán
             }
@@ -237,7 +275,18 @@ namespace Bookstore.WPF.ViewModels
             get => _maUuDai;
             set
             {
-                _maUuDai = value?.Trim() ?? string.Empty;
+                var newVal = value?.Trim() ?? string.Empty;
+
+                // If not a guest and no customer selected, disallow entering a promo code
+                if (!IsKhachVangLai && KhachHangDuocChon == null && !string.IsNullOrEmpty(newVal))
+                {
+                    MessageBox.Show("Vui lòng chọn khách hàng trước khi nhập mã ưu đãi.", "Thiếu thông tin khách hàng", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    _maUuDai = string.Empty;
+                    OnPropertyChanged();
+                    return;
+                }
+
+                _maUuDai = newVal;
                 OnPropertyChanged();
                 ApplyPromotionByCode(_maUuDai);
             }
@@ -367,19 +416,31 @@ namespace Bookstore.WPF.ViewModels
 
         public SaleViewModel()
         {
-            LoadMockBookData();
-            _ = LoadDanhSachKhachHangAsync();
+            // Ensure promotions are loaded first so books/customers can be adjusted based on active promos
+            _ = InitializeAsync();
 
-            DanhSachGioHang.CollectionChanged += (s, e) => { CapNhatGiaTriHoaDon(); ApplyAutoPromotions(); CommandManager.InvalidateRequerySuggested(); };
+            // SỬA: Thêm cờ bảo vệ _isUpdatingCart để chặn lặp đệ quy gây đóng băng luồng dữ liệu
+            DanhSachGioHang.CollectionChanged += (s, e) => {
+                // Defer handling to the dispatcher to avoid modifying the collection while it's raising CollectionChanged
+                var dispatcher = Application.Current?.Dispatcher ?? System.Windows.Threading.Dispatcher.CurrentDispatcher;
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (_isUpdatingCart) return;
+                // After collection changed, ensure aggregated promotions are (re)applied
+                ApplyPromotionsAggregate();
+                CapNhatGiaTriHoaDon();
+                    try { ApplyAutoPromotions(); } catch { }
+                    CommandManager.InvalidateRequerySuggested();
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            };
 
             #region CHỨC NĂNG BÁN HÀNG & GIỎ HÀNG KHỞI TẠO
 
-            // 1. Sửa chức năng xem chi tiết: gán trực tiếp thuộc tính kích hoạt bảng phủ overlay
             XemChiTietSachCommand = new RelayCommand<BookSaleModel>((selectedBook) => {
                 if (selectedBook != null)
                 {
                     SachDuocChonXemChiTiet = selectedBook;
-                    IsBookDetailOpen = true; 
+                    IsBookDetailOpen = true;
                 }
             });
 
@@ -398,7 +459,25 @@ namespace Bookstore.WPF.ViewModels
                 {
                     if (itemTrongGio != null)
                     {
+                        // Remove the selected item
                         DanhSachGioHang.Remove(itemTrongGio);
+                        // Also remove any gift items that were added because of this trigger ISBN
+                        var promosTriggered = _availablePromotions.Where(p => !string.IsNullOrEmpty(p.TriggerISBN) && p.TriggerISBN == itemTrongGio.ISBN && !string.IsNullOrEmpty(p.GiftISBN)).ToList();
+                        if (promosTriggered.Any())
+                        {
+                            _isUpdatingCart = true;
+                            try
+                            {
+                                foreach (var promo in promosTriggered)
+                                {
+                                    var giftItem = DanhSachGioHang.FirstOrDefault(x => x.ISBN == promo.GiftISBN && x.IsGift);
+                                    if (giftItem != null) DanhSachGioHang.Remove(giftItem);
+                                    var giftBook = _allBooks.FirstOrDefault(b => b.ISBN == promo.GiftISBN);
+                                    if (giftBook != null) giftBook.IsSelected = false;
+                                }
+                            }
+                            finally { _isUpdatingCart = false; }
+                        }
                         CommandManager.InvalidateRequerySuggested();
                     }
                 }
@@ -412,7 +491,7 @@ namespace Bookstore.WPF.ViewModels
                 {
                     ThemSachVaoGioHangLogic(book);
                     book.IsSelected = true;
-                    IsBookDetailOpen = false; // Đóng bảng phủ chi tiết
+                    IsBookDetailOpen = false;
                     CommandManager.InvalidateRequerySuggested();
                 }
             });
@@ -426,18 +505,67 @@ namespace Bookstore.WPF.ViewModels
             });
 
             XoaKhoiGioHangCommand = new RelayCommand<CartItemModel>((item) => {
-                if (item != null)
+                if (item == null) return;
+
+                // 1. Xóa sản phẩm chính được chọn khỏi giỏ hàng
+                DanhSachGioHang.Remove(item);
+
+                // Khôi phục trạng thái chọn trên danh sách hiển thị sách của sản phẩm vừa xóa
+                var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == item.ISBN);
+                if (originalBook != null) originalBook.IsSelected = false;
+
+                // 2. Tìm các chương trình khuyến mãi tặng quà phụ thuộc vào quyển sách vừa bị xóa này
+                var promosTriggered = _availablePromotions
+                    .Where(p => !string.IsNullOrEmpty(p.TriggerISBN) && p.TriggerISBN == item.ISBN && !string.IsNullOrEmpty(p.GiftISBN))
+                    .ToList();
+
+                if (promosTriggered.Any())
                 {
-                    DanhSachGioHang.Remove(item);
-                    var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == item.ISBN);
-                    if (originalBook != null) originalBook.IsSelected = false;
-                    CommandManager.InvalidateRequerySuggested();
+                    // Sử dụng cờ bảo vệ để tránh việc CollectionChanged kích hoạt tính toán gộp đệ quy trong lúc đang xóa
+                    _isUpdatingCart = true;
+                    try
+                    {
+                        foreach (var promo in promosTriggered)
+                        {
+                            // KIỂM TRA CHÉO: Xem trong giỏ hàng hiện tại còn quyển sách nào khác cũng kích hoạt món quà này không
+                            bool stillHasOtherTrigger = _availablePromotions.Any(p =>
+                                p.GiftISBN == promo.GiftISBN &&
+                                p.TriggerISBN != item.ISBN &&
+                                DanhSachGioHang.Any(x => x.ISBN == p.TriggerISBN && x.SoLuongMua > 0));
+
+                            // Nếu không còn bất cứ sách điều kiện nào khác giữ món quà này, tiến hành gỡ bỏ quà
+                            if (!stillHasOtherTrigger)
+                            {
+                                // Tìm món quà thực tế đang nằm trong giỏ hàng để xóa
+                                var giftItem = DanhSachGioHang.FirstOrDefault(x => x.ISBN == promo.GiftISBN && x.IsGift);
+                                if (giftItem != null)
+                                {
+                                    DanhSachGioHang.Remove(giftItem);
+                                }
+
+                                // KHẮC PHỤC LỖI HIỂN THỊ UI: Khôi phục hoàn toàn trạng thái sách ngoài danh sách hiển thị chính
+                                var giftBook = _allBooks.FirstOrDefault(b => b.ISBN == promo.GiftISBN);
+                                if (giftBook != null)
+                                {
+                                    giftBook.IsSelected = false;
+                                    giftBook.IsGift = false;                         // RESET: Bỏ nhãn quà tặng
+                                    giftBook.HasPromotion = false;                    // RESET: Bỏ trạng thái giảm giá
+                                    giftBook.PromotionPrice = giftBook.DonGiaBan;     // RESET: Trả lại giá gốc ban đầu
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        _isUpdatingCart = false;
+                    }
                 }
+
+                CommandManager.InvalidateRequerySuggested();
             });
 
-            // 2. SỬA TẠI ĐÂY: Chuyển sang RelayCommand thường (không generic) để loại bỏ lỗi chặn nút bấm do Null parameter
             MoPopupThanhToanCommand = new RelayCommand(
-                () => // Execute
+                () =>
                 {
                     if (DanhSachGioHang == null || DanhSachGioHang.Count == 0)
                     {
@@ -452,15 +580,46 @@ namespace Bookstore.WPF.ViewModels
                         return;
                     }
 
-                    IsConfirmingOrder = true; // Kích hoạt mở popup xác nhận thanh toán công nghệ mới
+                    // If a promo code is present, validate it against date and customer type before allowing payment
+                    if (!string.IsNullOrEmpty(MaUuDai))
+                    {
+                        var promo = _availablePromotions.FirstOrDefault(p => p.Code.Equals(MaUuDai, StringComparison.OrdinalIgnoreCase));
+                        if (promo == null)
+                        {
+                            MessageBox.Show("Mã ưu đãi không hợp lệ.", "Lỗi mã ưu đãi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        if (promo.StartDate.HasValue && promo.EndDate.HasValue)
+                        {
+                            var now = DateTime.Now.Date;
+                            if (now < promo.StartDate.Value.Date || now > promo.EndDate.Value.Date)
+                            {
+                                MessageBox.Show("Mã ưu đãi chưa trong thời gian áp dụng.", "Lỗi mã ưu đãi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                return;
+                            }
+                        }
+
+                        bool customerMatches = promo.ApplicableCustomerType == "Tất cả" ||
+                            (promo.ApplicableCustomerType == "Khách vãng lai" && IsKhachVangLai) ||
+                            (promo.ApplicableCustomerType == "VIP" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "VIP") ||
+                            (promo.ApplicableCustomerType == "Thành viên" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "Thành viên");
+
+                        if (!customerMatches)
+                        {
+                            MessageBox.Show("Mã ưu đãi chưa đúng với loại khách hàng.", "Lỗi mã ưu đãi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                    }
+
+                    IsConfirmingOrder = true;
                 },
-                () => // CanExecute
+                () =>
                 {
                     return DanhSachGioHang != null && DanhSachGioHang.Count > 0 && (IsKhachVangLai || KhachHangDuocChon != null);
                 }
             );
 
-            // Sửa các nút điều khiển popup đóng mở về RelayCommand thường không tham số
             CloseDialogCommand = new RelayCommand(() => {
                 IsBookDetailOpen = false;
                 IsConfirmingOrder = false;
@@ -481,7 +640,7 @@ namespace Bookstore.WPF.ViewModels
             });
             #endregion
 
-            #region CHỨC NĂNG LỌC & PHÂN TRANG KHỞI TẠO (Chuyển về RelayCommand thường)
+            #region CHỨC NĂNG LỌC & PHÂN TRANG KHỞI TẠO
             XoaBoLocCommand = new RelayCommand(() => {
                 SearchTextSach = string.Empty;
                 TheLoaiDuocChon = DanhSachTheLoai.FirstOrDefault(t => t.TenTheLoai == "Tất cả");
@@ -521,22 +680,20 @@ namespace Bookstore.WPF.ViewModels
         {
             OnPropertyChanged(nameof(TamTinh));
             OnPropertyChanged(nameof(TongTienThanhToan));
-            // Also update enable state of payment-related UI
             OnPropertyChanged(nameof(IsThanhToanEnabled));
             OnPropertyChanged(nameof(GiamTien));
         }
-        // Thêm thuộc tính này vào SaleViewModel
+
         public bool IsThanhToanEnabled
         {
             get => DanhSachGioHang != null && DanhSachGioHang.Count > 0 && (IsKhachVangLai || KhachHangDuocChon != null);
         }
 
-        // Quan trọng: Mỗi khi bạn thêm hoặc xóa sách khỏi DanhSachGioHang, 
-        // bạn phải thông báo cho giao diện cập nhật thuộc tính này:
         public void CapNhatTrangThaiNut()
         {
             OnPropertyChanged(nameof(IsThanhToanEnabled));
         }
+
         private void ThemSachVaoGioHangLogic(BookSaleModel book)
         {
             if (book == null || book.SoLuongTonKho <= 0) return;
@@ -552,27 +709,38 @@ namespace Bookstore.WPF.ViewModels
                 {
                     ISBN = book.ISBN,
                     TenSach = book.TenSach,
-                    GiaBan = book.DonGiaBan,
                     OriginalGiaBan = book.DonGiaBan,
-                    IsGift = false,
-                    IsPromotionApplied = false,
                     SoLuongTonKho = book.SoLuongTonKho,
                     SoLuongMua = 1
                 };
+
+                // If displayed book has a promotion or is a gift, set initial GiaBan accordingly
+                if (book.IsGift)
+                {
+                    newCartItem.IsGift = true;
+                    newCartItem.GiaBan = 0;
+                    newCartItem.TenSach += " (HÀNG TẶNG)";
+                }
+                else if (book.HasPromotion && book.PromotionPrice > 0)
+                {
+                    newCartItem.IsPromotionApplied = true;
+                    newCartItem.GiaBan = book.PromotionPrice;
+                }
+                else
+                {
+                    newCartItem.GiaBan = book.DonGiaBan;
+                }
                 newCartItem.PropertyChanged += (s, e) => {
-                    // Update totals when line item total changes
                     if (e.PropertyName == nameof(CartItemModel.ThanhTien))
                     {
                         CapNhatGiaTriHoaDon();
                     }
 
-                    // If quantity becomes less than 1, remove the item from cart
                     if (e.PropertyName == nameof(CartItemModel.SoLuongMua))
                     {
                         var ci = s as CartItemModel;
                         if (ci != null && ci.SoLuongMua < 1)
                         {
-                            // Remove and update selection state
                             DanhSachGioHang.Remove(ci);
                             var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == ci.ISBN);
                             if (originalBook != null) originalBook.IsSelected = false;
@@ -581,7 +749,7 @@ namespace Bookstore.WPF.ViewModels
                         }
                     }
                 };
-                // If there's a promotion that applies and it's a gift for this ISBN, adjust
+
                 var promoForBook = _availablePromotions.FirstOrDefault(p => !string.IsNullOrEmpty(p.AppliesToISBN) && p.AppliesToISBN == book.ISBN);
                 if (promoForBook != null && promoForBook.IsGift)
                 {
@@ -593,63 +761,285 @@ namespace Bookstore.WPF.ViewModels
             }
 
             book.IsSelected = true;
+            // After adding the book, check for promotions that use this book as a trigger and add gift items if needed
+            var triggerPromos = _availablePromotions.Where(p => !string.IsNullOrEmpty(p.TriggerISBN) && p.TriggerISBN == book.ISBN && !string.IsNullOrEmpty(p.GiftISBN)).ToList();
+            if (triggerPromos.Any())
+            {
+                _isUpdatingCart = true;
+                try
+                {
+                    foreach (var promo in triggerPromos)
+                    {
+                        // ensure promo is currently active
+                        if (promo.StartDate.HasValue && promo.EndDate.HasValue)
+                        {
+                            var now = DateTime.Now.Date;
+                            if (now < promo.StartDate.Value.Date || now > promo.EndDate.Value.Date) continue;
+                        }
+
+                        var giftExists = DanhSachGioHang.Any(x => x.ISBN == promo.GiftISBN);
+                        if (giftExists) continue;
+
+                        var giftBook = _allBooks.FirstOrDefault(b => b.ISBN == promo.GiftISBN);
+                        if (giftBook == null) continue;
+
+                        var giftCartItem = new CartItemModel
+                        {
+                            ISBN = giftBook.ISBN,
+                            TenSach = giftBook.TenSach + " (HÀNG TẶNG)",
+                            GiaBan = 0,
+                            OriginalGiaBan = giftBook.DonGiaBan,
+                            SoLuongTonKho = giftBook.SoLuongTonKho,
+                            SoLuongMua = 1,
+                            IsGift = true
+                        };
+                        DanhSachGioHang.Add(giftCartItem);
+                        giftBook.IsSelected = true;
+                    }
+                }
+                finally { _isUpdatingCart = false; }
+            }
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private void ApplyPromotionByCode(string code)
+        // Apply a set of promotions as an aggregate to displayed books and cart items
+        private void ApplyPromotionsAggregate(IEnumerable<Promotion> promos = null)
         {
-            _appliedPromotion = null;
-            if (string.IsNullOrWhiteSpace(code))
+            // Đồng bộ lại mã ưu đãi nhập tay nếu biến quản lý trạng thái _appliedPromotion đang bị null
+            if (!string.IsNullOrEmpty(MaUuDai) && _appliedPromotion == null)
             {
-                // Reset any promotion pricing
-                foreach (var c in DanhSachGioHang)
+                _appliedPromotion = (_availablePromotions ?? new List<Promotion>())
+                    .FirstOrDefault(p => p.Code.Equals(MaUuDai, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Xác định nguồn chương trình khuyến mãi cần quét
+            var sourcePromos = promos ?? _availablePromotions ?? Enumerable.Empty<Promotion>();
+            if (_appliedPromotion != null)
+            {
+                // Nếu đang áp dụng mã giảm giá cụ thể, ưu tiên sử dụng duy nhất mã đó
+                sourcePromos = new List<Promotion> { _appliedPromotion };
+            }
+
+            // Lọc danh sách các chương trình khuyến mãi đang còn hạn và phù hợp với loại khách hàng
+            var activePromos = sourcePromos
+                .Where(p =>
                 {
-                    if (c.IsPromotionApplied || c.IsGift)
+                    if (p == null) return false;
+                    if (p.StartDate.HasValue && p.EndDate.HasValue)
                     {
-                        c.GiaBan = c.OriginalGiaBan;
-                        c.IsPromotionApplied = false;
-                        c.IsGift = false;
-                        if (c.TenSach != null && c.TenSach.Contains(" (HÀNG TẶNG)"))
-                            c.TenSach = c.TenSach.Replace(" (HÀNG TẶNG)", "");
+                        var now = DateTime.Now.Date;
+                        if (now < p.StartDate.Value.Date || now > p.EndDate.Value.Date) return false;
+                    }
+                    // Kiểm tra điều kiện nhóm khách hàng hợp lệ
+                    bool custMatch = p.ApplicableCustomerType == "Tất cả" ||
+                        (p.ApplicableCustomerType == "Khách vãng lai" && IsKhachVangLai) ||
+                        (p.ApplicableCustomerType == "VIP" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "VIP") ||
+                        (p.ApplicableCustomerType == "Thành viên" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "Thành viên");
+                    return custMatch;
+                }).ToList();
+
+            // KHẮC PHỤC LỖI MẤT MÃ GIẢM GIÁ TOÀN HÓA ĐƠN:
+            // Kiểm tra xem có chương trình giảm giá trực tiếp trên tổng đơn hàng (Global Voucher) nào không
+            var globalPromo = activePromos.FirstOrDefault(p => string.IsNullOrEmpty(p.AppliesToISBN) && string.IsNullOrEmpty(p.TriggerISBN) && p.DiscountPercent > 0);
+            PhanTramGiam = globalPromo != null ? globalPromo.DiscountPercent : 0;
+
+            // Reset danh sách sách hiển thị ngoài ô chọn
+            foreach (var b in _allBooks)
+            {
+                b.HasPromotion = false;
+                b.IsGift = false;
+                b.PromotionPrice = b.DonGiaBan; // SỬA LỖI 1: Reset về DonGiaBan gốc thay vì bằng 0
+            }
+
+            // Duyệt qua từng đầu sách để tìm ra chương trình ưu đãi tốt nhất (Quà tặng > Giảm giá sâu nhất)
+            foreach (var b in _allBooks)
+            {
+                Promotion bestDiscountPromo = null;
+                foreach (var p in activePromos)
+                {
+                    if (!string.IsNullOrEmpty(p.AppliesToISBN) && p.AppliesToISBN == b.ISBN)
+                    {
+                        if (p.IsGift)
+                        {
+                            b.IsGift = true;
+                            bestDiscountPromo = null; // Quà tặng đi kèm sách thì giá trị sẽ về hẳn 0, bỏ qua tính % giảm giá
+                            break;
+                        }
+                        else if (p.DiscountPercent > 0)
+                        {
+                            if (bestDiscountPromo == null || p.DiscountPercent > bestDiscountPromo.DiscountPercent)
+                                bestDiscountPromo = p;
+                        }
                     }
                 }
+
+                // Cập nhật giá bán sau khi áp dụng khuyến mãi lên danh sách hiển thị sách
+                if (b.IsGift)
+                {
+                    b.PromotionPrice = 0;
+                }
+                else if (bestDiscountPromo != null)
+                {
+                    b.HasPromotion = true;
+                    b.PromotionPrice = Math.Round(b.DonGiaBan * (100 - bestDiscountPromo.DiscountPercent) / 100);
+                }
+            }
+
+            // Cập nhật lại giá tiền từng sản phẩm đang nằm trong giỏ hàng dựa trên bộ lọc trạng thái sách ở trên
+            foreach (var c in DanhSachGioHang)
+            {
+                var book = _allBooks.FirstOrDefault(b => b.ISBN == c.ISBN);
+
+                // Nếu sản phẩm trong giỏ là hàng tặng nhưng cấu hình khuyến mãi hiện tại không còn ghi nhận nó là quà
+                if (c.IsGift && book != null && !book.IsGift && !activePromos.Any(p => p.GiftISBN == c.ISBN && DanhSachGioHang.Any(x => x.ISBN == p.TriggerISBN && x.SoLuongMua > 0)))
+                {
+                    c.IsGift = false;
+                }
+
+                if (c.IsGift)
+                {
+                    c.GiaBan = 0;
+                    if (c.TenSach != null && !c.TenSach.Contains(" (HÀNG TẶNG)")) c.TenSach += " (HÀNG TẶNG)";
+                    continue;
+                }
+
+                // Khôi phục thuộc tính về mặc định trước khi tính toán áp giá mới
+                c.GiaBan = c.OriginalGiaBan;
+                c.IsPromotionApplied = false;
+                if (c.TenSach != null && c.TenSach.Contains(" (HÀNG TẶNG)")) c.TenSach = c.TenSach.Replace(" (HÀNG TẶNG)", "");
+
+                if (book == null) continue;
+
+                if (book.IsGift)
+                {
+                    c.IsGift = true;
+                    c.GiaBan = 0;
+                    if (!c.TenSach.Contains(" (HÀNG TẶNG)")) c.TenSach += " (HÀNG TẶNG)";
+                }
+                else if (book.HasPromotion && book.PromotionPrice > 0)
+                {
+                    c.IsPromotionApplied = true;
+                    c.GiaBan = book.PromotionPrice; // Áp dụng giá đã giảm chuẩn xác từ danh sách cấu hình sách
+                }
+            }
+
+            // Xử lý tự động thêm sách tặng vào giỏ hàng khi thỏa mãn điều kiện mua (Mua sách A tặng sách B)
+            var giftsToAdd = new List<CartItemModel>();
+            foreach (var p in activePromos)
+            {
+                if (!string.IsNullOrEmpty(p.TriggerISBN) && !string.IsNullOrEmpty(p.GiftISBN))
+                {
+                    // KHẮC PHỤC LỖI SÁCH TẶNG: Kiểm tra sách điều kiện phải nằm trong giỏ và có số lượng mua lớn hơn 0
+                    var triggerExists = DanhSachGioHang.Any(x => x.ISBN == p.TriggerISBN && x.SoLuongMua > 0);
+                    var giftExists = DanhSachGioHang.Any(x => x.ISBN == p.GiftISBN) || giftsToAdd.Any(x => x.ISBN == p.GiftISBN);
+
+                    if (triggerExists && !giftExists)
+                    {
+                        var gb = _allBooks.FirstOrDefault(b => b.ISBN == p.GiftISBN);
+                        if (gb != null)
+                        {
+                            giftsToAdd.Add(new CartItemModel
+                            {
+                                ISBN = gb.ISBN,
+                                TenSach = gb.TenSach + " (HÀNG TẶNG)",
+                                GiaBan = 0,
+                                OriginalGiaBan = gb.DonGiaBan,
+                                SoLuongTonKho = gb.SoLuongTonKho,
+                                SoLuongMua = 1,
+                                IsGift = true
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Đẩy danh sách quà tặng hợp lệ vào giỏ hàng (nếu có) mà không gây lặp đệ quy vô hạn
+            if (giftsToAdd.Any())
+            {
+                _isUpdatingCart = true;
+                try
+                {
+                    foreach (var g in giftsToAdd)
+                    {
+                        if (!DanhSachGioHang.Any(x => x.ISBN == g.ISBN))
+                        {
+                            DanhSachGioHang.Add(g);
+                            var ob = _allBooks.FirstOrDefault(b => b.ISBN == g.ISBN);
+                            if (ob != null) ob.IsSelected = true;
+                        }
+                    }
+                }
+                finally { _isUpdatingCart = false; }
+            }
+
+            // Đồng bộ lại bộ lọc tìm kiếm giao diện và tính toán lại tổng tiền hóa đơn cuối cùng
+            ApplyFilterAndPagination();
+            CapNhatGiaTriHoaDon();
+        }
+
+        // SỬA: Hàm xử lý áp mã ưu đãi an toàn, sửa đổi qua list trung gian và xóa sạch bộ đệm cũ trước khi kiểm tra điều kiện thoát hàm
+        private void ApplyPromotionByCode(string code)
+        {
+            // LUÔN LUÔN đưa tỷ lệ giảm giá tổng và trạng thái sách trong giỏ về nguyên bản trước khi tính toán mã mới
+            PhanTramGiam = 0;
+            _appliedPromotion = null;
+
+            foreach (var c in DanhSachGioHang)
+            {
+                c.GiaBan = c.OriginalGiaBan;
+                c.IsPromotionApplied = false;
+                c.IsGift = false;
+                if (c.TenSach != null && c.TenSach.Contains(" (HÀNG TẶNG)"))
+                    c.TenSach = c.TenSach.Replace(" (HÀNG TẶNG)", "");
+            }
+
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                ApplyPromotionToDisplayedBooks(null);
                 CapNhatGiaTriHoaDon();
                 return;
             }
 
             var promo = _availablePromotions.FirstOrDefault(p => p.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
-            if (promo == null) return;
+            if (promo == null)
+            {
+                ApplyPromotionToDisplayedBooks(null);
+                CapNhatGiaTriHoaDon();
+                return;
+            }
 
-            // Check time window if defined
             if (promo.StartDate.HasValue && promo.EndDate.HasValue)
             {
                 var now = DateTime.Now.Date;
-                if (now < promo.StartDate.Value.Date || now > promo.EndDate.Value.Date) return;
+                if (now < promo.StartDate.Value.Date || now > promo.EndDate.Value.Date)
+                {
+                    ApplyPromotionToDisplayedBooks(null);
+                    CapNhatGiaTriHoaDon();
+                    return;
+                }
             }
 
             _appliedPromotion = promo;
-            // If promotion defines a global percent discount (no AppliesToISBN), apply as PhanTramGiam
-            if (promo.DiscountPercent > 0 && string.IsNullOrEmpty(promo.AppliesToISBN))
+
+            // Determine if the promotion applies to the current customer context
+            bool promoAppliesToCustomer = promo.ApplicableCustomerType == "Tất cả" ||
+                (promo.ApplicableCustomerType == "Khách vãng lai" && IsKhachVangLai) ||
+                (promo.ApplicableCustomerType == "VIP" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "VIP") ||
+                (promo.ApplicableCustomerType == "Thành viên" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "Thành viên");
+
+            // Xác định giảm giá tổng hóa đơn (chỉ khi khuyến mãi áp dụng cho toàn bộ hóa đơn và phù hợp với loại khách)
+            if (promoAppliesToCustomer && promo.DiscountPercent > 0 && string.IsNullOrEmpty(promo.AppliesToISBN))
             {
                 PhanTramGiam = promo.DiscountPercent;
             }
-            else if (promo.DiscountPercent == 0)
-            {
-                // reset global discount if none
-                PhanTramGiam = 0;
-            }
-            // Apply promotion to displayed books and cart based on promotion definition and customer type
+
             ApplyPromotionToDisplayedBooks(promo);
+
+            // Sử dụng danh sách đệm tránh lỗi InvalidOperationException (Collection was modified)
+            List<CartItemModel> giftsToAdd = new List<CartItemModel>();
 
             foreach (var c in DanhSachGioHang)
             {
-                // Reset before applying
-                c.GiaBan = c.OriginalGiaBan;
-                c.IsPromotionApplied = false;
-                c.IsGift = false;
-                if (c.TenSach != null && c.TenSach.Contains(" (HÀNG TẶNG)")) c.TenSach = c.TenSach.Replace(" (HÀNG TẶNG)", "");
-
-                // Check customer applicability
                 bool customerMatches = promo.ApplicableCustomerType == "Tất cả" ||
                     (promo.ApplicableCustomerType == "Khách vãng lai" && IsKhachVangLai) ||
                     (promo.ApplicableCustomerType == "VIP" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "VIP") ||
@@ -657,7 +1047,6 @@ namespace Bookstore.WPF.ViewModels
 
                 if (!customerMatches) continue;
 
-                // If the promo is triggered by buying a particular ISBN, ensure the trigger exists in cart
                 if (!string.IsNullOrEmpty(promo.TriggerISBN) && !DanhSachGioHang.Any(x => x.ISBN == promo.TriggerISBN)) continue;
 
                 if (!string.IsNullOrEmpty(promo.AppliesToISBN) && promo.AppliesToISBN == c.ISBN)
@@ -666,7 +1055,7 @@ namespace Bookstore.WPF.ViewModels
                     {
                         c.IsGift = true;
                         c.GiaBan = 0;
-                        c.TenSach += " (HÀNG TẶNG)";
+                        if (!c.TenSach.Contains(" (HÀNG TẶNG)")) c.TenSach += " (HÀNG TẶNG)";
                     }
                     else if (promo.DiscountPercent > 0)
                     {
@@ -674,12 +1063,11 @@ namespace Bookstore.WPF.ViewModels
                         c.GiaBan = Math.Round(c.OriginalGiaBan * (100 - promo.DiscountPercent) / 100);
                     }
                 }
-                // If promotion specifies GiftISBN and a TriggerISBN is present in cart (and gift differs),
-                // add the gift item to the cart if it's not already present.
+
                 if (!string.IsNullOrEmpty(promo.GiftISBN) && !string.IsNullOrEmpty(promo.TriggerISBN) && promo.TriggerISBN != promo.GiftISBN)
                 {
                     var triggerExists = DanhSachGioHang.Any(x => x.ISBN == promo.TriggerISBN);
-                    var giftExists = DanhSachGioHang.Any(x => x.ISBN == promo.GiftISBN);
+                    var giftExists = DanhSachGioHang.Any(x => x.ISBN == promo.GiftISBN) || giftsToAdd.Any(x => x.ISBN == promo.GiftISBN);
                     if (triggerExists && !giftExists)
                     {
                         var book = _allBooks.FirstOrDefault(b => b.ISBN == promo.GiftISBN);
@@ -695,27 +1083,57 @@ namespace Bookstore.WPF.ViewModels
                                 SoLuongMua = 1,
                                 IsGift = true
                             };
-                            DanhSachGioHang.Add(newCartItem);
-                            var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == newCartItem.ISBN);
-                            if (originalBook != null) originalBook.IsSelected = true;
+                            giftsToAdd.Add(newCartItem);
                         }
                     }
                 }
             }
+
+            // Thực hiện thêm quà tặng ra ngoài vòng lặp foreach bằng cơ chế cờ hiệu bảo vệ
+            if (giftsToAdd.Any())
+            {
+                _isUpdatingCart = true;
+                try
+                {
+                    foreach (var gift in giftsToAdd)
+                    {
+                        DanhSachGioHang.Add(gift);
+                        var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == gift.ISBN);
+                        if (originalBook != null) originalBook.IsSelected = true;
+                    }
+                }
+                finally
+                {
+                    _isUpdatingCart = false;
+                }
+            }
+
             CapNhatGiaTriHoaDon();
         }
 
         private void ApplyPromotionToDisplayedBooks(Promotion promo)
         {
+            // If promo is null, reset displayed books and cart items back to original state
             if (promo == null)
             {
-                // reset
                 foreach (var b in _allBooks)
                 {
                     b.HasPromotion = false;
                     b.IsGift = false;
                     b.PromotionPrice = 0;
                 }
+
+                foreach (var c in DanhSachGioHang)
+                {
+                    c.GiaBan = c.OriginalGiaBan;
+                    c.IsPromotionApplied = false;
+                    c.IsGift = false;
+                    if (c.TenSach != null && c.TenSach.Contains(" (HÀNG TẶNG)"))
+                        c.TenSach = c.TenSach.Replace(" (HÀNG TẶNG)", "");
+                }
+
+                ApplyFilterAndPagination();
+                CapNhatGiaTriHoaDon();
                 return;
             }
 
@@ -724,6 +1142,7 @@ namespace Bookstore.WPF.ViewModels
                 (promo.ApplicableCustomerType == "VIP" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "VIP") ||
                 (promo.ApplicableCustomerType == "Thành viên" && KhachHangDuocChon != null && KhachHangDuocChon.LoaiKhach == "Thành viên");
 
+            // Update displayed books
             foreach (var b in _allBooks)
             {
                 b.HasPromotion = false;
@@ -743,8 +1162,36 @@ namespace Bookstore.WPF.ViewModels
                 }
             }
 
-            // If promotion is gift for a particular ISBN, ensure it's present in cart as gift
-            if (promo.IsGift && !string.IsNullOrEmpty(promo.AppliesToISBN))
+            // Update cart items to reflect displayed promotion as well
+            foreach (var c in DanhSachGioHang)
+            {
+                // Reset per-item state first
+                c.GiaBan = c.OriginalGiaBan;
+                c.IsPromotionApplied = false;
+                c.IsGift = false;
+                if (c.TenSach != null && c.TenSach.Contains(" (HÀNG TẶNG)"))
+                    c.TenSach = c.TenSach.Replace(" (HÀNG TẶNG)", "");
+
+                if (!customerMatches) continue;
+
+                if (!string.IsNullOrEmpty(promo.AppliesToISBN) && promo.AppliesToISBN == c.ISBN)
+                {
+                    if (promo.IsGift)
+                    {
+                        c.IsGift = true;
+                        c.GiaBan = 0;
+                        if (!c.TenSach.Contains(" (HÀNG TẶNG)")) c.TenSach += " (HÀNG TẶNG)";
+                    }
+                    else if (promo.DiscountPercent > 0)
+                    {
+                        c.IsPromotionApplied = true;
+                        c.GiaBan = Math.Round(c.OriginalGiaBan * (100 - promo.DiscountPercent) / 100);
+                    }
+                }
+            }
+
+            // If promotion is a gift that applies to a book (and customer matches), ensure the gifted item is added to cart
+            if (promo.IsGift && !string.IsNullOrEmpty(promo.AppliesToISBN) && customerMatches)
             {
                 var existing = DanhSachGioHang.FirstOrDefault(c => c.ISBN == promo.AppliesToISBN);
                 if (existing == null)
@@ -762,75 +1209,89 @@ namespace Bookstore.WPF.ViewModels
                             SoLuongMua = 1,
                             IsGift = true
                         };
-                        DanhSachGioHang.Add(newCartItem);
+
+                        _isUpdatingCart = true;
+                        try { DanhSachGioHang.Add(newCartItem); }
+                        finally { _isUpdatingCart = false; }
+
                         var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == newCartItem.ISBN);
                         if (originalBook != null) originalBook.IsSelected = true;
                     }
                 }
             }
 
-            // refresh visible list
             ApplyFilterAndPagination();
             CapNhatGiaTriHoaDon();
         }
 
-        // Check and apply any promotions that should trigger automatically when cart changes
+        // SỬA: Bảo vệ hàm quét ưu đãi tự động bằng cờ bảo vệ chống đệ quy lặp vô tận khi đồng bộ giỏ hàng
         private void ApplyAutoPromotions()
         {
-            if (_availablePromotions == null || !_availablePromotions.Any()) return;
+            if (_availablePromotions == null || !_availablePromotions.Any() || _isUpdatingCart) return;
 
-            // For each promotion that has a TriggerISBN or is a gift, try to apply its effects
-            foreach (var promo in _availablePromotions)
+            _isUpdatingCart = true;
+            try
             {
-                // time window check
-                if (promo.StartDate.HasValue && promo.EndDate.HasValue)
-                {
-                    var now = DateTime.Now.Date;
-                    if (now < promo.StartDate.Value.Date || now > promo.EndDate.Value.Date) continue;
-                }
+                List<CartItemModel> itemsToAdd = new List<CartItemModel>();
 
-                // If promo requires a trigger ISBN, ensure trigger exists in cart
-                if (!string.IsNullOrEmpty(promo.TriggerISBN))
+                foreach (var promo in _availablePromotions)
                 {
-                    var triggerInCart = DanhSachGioHang.Any(x => x.ISBN == promo.TriggerISBN);
-                    if (!triggerInCart) continue;
-
-                    // If promo has a GiftISBN, ensure gift is added
-                    if (!string.IsNullOrEmpty(promo.GiftISBN))
+                    if (promo.StartDate.HasValue && promo.EndDate.HasValue)
                     {
-                        var giftExists = DanhSachGioHang.Any(x => x.ISBN == promo.GiftISBN);
-                        if (!giftExists)
+                        var now = DateTime.Now.Date;
+                        if (now < promo.StartDate.Value.Date || now > promo.EndDate.Value.Date) continue;
+                    }
+
+                    if (!string.IsNullOrEmpty(promo.TriggerISBN))
+                    {
+                        var triggerInCart = DanhSachGioHang.Any(x => x.ISBN == promo.TriggerISBN);
+                        if (!triggerInCart) continue;
+
+                        if (!string.IsNullOrEmpty(promo.GiftISBN))
                         {
-                            var book = _allBooks.FirstOrDefault(b => b.ISBN == promo.GiftISBN);
-                            if (book != null)
+                            var giftExists = DanhSachGioHang.Any(x => x.ISBN == promo.GiftISBN) || itemsToAdd.Any(x => x.ISBN == promo.GiftISBN);
+                            if (!giftExists)
                             {
-                                var newCartItem = new CartItemModel
+                                var book = _allBooks.FirstOrDefault(b => b.ISBN == promo.GiftISBN);
+                                if (book != null)
                                 {
-                                    ISBN = book.ISBN,
-                                    TenSach = book.TenSach + " (HÀNG TẶNG)",
-                                    GiaBan = 0,
-                                    OriginalGiaBan = book.DonGiaBan,
-                                    SoLuongTonKho = book.SoLuongTonKho,
-                                    SoLuongMua = 1,
-                                    IsGift = true
-                                };
-                                DanhSachGioHang.Add(newCartItem);
-                                var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == newCartItem.ISBN);
-                                if (originalBook != null) originalBook.IsSelected = true;
+                                    var newCartItem = new CartItemModel
+                                    {
+                                        ISBN = book.ISBN,
+                                        TenSach = book.TenSach + " (HÀNG TẶNG)",
+                                        GiaBan = 0,
+                                        OriginalGiaBan = book.DonGiaBan,
+                                        SoLuongTonKho = book.SoLuongTonKho,
+                                        SoLuongMua = 1,
+                                        IsGift = true
+                                    };
+                                    itemsToAdd.Add(newCartItem);
+                                }
                             }
                         }
                     }
                 }
+
+                foreach (var item in itemsToAdd)
+                {
+                    DanhSachGioHang.Add(item);
+                    var originalBook = _allBooks.FirstOrDefault(b => b.ISBN == item.ISBN);
+                    if (originalBook != null) originalBook.IsSelected = true;
+                }
             }
-            // Re-apply any currently entered code-based promotion
+            finally
+            {
+                _isUpdatingCart = false; // Đảm bảo hạ cờ an toàn
+            }
+
             if (!string.IsNullOrEmpty(MaUuDai)) ApplyPromotionByCode(MaUuDai);
             else
             {
-                // If no code, re-evaluate display promotions
                 foreach (var p in _availablePromotions) ApplyPromotionToDisplayedBooks(p);
             }
         }
 
+        // SỬA: Gọi hàm ApplyPromotionByCode() kể cả khi ô SĐT bị xóa rỗng để làm sạch ưu đãi VIP (tránh lưu ảnh voucher VIP)
         private void ThucHienTimKiemKhachHangAmTham()
         {
             if (string.IsNullOrWhiteSpace(SdtKhachHang))
@@ -838,12 +1299,15 @@ namespace Bookstore.WPF.ViewModels
                 KhachHangDuocChon = null;
                 TenKhachHang = IsKhachVangLai ? "Khách vãng lai" : "Chưa chọn khách hàng";
                 CommandManager.InvalidateRequerySuggested();
+
+                ApplyPromotionByCode(MaUuDai); // Chạy lại logic để hủy bỏ ưu đãi phân loại khách cũ
                 return;
             }
 
-            var query = SdtKhachHang.ToLower().Trim();
+            var query = SdtKhachHang?.Trim();
+            bool isId = int.TryParse(query, out int parsedId);
             var khachHangFound = _allKhachHangs.FirstOrDefault(k =>
-                (!string.IsNullOrEmpty(k.MaKhachHang) && k.MaKhachHang.ToLower() == query) ||
+                (isId && k.MaKhachHang == parsedId) ||
                 (!string.IsNullOrEmpty(k.SoDienThoai) && k.SoDienThoai.Trim() == query)
             );
 
@@ -857,8 +1321,8 @@ namespace Bookstore.WPF.ViewModels
                 TenKhachHang = "Không tìm thấy khách hàng!";
             }
             CommandManager.InvalidateRequerySuggested();
-            // Apply promotions that depend on customer type or auto-apply code
-            if (!string.IsNullOrEmpty(MaUuDai)) ApplyPromotionByCode(MaUuDai);
+
+            ApplyPromotionByCode(MaUuDai);
         }
 
         private string GetComboBoxValue(object obj)
@@ -937,6 +1401,47 @@ namespace Bookstore.WPF.ViewModels
             OnPropertyChanged(nameof(CurrentPage));
         }
 
+        private async Task LoadAvailablePromotionsAsync()
+        {
+            try
+            {
+                var response = await ApiClient.GetAsync<List<Bookstore.Share.DTO.PromotionDTO>>("api/UuDai");
+                if (response != null && response.Count > 0)
+                {
+                    _availablePromotions = response.Select(d => new Promotion
+                    {
+                        Code = d.Code,
+                        ApplicableCustomerType = "Tất cả",
+                        AppliesToISBN = string.IsNullOrEmpty(d.ISBNDieuKien) ? null : d.ISBNDieuKien,
+                        IsGift = d.MaLoaiUuDai == 1 || d.MaLoaiUuDai == 3,
+                        DiscountPercent = (int)Math.Round(d.TiLeGiam),
+                        TriggerISBN = d.ISBNDieuKien,
+                        GiftISBN = d.ISBNTang,
+                        StartDate = d.NgayBatDau,
+                        EndDate = d.NgayKetThuc
+                    }).ToList();
+                    return;
+                }
+            }
+            catch { }
+
+            // Fallback to mock promotions only if none could be loaded from API
+            if (_availablePromotions == null || !_availablePromotions.Any())
+            {
+                LoadMockPromotions();
+            }
+        }
+
+        private async Task InitializeAsync()
+        {
+            await LoadAvailablePromotionsAsync();
+            await LoadDanhSachKhachHangAsync();
+            // Load books after promotions so initial book list reflects active promos
+            LoadMockBookData();
+            // Ensure promotions aggregate applied to displayed books/cart after initial load
+            ApplyPromotionsAggregate();
+        }
+
         private async Task LoadDanhSachKhachHangAsync()
         {
             try
@@ -951,27 +1456,19 @@ namespace Bookstore.WPF.ViewModels
             catch { }
 
             LoadMockCustomerData();
-            LoadMockPromotions();
+            // Only load mock promotions here if none are present (avoid overwriting API-loaded promos)
+            if (_availablePromotions == null || !_availablePromotions.Any())
+                LoadMockPromotions();
         }
 
         private void LoadMockPromotions()
         {
-            // Sample promotions demonstrating: gift, time-bound discount, and customer-type discount
             _availablePromotions = new List<Promotion>
             {
-                // Buy Sapiens (9786043351026) get a small book free (mock ISBN 9786000000001)
-                new Promotion { Code = "GIFT-SAPIENS", TriggerISBN = "9786043351026", GiftISBN = "9786000000001", IsGift = true, ApplicableCustomerType = "Tất cả" },
-
-                // VIP customers get 10% off Sapiens
-                new Promotion { Code = "VIP10", DiscountPercent = 10, AppliesToISBN = "9786043351026", ApplicableCustomerType = "VIP" },
-
-                // Discount on "Nhà Giả Kim" (9786045662142) - 20% off for all customers
-                new Promotion { Code = "BOOK-NGK20", DiscountPercent = 20, AppliesToISBN = "9786045662142", ApplicableCustomerType = "Tất cả" },
-
-                // Promotion for guest customers: 5% off total bill
-                new Promotion { Code = "GUEST5", DiscountPercent = 5, ApplicableCustomerType = "Khách vãng lai" },
-
-                // Sitewide 15% off during a promo window
+                new Promotion { Code = "GIFT-SAPIENS", TriggerISBN = "9786043351026", GiftISBN = "9786000000001", IsGift = true, ApplicableCustomerType = "Tất cả", StartDate = DateTime.Today.AddDays(-1), EndDate = DateTime.Today.AddDays(7) },
+                new Promotion { Code = "VIP10", DiscountPercent = 10, AppliesToISBN = "9786043351026", ApplicableCustomerType = "VIP", StartDate = DateTime.Today.AddDays(-1), EndDate = DateTime.Today.AddDays(7) },
+                new Promotion { Code = "BOOK-NGK20", DiscountPercent = 20, AppliesToISBN = "9786045662142", ApplicableCustomerType = "Tất cả", StartDate = DateTime.Today.AddDays(-1), EndDate = DateTime.Today.AddDays(7) },
+                new Promotion { Code = "GUEST5", DiscountPercent = 5, ApplicableCustomerType = "Khách vãng lai", StartDate = DateTime.Today.AddDays(-1), EndDate = DateTime.Today.AddDays(7) },
                 new Promotion { Code = "SUMMER15", DiscountPercent = 15, ApplicableCustomerType = "Tất cả", StartDate = DateTime.Today.AddDays(-1), EndDate = DateTime.Today.AddDays(7) }
             };
         }
@@ -992,19 +1489,55 @@ namespace Bookstore.WPF.ViewModels
                 new BookItem { ISBN = "9786043351026", TenSach = "Sapiens: Lược Sử Loài Người", DonGiaBan = 165000, SoLuongTonKho = 20, TheLoai = "Khoa học" },
                 new BookItem { ISBN = "9786041022353", TenSach = "Hạt Giống Tâm Hồn", DonGiaBan = 45000, SoLuongTonKho = 50, TheLoai = "Tâm lý - Kỹ năng" },
                 new BookItem { ISBN = "9786049221151", TenSach = "Kỷ Luật Tự Giác", DonGiaBan = 99000, SoLuongTonKho = 2, TheLoai = "Tâm lý - Kỹ năng" },
-                new BookItem { ISBN = "9786041022354", TenSach = "Cha Giàu Cha Nghèo", DonGiaBan = 120000, SoLuongTonKho = 12, TheLoai = "Tâm lý - Kỹ năng" }
-                
-                
+                new BookItem { ISBN = "9786041022354", TenSach = "Cha Giàu Cha Nghèo", DonGiaBan = 120000, SoLuongTonKho = 12, TheLoai = "Tâm lý - Kỹ năng" },
+                new BookItem { ISBN = "9786000000001", TenSach = "Sách Tặng (Mock)", DonGiaBan = 50000, SoLuongTonKho = 100, TheLoai = "Văn học"}
             };
 
             _allBooks.Clear();
+            // Kiểm tra các sách được giảm giá trong các chương trình ưu đãi đang chạy
             foreach (var originalItem in mockApiData)
             {
-                _allBooks.Add(new BookSaleModel
+                bool added = false;
+                for (var promoIndex = 0; promoIndex < _availablePromotions.Count; promoIndex++)
                 {
-                    BookData = originalItem,
-                    IsSelected = false
-                });
+                    var promo = _availablePromotions[promoIndex];
+                    if (promo.StartDate.HasValue && promo.EndDate.HasValue)
+                    {
+                        var now = DateTime.Now.Date;
+                        if (now < promo.StartDate.Value.Date || now > promo.EndDate.Value.Date) continue;
+                    }
+                    if (!string.IsNullOrEmpty(promo.AppliesToISBN) && (promo.AppliesToISBN == originalItem.ISBN ))
+                    {
+                       if (promo.DiscountPercent > 0)
+                        {
+                           _allBooks.Add(new BookSaleModel
+                           {
+                               BookData = new BookItem
+                               {
+                                   ISBN = originalItem.ISBN,
+                                   TenSach = originalItem.TenSach,
+                                   DonGiaBan = Math.Round(originalItem.DonGiaBan * (100 - promo.DiscountPercent) / 100),
+                                   SoLuongTonKho = originalItem.SoLuongTonKho,
+                                   TheLoai = originalItem.TheLoai,
+                                   HinhAnh = originalItem.HinhAnh
+                               },
+                               IsSelected = false,
+                               HasPromotion = true,
+                               PromotionPrice = Math.Round(originalItem.DonGiaBan * (100 - promo.DiscountPercent) / 100)
+                           });
+                            added = true;
+                            break; // Nếu đã áp dụng giảm giá, không cần kiểm tra các chương trình khác
+                        }
+                    }
+                }
+                if (!added)
+                {
+                    _allBooks.Add(new BookSaleModel
+                    {
+                        BookData = originalItem,
+                        IsSelected = false
+                    });
+                }
             }
 
             ApplyFilterAndPagination();
@@ -1014,9 +1547,9 @@ namespace Bookstore.WPF.ViewModels
         {
             _allKhachHangs = new List<CustomerResponse>
             {
-                new CustomerResponse { MaKhachHang = "KH001", TenKhachHang = "Lê Hoàng Quân", SoDienThoai = "0912345678", LoaiKhach = "VIP" },
-                new CustomerResponse { MaKhachHang = "KH002", TenKhachHang = "Nguyễn Văn A", SoDienThoai = "0987654321", LoaiKhach = "Thành viên" },
-                new CustomerResponse { MaKhachHang = "KH003", TenKhachHang = "Trần Thị B", SoDienThoai = "0905111222", LoaiKhach = "Khách thường" }
+                new CustomerResponse { MaKhachHang = 1, TenKhachHang = "Lê Hoàng Quân", SoDienThoai = "0912345678", LoaiKhach = "VIP" },
+                new CustomerResponse { MaKhachHang = 2, TenKhachHang = "Nguyễn Văn A", SoDienThoai = "0987654321", LoaiKhach = "Thành viên" },
+                new CustomerResponse { MaKhachHang = 3, TenKhachHang = "Trần Thị B", SoDienThoai = "0905111222", LoaiKhach = "Khách thường" }
             };
         }
 
