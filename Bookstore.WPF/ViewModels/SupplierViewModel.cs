@@ -192,13 +192,6 @@ namespace Bookstore.WPF.ViewModels
             // 4. Cắt dữ liệu đưa lên View
             var pagedData = resultList.Skip((TrangHienTai - 1) * PageSize).Take(PageSize).ToList();
 
-            // 5. Đánh số thứ tự (STT)
-            int index = (TrangHienTai - 1) * PageSize + 1;
-            foreach (var item in pagedData)
-            {
-                item.STT = index++;
-            }
-
             PagedSuppliers = new ObservableCollection<SupplierDTO>(pagedData);
         }
 

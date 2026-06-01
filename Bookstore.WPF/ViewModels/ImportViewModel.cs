@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 
+//TODO: Ối giồi oi refactor lại đống này đi, huhu, Bỏ model qua file khác, RelayCommand nữa
 namespace Bookstore.WPF.ViewModels
 {
     public class ImportViewModel : INotifyPropertyChanged

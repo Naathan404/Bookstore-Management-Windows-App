@@ -29,14 +29,33 @@ namespace Bookstore.WPF.Views.Components
         public static readonly DependencyProperty HintTextProperty =
             DependencyProperty.Register("HintText", typeof(string), typeof(FilterComboBoxControl), new PropertyMetadata("Chọn..."));
 
-        // 2. Nguồn dữ liệu (ItemsSource)
+        // 2. Nguồn dữ liệu (ItemsSource) - ĐÃ THÊM LẮNG NGHE SỰ KIỆN NẠP DATA
         public IEnumerable ItemsSource
         {
             get { return (IEnumerable)GetValue(ItemsSourceProperty); }
             set { SetValue(ItemsSourceProperty, value); }
         }
         public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(FilterComboBoxControl), new PropertyMetadata(null));
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(FilterComboBoxControl),
+                new PropertyMetadata(null, OnItemsSourceChanged)); // Thêm OnItemsSourceChanged vào đây
+
+        // HÀM TỰ ĐỘNG CHỌN PHẦN TỬ ĐẦU TIÊN KHI CÓ DỮ LIỆU
+        private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FilterComboBoxControl control && e.NewValue is IEnumerable enumerable)
+            {
+                // Nếu hiện tại chưa có lựa chọn nào (hoặc bị dìm về -1 do khởi tạo rỗng)
+                if (control.SelectedIndex == -1)
+                {
+                    // Kiểm tra xem danh sách mới nạp vào có ít nhất 1 phần tử không
+                    var enumerator = enumerable.GetEnumerator();
+                    if (enumerator.MoveNext())
+                    {
+                        control.SelectedIndex = 0; // Chọn ngay vị trí đầu tiên!
+                    }
+                }
+            }
+        }
 
         // 3. Các thuộc tính Binding 2 chiều
         public object SelectedItem
@@ -66,7 +85,6 @@ namespace Bookstore.WPF.Views.Components
         public static readonly DependencyProperty SelectedIndexProperty =
             DependencyProperty.Register("SelectedIndex", typeof(int), typeof(FilterComboBoxControl),
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
 
         // 4. Các đường dẫn (Path)
         public string SelectedValuePath

@@ -2,8 +2,27 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
+	<!--BASE DAtAGRID-->
+	<Style x:Key="DataGridCardStyle"
+		   TargetType="Border">
+		<Setter Property="Padding"
+				Value="20" />
+		<Setter Property="CornerRadius"
+				Value="20" />
+		<Setter Property="Background"
+				Value="White" />
+		<Setter Property="BorderBrush"
+				Value="#E2E8F0" />
+		<Setter Property="BorderThickness"
+				Value="1" />
+		<Setter Property="Margin"
+				Value="0,0,0,0" />
+	</Style>
+
 	<Style TargetType="DataGrid"
 		   x:Key="CleanDataGrid">
+		<Setter Property="SelectionMode"
+				Value="Extended" />
 		<Setter Property="Background"
 				Value="Transparent" />
 		<Setter Property="BorderThickness"
@@ -30,11 +49,9 @@
 				Value="White" />
 		<Setter Property="CanUserSortColumns"
 				Value="True" />
-		<Setter Property="SelectionMode"
-				Value="Single" />
 		<Setter Property="SelectionUnit"
 				Value="FullRow" />
-		<Setter Property="MinRowHeight"
+		<Setter Property="RowHeight"
 				Value="52" />
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
 				Value="Hidden" />
@@ -54,11 +71,9 @@
 				Value="True" />
 		<Setter Property="VirtualizingStackPanel.VirtualizationMode"
 				Value="Recycling" />
-		<Setter Property="ScrollViewer.IsDeferredScrollingEnabled"
-				Value="True" />
 	</Style>
 
-	
+	<!--HEADER-->
 	<Style TargetType="DataGridColumnHeader">
 		<Setter Property="Background"
 				Value="#F8FAFC" />
@@ -77,9 +92,22 @@
 		<Setter Property="Padding"
 				Value="12,0" />
 		<Setter Property="HorizontalContentAlignment"
-				Value="Center" />
+				Value="Left" />
 		<Setter Property="VerticalContentAlignment"
 				Value="Center" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="DataGridColumnHeader">
+					<Border Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+						<ContentPresenter VerticalAlignment="Center"
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  Margin="{TemplateBinding Padding}" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style x:Key="CenterHeaderStyle"
@@ -101,6 +129,40 @@
 				Value="Right" />
 	</Style>
 
+	<!--ROW-->
+	<Style TargetType="DataGridRow">
+		<Setter Property="Background"
+				Value="Transparent" />
+		<Setter Property="BorderThickness"
+				Value="0" />
+		<Style.Triggers>
+
+			<Trigger Property="IsMouseOver"
+					 Value="True">
+				<Setter Property="Cursor"
+						Value="Hand" />
+			</Trigger>
+
+			<Trigger Property="IsSelected"
+					 Value="True">
+				<Setter Property="Background"
+						Value="#E0E7FF" />
+			</Trigger>
+
+			<MultiTrigger>
+				<MultiTrigger.Conditions>
+					<Condition Property="IsMouseOver"
+							   Value="True" />
+					<Condition Property="IsSelected"
+							   Value="False" />
+				</MultiTrigger.Conditions>
+				<Setter Property="Background"
+						Value="#F3F4F6" />
+			</MultiTrigger>
+
+		</Style.Triggers>
+	</Style>
+
 	<Style TargetType="DataGridCell">
 		<Setter Property="VerticalContentAlignment"
 				Value="Center" />
@@ -112,25 +174,51 @@
 				Value="{x:Null}" />
 		<Setter Property="Padding"
 				Value="12,0" />
-	</Style>
 
-	<Style TargetType="DataGridRow">
 		<Setter Property="Background"
 				Value="Transparent" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="DataGridCell">
+					<Border Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+						<ContentPresenter VerticalAlignment="Center"
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  Margin="{TemplateBinding Padding}" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+
 		<Style.Triggers>
 			<Trigger Property="IsSelected"
 					 Value="True">
 				<Setter Property="Background"
-						Value="#E0E7FF" />
-			</Trigger>
-			<Trigger Property="IsMouseOver"
-					 Value="True">
-				<Setter Property="Background"
-						Value="#F3F4F6" />
-				<Setter Property="Cursor"
-						Value="Hand" />
+						Value="Transparent" />
+				<Setter Property="Foreground"
+						Value="#2B3674" />
 			</Trigger>
 		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="CellLeft"
+		   TargetType="TextBlock">
+		<Setter Property="HorizontalAlignment"
+				Value="Left" />
+		<Setter Property="VerticalAlignment"
+				Value="Center" />
+
+		<Setter Property="TextWrapping"
+				Value="Wrap" />
+	</Style>
+
+	<Style x:Key="CellName"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource CellLeft}">
+		<Setter Property="FontWeight"
+				Value="Bold" />
 	</Style>
 
 	<Style x:Key="CellCenter"
@@ -139,75 +227,177 @@
 				Value="Center" />
 		<Setter Property="VerticalAlignment"
 				Value="Center" />
-		<Setter Property="Margin"
-				Value="8,0" />
-	</Style>
-	<Style x:Key="CellLeft"
-		   TargetType="TextBlock">
-		<Setter Property="HorizontalAlignment"
-				Value="Left" />
-		<Setter Property="VerticalAlignment"
-				Value="Center" />
-		<Setter Property="Margin"
-				Value="12,0,8,0" />
 		<Setter Property="TextWrapping"
-				Value="NoWrap" />
-		<Setter Property="TextTrimming"
-				Value="CharacterEllipsis" />
+				Value="Wrap" />
 	</Style>
+
+	<Style x:Key="CellText"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource CellCenter}">
+		<Setter Property="FontWeight"
+				Value="SemiBold" />
+		<Setter Property="Foreground"
+				Value="#A3AED0" />
+	</Style>
+
+	<Style x:Key="CellCode"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource CellCenter}">
+		<Setter Property="Foreground"
+				Value="#4318FF" />
+		<Setter Property="FontWeight"
+				Value="Bold" />
+	</Style>
+
 	<Style x:Key="CellRight"
 		   TargetType="TextBlock">
 		<Setter Property="HorizontalAlignment"
 				Value="Right" />
 		<Setter Property="VerticalAlignment"
 				Value="Center" />
-		<Setter Property="Margin"
-				Value="8,0,12,0" />
-	</Style>
-	<Style x:Key="CellMoney"
-		   TargetType="TextBlock">
-		<Setter Property="HorizontalAlignment"
-				Value="Right" />
-		<Setter Property="VerticalAlignment"
-				Value="Center" />
-		<Setter Property="Margin"
-				Value="8,0,12,0" />
-		<Setter Property="FontWeight"
-				Value="SemiBold" />
-	</Style>
-	<Style x:Key="CellProfit"
-		   TargetType="TextBlock">
-		<Setter Property="HorizontalAlignment"
-				Value="Right" />
-		<Setter Property="VerticalAlignment"
-				Value="Center" />
-		<Setter Property="Margin"
-				Value="8,0,12,0" />
-		<Setter Property="FontWeight"
-				Value="Bold" />
-		<!--<Setter Property="Foreground" Value="DarkGreen"/>-->
-	</Style>
-	<Style x:Key="CellDebt"
-		   TargetType="TextBlock">
-		<Setter Property="HorizontalAlignment"
-				Value="Right" />
-		<Setter Property="VerticalAlignment"
-				Value="Center" />
-		<Setter Property="Margin"
-				Value="8,0,12,0" />
-		<Setter Property="FontWeight"
-				Value="Bold" />
 	</Style>
 
-	<Style x:Key="CellText"
-		   TargetType="TextBlock">
-		<Setter Property="HorizontalAlignment"
-				Value="Center" />
-		<Setter Property="VerticalAlignment"
-				Value="Center" />
+	<Style x:Key="CellMoney"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource CellRight}">
 		<Setter Property="FontWeight"
 				Value="SemiBold" />
 		<Setter Property="Foreground"
-				Value="#A3AED0" />
+				Value="#2B3674" />
+	</Style>
+
+	<Style x:Key="CellProfit"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource CellRight}">
+		<Setter Property="FontWeight"
+				Value="Bold" />
+		<Setter Property="Foreground"
+				Value="#10B981" />
+	</Style>
+
+	<Style x:Key="CellDebt"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource CellRight}">
+		<Setter Property="FontWeight"
+				Value="Bold" />
+		<Setter Property="Foreground"
+				Value="#EF4444" />
+	</Style>
+
+	<Style x:Key="CellDynamicDebt"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource CellProfit}">
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding HasDebt}"
+						 Value="True">
+				<Setter Property="Foreground"
+						Value="#EF4444" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+
+	<!--ACTION BUTTON-->
+	<Style x:Key="MiniActionButtonBase"
+		   TargetType="Button">
+		<Setter Property="Width"
+				Value="32" />
+		<Setter Property="Height"
+				Value="32" />
+		<Setter Property="BorderThickness"
+				Value="0" />
+		<Setter Property="Cursor"
+				Value="Hand" />
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border"
+							Background="{TemplateBinding Background}"
+							CornerRadius="6">
+						<ContentPresenter HorizontalAlignment="Center"
+										  VerticalAlignment="Center" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver"
+								 Value="True">
+							<Setter TargetName="border"
+									Property="Opacity"
+									Value="0.8" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="MiniPrimaryButton"
+		   TargetType="Button"
+		   BasedOn="{StaticResource MiniActionButtonBase}">
+		<Setter Property="Background"
+				Value="#EEF2FF" />
+		<Setter Property="Foreground"
+				Value="#4318FF" />
+	</Style>
+
+	<Style x:Key="MiniDangerButton"
+		   TargetType="Button"
+		   BasedOn="{StaticResource MiniActionButtonBase}">
+		<Setter Property="Background"
+				Value="#FEE2E2" />
+		<Setter Property="Foreground"
+				Value="#EF4444" />
+	</Style>
+
+	<Style x:Key="MiniWarningButton"
+		   TargetType="Button"
+		   BasedOn="{StaticResource MiniActionButtonBase}">
+		<Setter Property="Background"
+				Value="#FEF3C7" />
+		<Setter Property="Foreground"
+				Value="#D97706" />
+	</Style>
+
+	<Style x:Key="ActionTextSuccessButton"
+		   TargetType="Button">
+		<Setter Property="Height"
+				Value="32" />
+		<Setter Property="Background"
+				Value="#D1FAE5" />
+		<Setter Property="Foreground"
+				Value="#059669" />
+		<Setter Property="BorderThickness"
+				Value="0" />
+		<Setter Property="Cursor"
+				Value="Hand" />
+		<Setter Property="Padding"
+				Value="12,0" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border"
+							Background="{TemplateBinding Background}"
+							CornerRadius="6"
+							Padding="{TemplateBinding Padding}">
+						<ContentPresenter HorizontalAlignment="Center"
+										  VerticalAlignment="Center" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver"
+								 Value="True">
+							<Setter TargetName="border"
+									Property="Opacity"
+									Value="0.8" />
+						</Trigger>
+						<Trigger Property="IsEnabled"
+								 Value="False">
+							<Setter TargetName="border"
+									Property="Opacity"
+									Value="0.4" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</Style>
 </ResourceDictionary>
