@@ -20,18 +20,15 @@
 										  ShowAddButton="False" />
 
 			<TabControl Grid.Row="1"
-						Background="Transparent"
-						BorderThickness="0">
-				<TabItem Header="ĐẦU SÁCH"
-						 Style="{StaticResource CategoryTabItem}"
-						 FontWeight="Bold">
+						Style="{StaticResource TabControlStyle}">
+				<TabItem Header="ĐẦU SÁCH">
 					<Grid Margin="0,15,0,0">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
 						</Grid.RowDefinitions>
-						
-						
+
+
 						<Grid Grid.Row="0"
 							  Margin="0,0,0,15">
 							<Grid.ColumnDefinitions>
@@ -63,7 +60,7 @@
 														Binding="{Binding Stt}"
 														Width="50"
 														HeaderStyle="{StaticResource CenterHeaderStyle}"
-														ElementStyle="{StaticResource CellText}"/>
+														ElementStyle="{StaticResource CellText}" />
 									<!-- Cột tên sách-->
 									<DataGridTextColumn Header="Tên đầu sách"
 														Binding="{Binding Name}"
@@ -242,9 +239,7 @@
 					</Grid>
 				</TabItem>
 
-				<TabItem Header="TÁC GIẢ"
-						 Style="{StaticResource CategoryTabItem}"
-						 FontWeight="Bold">
+				<TabItem Header="TÁC GIẢ">
 					<Grid Margin="0,15,0,0">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -262,7 +257,7 @@
 														   IconKind="Person"
 														   HintText="Tìm tác giả..."
 														   TextValue="{Binding SearchTacGia}" />
-							
+
 							<Button Grid.Column="2"
 									Style="{StaticResource MainGradientButton}"
 									Width="150"
@@ -281,8 +276,8 @@
 									<DataGridTextColumn Header="STT"
 														Binding="{Binding Stt}"
 														Width="50"
-														HeaderStyle="{StaticResource CenterHeaderStyle}" 
-														ElementStyle="{StaticResource CellText}"/>
+														HeaderStyle="{StaticResource CenterHeaderStyle}"
+														ElementStyle="{StaticResource CellText}" />
 									<!-- Cột tên tác giả-->
 									<DataGridTextColumn Header="Tên tác giả"
 														Binding="{Binding Name}"
@@ -309,9 +304,7 @@
 					</Grid>
 				</TabItem>
 
-				<TabItem Header="THỂ LOẠI"
-						 Style="{StaticResource CategoryTabItem}"
-						 FontWeight="Bold">
+				<TabItem Header="THỂ LOẠI">
 					<Grid Margin="0,15,0,0">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -345,8 +338,8 @@
 									<DataGridTextColumn Header="STT"
 														Binding="{Binding Stt}"
 														Width="50"
-														HeaderStyle="{StaticResource CenterHeaderStyle}" 
-														ElementStyle="{StaticResource CellText}"/>
+														HeaderStyle="{StaticResource CenterHeaderStyle}"
+														ElementStyle="{StaticResource CellText}" />
 									<!-- Cột tên tác giả-->
 									<DataGridTextColumn Header="Tên thể loại"
 														Binding="{Binding Name}"
@@ -373,9 +366,7 @@
 					</Grid>
 				</TabItem>
 
-				<TabItem Header="NHÀ XUẤT BẢN"
-						 Style="{StaticResource CategoryTabItem}"
-						 FontWeight="Bold">
+				<TabItem Header="NHÀ XUẤT BẢN">
 					<Grid Margin="0,15,0,0">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -388,7 +379,7 @@
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							
+
 							<components:FilterInputControl Grid.Column="0"
 														   IconKind="Building"
 														   HintText="Tìm Nhà xuất bản..."
@@ -410,9 +401,9 @@
 								<DataGrid.Columns>
 									<DataGridTextColumn Header="STT"
 														Binding="{Binding Stt}"
-														Width="60"
+														Width="50"
 														HeaderStyle="{StaticResource CenterHeaderStyle}"
-														ElementStyle="{StaticResource CellText}"/>
+														ElementStyle="{StaticResource CellText}" />
 									<!-- Cột tên tác giả-->
 									<DataGridTextColumn Header="Tên Nhà xuất bản"
 														Binding="{Binding Name}"
@@ -438,6 +429,7 @@
 						</Border>
 					</Grid>
 				</TabItem>
+
 			</TabControl>
 
 			<Grid Grid.RowSpan="2"
@@ -724,6 +716,5 @@
 				</Border>
 			</Grid>
 		</Grid>
-
 	</Grid>
 </UserControl>

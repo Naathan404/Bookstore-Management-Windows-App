@@ -5,9 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
-			 mc:Ignorable="d"
-			 HorizontalAlignment="Stretch"
-			 VerticalAlignment="Stretch">
+			 mc:Ignorable="d">
 
 	<Grid>
 		<Grid x:Name="MainAccountView"
@@ -29,42 +27,8 @@
 										  SecondCommandParameter="{Binding}" />
 
 			<TabControl Grid.Row="1"
-						Background="Transparent"
-						BorderThickness="0">
-				<TabControl.Resources>
-					<Style TargetType="TabItem">
-						<Setter Property="FontSize"
-								Value="15" />
-						<Setter Property="FontWeight"
-								Value="Bold" />
-						<Setter Property="Foreground"
-								Value="#A3AED0" />
-						<Setter Property="Background"
-								Value="Transparent" />
-						<Setter Property="BorderThickness"
-								Value="0,0,0,3" />
-						<Setter Property="BorderBrush"
-								Value="Transparent" />
-						<Setter Property="Padding"
-								Value="15,10" />
-						<Setter Property="Margin"
-								Value="0,0,20,0" />
-						<Setter Property="Cursor"
-								Value="Hand" />
-						<Setter Property="FontWeight"
-								Value="SemiBold"></Setter>
-						<Style.Triggers>
-							<Trigger Property="IsSelected"
-									 Value="True">
-								<Setter Property="Foreground"
-										Value="#4318FF" />
-								<Setter Property="BorderBrush"
-										Value="#4318FF" />
-							</Trigger>
-						</Style.Triggers>
-					</Style>
-				</TabControl.Resources>
-				
+						Style="{StaticResource TabControlStyle}">
+
 				<TabItem Header="DANH SÁCH TÀI KHOẢN">
 					<Grid>
 						<Grid.RowDefinitions>
@@ -262,82 +226,11 @@
 						</Border>
 
 						<!--Phân trang-->
-						<components:PaginationControl Grid.Row="3"
+						<components:PaginationControl Grid.Row="2"
 													  CurrentPage="{Binding TrangHienTai}"
 													  TotalPages="{Binding TongSoTrang}"
 													  TotalRecords="{Binding TongBanGhi}"
 													  PaginationCommand="{Binding PhanTrangCommand}" />
-						<!--<Border Grid.Row="3"
-								Margin="0,12,0,0"
-								Padding="12,8"
-								CornerRadius="12"
-								Background="White"
-								BorderBrush="#E2E8F0"
-								BorderThickness="1">
-							<StackPanel Orientation="Horizontal"
-										HorizontalAlignment="Center">
-								<Button Style="{StaticResource PaginationButtonStyle}"
-										Command="{Binding FirstPageCommand}"
-										CommandParameter="{Binding}"
-										Margin="0,0,4,0">
-									<materialDesign:PackIcon Kind="ChevronDoubleLeft"
-															 Width="16"
-															 Height="16"
-															 Foreground="#A3AED0" />
-								</Button>
-								<Button Style="{StaticResource PaginationButtonStyle}"
-										Command="{Binding PrevPageCommand}"
-										CommandParameter="{Binding}"
-										Margin="0,0,8,0">
-									<materialDesign:PackIcon Kind="ChevronLeft"
-															 Width="16"
-															 Height="16"
-															 Foreground="#A3AED0" />
-								</Button>
-
-								<ItemsControl ItemsSource="{Binding PageNumbers}">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<StackPanel Orientation="Horizontal" />
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<Button Content="{Binding}"
-													Margin="0,0,4,0"
-													Style="{StaticResource PaginationButtonStyle}"
-													Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-													CommandParameter="{Binding}" />
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-
-								<Button Style="{StaticResource PaginationButtonStyle}"
-										Command="{Binding NextPageCommand}"
-										CommandParameter="{Binding}"
-										Margin="8,0,0,0">
-									<materialDesign:PackIcon Kind="ChevronRight"
-															 Width="16"
-															 Height="16"
-															 Foreground="#A3AED0" />
-								</Button>
-								<Button Style="{StaticResource PaginationButtonStyle}"
-										Command="{Binding LastPageCommand}"
-										CommandParameter="{Binding}"
-										Margin="4,0,0,0">
-									<materialDesign:PackIcon Kind="ChevronDoubleRight"
-															 Width="16"
-															 Height="16"
-															 Foreground="#A3AED0" />
-								</Button>
-
-								<TextBlock Text="{Binding CurrentPage, StringFormat='Trang {0}'}"
-										   FontSize="12"
-										   Foreground="#A3AED0"
-										   VerticalAlignment="Center"
-										   Margin="12,0,0,0" />
-							</StackPanel>
-						</Border>-->
 					</Grid>
 				</TabItem>
 

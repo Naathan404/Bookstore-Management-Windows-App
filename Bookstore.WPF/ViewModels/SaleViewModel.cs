@@ -328,6 +328,12 @@ namespace Bookstore.WPF.ViewModels
             set { _searchTextSach = value; OnPropertyChanged(); CurrentPage = 1; ApplyFilterAndPagination(); }
         }
 
+        public List<string> ListKieuTimKiem { get; set; } = new List<string>
+        {
+            "Tên sách",
+            "Mã ISBN",
+            "Tác giả"
+        };
         private object _kieuTimKiemSach;
         public object KieuTimKiemSach
         {

@@ -3,21 +3,12 @@
 					xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
 	<Style x:Key="FilterCardStyle"
-		   TargetType="Border">
+		   TargetType="Border"
+		   BasedOn="{StaticResource CardStyle}">
 		<Setter Property="Margin"
-				Value="0,0,0,12" />
-		<Setter Property="Padding"
-				Value="20" />
-		<Setter Property="CornerRadius"
-				Value="16" />
-		<Setter Property="Background"
-				Value="White" />
-		<Setter Property="BorderBrush"
-				Value="#E2E8F0" />
-		<Setter Property="BorderThickness"
-				Value="1" />
+				Value="0,0,0,8" />
 	</Style>
-	
+
 	<Style x:Key="FilterBorderStyle"
 		   TargetType="Border">
 		<Setter Property="CornerRadius"

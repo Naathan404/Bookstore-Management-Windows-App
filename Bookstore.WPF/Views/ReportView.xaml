@@ -226,8 +226,7 @@
 
 					<Border x:Name="DataGrid"
 							Grid.Row="1"
-							Style="{StaticResource DataGridCardStyle}"
-							Margin="0,0,0,5">
+							Style="{StaticResource DataGridCardStyle}">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />

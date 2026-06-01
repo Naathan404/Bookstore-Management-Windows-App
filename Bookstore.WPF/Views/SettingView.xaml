@@ -8,31 +8,6 @@
 			 mc:Ignorable="d">
 
 	<UserControl.Resources>
-		<SolidColorBrush x:Key="BackgroundColor"
-						 Color="#F4F7FE" />
-		<SolidColorBrush x:Key="PrimaryDarkColor"
-						 Color="#2B3674" />
-		<SolidColorBrush x:Key="PrimaryColor"
-						 Color="#4318FF" />
-		<SolidColorBrush x:Key="TextLightColor"
-						 Color="#A3AED0" />
-		<SolidColorBrush x:Key="WhiteColor"
-						 Color="White" />
-		<SolidColorBrush x:Key="DangerColor"
-						 Color="#EF4444" />
-		<SolidColorBrush x:Key="SuccessColor"
-						 Color="#10B981" />
-		<SolidColorBrush x:Key="WarningColor"
-						 Color="#F59E0B" />
-		<LinearGradientBrush x:Key="GradientButtonBrush"
-							 StartPoint="0,0"
-							 EndPoint="1,0">
-			<GradientStop Color="#4318FF"
-						  Offset="0" />
-			<GradientStop Color="#5B3CFF"
-						  Offset="1" />
-		</LinearGradientBrush>
-
 		<Style x:Key="SettingCard"
 			   TargetType="Border">
 			<Setter Property="Background"
