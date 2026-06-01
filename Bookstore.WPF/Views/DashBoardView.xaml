@@ -11,7 +11,7 @@
 			 d:DesignWidth="1600"
 			 Unloaded="UserControl_Unloaded">
 
-	<Grid>
+	<Grid Margin="{StaticResource MainViewMargin}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />

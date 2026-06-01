@@ -18,7 +18,8 @@
 	</UserControl.Resources>
 
 	<Grid>
-		<Grid x:Name="MainImportView">
+		<Grid x:Name="MainImportView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />

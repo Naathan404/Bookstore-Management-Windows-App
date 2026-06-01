@@ -11,7 +11,8 @@
 			 d:DesignWidth="1600">
 
 	<Grid>
-		<Grid x:Name="MainReportView">
+		<Grid x:Name="MainReportView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>

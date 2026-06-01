@@ -266,7 +266,8 @@
 
 	<Grid>
 		<!-- NỘI DUNG CHÍNH -->
-		<Grid x:Name="MainProductView">
+		<Grid x:Name="MainProductView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />

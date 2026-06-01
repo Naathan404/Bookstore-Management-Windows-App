@@ -4,6 +4,8 @@
 
 	<BooleanToVisibilityConverter x:Key="BoolToVis" />
 
+	<Thickness x:Key="MainViewMargin">20,10,20,10</Thickness>
+	
 	<Style x:Key="CategoryTabItem"
 		   TargetType="TabItem">
 		<Setter Property="FontSize"

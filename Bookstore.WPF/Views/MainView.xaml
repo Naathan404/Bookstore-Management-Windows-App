@@ -106,8 +106,7 @@
 					 Margin="0,0,-100,-100"
 					 IsHitTestVisible="False" />
 
-			<ContentControl Content="{Binding CurrentView}"
-							Margin="20, 10, 20, 10" />
+			<ContentControl Content="{Binding CurrentView}" />
 
 		</Grid>
 	</Grid>

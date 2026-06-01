@@ -9,7 +9,8 @@
 			 xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components">
 	<Grid>
-		<Grid x:Name="MainCustomerView">
+		<Grid x:Name="MainCustomerView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />

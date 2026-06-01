@@ -10,7 +10,8 @@
 			 VerticalAlignment="Stretch">
 
 	<Grid>
-		<Grid x:Name="MainAccountView">
+		<Grid x:Name="MainAccountView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />

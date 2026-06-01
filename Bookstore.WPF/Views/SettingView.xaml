@@ -89,7 +89,8 @@
 	</UserControl.Resources>
 
 	<Grid>
-		<Grid x:Name="MainSettingView">
+		<Grid x:Name="MainSettingView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />

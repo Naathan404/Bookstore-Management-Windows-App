@@ -173,7 +173,8 @@
 	</UserControl.Resources>
 
 	<Grid>
-		<Grid x:Name="MainReceipView">
+		<Grid x:Name="MainReceipView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
