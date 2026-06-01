@@ -241,35 +241,21 @@
 									<ColumnDefinition Width="*" />
 									<ColumnDefinition Width="Auto" />
 								</Grid.ColumnDefinitions>
-								<StackPanel Grid.Column="0"
+                                <StackPanel Grid.Column="0"
 											Orientation="Horizontal">
-									<materialDesign:PackIcon Kind="TableLarge"
+                                    <materialDesign:PackIcon Kind="TableLarge"
 															 Width="18"
 															 Height="18"
 															 Foreground="#4318FF"
 															 VerticalAlignment="Center"
 															 Margin="0,0,8,0" />
-									<TextBlock Text="{Binding TableTitle}"
+                                    <TextBlock Text="{Binding TableTitle}"
 											   FontSize="15"
 											   FontWeight="Bold"
 											   Foreground="#2B3674"
 											   VerticalAlignment="Center" />
-								</StackPanel>
-								<StackPanel Grid.Column="1"
-											Orientation="Horizontal"
-											VerticalAlignment="Center">
-									<TextBlock Text="Tổng cộng: "
-											   FontSize="12"
-											   Foreground="#A3AED0" />
-									<TextBlock Text="{Binding TotalRows}"
-											   FontSize="12"
-											   FontWeight="Bold"
-											   Foreground="#4318FF" />
-									<TextBlock Text=" dòng"
-											   FontSize="12"
-											   Foreground="#A3AED0" />
-								</StackPanel>
-							</Grid>
+                                </StackPanel>
+                            </Grid>
 
 							<Grid Grid.Row="1"
 								  Visibility="{Binding ContentVisibility}">
