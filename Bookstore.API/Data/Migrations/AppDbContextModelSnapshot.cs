@@ -160,12 +160,12 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaCT = 1,
-                            GiamToiDa = 100m,
+                            GiamToiDa = 100000m,
                             MaUuDai = 1,
                             SoTienGiam = 0m,
                             SoTienToiDa = 999999999m,
                             SoTienToiThieu = 500000m,
-                            TiLeGiam = 0.10000000149011612
+                            TiLeGiam = 10.0
                         });
                 });
 
@@ -232,7 +232,7 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaCT = 1,
-                            GiamToiDa = 20000m,
+                            GiamToiDa = 0m,
                             MaUuDai = 3,
                             SoTienGiam = 20000m,
                             TiLeGiam = 0.0
@@ -599,54 +599,66 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaChucNang = 3,
+                            TenChucNang = "Hóa đơn",
+                            TenManHinh = "InvoiceView"
+                        },
+                        new
+                        {
+                            MaChucNang = 4,
                             TenChucNang = "Tra cứu sách",
                             TenManHinh = "ProductView"
                         },
                         new
                         {
-                            MaChucNang = 4,
+                            MaChucNang = 5,
                             TenChucNang = "Khách hàng",
                             TenManHinh = "CustomerView"
                         },
                         new
                         {
-                            MaChucNang = 5,
+                            MaChucNang = 6,
+                            TenChucNang = "Phiếu nhập",
+                            TenManHinh = "ReceiptView"
+                        },
+                        new
+                        {
+                            MaChucNang = 7,
                             TenChucNang = "Nhập kho",
                             TenManHinh = "ImportView"
                         },
                         new
                         {
-                            MaChucNang = 6,
+                            MaChucNang = 8,
                             TenChucNang = "Nhà cung cấp",
                             TenManHinh = "SupplierView"
                         },
                         new
                         {
-                            MaChucNang = 7,
+                            MaChucNang = 9,
                             TenChucNang = "Ưu đãi",
                             TenManHinh = "PromotionView"
                         },
                         new
                         {
-                            MaChucNang = 8,
+                            MaChucNang = 10,
                             TenChucNang = "Danh mục",
                             TenManHinh = "CategoryView"
                         },
                         new
                         {
-                            MaChucNang = 9,
+                            MaChucNang = 11,
                             TenChucNang = "Báo cáo",
                             TenManHinh = "ReportView"
                         },
                         new
                         {
-                            MaChucNang = 10,
+                            MaChucNang = 12,
                             TenChucNang = "Tài khoản",
                             TenManHinh = "AccountView"
                         },
                         new
                         {
-                            MaChucNang = 11,
+                            MaChucNang = 13,
                             TenChucNang = "Cài đặt",
                             TenManHinh = "SettingView"
                         });
@@ -797,12 +809,10 @@ namespace Bookstore.API.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaKhachHang"));
 
                     b.Property<string>("DiaChi")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("GioiTinh")
                         .HasColumnType("int");
@@ -811,10 +821,9 @@ namespace Bookstore.API.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MaSoThue")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("NgaySinh")
+                    b.Property<DateOnly?>("NgaySinh")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("NgayTao")
@@ -838,9 +847,6 @@ namespace Bookstore.API.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("MaKhachHang");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("MaLoaiKhachHang");
 
@@ -1061,7 +1067,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521186@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7307),
+                            HanOTP = new DateTime(2026, 5, 31, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2008),
                             HoTen = "Nguyễn Chí Nguyên",
                             MaNhomNguoiDung = 1,
                             MaOTP = "",
@@ -1076,7 +1082,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24520604@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7327),
+                            HanOTP = new DateTime(2026, 5, 31, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2020),
                             HoTen = "Nguyễn Gia Hưng",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1091,7 +1097,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521432@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7329),
+                            HanOTP = new DateTime(2026, 5, 31, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2022),
                             HoTen = "Lê Hoàng Quân",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1106,7 +1112,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521536@gm.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7331),
+                            HanOTP = new DateTime(2026, 5, 31, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2024),
                             HoTen = "Phạm Hoàng Sơn",
                             MaNhomNguoiDung = 3,
                             MaOTP = "",
@@ -1121,7 +1127,7 @@ namespace Bookstore.API.Data.Migrations
                             DangLamViec = true,
                             Email = "24521360@g.uit.edu.vn",
                             GioiTinh = "Nam",
-                            HanOTP = new DateTime(2026, 5, 24, 15, 27, 59, 102, DateTimeKind.Local).AddTicks(7332),
+                            HanOTP = new DateTime(2026, 5, 31, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2025),
                             HoTen = "Nguyễn Lưu Văn Phú",
                             MaNhomNguoiDung = 2,
                             MaOTP = "",
@@ -1139,6 +1145,9 @@ namespace Bookstore.API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaNhaCungCap"));
 
+                    b.Property<bool>("ConGiaoGich")
+                        .HasColumnType("bit");
+
                     b.Property<string>("DiaChi")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1152,6 +1161,10 @@ namespace Bookstore.API.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NganHang")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NguoiDaiDien")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1184,10 +1197,12 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaNhaCungCap = 1,
+                            ConGiaoGich = true,
                             DiaChi = "387-389 Hai Bà Trưng, Quận 3, TP.HCM",
                             Email = "info@fahasa.com",
                             MaSoThue = "0300435133",
                             NganHang = "Vietcombank",
+                            NguoiDaiDien = "Lê Thành Nghĩa",
                             SoDienThoai = "1900636467",
                             SoTaiKhoan = "0071000123456",
                             TenNhaCungCap = "Công ty CP Phát hành sách FAHASA"
@@ -1195,13 +1210,28 @@ namespace Bookstore.API.Data.Migrations
                         new
                         {
                             MaNhaCungCap = 2,
+                            ConGiaoGich = true,
                             DiaChi = "212 Nguyễn Trãi, Quận 1, TP.HCM",
                             Email = "contact@phuongnam.com",
                             MaSoThue = "0302221113",
                             NganHang = "Techcombank",
+                            NguoiDaiDien = "Tô Công Hữu Nhân",
                             SoDienThoai = "1900555555",
                             SoTaiKhoan = "1901234567890",
                             TenNhaCungCap = "Nhà sách Phương Nam"
+                        },
+                        new
+                        {
+                            MaNhaCungCap = 3,
+                            ConGiaoGich = true,
+                            DiaChi = "36A Alexander, Quận 3, TP.HCM",
+                            Email = "contact@justbooks.com",
+                            MaSoThue = "0302221115",
+                            NganHang = "Techcombank",
+                            NguoiDaiDien = "Nguyễn Khả An",
+                            SoDienThoai = "19005551234",
+                            SoTaiKhoan = "1901234567777",
+                            TenNhaCungCap = "Nhà sách JustBooks"
                         });
                 });
 
@@ -1380,6 +1410,16 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
+                            MaChucNang = 12,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
+                            MaChucNang = 13,
+                            MaNhomNguoiDung = 1
+                        },
+                        new
+                        {
                             MaChucNang = 1,
                             MaNhomNguoiDung = 3
                         },
@@ -1420,12 +1460,17 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaChucNang = 2,
-                            MaNhomNguoiDung = 2
+                            MaChucNang = 10,
+                            MaNhomNguoiDung = 3
                         },
                         new
                         {
-                            MaChucNang = 3,
+                            MaChucNang = 11,
+                            MaNhomNguoiDung = 3
+                        },
+                        new
+                        {
+                            MaChucNang = 2,
                             MaNhomNguoiDung = 2
                         },
                         new
@@ -1435,7 +1480,12 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            MaChucNang = 8,
+                            MaChucNang = 5,
+                            MaNhomNguoiDung = 2
+                        },
+                        new
+                        {
+                            MaChucNang = 10,
                             MaNhomNguoiDung = 2
                         });
                 });
@@ -1890,7 +1940,7 @@ namespace Bookstore.API.Data.Migrations
 
                     b.Property<string>("NguoiTao")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("SoTienThu")
                         .HasColumnType("decimal(18,2)");
@@ -1898,6 +1948,8 @@ namespace Bookstore.API.Data.Migrations
                     b.HasKey("MaPhieuThuTien");
 
                     b.HasIndex("MaKhachHang");
+
+                    b.HasIndex("NguoiTao");
 
                     b.ToTable("PhieuThuTien");
 
@@ -2431,7 +2483,7 @@ namespace Bookstore.API.Data.Migrations
                         },
                         new
                         {
-                            TenThamSo = "CoKhoangachCacKhoangGia",
+                            TenThamSo = "CoKhoangCachCacKhoangGia",
                             GiaTri = 1
                         },
                         new
@@ -2536,6 +2588,10 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<bool>("CoTheSuDung")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaLoaiKhachHang")
                         .HasColumnType("int");
 
@@ -2565,7 +2621,7 @@ namespace Bookstore.API.Data.Migrations
                     b.Property<int>("SoLuongToiDa")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenUuDai")
+                    b.Property<string>("TenChuongTrinh")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -2582,61 +2638,65 @@ namespace Bookstore.API.Data.Migrations
                         {
                             MaUuDai = 1,
                             CoTheSuDung = true,
+                            Code = "PROMO10",
                             MaLoaiKhachHang = 1,
                             MaLoaiUuDai = 1,
                             MoTa = "Chương trình kích cầu",
-                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayBatDau = new DateTime(2026, 5, 26, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2470),
+                            NgayKetThuc = new DateTime(2026, 6, 30, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2471),
+                            NgayTao = new DateTime(2026, 5, 21, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2462),
                             NguoiTao = "admin",
-                            SoLuongDaDung = 0,
+                            SoLuongDaDung = 136,
                             SoLuongToiDa = 1000,
-                            TenUuDai = "Giảm 10% Hóa đơn > 500k"
+                            TenChuongTrinh = "Giảm 10% Hóa đơn > 500k"
                         },
                         new
                         {
                             MaUuDai = 2,
                             CoTheSuDung = true,
+                            Code = "DTN1M",
                             MaLoaiKhachHang = 2,
                             MaLoaiUuDai = 2,
                             MoTa = "Tri ân khách VIP",
-                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayBatDau = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayKetThuc = new DateTime(2023, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayTao = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NguoiTao = "quanlh",
-                            SoLuongDaDung = 0,
+                            SoLuongDaDung = 50,
                             SoLuongToiDa = 50,
-                            TenUuDai = "Hóa đơn 1Tr tặng Đắc Nhân Tâm"
+                            TenChuongTrinh = "Hóa đơn 1Tr tặng Đắc Nhân Tâm"
                         },
                         new
                         {
                             MaUuDai = 3,
-                            CoTheSuDung = true,
+                            CoTheSuDung = false,
+                            Code = "MATBIEC20K",
                             MaLoaiKhachHang = 1,
                             MaLoaiUuDai = 3,
                             MoTa = "Sale sách Hot",
-                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayBatDau = new DateTime(2026, 5, 30, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2479),
+                            NgayKetThuc = new DateTime(2026, 7, 30, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2480),
+                            NgayTao = new DateTime(2026, 5, 29, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2478),
                             NguoiTao = "hungng",
-                            SoLuongDaDung = 0,
+                            SoLuongDaDung = 20,
                             SoLuongToiDa = 200,
-                            TenUuDai = "Giảm 20k Mắt Biếc"
+                            TenChuongTrinh = "Giảm 20k Mắt Biếc"
                         },
                         new
                         {
                             MaUuDai = 4,
                             CoTheSuDung = true,
+                            Code = "CODESTACK300",
                             MaLoaiKhachHang = 1,
                             MaLoaiUuDai = 4,
                             MoTa = "Đồng hành cùng IT",
-                            NgayBatDau = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayKetThuc = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NgayTao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NgayBatDau = new DateTime(2026, 6, 15, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2481),
+                            NgayKetThuc = new DateTime(2026, 7, 15, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2482),
+                            NgayTao = new DateTime(2026, 5, 31, 13, 7, 48, 342, DateTimeKind.Local).AddTicks(2480),
                             NguoiTao = "sonph",
                             SoLuongDaDung = 0,
                             SoLuongToiDa = 100,
-                            TenUuDai = "Combo Dev: Mua 2 tặng 1"
+                            TenChuongTrinh = "Combo Dev: Mua 2 tặng 1"
                         });
                 });
 
@@ -2934,7 +2994,15 @@ namespace Bookstore.API.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Bookstore.API.Models.NguoiDung", "NguoiDung")
+                        .WithMany()
+                        .HasForeignKey("NguoiTao")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("KhachHang");
+
+                    b.Navigation("NguoiDung");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.Sach", b =>

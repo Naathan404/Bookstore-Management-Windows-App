@@ -14,53 +14,35 @@ namespace Bookstore.WPF.Services
             _canExecute = canExecute;
         }
 
-        public event EventHandler? CanExecuteChanged;
-
-        public bool CanExecute(object? parameter)
+        private EventHandler? _canExecuteChanged;
+        public event EventHandler? CanExecuteChanged
         {
-            if (_canExecute == null) return true;
-
-            // Nếu parameter là null và T là kiểu tham chiếu (Reference Type), cứ cho nó chạy
-            if (parameter == null)
+            add
             {
-                return _canExecute(default(T)!);
+                CommandManager.RequerySuggested += value;
+                _canExecuteChanged += value;
             }
-
-            return _canExecute((T)parameter);
-        }
-
-        public void Execute(object? parameter)
-        {
-            // Xử lý an toàn tương tự cho hàm Execute
-            if (parameter == null)
+            remove
             {
-                _execute(default(T)!);
-            }
-            else
-            {
-                _execute((T)parameter);
+                CommandManager.RequerySuggested -= value;
+                _canExecuteChanged -= value;
             }
         }
 
-        //public bool CanExecute(object? parameter)
-        //{
-        //    return _canExecute == null || _canExecute((T)parameter!);
-        //}
+        public bool CanExecute(object parameter)
+        {
+            return parameter is T t && (_canExecute?.Invoke(t) ?? true);
+        }
 
-        //public void Execute(object? parameter)
-        //{
-        //    _execute((T)parameter!);
-        //}
+        public void Execute(object parameter)
+        {
+            if (parameter is T t)
+                _execute(t);
+        }
 
-        //public event EventHandler? CanExecuteChanged
-        //{
-        //    add { CommandManager.RequerySuggested += value; }
-        //    remove { CommandManager.RequerySuggested -= value; }
-        //}
-
-        //public void RaiseCanExecuteChanged()
-        //{
-        //    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        //}
+        public void RaiseCanExecuteChanged()
+        {
+            _canExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

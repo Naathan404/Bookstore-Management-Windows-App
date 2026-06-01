@@ -8,7 +8,7 @@ namespace Bookstore.Share.DTOResponses
 {
     public class CustomerResponse
     {
-        public string? MaKhachHang { get; set; }
+        public int MaKhachHang { get; set; }
         public string? TenKhachHang { get; set; }
         public string? SoDienThoai { get; set; }
         public string? Email { get; set; }
@@ -16,7 +16,8 @@ namespace Bookstore.Share.DTOResponses
         public string? MaSoThue { get; set; }
         public string? LoaiKhach { get; set; }
         public string? GioiTinh { get; set; }
-        public DateTime NgaySinh { get; set; }
-        public long CongNo { get; set; }
+        public DateTime? NgaySinh { get; set; }
+        public decimal CongNo { get; set; }
+        public DateTime NgayTao { get; set; }
     }
 }

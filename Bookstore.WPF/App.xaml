@@ -9,7 +9,14 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.WPF;component/Themes/MaterialDesign3.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Teal.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.WPF;component/Themes/MaterialDesignTheme.PasswordBox.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+                
+                <!--Style chung cho toàn app-->
+				<ResourceDictionary Source="/XAMLRes/Colors.xaml"/>
+                <ResourceDictionary Source="/XAMLRes/SharedStyles.xaml"/>
+				<ResourceDictionary Source="/XAMLRes/Buttons.xaml" />
+				<ResourceDictionary Source="/XAMLRes/DataGrids.xaml" />
+				<ResourceDictionary Source="/XAMLRes/Filters.xaml" />
+			</ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

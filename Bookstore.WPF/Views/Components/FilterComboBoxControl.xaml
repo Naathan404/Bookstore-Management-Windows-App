@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="Bookstore.WPF.Views.Components.FilterComboBoxControl"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 x:Name="Root">
+
+	<Border x:Name="ContainerBorder"
+			Height="42"
+			CornerRadius="10"
+			Background="{StaticResource BackgroundColor}"
+			BorderBrush="#E2E8F0"
+			BorderThickness="1.5">
+
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="38" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<materialDesign:PackIcon x:Name="Icon"
+									 Kind="{Binding IconKind, ElementName=Root}"
+									 Width="18"
+									 Height="18"
+									 Foreground="{StaticResource TextLightColor}"
+									 VerticalAlignment="Center"
+									 HorizontalAlignment="Center" />
+
+			<ComboBox x:Name="ComboElement"
+					  Grid.Column="1"
+					  ItemsSource="{Binding ItemsSource, ElementName=Root}"
+					  SelectedIndex="{Binding SelectedIndex, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
+					  SelectedItem="{Binding SelectedItem, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
+					  SelectedValue="{Binding SelectedValue, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
+					  SelectedValuePath="{Binding SelectedValuePath, ElementName=Root}"
+					  DisplayMemberPath="{Binding DisplayMemberPath, ElementName=Root}"
+					  Background="Transparent"
+					  BorderThickness="0"
+					  VerticalAlignment="Center"
+					  FontSize="13"
+					  Foreground="{StaticResource PrimaryDarkColor}"
+					  materialDesign:HintAssist.Hint="{Binding HintText, ElementName=Root}"
+					  materialDesign:HintAssist.Foreground="{StaticResource TextLightColor}"
+					  materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource PrimaryColor}"
+					  Margin="0,0,10,0">
+			</ComboBox>
+		</Grid>
+
+		<Border.Style>
+			<Style TargetType="Border">
+				<Style.Triggers>
+					<DataTrigger Binding="{Binding IsKeyboardFocusWithin, ElementName=ComboElement}"
+								 Value="True">
+						<Setter Property="BorderBrush"
+								Value="{StaticResource PrimaryColor}" />
+						<Setter Property="Background"
+								Value="{StaticResource WhiteColor}" />
+						<Setter Property="Effect">
+							<Setter.Value>
+								<DropShadowEffect BlurRadius="10"
+												  Color="#4318FF"
+												  Opacity="0.15"
+												  ShadowDepth="0" />
+							</Setter.Value>
+						</Setter>
+					</DataTrigger>
+				</Style.Triggers>
+			</Style>
+		</Border.Style>
+	</Border>
+
+	<UserControl.Triggers>
+		<EventTrigger RoutedEvent="GotKeyboardFocus">
+			<BeginStoryboard>
+				<Storyboard>
+					<ColorAnimation Storyboard.TargetName="Icon"
+									Storyboard.TargetProperty="(materialDesign:PackIcon.Foreground).(SolidColorBrush.Color)"
+									To="#4318FF"
+									Duration="0:0:0.15" />
+				</Storyboard>
+			</BeginStoryboard>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="LostKeyboardFocus">
+			<BeginStoryboard>
+				<Storyboard>
+					<ColorAnimation Storyboard.TargetName="Icon"
+									Storyboard.TargetProperty="(materialDesign:PackIcon.Foreground).(SolidColorBrush.Color)"
+									To="#A3AED0"
+									Duration="0:0:0.15" />
+				</Storyboard>
+			</BeginStoryboard>
+		</EventTrigger>
+	</UserControl.Triggers>
+</UserControl>

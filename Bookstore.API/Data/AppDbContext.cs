@@ -69,7 +69,6 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<NhaCungCap>().HasIndex(ncc => ncc.SoDienThoai).IsUnique();
             modelBuilder.Entity<NhaCungCap>().HasIndex(ncc => ncc.Email).IsUnique();
             modelBuilder.Entity<KhachHang>().HasIndex(k => k.SoDienThoai).IsUnique();
-            modelBuilder.Entity<KhachHang>().HasIndex(k => k.Email).IsUnique();
             modelBuilder.Entity<NguoiDung>().HasIndex(n => n.Email).IsUnique();
 
 
@@ -237,15 +236,17 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<ChucNang>().HasData(
                     new ChucNang { MaChucNang = 1, TenChucNang = "Trang chủ", TenManHinh = "DashboardView" },
                     new ChucNang { MaChucNang = 2, TenChucNang = "Bán hàng", TenManHinh = "SaleView" },
-                    new ChucNang { MaChucNang = 3, TenChucNang = "Tra cứu sách", TenManHinh = "ProductView" },
-                    new ChucNang { MaChucNang = 4, TenChucNang = "Khách hàng", TenManHinh = "CustomerView" },
-                    new ChucNang { MaChucNang = 5, TenChucNang = "Nhập kho", TenManHinh = "ImportView" },
-                    new ChucNang { MaChucNang = 6, TenChucNang = "Nhà cung cấp", TenManHinh = "SupplierView" },
-                    new ChucNang { MaChucNang = 7, TenChucNang = "Ưu đãi", TenManHinh = "PromotionView" },
-                    new ChucNang { MaChucNang = 8, TenChucNang = "Danh mục", TenManHinh = "CategoryView" },
-                    new ChucNang { MaChucNang = 9, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
-                    new ChucNang { MaChucNang = 10, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
-                    new ChucNang { MaChucNang = 11, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
+                    new ChucNang { MaChucNang = 3, TenChucNang = "Hóa đơn", TenManHinh = "InvoiceView" },
+                    new ChucNang { MaChucNang = 4, TenChucNang = "Tra cứu sách", TenManHinh = "ProductView" },
+                    new ChucNang { MaChucNang = 5, TenChucNang = "Khách hàng", TenManHinh = "CustomerView" },
+                    new ChucNang { MaChucNang = 6, TenChucNang = "Phiếu nhập", TenManHinh = "ReceiptView" },
+                    new ChucNang { MaChucNang = 7, TenChucNang = "Nhập kho", TenManHinh = "ImportView" },
+                    new ChucNang { MaChucNang = 8, TenChucNang = "Nhà cung cấp", TenManHinh = "SupplierView" },
+                    new ChucNang { MaChucNang = 9, TenChucNang = "Ưu đãi", TenManHinh = "PromotionView" },
+                    new ChucNang { MaChucNang = 10, TenChucNang = "Danh mục", TenManHinh = "CategoryView" },
+                    new ChucNang { MaChucNang = 11, TenChucNang = "Báo cáo", TenManHinh = "ReportView" },
+                    new ChucNang { MaChucNang = 12, TenChucNang = "Tài khoản", TenManHinh = "AccountView" },
+                    new ChucNang { MaChucNang = 13, TenChucNang = "Cài đặt", TenManHinh = "SettingView" }
             );
 
             /// SEED data cho PHÂN QUYỀN
@@ -262,6 +263,8 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 9 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 10 },
                 new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 11 },
+                new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 12 },
+                new PhanQuyen { MaNhomNguoiDung = 1, MaChucNang = 13 },
 
                 // QUẢN LÝ không bán hàng, thêm tài khoản và cài đặt
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 1 },
@@ -272,12 +275,14 @@ namespace Bookstore.API.Data
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 7 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 8 },
                 new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 9 },
+                new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 10 },
+                new PhanQuyen { MaNhomNguoiDung = 3, MaChucNang = 11 },
 
                 // NHÂN VIÊN có quyền bán hàng, tra cứu sách, quản lý khách hàng.
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 2 },
-                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 3 },
                 new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 4 },
-                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 8 }
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 5 },
+                new PhanQuyen { MaNhomNguoiDung = 2, MaChucNang = 10 }
             );
 
             string defaultHash = "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676";
@@ -358,13 +363,13 @@ namespace Bookstore.API.Data
                 new ThamSo { TenThamSo = "TiLeDonGiaBan", GiaTri = 110 },
                 new ThamSo { TenThamSo = "SoLuongNhapToiThieu", GiaTri = 150 },
                 new ThamSo { TenThamSo = "SoLuongTonToiDaCoTheNhap", GiaTri = 300 },
-                new ThamSo { TenThamSo = "SoLuongUuDaiToiThieu", GiaTri=1},
-                new ThamSo { TenThamSo = "SoLuongUuDaiToiDa", GiaTri=200},
-                new ThamSo { TenThamSo= "CoKhoangachCacKhoangGia", GiaTri=1},
-                new ThamSo { TenThamSo="ChoPhepKetThucUuDai", GiaTri = 1},
-                new ThamSo { TenThamSo="SoLuongTonToiThieu", GiaTri=20},
-                new ThamSo { TenThamSo="ThueVAT", GiaTri=8},
-                new ThamSo { TenThamSo="TienThuLonHonNo", GiaTri=1}
+                new ThamSo { TenThamSo = "SoLuongUuDaiToiThieu", GiaTri = 1 },
+                new ThamSo { TenThamSo = "SoLuongUuDaiToiDa", GiaTri = 200 },
+                new ThamSo { TenThamSo = "CoKhoangCachCacKhoangGia", GiaTri = 1 },
+                new ThamSo { TenThamSo = "ChoPhepKetThucUuDai", GiaTri = 1 },
+                new ThamSo { TenThamSo = "SoLuongTonToiThieu", GiaTri = 20 },
+                new ThamSo { TenThamSo = "ThueVAT", GiaTri = 8 },
+                new ThamSo { TenThamSo = "TienThuLonHonNo", GiaTri = 1 }
             );
 
             // Loại khách hàng và khách hàng
@@ -629,7 +634,9 @@ namespace Bookstore.API.Data
                     SoDienThoai = "1900636467",
                     Email = "info@fahasa.com",
                     NganHang = "Vietcombank",
-                    SoTaiKhoan = "0071000123456"
+                    SoTaiKhoan = "0071000123456",
+                    NguoiDaiDien = "Lê Thành Nghĩa",
+                    ConGiaoGich = true
                 },
                 new NhaCungCap
                 {
@@ -640,7 +647,22 @@ namespace Bookstore.API.Data
                     SoDienThoai = "1900555555",
                     Email = "contact@phuongnam.com",
                     NganHang = "Techcombank",
-                    SoTaiKhoan = "1901234567890"
+                    SoTaiKhoan = "1901234567890",
+                    NguoiDaiDien = "Tô Công Hữu Nhân",
+                    ConGiaoGich = true
+                },
+                new NhaCungCap
+                {
+                    MaNhaCungCap = 3,
+                    TenNhaCungCap = "Nhà sách JustBooks",
+                    DiaChi = "36A Alexander, Quận 3, TP.HCM",
+                    MaSoThue = "0302221115",
+                    SoDienThoai = "19005551234",
+                    Email = "contact@justbooks.com",
+                    NganHang = "Techcombank",
+                    SoTaiKhoan = "1901234567777",
+                    NguoiDaiDien = "Nguyễn Khả An",
+                    ConGiaoGich = true
                 }
             );
 
@@ -708,49 +730,50 @@ namespace Bookstore.API.Data
             );
 
             modelBuilder.Entity<UuDai>().HasData(
-                // Giảm 10% (Tối đa 100k) cho hóa đơn từ 500k
-                new UuDai { MaUuDai = 1, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "admin", MaLoaiUuDai = 1, TenUuDai = "Giảm 10% Hóa đơn > 500k", MoTa = "Chương trình kích cầu", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 1000, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true },
+                            // Trạng thái 1: ĐANG ÁP DỤNG 
+                            new UuDai { MaUuDai = 1, NgayTao = DateTime.Now.AddDays(-10), NguoiTao = "admin", MaLoaiUuDai = 1, Code = "PROMO10", TenChuongTrinh = "Giảm 10% Hóa đơn > 500k", MoTa = "Chương trình kích cầu", NgayBatDau = DateTime.Now.AddDays(-5), NgayKetThuc = DateTime.Now.AddDays(30), SoLuongToiDa = 1000, SoLuongDaDung = 136, MaLoaiKhachHang = 1, CoTheSuDung = true },
 
-                // Hóa đơn từ 1 Triệu tặng cuốn "Đắc Nhân Tâm"
-                new UuDai { MaUuDai = 2, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "quanlh", MaLoaiUuDai = 2, TenUuDai = "Hóa đơn 1Tr tặng Đắc Nhân Tâm", MoTa = "Tri ân khách VIP", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 50, SoLuongDaDung = 0, MaLoaiKhachHang = 2, CoTheSuDung = true },
+                            // Trạng thái 2: HẾT HẠN 
+                            new UuDai { MaUuDai = 2, NgayTao = new DateTime(2023, 1, 1), NguoiTao = "quanlh", MaLoaiUuDai = 2, Code = "DTN1M", TenChuongTrinh = "Hóa đơn 1Tr tặng Đắc Nhân Tâm", MoTa = "Tri ân khách VIP", NgayBatDau = new DateTime(2023, 1, 1), NgayKetThuc = new DateTime(2023, 12, 31), SoLuongToiDa = 50, SoLuongDaDung = 50, MaLoaiKhachHang = 2, CoTheSuDung = true },
 
-                // Giảm 20k trực tiếp khi mua cuốn "Mắt Biếc"
-                new UuDai { MaUuDai = 3, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "hungng", MaLoaiUuDai = 3, TenUuDai = "Giảm 20k Mắt Biếc", MoTa = "Sale sách Hot", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 200, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true },
+                            // Trạng thái 3: TẠM DỪNG 
+                            new UuDai { MaUuDai = 3, NgayTao = DateTime.Now.AddDays(-2), NguoiTao = "hungng", MaLoaiUuDai = 3, Code = "MATBIEC20K", TenChuongTrinh = "Giảm 20k Mắt Biếc", MoTa = "Sale sách Hot", NgayBatDau = DateTime.Now.AddDays(-1), NgayKetThuc = DateTime.Now.AddDays(60), SoLuongToiDa = 200, SoLuongDaDung = 20, MaLoaiKhachHang = 1, CoTheSuDung = false },
 
-                // Mua 2 cuốn "Clean Code" tặng 1 cuốn "300 Bài Code"
-                new UuDai { MaUuDai = 4, NgayTao = new DateTime(2024, 1, 1), NguoiTao = "sonph", MaLoaiUuDai = 4, TenUuDai = "Combo Dev: Mua 2 tặng 1", MoTa = "Đồng hành cùng IT", NgayBatDau = new DateTime(2024, 1, 1), NgayKetThuc = new DateTime(2025, 12, 31), SoLuongToiDa = 100, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true }
-            );
+                            // Trạng thái 4: CHƯA ÁP DỤNG 
+                            new UuDai { MaUuDai = 4, NgayTao = DateTime.Now, NguoiTao = "sonph", MaLoaiUuDai = 4, Code = "CODESTACK300", TenChuongTrinh = "Combo Dev: Mua 2 tặng 1", MoTa = "Đồng hành cùng IT", NgayBatDau = DateTime.Now.AddDays(15), NgayKetThuc = DateTime.Now.AddDays(45), SoLuongToiDa = 100, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true }
+                        );
 
-            // ct giảm theo hd
+
+            // Loại 1: Giảm theo hóa đơn
             modelBuilder.Entity<CTUD_HoaDon_Giam>().HasData(
-                new CTUD_HoaDon_Giam { MaCT = 1, MaUuDai = 1, SoTienToiThieu = 500000m, SoTienToiDa = 999999999m, SoTienGiam = 0m, TiLeGiam = 0.1f, GiamToiDa = 100m}
+                new CTUD_HoaDon_Giam { MaCT = 1, MaUuDai = 1, SoTienToiThieu = 500000m, SoTienToiDa = 999999999m, SoTienGiam = 0m, TiLeGiam = 10, GiamToiDa = 100000 }
             );
 
-            // ct tặng quà theo hd
+            // Loại 2: Tặng quà theo hóa đơn
             modelBuilder.Entity<CTUD_HoaDon_Qua>().HasData(
                 new CTUD_HoaDon_Qua { MaCT = 1, MaUuDai = 2, SoTienToiThieu = 1000000m, SoTienToiDa = 999999999m }
             );
-            modelBuilder.Entity<UuDai_SachTang>().HasData(
-                new UuDai_SachTang { MaUuDai = 2, ISBN = "978-604-4-33333-1", SoLuongTang = 1 } // Đắc Nhân Tâm
-            );
 
-            /// ct giảm tía theo sách
+            // Loại 3: Giảm giá theo sách 
             modelBuilder.Entity<CTUD_Sach_Giam>().HasData(
-                new CTUD_Sach_Giam { MaCT = 1, MaUuDai = 3, SoTienGiam = 20000m, TiLeGiam = 0, GiamToiDa = 20000m }
-            );
-            modelBuilder.Entity<UuDai_SachDieuKien>().HasData(
-                new UuDai_SachDieuKien { MaUuDai = 3, ISBN = "978-604-1-09887-1", SoLuongMua = 1 } // Mắt Biếc bìa mềm
+                new CTUD_Sach_Giam { MaCT = 1, MaUuDai = 3, SoTienGiam = 20000m, TiLeGiam = 0, GiamToiDa = 0 }
             );
 
-            // ct mua sách tặng sách
+            // Loại 4: Tặng quà theo sách
             modelBuilder.Entity<CTUD_Sach_Qua>().HasData(
                 new CTUD_Sach_Qua { MaCT = 1, MaUuDai = 4 }
             );
+
+
             modelBuilder.Entity<UuDai_SachDieuKien>().HasData(
-                new UuDai_SachDieuKien { MaUuDai = 4, ISBN = "978-0132350884", SoLuongMua = 2 } // Điều kiện: Mua 2 cuốn Clean Code
+                new UuDai_SachDieuKien { MaUuDai = 3, ISBN = "978-604-1-09887-1", SoLuongMua = 1 }, // Điều kiện ưu đãi 3
+                new UuDai_SachDieuKien { MaUuDai = 4, ISBN = "978-0132350884", SoLuongMua = 2 }      // Điều kiện ưu đãi 4
             );
+
+            // Bảng sách tặng (Cho ưu đãi số 2 và 4)
             modelBuilder.Entity<UuDai_SachTang>().HasData(
-                new UuDai_SachTang { MaUuDai = 4, ISBN = "978-604-MEME-01", SoLuongTang = 1 } // Quà tặng: 1 cuốn 300 Bài code thíu nhi
+                new UuDai_SachTang { MaUuDai = 2, ISBN = "978-604-4-33333-1", SoLuongTang = 1 }, // Quà tặng ưu đãi 2
+                new UuDai_SachTang { MaUuDai = 4, ISBN = "978-604-MEME-01", SoLuongTang = 1 }     // Quà tặng ưu đãi 4
             );
 
             // BẢNG HÓA ĐƠN 

@@ -1,204 +1,468 @@
 ﻿<UserControl x:Class="Bookstore.WPF.Views.SidebarView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Width="250" Background="White">
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 Background="{StaticResource PrimaryDarkColor}">
 
-    <UserControl.Resources>
-        <!-- STYLE CHUẨN CHO NÚT MENU (RADIO BUTTON) -->
-        <Style TargetType="RadioButton" x:Key="NavButtonStyle">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#A3AED0"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,5"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RadioButton">
-                        <Border Background="{TemplateBinding Background}">
-                            <Grid>
-                                <!-- Vạch tím highlight -->
-                                <Border x:Name="ActiveIndicator" Width="4" Background="#4318FF" 
-                                        HorizontalAlignment="Right" CornerRadius="2,0,0,2" Visibility="Hidden"/>
-                                <!-- -->
-                                <ContentPresenter VerticalAlignment="Center" Margin="30,0,0,0"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Foreground" Value="#4318FF"/>
-                                <Setter TargetName="ActiveIndicator" Property="Visibility" Value="Visible"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#F4F7FE"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
+	<UserControl.Style>
+		<Style TargetType="UserControl">
+			<Setter Property="Width"
+					Value="250" />
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding IsCollapsed}"
+							 Value="True">
+					<Setter Property="Width"
+							Value="80" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+	</UserControl.Style>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <!-- Header -->
-            <RowDefinition Height="*"/>
-            <!-- Menu -->
-            <RowDefinition Height="100"/>
-            <!-- Logout -->
-        </Grid.RowDefinitions>
+	<UserControl.Resources>
+		<Style TargetType="RadioButton"
+			   x:Key="NavButtonStyle">
+			<Setter Property="Background"
+					Value="Transparent" />
+			<Setter Property="Foreground"
+					Value="#A3AED0" />
+			<Setter Property="FontSize"
+					Value="15" />
+			<Setter Property="FontWeight"
+					Value="SemiBold" />
+			<Setter Property="Height"
+					Value="50" />
+			<Setter Property="Margin"
+					Value="10,5" />
+			<Setter Property="Cursor"
+					Value="Hand" />
+			<Setter Property="FocusVisualStyle"
+					Value="{x:Null}" />
 
-        <!-- header -->
-        <TextBlock Grid.Row="0" Text="{Binding HomeTabName}" 
-                   Foreground="#2B3674" FontSize="22" FontWeight="Black" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="RadioButton">
+						<Grid x:Name="MainGrid"
+							  Background="Transparent"
+							  RenderTransformOrigin="0.5,0.5">
+							<Border x:Name="HoverBorder"
+									Background="Transparent"
+									CornerRadius="12" />
 
-        <!-- menu -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
-            <StackPanel>
+							<Border x:Name="ActiveIndicator"
+									Width="4"
+									Height="24"
+									Background="White"
+									HorizontalAlignment="Right"
+									CornerRadius="2"
+									Margin="0,0,10,0"
+									Opacity="0">
+								<Border.Effect>
+									<DropShadowEffect BlurRadius="8"
+													  ShadowDepth="0"
+													  Color="White"
+													  Opacity="0.4" />
+								</Border.Effect>
+							</Border>
 
-                <!-- 1. DASHBOARD -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsDashboardVisible}"
-                             IsChecked="{Binding IsDashboardChecked}"
-                             Command="{Binding ShowDashboardCommand}"
-                             CommandParameter="Dashboard">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ViewDashboard" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Dashboard" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+							<ContentPresenter x:Name="Content"
+											  VerticalAlignment="Center"
+											  Margin="20,0,0,0"
+											  TextElement.Foreground="{TemplateBinding Foreground}" />
+						</Grid>
 
-                <!-- 2. BÁN HÀNG -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsSaleVisible}"
-                             IsChecked="{Binding IsSaleChecked}"
-                             Command="{Binding ShowBanHangCommand}"
-                             CommandParameter="Sale">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="CashRegister" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Bán hàng" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver"
+									 Value="True">
+								<Setter Property="Foreground"
+										Value="#E2E8F0" />
+							</Trigger>
 
-                <!-- 3. TRA CỨU SÁCH -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsProductVisible}"
-                             IsChecked="{Binding IsProductChecked}"
-                             Command="{Binding ShowTraCuuSachCommand}"
-                             CommandParameter="Product">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="BookSearch" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Tra cứu sách" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+							<Trigger Property="IsChecked"
+									 Value="True">
+								<Setter Property="Foreground"
+										Value="White" />
+								<Setter TargetName="HoverBorder"
+										Property="Background"
+										Value="#0FFFFFFF" />
+								<Setter TargetName="ActiveIndicator"
+										Property="Opacity"
+										Value="1" />
+							</Trigger>
 
-                <!-- 4. KHÁCH HÀNG -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsCustomerVisible}"
-                             IsChecked="{Binding IsCustomerChecked}"
-                             Command="{Binding ShowKhachHangCommand}"
-                             CommandParameter="Customer">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="AccountGroup" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Khách hàng" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+							<DataTrigger Binding="{Binding IsCollapsed}"
+										 Value="True">
+								<Setter TargetName="Content"
+										Property="Margin"
+										Value="0" />
+								<Setter TargetName="Content"
+										Property="HorizontalAlignment"
+										Value="Center" />
+							</DataTrigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
 
-                <!-- 5. NHẬP KHO -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsImportVisible}"
-                             IsChecked="{Binding IsImportChecked}"
-                             Command="{Binding ShowNhapKhoCommand}"
-                             CommandParameter="Import">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Warehouse" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Nhập kho" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="100" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="70" />
+		</Grid.RowDefinitions>
 
-                <!-- 6. NHÀ CUNG CẤP -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsSupplierVisible}"
-                             IsChecked="{Binding IsSupplierChecked}"
-                             Command="{Binding ShowNhaCungCapCommand}"
-                             CommandParameter="Supplier">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="TruckDelivery" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Nhà cung cấp" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+		<Grid Grid.Row="0">
+			<TextBlock Text="{Binding HomeTabName}"
+					   Foreground="{StaticResource BackgroundColor}"
+					   FontSize="18"
+					   FontWeight="Bold"
+					   TextTrimming="CharacterEllipsis"
+					   HorizontalAlignment="Stretch"
+					   VerticalAlignment="Center"
+					   Margin="20,0,50,0">
+				<TextBlock.Style>
+					<Style TargetType="TextBlock">
+						<Setter Property="Visibility"
+								Value="Visible" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsCollapsed}"
+										 Value="True">
+								<Setter Property="Visibility"
+										Value="Collapsed" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBlock.Style>
+			</TextBlock>
 
-                <!-- 7. ƯU ĐÃI -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu" 
-                             Visibility="{Binding IsPromotionVisible}"
-                             IsChecked="{Binding IsPromtionChecked}"
-                             Command="{Binding ShowUuDaiCommand}"
-                             CommandParameter="Promotion">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="TicketPercent" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Ưu đãi" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+			<Button Command="{Binding ToggleSidebarCommand}"
+					CommandParameter="{Binding}"
+					Foreground="{StaticResource BackgroundColor}"
+					Cursor="Hand"
+					Width="40"
+					Height="40">
 
-                <!-- 8. DANH MỤC -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsCategoryVisible}"
-                             IsChecked="{Binding IsCategoryChecked}"
-                             Command="{Binding ShowDanhMucCommand}"
-                             CommandParameter="Category">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="CategoryPlus" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Danh mục" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+				<Button.Template>
+					<ControlTemplate TargetType="Button">
+						<Border Background="Transparent">
+							<ContentPresenter HorizontalAlignment="Center"
+											  VerticalAlignment="Center" />
+						</Border>
+					</ControlTemplate>
+				</Button.Template>
 
-                <!-- 9. BÁO CÁO -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsReportVisible}"
-                             IsChecked="{Binding IsReportChecked}"
-                             Command="{Binding ShowBaoCaoCommand}"
-                             CommandParameter="Report">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ChartAreaspline" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Báo cáo" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+				<Button.Style>
+					<Style TargetType="Button">
+						<Setter Property="HorizontalAlignment"
+								Value="Right" />
+						<Setter Property="Margin"
+								Value="0,0,6,0" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsCollapsed}"
+										 Value="True">
+								<Setter Property="HorizontalAlignment"
+										Value="Center" />
+								<Setter Property="Margin"
+										Value="0" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
 
-                <!-- 10. TÀI KHOẢN -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsAccountVisible}"
-                             IsChecked="{Binding IsAccountChecked}"
-                             Command="{Binding ShowTaiKhoanCommand}"
-                             CommandParameter="Account">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ShieldAccount" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Tài khoản" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
+				<materialDesign:PackIcon Width="26"
+										 Height="26">
+					<materialDesign:PackIcon.Style>
+						<Style TargetType="materialDesign:PackIcon"
+							   BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
+							<Setter Property="Kind"
+									Value="MenuOpen" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsCollapsed}"
+											 Value="True">
+									<Setter Property="Kind"
+											Value="Menu" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</materialDesign:PackIcon.Style>
+				</materialDesign:PackIcon>
+			</Button>
+		</Grid>
 
-                <!-- 11. PHÂN QUYỀN (VÀ CÀI ĐẶT TÀI KHOẢN) -->
-                <RadioButton Style="{StaticResource NavButtonStyle}" GroupName="NavMenu"
-                             Visibility="{Binding IsSettingVisible}"
-                             IsChecked="{Binding IsSettingChecked}"
-                             Command="{Binding ShowCaiDatCommand}"
-                             CommandParameter="{Binding}">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Cog" Width="22" Height="22" Margin="0,0,15,0"/>
-                        <TextBlock Text="Cài đặt" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </RadioButton>
-            </StackPanel>
-        </ScrollViewer>
+		<ScrollViewer Grid.Row="1"
+					  VerticalScrollBarVisibility="Hidden">
 
-        <!-- footer -->
-        <Button Grid.Row="2" Content="Đăng xuất" Command="{Binding LogoutCommand}" CommandParameter="{Binding}"
-                Height="45" Width="180" FontSize="15" FontWeight="Bold" 
-                Background="#6344FF" BorderBrush="#6344FF" Foreground="White" 
-                materialDesign:ButtonAssist.CornerRadius="20">
-        </Button>
-    </Grid>
+			<ScrollViewer.Resources>
+				<Style TargetType="TextBlock">
+					<Setter Property="VerticalAlignment"
+							Value="Center" />
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding IsCollapsed}"
+									 Value="True">
+							<Setter Property="Visibility"
+									Value="Collapsed" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+
+				<Style TargetType="materialDesign:PackIcon">
+					<Setter Property="Width"
+							Value="22" />
+					<Setter Property="Height"
+							Value="22" />
+					<Setter Property="Margin"
+							Value="0,0,15,0" />
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding IsCollapsed}"
+									 Value="True">
+							<Setter Property="Margin"
+									Value="0" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</ScrollViewer.Resources>
+
+			<StackPanel>
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsDashboardVisible}"
+							 IsChecked="{Binding IsDashboardChecked}"
+							 Command="{Binding ShowDashboardCommand}"
+							 CommandParameter="Dashboard">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="ViewDashboard" />
+						<TextBlock Text="Dashboard" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsSaleVisible}"
+							 IsChecked="{Binding IsSaleChecked}"
+							 Command="{Binding ShowBanHangCommand}"
+							 CommandParameter="Sale">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="CashRegister" />
+						<TextBlock Text="Bán hàng" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsInvoiceVisible}"
+							 IsChecked="{Binding IsInvoiceChecked}"
+							 Command="{Binding ShowHoaDonCommand}"
+							 CommandParameter="Sale">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="Invoice" />
+						<TextBlock Text="Hóa đơn" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsProductVisible}"
+							 IsChecked="{Binding IsProductChecked}"
+							 Command="{Binding ShowTraCuuSachCommand}"
+							 CommandParameter="Product">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="BookSearch" />
+						<TextBlock Text="Tra cứu sách" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsCustomerVisible}"
+							 IsChecked="{Binding IsCustomerChecked}"
+							 Command="{Binding ShowKhachHangCommand}"
+							 CommandParameter="Customer">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="AccountGroup" />
+						<TextBlock Text="Khách hàng" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsReceiptVisible}"
+							 IsChecked="{Binding IsReceiptChecked}"
+							 Command="{Binding ShowPhieuThuCommand}"
+							 CommandParameter="Receipt">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="ReceiptText" />
+						<TextBlock Text="Phiếu thu" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsImportVisible}"
+							 IsChecked="{Binding IsImportChecked}"
+							 Command="{Binding ShowNhapKhoCommand}"
+							 CommandParameter="Import">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="Warehouse" />
+						<TextBlock Text="Nhập kho" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsSupplierVisible}"
+							 IsChecked="{Binding IsSupplierChecked}"
+							 Command="{Binding ShowNhaCungCapCommand}"
+							 CommandParameter="Supplier">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="TruckDelivery" />
+						<TextBlock Text="Nhà cung cấp" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsPromotionVisible}"
+							 IsChecked="{Binding IsPromtionChecked}"
+							 Command="{Binding ShowUuDaiCommand}"
+							 CommandParameter="Promotion">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="TicketPercent" />
+						<TextBlock Text="Ưu đãi" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsCategoryVisible}"
+							 IsChecked="{Binding IsCategoryChecked}"
+							 Command="{Binding ShowDanhMucCommand}"
+							 CommandParameter="Category">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="CategoryPlus" />
+						<TextBlock Text="Danh mục" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsReportVisible}"
+							 IsChecked="{Binding IsReportChecked}"
+							 Command="{Binding ShowBaoCaoCommand}"
+							 CommandParameter="Report">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="ChartAreaspline" />
+						<TextBlock Text="Báo cáo" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsAccountVisible}"
+							 IsChecked="{Binding IsAccountChecked}"
+							 Command="{Binding ShowTaiKhoanCommand}"
+							 CommandParameter="Account">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="ShieldAccount" />
+						<TextBlock Text="Tài khoản" />
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Style="{StaticResource NavButtonStyle}"
+							 GroupName="NavMenu"
+							 Visibility="{Binding IsSettingVisible}"
+							 IsChecked="{Binding IsSettingChecked}"
+							 Command="{Binding ShowCaiDatCommand}"
+							 CommandParameter="{Binding}">
+					<StackPanel Orientation="Horizontal">
+						<materialDesign:PackIcon Kind="Cog" />
+						<TextBlock Text="Cài đặt" />
+					</StackPanel>
+				</RadioButton>
+			</StackPanel>
+		</ScrollViewer>
+
+		<Button Grid.Row="2"
+				Command="{Binding LogoutCommand}"
+				CommandParameter="{Binding}"
+				Height="45"
+				Cursor="Hand">
+			<Button.Style>
+				<Style TargetType="Button">
+					<Setter Property="Width"
+							Value="180" />
+					<Setter Property="Background"
+							Value="#0FFFFFFF" />
+					<Setter Property="Foreground"
+							Value="#A3AED0" />
+					<Setter Property="FontSize"
+							Value="15" />
+					<Setter Property="FontWeight"
+							Value="SemiBold" />
+					<Setter Property="FocusVisualStyle"
+							Value="{x:Null}" />
+
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="Button">
+								<Border x:Name="border"
+										Background="{TemplateBinding Background}"
+										BorderBrush="#1AFFFFFF"
+										BorderThickness="1"
+										CornerRadius="12">
+									<StackPanel Orientation="Horizontal"
+												HorizontalAlignment="Center"
+												VerticalAlignment="Center">
+										<materialDesign:PackIcon x:Name="icon"
+																 Kind="Logout"
+																 Width="20"
+																 Height="20"
+																 Margin="0,0,10,0"
+																 VerticalAlignment="Center" />
+										<TextBlock x:Name="txt"
+												   Text="Đăng xuất"
+												   VerticalAlignment="Center" />
+									</StackPanel>
+								</Border>
+
+								<ControlTemplate.Triggers>
+									<Trigger Property="IsMouseOver"
+											 Value="True">
+										<Setter TargetName="border"
+												Property="Background"
+												Value="#1AFF4D4F" />
+										<Setter TargetName="border"
+												Property="BorderBrush"
+												Value="#FF4D4F" />
+										<Setter Property="Foreground"
+												Value="#FF4D4F" />
+									</Trigger>
+									<Trigger Property="IsPressed"
+											 Value="True">
+										<Setter TargetName="border"
+												Property="Background"
+												Value="#33FF4D4F" />
+										<Setter Property="Foreground"
+												Value="#FF4D4F" />
+									</Trigger>
+
+									<DataTrigger Binding="{Binding IsCollapsed}"
+												 Value="True">
+										<Setter Property="Width"
+												Value="50" />
+										<Setter TargetName="txt"
+												Property="Visibility"
+												Value="Collapsed" />
+										<Setter TargetName="icon"
+												Property="Margin"
+												Value="0" />
+									</DataTrigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</Button.Style>
+		</Button>
+	</Grid>
 </UserControl>

@@ -13,7 +13,6 @@ namespace Bookstore.WPF.ViewModels
     {
         private ObservableCollection<ImportOrderModel> _allImportOrders;
         private Dictionary<string, ImportOrderDetailModel> _importOrderDetails;
-        private int _pageSize = 20;
 
         #region Constructor
 
@@ -24,17 +23,14 @@ namespace Bookstore.WPF.ViewModels
             ClearFilterCommand = new RelayCommand(ClearFilter);
             ViewDetailCommand = new RelayCommand<ImportOrderModel>(ViewDetail);
             DeleteImportOrderCommand = new RelayCommand<ImportOrderModel>(DeleteImportOrder);
-            FirstPageCommand = new RelayCommand(FirstPage);
-            PreviousPageCommand = new RelayCommand(PreviousPage);
-            NextPageCommand = new RelayCommand(NextPage);
-            LastPageCommand = new RelayCommand(LastPage);
-            GoToPageCommand = new RelayCommand<int>(GoToPage);
 
             // Commands cho popup thêm mới
             SearchBookCommand = new RelayCommand(SearchBook);
             AddBookToImportCommand = new RelayCommand(AddBookToImport);
             RemoveImportDetailCommand = new RelayCommand<ImportOrderAddDetailModel>(RemoveImportDetail);
             SaveImportOrderCommand = new RelayCommand(SaveImportOrder);
+
+            PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
 
             LoadSampleData();
         }
@@ -65,7 +61,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 _searchKeyword = value;
                 OnPropertyChanged();
-                CurrentPage = 1;
+                TrangHienTai = 1;
                 FilterData();
             }
         }
@@ -78,7 +74,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 _filterFromDate = value;
                 OnPropertyChanged();
-                CurrentPage = 1;
+                TrangHienTai = 1;
                 FilterData();
             }
         }
@@ -91,7 +87,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 _filterToDate = value;
                 OnPropertyChanged();
-                CurrentPage = 1;
+                TrangHienTai = 1;
                 FilterData();
             }
         }
@@ -104,80 +100,36 @@ namespace Bookstore.WPF.ViewModels
             {
                 _selectedSupplier = value;
                 OnPropertyChanged();
-                CurrentPage = 1;
+                TrangHienTai = 1;
                 FilterData();
             }
         }
 
         #endregion
 
-        #region Properties - Pagination
+        #region Properties - Phân Trang
+        private int _pageSize = 10; // Giữ nguyên kích thước trang của bạn
 
-        private int _totalRecords;
-        public int TotalRecords
+        private int _tongBanGhi = 0;
+        public int TongBanGhi
         {
-            get => _totalRecords;
-            set { _totalRecords = value; OnPropertyChanged(); }
+            get => _tongBanGhi;
+            set { _tongBanGhi = value; OnPropertyChanged(); }
         }
 
-        private int _currentPage = 1;
-        public int CurrentPage
+        private int _trangHienTai = 1;
+        public int TrangHienTai
         {
-            get => _currentPage;
-            set
-            {
-                _currentPage = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(PaginationInfo));
-                OnPropertyChanged(nameof(IsCurrentPageLast));
-                UpdatePaginationVisibility();
-            }
+            get => _trangHienTai;
+            set { _trangHienTai = value; OnPropertyChanged(); }
         }
 
-        private int _totalPages = 1;
-        public int TotalPages
+        private int _tongSoTrang = 1;
+        public int TongSoTrang
         {
-            get => _totalPages;
-            set
-            {
-                _totalPages = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsCurrentPageLast));
-                UpdatePaginationVisibility();
-            }
+            get => _tongSoTrang;
+            set { _tongSoTrang = value; OnPropertyChanged(); }
         }
-
-        public string PaginationInfo => $"Trang {CurrentPage}/{TotalPages}";
-        public bool IsCurrentPageLast => CurrentPage == TotalPages;
-
-        private Visibility _btn2Visibility = Visibility.Collapsed;
-        public Visibility Btn2Visibility
-        {
-            get => _btn2Visibility;
-            set { _btn2Visibility = value; OnPropertyChanged(); }
-        }
-
-        private Visibility _btn3Visibility = Visibility.Collapsed;
-        public Visibility Btn3Visibility
-        {
-            get => _btn3Visibility;
-            set { _btn3Visibility = value; OnPropertyChanged(); }
-        }
-
-        private Visibility _ellipsisVisibility = Visibility.Collapsed;
-        public Visibility EllipsisVisibility
-        {
-            get => _ellipsisVisibility;
-            set { _ellipsisVisibility = value; OnPropertyChanged(); }
-        }
-
-        private Visibility _btnLastVisibility = Visibility.Collapsed;
-        public Visibility BtnLastVisibility
-        {
-            get => _btnLastVisibility;
-            set { _btnLastVisibility = value; OnPropertyChanged(); }
-        }
-
         #endregion
 
         #region Properties - Detail Popup
@@ -236,11 +188,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ClearFilterCommand { get; }
         public ICommand ViewDetailCommand { get; }
         public ICommand DeleteImportOrderCommand { get; }
-        public ICommand FirstPageCommand { get; }
-        public ICommand PreviousPageCommand { get; }
-        public ICommand NextPageCommand { get; }
-        public ICommand LastPageCommand { get; }
-        public ICommand GoToPageCommand { get; }
+        public ICommand PhanTrangCommand { get; }
 
         // Commands cho popup thêm mới
         public ICommand SearchBookCommand { get; }
@@ -327,15 +275,94 @@ namespace Bookstore.WPF.ViewModels
             FilterFromDate = null;
             FilterToDate = null;
             SelectedSupplier = null;
-            CurrentPage = 1;
+            TrangHienTai = 1;
+        }
+        #endregion
+
+        #region Logic Xử Lý Dữ Liệu & Phân Trang
+
+        private void FilterData()
+        {
+            var filtered = _allImportOrders.AsEnumerable();
+
+            // Lọc theo từ khóa
+            if (!string.IsNullOrWhiteSpace(SearchKeyword))
+            {
+                string keyword = SearchKeyword.ToLower();
+                filtered = filtered.Where(o =>
+                    o.MaPhieuNhap.ToLower().Contains(keyword) ||
+                    o.TenNhaCungCap.ToLower().Contains(keyword) ||
+                    o.TenNguoiTao.ToLower().Contains(keyword) ||
+                    (o.GhiChu != null && o.GhiChu.ToLower().Contains(keyword))
+                );
+            }
+
+            // Lọc theo nhà cung cấp
+            if (SelectedSupplier != null)
+                filtered = filtered.Where(o => o.MaNhaCungCap == SelectedSupplier.MaNhaCungCap);
+
+            // Lọc theo ngày
+            if (FilterFromDate.HasValue)
+                filtered = filtered.Where(o => o.NgayNhap.Date >= FilterFromDate.Value.Date);
+            if (FilterToDate.HasValue)
+                filtered = filtered.Where(o => o.NgayNhap.Date <= FilterToDate.Value.Date);
+
+            // Sắp xếp
+            filtered = filtered.OrderByDescending(o => o.NgayNhap);
+
+            // CẬP NHẬT THÔNG TIN PHÂN TRANG
+            TongBanGhi = filtered.Count();
+            TongSoTrang = (int)Math.Ceiling((double)TongBanGhi / _pageSize);
+            if (TongSoTrang == 0) TongSoTrang = 1;
+
+            // Giới hạn trang hiện tại
+            if (TrangHienTai > TongSoTrang) TrangHienTai = TongSoTrang;
+            if (TrangHienTai < 1) TrangHienTai = 1;
+
+            // Cắt dữ liệu đưa ra màn hình
+            var pageData = filtered.Skip((TrangHienTai - 1) * _pageSize).Take(_pageSize).ToList();
+
+            ImportOrders.Clear();
+            foreach (var item in pageData)
+            {
+                ImportOrders.Add(item);
+            }
         }
 
-        private void FirstPage() { CurrentPage = 1; FilterData(); }
-        private void PreviousPage() { if (CurrentPage > 1) { CurrentPage--; FilterData(); } }
-        private void NextPage() { if (CurrentPage < TotalPages) { CurrentPage++; FilterData(); } }
-        private void LastPage() { CurrentPage = TotalPages; FilterData(); }
-        private void GoToPage(int page) { if (page >= 1 && page <= TotalPages) { CurrentPage = page; FilterData(); } }
+        private void ExecutePhanTrang(string parameter)
+        {
+            int targetPage = TrangHienTai;
 
+            switch (parameter)
+            {
+                case "First":
+                    targetPage = 1;
+                    break;
+                case "Prev":
+                    if (TrangHienTai > 1) targetPage = TrangHienTai - 1;
+                    break;
+                case "Next":
+                    if (TrangHienTai < TongSoTrang) targetPage = TrangHienTai + 1;
+                    break;
+                case "Last":
+                    targetPage = TongSoTrang;
+                    break;
+            }
+
+            if (targetPage != TrangHienTai)
+            {
+                GoToPage(targetPage);
+            }
+        }
+
+        private void GoToPage(int page)
+        {
+            if (page >= 1 && page <= TongSoTrang)
+            {
+                TrangHienTai = page;
+                FilterData(); // Gọi lại hàm FilterData để nó cắt đúng đoạn danh sách mới
+            }
+        }
         #endregion
 
         #region Private Methods - Add Popup
@@ -629,51 +656,7 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private void FilterData()
-        {
-            var filtered = _allImportOrders.AsEnumerable();
-
-            if (!string.IsNullOrWhiteSpace(SearchKeyword))
-            {
-                string keyword = SearchKeyword.ToLower();
-                filtered = filtered.Where(o =>
-                    o.MaPhieuNhap.ToLower().Contains(keyword) ||
-                    o.TenNhaCungCap.ToLower().Contains(keyword) ||
-                    o.TenNguoiTao.ToLower().Contains(keyword) ||
-                    (o.GhiChu != null && o.GhiChu.ToLower().Contains(keyword))
-                );
-            }
-
-            if (SelectedSupplier != null)
-                filtered = filtered.Where(o => o.MaNhaCungCap == SelectedSupplier.MaNhaCungCap);
-
-            if (FilterFromDate.HasValue)
-                filtered = filtered.Where(o => o.NgayNhap.Date >= FilterFromDate.Value.Date);
-            if (FilterToDate.HasValue)
-                filtered = filtered.Where(o => o.NgayNhap.Date <= FilterToDate.Value.Date);
-
-            filtered = filtered.OrderByDescending(o => o.NgayNhap);
-
-            TotalRecords = filtered.Count();
-            TotalPages = (int)Math.Ceiling((double)TotalRecords / _pageSize);
-            if (TotalPages == 0) TotalPages = 1;
-            if (CurrentPage > TotalPages) CurrentPage = TotalPages;
-            if (CurrentPage < 1) CurrentPage = 1;
-
-            var pageData = filtered.Skip((CurrentPage - 1) * _pageSize).Take(_pageSize).ToList();
-
-            ImportOrders.Clear();
-            foreach (var item in pageData)
-                ImportOrders.Add(item);
-        }
-
-        private void UpdatePaginationVisibility()
-        {
-            Btn2Visibility = TotalPages >= 2 ? Visibility.Visible : Visibility.Collapsed;
-            Btn3Visibility = TotalPages >= 3 ? Visibility.Visible : Visibility.Collapsed;
-            EllipsisVisibility = TotalPages > 4 ? Visibility.Visible : Visibility.Collapsed;
-            BtnLastVisibility = TotalPages > 3 ? Visibility.Visible : Visibility.Collapsed;
-        }
+  
 
         #endregion
 

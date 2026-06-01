@@ -15,6 +15,15 @@ namespace Bookstore.WPF.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
+        public Axis[] XAxes { get; set; }
+        public Axis[] YAxes { get; set; }
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set { _isLoading = value; OnPropertyChanged(); }
+        }
         // ==========================================
         // Tab 1
         private decimal _sale;
@@ -70,10 +79,10 @@ namespace Bookstore.WPF.ViewModels
         }
 
         private string _saleChangeColor = "#FFB547";
-        public string SaleChangeColor   
+        public string SaleChangeColor
         {
             get => _saleChangeColor;
-            set 
+            set
             {
                 _saleChangeColor = value;
                 OnPropertyChanged(nameof(SaleChangeColor));
@@ -156,6 +165,34 @@ namespace Bookstore.WPF.ViewModels
         /// </summary>
         public async Task LoadAllDataAsync()
         {
+            string[] last7Days = new string[7];
+            for (int i = 6; i >= 0; i--)
+            {
+                last7Days[6 - i] = DateTime.Now.AddDays(-i).ToString("dd/MM");
+            }
+
+            XAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Labels = last7Days,
+                    LabelsRotation = 0, 
+                    TextSize = 13,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray)
+                }
+            };
+
+
+            YAxes = new Axis[]
+            {
+                new Axis
+                {
+                    MinLimit = 0,
+                    Labeler = value => value.ToString("N0") 
+                }
+            };
+
+            IsLoading = true;
             try
             {
                 using var client = new HttpClient { BaseAddress = new Uri("https://localhost:7001/") };
@@ -175,23 +212,23 @@ namespace Bookstore.WPF.ViewModels
                     SaleChangeColor = data.SaleChangeColor;
 
                     //  dữ liệu cho Bảng lưới
-                    TopBooks.Clear(); 
-                    foreach (var item in data.TopBooks) 
+                    TopBooks.Clear();
+                    foreach (var item in data.TopBooks)
                         TopBooks.Add(item);
-                    TopCustomers.Clear(); 
-                    foreach (var item in data.TopCustomers) 
+                    TopCustomers.Clear();
+                    foreach (var item in data.TopCustomers)
                         TopCustomers.Add(item);
-                    TopStaffs.Clear(); 
-                    foreach (var item in data.TopStaffs) 
+                    TopStaffs.Clear();
+                    foreach (var item in data.TopStaffs)
                         TopStaffs.Add(item);
-                    Items.Clear(); 
-                    foreach (var item in data.RecentOrders) 
+                    Items.Clear();
+                    foreach (var item in data.RecentOrders)
                         Items.Add(item);
-                    ImportItems.Clear(); 
-                    foreach (var item in data.RecentImports) 
+                    ImportItems.Clear();
+                    foreach (var item in data.RecentImports)
                         ImportItems.Add(item);
-                    PaymentReceipts.Clear(); 
-                    foreach (var item in data.RecentPayments) 
+                    PaymentReceipts.Clear();
+                    foreach (var item in data.RecentPayments)
                         PaymentReceipts.Add(item);
                     StockWarnings.Clear();
                     foreach (var item in data.StockWarnings)
@@ -205,6 +242,10 @@ namespace Bookstore.WPF.ViewModels
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show("Lỗi kết nối Server: " + ex.Message, "Lỗi", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 
@@ -231,7 +272,10 @@ namespace Bookstore.WPF.ViewModels
                 pieSeriesList.Add(new PieSeries<double>
                 {
                     Values = new double[] { item.Percentage },
-                    Name = item.CategoryName
+                    Name = item.CategoryName,
+
+                    // GỌI THẲNG POINT.MODEL
+                    ToolTipLabelFormatter = point => $"{point.Model}%"
                 });
             }
             Data = pieSeriesList;
@@ -244,9 +288,25 @@ namespace Bookstore.WPF.ViewModels
 
             ComparisonSeries = new ObservableCollection<ISeries>
             {
-                new ColumnSeries<double> { Name = "Doanh thu", Values = revenueValues, Fill = new SolidColorPaint(SKColors.CornflowerBlue) },
-                new ColumnSeries<double> { Name = "Chi phí nhập", Values = importValues, Fill = new SolidColorPaint(SKColors.Tomato) },
-                new LineSeries<double> { Name = "Lợi nhuận", Values = profitValues, Stroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 }, Fill = null }
+                new ColumnSeries<double> 
+                { 
+                    Name = "Doanh thu", 
+                    Values = revenueValues, 
+                    Fill = new SolidColorPaint(SKColors.CornflowerBlue) 
+                },
+                new ColumnSeries<double> 
+                { 
+                    Name = "Chi phí nhập", 
+                    Values = importValues, 
+                    Fill = new SolidColorPaint(SKColors.Tomato) 
+                },
+                new LineSeries<double> 
+                { 
+                    Name = "Lợi nhuận",
+                    Values = profitValues,
+                    Stroke = new SolidColorPaint(SKColors.Gold) { StrokeThickness = 4 }, 
+                    Fill = null 
+                }
             };
         }
     }

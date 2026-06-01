@@ -1,5 +1,4 @@
 ﻿using Bookstore.API.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,21 +15,47 @@ namespace Bookstore.API.Controllers
             _context = context;
         }
 
-
-        [HttpGet("ti-le-gia-ban")]
-        public async Task<IActionResult> GetTiLeGiaBan()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ThamSoDTO>>> GetAllThamSo()
         {
-            var thamSo = await _context.ThamSo
-                .FirstOrDefaultAsync(t => t.TenThamSo == "TiLeDonGiaBan");
+            var thamSos = await _context.ThamSo.ToListAsync();
+            return Ok(thamSos.Select(t => new ThamSoDTO
+            {
+                TenThamSo = t.TenThamSo,
+                GiaTri = t.GiaTri
+            }));
+        }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ThamSoDTO>> GetThamSo(string id)
+        {
+            var thamSo = await _context.ThamSo.FindAsync(id);
             if (thamSo == null)
-                return NotFound(new { message = "Không tìm thấy tham số TiLeDonGiaBan trong DB." });
+                return NotFound(new { Message = $"Không tìm thấy tham số: {id}" });
 
             return Ok(new ThamSoDTO
             {
                 TenThamSo = thamSo.TenThamSo,
-                GiaTri = thamSo.GiaTri / 100m
+                GiaTri = thamSo.GiaTri
             });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateThamSo(string id, [FromBody] ThamSoDTO request)
+        {
+            // Kiểm tra khớp mã
+            if (id != request.TenThamSo)
+                return BadRequest(new { Message = "Tên tham số trên URL và Body không khớp nhau" });
+
+            var thamSo = await _context.ThamSo.FindAsync(id);
+            if (thamSo == null)
+                return NotFound(new { Message = $"Không tìm thấy tham số: {id}" });
+
+            // Cập nhật
+            thamSo.GiaTri = request.GiaTri;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = $"Cập nhật tham số {id} thành công" });
         }
     }
 }

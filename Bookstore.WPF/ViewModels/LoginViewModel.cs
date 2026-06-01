@@ -1,10 +1,11 @@
 ﻿using Bookstore.Share.DTO;
+using Bookstore.WPF.Properties;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Security;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
@@ -68,6 +69,13 @@ namespace Bookstore.WPF.ViewModels
             set { _username = value; OnPropertyChanged(); }
         }
 
+        private string _password = String.Empty;
+        public string Password
+        {
+            get => _password;
+            set { _password = value; OnPropertyChanged(); }
+        }
+
         private SecureString _securePassword = new SecureString();
         public SecureString SecurePassword
         {
@@ -102,6 +110,13 @@ namespace Bookstore.WPF.ViewModels
             get => _otp;
             set { _otp = value; OnPropertyChanged(); }
         }
+
+        private bool _isRememberMe;
+        public bool IsRememberMe
+        {
+            get => _isRememberMe;
+            set { _isRememberMe = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Commands
@@ -115,6 +130,8 @@ namespace Bookstore.WPF.ViewModels
 
         public LoginViewModel()
         {
+            LoadRememberedAccount();
+
             SwitchStateCommand = new RelayCommand<string>((p) =>
             {
                 if (Enum.TryParse(p, out LoginState newState))
@@ -157,14 +174,22 @@ namespace Bookstore.WPF.ViewModels
                         IsErrorLogVisible = Visibility.Hidden;
                         AppState.CurrentUser = responseUser.User;
                         AppState.CurrentPermissions = responseUser.User.PermissionList;
-                        _windowService.ShowWindow<MainViewModel>();
-                        
-                        // debug
-                        //string debugstring = string.Empty;
-                        //foreach(var s in AppState.CurrentPermissions) debugstring += s.ToString();
-                        //MessageBox.Show(debugstring);
-                        //
 
+                        if (IsRememberMe)
+                        {
+                            Settings.Default.RememberMe = true;
+                            Settings.Default.Username = Username;
+                            Settings.Default.Password = plainText;
+                        }
+                        else
+                        {
+                            Settings.Default.RememberMe = false;
+                            Settings.Default.Username = string.Empty;
+                            Settings.Default.Password = string.Empty;
+                        }
+                        Settings.Default.Save();
+
+                        _windowService.ShowWindow<MainViewModel>();
                         _windowService.CloseWindow<LoginViewModel>();
                     }
                     else
@@ -327,6 +352,24 @@ namespace Bookstore.WPF.ViewModels
             }
             OnPropertyChanged(nameof(Title));
             OnPropertyChanged(nameof(SubTitle));
+        }
+
+        private void LoadRememberedAccount()
+        {
+            if (Settings.Default == null) return;
+
+            IsRememberMe = Settings.Default.RememberMe;
+            if (IsRememberMe)
+            {
+                Username = Settings.Default.Username;
+                Password = Settings.Default.Password;
+                if (!string.IsNullOrEmpty(Settings.Default.Password))
+                {
+                    var secureString = new SecureString();
+                    foreach (char c in Settings.Default.Password) secureString.AppendChar(c);
+                    SecurePassword = secureString;
+                }
+            }
         }
     }
 

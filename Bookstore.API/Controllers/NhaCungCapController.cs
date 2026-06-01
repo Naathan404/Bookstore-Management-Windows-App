@@ -1,13 +1,8 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Models;
-using Bookstore.Share;
-
 using Bookstore.Share.DTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using System.Linq.Expressions;
 
 namespace Bookstore.API.Controllers
 {
@@ -22,223 +17,132 @@ namespace Bookstore.API.Controllers
             _context = context;
         }
 
-        private static Expression<Func<NhaCungCap, SupplierRequest>> MapToDTO()
-        {
-            return n => new SupplierRequest
-            {
-                TenNhaCungCap = n.TenNhaCungCap,
-                DiaChi = n.DiaChi,
-                MaSoThue = n.MaSoThue,
-                SoDienThoai = n.SoDienThoai,
-                Email = n.Email,
-                NganHang = n.NganHang,
-                SoTaiKhoan = n.SoTaiKhoan
-            };
-        }
-
-        private async Task<(bool IsValid, string Message)> CheckUnique(int idToIgnore, SupplierRequest newSupplier)
-        {
-            if (await _context.NhaCungCap
-                .AnyAsync(x => x.SoDienThoai == newSupplier.SoDienThoai && x.MaNhaCungCap != idToIgnore))
-            {
-                return (false, "Số điện thoại này đã thuộc về nhà cung cấp khác!");
-            }
-
-            if (await _context.NhaCungCap
-                .AnyAsync(x => x.MaSoThue == newSupplier.MaSoThue && x.MaNhaCungCap != idToIgnore))
-            {
-                return (false, "Mã số thuế này đã thuộc về nhà cung cấp khác!");
-            }
-
-            if (await _context.NhaCungCap
-                .AnyAsync(x => x.Email == newSupplier.Email && x.MaNhaCungCap != idToIgnore))
-            {
-                return (false, "Email này đã thuộc về nhà cung cấp khác!");
-            }
-
-            if (await _context.NhaCungCap
-                .AnyAsync(x => x.NganHang == newSupplier.NganHang
-                    && x.SoTaiKhoan == newSupplier.SoTaiKhoan
-                    && x.MaNhaCungCap != idToIgnore))
-            {
-                return (false, "Tài khoản ngân hàng này đã thuộc về nhà cung cấp khác!");
-            }
-
-            if (await _context.NhaCungCap
-                .AnyAsync(x => x.TenNhaCungCap == newSupplier.TenNhaCungCap && x.MaNhaCungCap != idToIgnore))
-            {
-                return (true, "Cảnh báo trùng tên với nhà cung cấp khác!");
-            }
-
-            return (true, "Thông tin hợp lệ!");
-
-        }
-
-        // LẤY TÊN CÁC NHÀ CUNG CẤP
-        //GET: api/NhaCungCap/names
-        [HttpGet("names")]
-        public async Task<IActionResult> GetAllNhaCungCap()
+        // LẤY DANH SÁCH 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SupplierDTO>>> GetSuppliers()
         {
             var list = await _context.NhaCungCap
-                                     .Select(ncc => ncc.TenNhaCungCap)
-                                     .ToListAsync();
+                .Select(n => new SupplierDTO
+                {
+                    MaNhaCungCap = n.MaNhaCungCap,
+                    TenNhaCungCap = n.TenNhaCungCap,
+                    DiaChi = n.DiaChi,
+                    MaSoThue = n.MaSoThue,
+                    SoDienThoai = n.SoDienThoai,
+                    Email = n.Email,
+                    TenNganHang = n.NganHang, 
+                    SoTaiKhoan = n.SoTaiKhoan,
+                    NguoiDaiDien = n.NguoiDaiDien,
+                    ConHoatDong = n.ConGiaoGich
+                })
+                .ToListAsync();
+
             return Ok(list);
         }
 
-        //TÌM KIẾM NHÀ CUNG CẤP THEO THAM SỐ GẦN ĐÚNG
-        //GET: api/NhaCungCap?ten=...&maSoThue=...
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<NhaCungCap>>> GetNhaCungCap(
-            [FromQuery] string? ten,
-            [FromQuery] string? maSoThue,
-            [FromQuery] string? soDienThoai,
-            [FromQuery] string? email)
-        {
-            var query = _context.NhaCungCap.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(ten))
-            {
-                query = query.Where(ncc => ncc.TenNhaCungCap.Contains(ten));
-            }
-
-            if (!string.IsNullOrWhiteSpace(maSoThue))
-            {
-                query = query.Where(ncc => ncc.MaSoThue.Contains(maSoThue));
-            }
-
-            if (!string.IsNullOrWhiteSpace(soDienThoai))
-            {
-                query = query.Where(ncc => ncc.SoDienThoai.Contains(soDienThoai));
-            }
-
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                query = query.Where(ncc => ncc.Email.Contains(email));
-            }
-
-            var result = await query.ToListAsync();
-
-            return Ok(result);
-        }
-
-        //LẤY THÔNG TIN NHÀ CUNG CẤP
-        //GET: api/NhaCungCap/1
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NhaCungCap>> GetById(int id)
-        {
-            var nhaCungCap = await _context.NhaCungCap
-                .Where(ncc => ncc.MaNhaCungCap == id)
-                .FirstOrDefaultAsync();
-            if (nhaCungCap == null)
-            {
-                return NotFound($"Không tìm thấy nhà cung cấp {id}");
-            }
-            else
-            {
-                return Ok(nhaCungCap);
-            }
-        }
-
-        //CẬP NHẬT THÔNG TIN NHÀ CUNG CẤP
-        // PUT: api/NhaCungCap/1
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateNhaCungCap(int id, [FromBody] SupplierRequest newNhaCungCap)
-        {
-            var oldNhaCungCap = await _context.NhaCungCap.FindAsync(id);
-            if (oldNhaCungCap == null)
-            {
-                return NotFound($"Không tìm thấy nhà cung cấp {id}");
-            }
-
-            // Kiểm tra hợp lệ
-            var validation = await CheckUnique(id, newNhaCungCap);
-            if (!validation.IsValid)
-            {
-                return Conflict(new { message = validation.Message });
-            }
-
-            try
-            {
-                oldNhaCungCap.TenNhaCungCap = newNhaCungCap.TenNhaCungCap;
-                oldNhaCungCap.DiaChi = newNhaCungCap.DiaChi;
-                oldNhaCungCap.MaSoThue = newNhaCungCap.MaSoThue;
-                oldNhaCungCap.SoDienThoai = newNhaCungCap.SoDienThoai;
-                oldNhaCungCap.Email = newNhaCungCap.Email;
-                oldNhaCungCap.NganHang = newNhaCungCap.NganHang;
-                oldNhaCungCap.SoTaiKhoan = newNhaCungCap.SoTaiKhoan;
-
-                await _context.SaveChangesAsync();
-                return Ok(new { message = $"{validation.Message}, Cập nhật thông tin thành công!" });
-            }
-            catch (Exception ex)
-            {
-                var loiThatSu = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return BadRequest($"Lỗi: {loiThatSu}");
-            }
-        }
-
-        // TẠO NHÀ CUNG CẤP MỚI
-        // POST: api/NhaCungCap
+        // THÊM MỚI NHÀ CUNG CẤP
         [HttpPost]
-        public async Task<IActionResult> CreateNewSupplier([FromBody] SupplierRequest supplier)
+        public async Task<IActionResult> CreateSupplier([FromBody] SupplierDTO dto)
         {
-            var validation = await CheckUnique(-1, supplier); // Không loại trừ
-            if (!validation.IsValid)
+            var checkUnique = await CheckUnique(0, dto);
+            if (!checkUnique.IsValid) return BadRequest(checkUnique.Message);
+
+            var newSupplier = new NhaCungCap
             {
-                return Conflict(new { message = validation.Message });
-            }
+                TenNhaCungCap = dto.TenNhaCungCap,
+                DiaChi = dto.DiaChi,
+                MaSoThue = dto.MaSoThue,
+                SoDienThoai = dto.SoDienThoai,
+                Email = dto.Email,
+                NganHang = dto.TenNganHang,
+                SoTaiKhoan = dto.SoTaiKhoan,
+                NguoiDaiDien = dto.NguoiDaiDien,
+                ConGiaoGich = dto.ConHoatDong
+            };
 
             try
             {
-                var newSupplier = new NhaCungCap
-                {
-                    TenNhaCungCap = supplier.TenNhaCungCap,
-                    DiaChi = supplier.DiaChi,
-                    MaSoThue = supplier.MaSoThue,
-                    SoDienThoai = supplier.SoDienThoai,
-                    Email = supplier.Email,
-                    NganHang = supplier.NganHang,
-                    SoTaiKhoan = supplier.SoTaiKhoan
-                };
                 _context.NhaCungCap.Add(newSupplier);
-
                 await _context.SaveChangesAsync();
-                return Ok(new { message = $"Tạo thành công nhà cung cấp {newSupplier.MaNhaCungCap}, {validation.Message}" });
+                return Ok(true); 
             }
             catch (Exception ex)
             {
-                var loiThatSu = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return BadRequest($"Lỗi: {loiThatSu}");
+                return BadRequest($"Lỗi: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}");
             }
         }
 
+        // CẬP NHẬT NHÀ CUNG CẤP
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateSupplier(int id, [FromBody] SupplierDTO dto)
+        {
+            if (id != dto.MaNhaCungCap) return BadRequest("ID không hợp lệ");
 
-        // XÓA NHÀ CUNG CẤP KHÔNG CÓ NHẬP SÁCH
-        //DELETE: api/NhaCungCap/1
+            var checkUnique = await CheckUnique(id, dto);
+            if (!checkUnique.IsValid) return BadRequest(checkUnique.Message);
+
+            var supplier = await _context.NhaCungCap.FindAsync(id);
+            if (supplier == null) return NotFound("Không tìm thấy nhà cung cấp");
+
+            supplier.TenNhaCungCap = dto.TenNhaCungCap;
+            supplier.DiaChi = dto.DiaChi;
+            supplier.MaSoThue = dto.MaSoThue;
+            supplier.SoDienThoai = dto.SoDienThoai;
+            supplier.Email = dto.Email;
+            supplier.NganHang = dto.TenNganHang;
+            supplier.SoTaiKhoan = dto.SoTaiKhoan;
+            supplier.NguoiDaiDien = dto.NguoiDaiDien;
+            supplier.ConGiaoGich = dto.ConHoatDong;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}");
+            }
+        }
+
+        // XÓA NHÀ CUNG CẤP 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSupplier(int id)
         {
             var nhaCungCap = await _context.NhaCungCap.FindAsync(id);
-            if (nhaCungCap == null) return NotFound(new { message = $"Không tìm thấy nhà cung cấp {id}" });
+            if (nhaCungCap == null) return NotFound("Không tìm thấy nhà cung cấp");
 
-            //Kiểm tra có tồn tại phiếu nhập không
-            bool hasImport = await _context.PhieuNhapSach
-                .AnyAsync(p => p.MaNhaCungCap == id);
-            if (hasImport) return BadRequest(new { message = $"Không thể xóa nhà cung cấp đã tồn tại phiếu nhập" });
+            bool hasImport = await _context.PhieuNhapSach.AnyAsync(p => p.MaNhaCungCap == id);
+            if (hasImport) return BadRequest("Không thể xóa nhà cung cấp đã tồn tại phiếu nhập");
 
             try
             {
                 _context.NhaCungCap.Remove(nhaCungCap);
                 await _context.SaveChangesAsync();
-
-                return Ok($"Xóa thành công nhà cung cấp {id}");
+                return Ok(true);
             }
             catch (Exception ex)
             {
-                var loiThatSu = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return BadRequest($"Lỗi: {loiThatSu}");
+                return BadRequest($"Lỗi: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}");
             }
         }
-    }
 
+        // Hàm hỗ trợ kiểm tra Unique
+        private async Task<(bool IsValid, string Message)> CheckUnique(int idToIgnore, SupplierDTO dto)
+        {
+            if (await _context.NhaCungCap.AnyAsync(n => n.TenNhaCungCap == dto.TenNhaCungCap && n.MaNhaCungCap != idToIgnore))
+                return (false, "Tên nhà cung cấp đã tồn tại");
+
+            if (!string.IsNullOrEmpty(dto.SoDienThoai) && await _context.NhaCungCap.AnyAsync(n => n.SoDienThoai == dto.SoDienThoai && n.MaNhaCungCap != idToIgnore))
+                return (false, "Số điện thoại đã tồn tại");
+
+            if (!string.IsNullOrEmpty(dto.Email) && await _context.NhaCungCap.AnyAsync(n => n.Email == dto.Email && n.MaNhaCungCap != idToIgnore))
+                return (false, "Email đã tồn tại");
+
+            if (!string.IsNullOrEmpty(dto.MaSoThue) && await _context.NhaCungCap.AnyAsync(n => n.MaSoThue == dto.MaSoThue && n.MaNhaCungCap != idToIgnore))
+                return (false, "Mã số thuế đã tồn tại");
+
+            return (true, "");
+        }
+    }
 }
