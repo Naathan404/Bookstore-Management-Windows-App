@@ -10,7 +10,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Windows;
 using System.Windows.Input;
-// Khai báo namespace Base ViewModel của bạn
 using Bookstore.WPF.ViewModels.Base;
 
 namespace Bookstore.WPF.ViewModels
