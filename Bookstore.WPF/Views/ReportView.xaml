@@ -80,7 +80,8 @@
 						<RowDefinition Height="Auto"></RowDefinition>
 					</Grid.RowDefinitions>
 
-					<Border Grid.Row="0"
+					<Border x:Name="BieuDo"
+							Grid.Row="0"
 							Style="{StaticResource DashboardCardStyle}"
 							Margin="0,0,0,12">
 						<Grid>
@@ -223,17 +224,18 @@
 						</Grid>
 					</Border>
 
-					<Border Grid.Row="1"
-							Style="{StaticResource DashboardCardStyle}"
-							Margin="0,0,0,5"
-							Padding="20,16">
+					<Border x:Name="DataGrid"
+							Grid.Row="1"
+							Style="{StaticResource DataGridCardStyle}"
+							Margin="0,0,0,5">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="570" />
 							</Grid.RowDefinitions>
 
-							<Grid Grid.Row="0"
+							<Grid x:Name="TableTitle"
+								  Grid.Row="0"
 								  Margin="0,0,0,10">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*" />
@@ -273,225 +275,76 @@
 								  Visibility="{Binding ContentVisibility}">
 								<DataGrid Style="{StaticResource CleanDataGrid}"
 										  ItemsSource="{Binding RevenueRows}"
-										  Visibility="{Binding RevenueGridVisibility}"
 										  PreviewMouseWheel="DataGrid_PreviewMouseWheel"
-										  CanUserAddRows="False"
-										  CanUserDeleteRows="False"
-										  CanUserReorderColumns="False"
-										  CanUserResizeRows="False"
-										  CanUserSortColumns="True"
-										  CanUserResizeColumns="False"
-										  SelectionMode="Extended">
-									<DataGrid.RowStyle>
-										<Style TargetType="DataGridRow">
-											<Setter Property="Background"
-													Value="Transparent" />
-											<EventSetter Event="PreviewMouseDown"
-														 Handler="DataGridRow_PreviewMouseDown" />
-											<Style.Triggers>
-												<Trigger Property="IsSelected"
-														 Value="True">
-													<Setter Property="Background"
-															Value="#E0E7FF" />
-												</Trigger>
-												<Trigger Property="IsMouseOver"
-														 Value="True">
-													<Setter Property="Background"
-															Value="#F3F4F6" />
-													<Setter Property="Cursor"
-															Value="Hand" />
-												</Trigger>
-											</Style.Triggers>
-										</Style>
-									</DataGrid.RowStyle>
+										  Visibility="{Binding RevenueGridVisibility}">
 									<DataGrid.Columns>
 										<DataGridTextColumn Header="Ngày"
 															Binding="{Binding Date, StringFormat=dd/MM/yyyy}"
 															Width="110"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellCenter}">
-													<Setter Property="FontWeight"
-															Value="SemiBold" />
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource CenterHeaderStyle}"
+															ElementStyle="{StaticResource CellCenter}" />
 										<DataGridTextColumn Header="Số hóa đơn"
 															Binding="{Binding InvoiceCount}"
 															Width="100"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellCenter}" />
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource CenterHeaderStyle}"
+															ElementStyle="{StaticResource CellCenter}" />
+
 										<DataGridTextColumn Header="Số sách bán"
 															Binding="{Binding BooksSold}"
 															Width="100"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellCenter}" />
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource CenterHeaderStyle}"
+															ElementStyle="{StaticResource CellCenter}" />
+
 										<DataGridTextColumn Header="Doanh thu gộp"
 															Binding="{Binding TotalAmount, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource RightHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellMoney}">
-													<Setter Property="FontWeight"
-															Value="SemiBold"></Setter>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellMoney}" />
+
 										<DataGridTextColumn Header="Giảm giá"
 															Binding="{Binding Discount, StringFormat='{}{0:#,0} đ'}"
 															Width="130"
-															HeaderStyle="{StaticResource RightHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellRight}">
-													<!--<Setter Property="Foreground" Value="#F59E0B"/>-->
-													<Setter Property="FontWeight"
-															Value="SemiBold" />
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellMoney}" />
 
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
 										<DataGridTextColumn Header="Doanh thu thuần"
 															Binding="{Binding NetRevenue, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource RightHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellMoney}">
-													<Setter Property="Foreground"
-															Value="ForestGreen" />
-													<Setter Property="FontWeight"
-															Value="SemiBold"></Setter>
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="White" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellProfit}" />
+
 										<DataGridTextColumn Header="Tổng vốn"
 															Binding="{Binding TotalCost, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource RightHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellRight}">
-													<Setter Property="Foreground"
-															Value="Red"></Setter>
-													<Setter Property="FontWeight"
-															Value="SemiBold"></Setter>
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="White" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellDebt}" />
+
 										<DataGridTextColumn Header="Lợi nhuận gộp"
 															Binding="{Binding GrossProfit, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource RightHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellProfit}">
-													<Setter Property="FontWeight"
-															Value="Bold"></Setter>
-													<Setter Property="Foreground"
-															Value="Green"></Setter>
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="White" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellProfit}" />
 									</DataGrid.Columns>
 								</DataGrid>
 
 								<DataGrid Style="{StaticResource CleanDataGrid}"
 										  ItemsSource="{Binding InventoryRows}"
 										  Visibility="{Binding InventoryGridVisibility}"
-										  PreviewMouseWheel="DataGrid_PreviewMouseWheel"
-										  CanUserAddRows="False"
-										  CanUserDeleteRows="False"
-										  CanUserReorderColumns="False"
-										  CanUserResizeRows="False"
-										  CanUserSortColumns="True"
-										  CanUserResizeColumns="False"
-										  SelectionMode="Extended"
-										  SelectionUnit="FullRow">
-									<DataGrid.RowStyle>
-										<Style TargetType="DataGridRow">
-											<Setter Property="Background"
-													Value="Transparent" />
-											<EventSetter Event="PreviewMouseDown"
-														 Handler="DataGridRow_PreviewMouseDown" />
-											<Style.Triggers>
-												<Trigger Property="IsSelected"
-														 Value="True">
-													<Setter Property="Background"
-															Value="#E0E7FF" />
-												</Trigger>
-												<Trigger Property="IsMouseOver"
-														 Value="True">
-													<Setter Property="Background"
-															Value="#F3F4F6" />
-													<Setter Property="Cursor"
-															Value="Hand" />
-												</Trigger>
-											</Style.Triggers>
-										</Style>
-									</DataGrid.RowStyle>
+										  PreviewMouseWheel="DataGrid_PreviewMouseWheel">
 									<DataGrid.Columns>
 										<DataGridTextColumn Header="ISBN"
 															Binding="{Binding BookId}"
-															Width="140"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellCenter}">
-													<Setter Property="FontWeight"
-															Value="SemiBold" />
-													<Setter Property="HorizontalAlignment"
-															Value="Left"></Setter>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															Width="150"
+															HeaderStyle="{StaticResource LeftHeaderStyle}"
+															ElementStyle="{StaticResource CellLeft}" />
 										<DataGridTextColumn Header="Tựa sách"
 															Binding="{Binding BookName}"
-															Width="*"
-															HeaderStyle="{StaticResource LeftHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellLeft}">
-													<Setter Property="FontWeight"
-															Value="SemiBold" />
-													<Setter Property="TextWrapping"
-															Value="Wrap"></Setter>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															Width="200"
+															HeaderStyle="{StaticResource LeftHeaderStyle}"
+															ElementStyle="{StaticResource CellName}" />
+
 										<DataGridTemplateColumn Header="Thể loại"
-																Width="140"
+																Width="150"
 																HeaderStyle="{StaticResource CenterHeaderStyle}">
 											<DataGridTemplateColumn.CellTemplate>
 												<DataTemplate>
@@ -602,63 +455,41 @@
 												</DataTemplate>
 											</DataGridTemplateColumn.CellTemplate>
 										</DataGridTemplateColumn>
+
 										<DataGridTextColumn Header="Tồn đầu"
 															Binding="{Binding OpeningQty}"
-															Width="110"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellCenter}">
-													<Setter Property="FontWeight"
-															Value="SemiBold"></Setter>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															Width="*"
+															HeaderStyle="{StaticResource CenterHeaderStyle}"
+															ElementStyle="{StaticResource CellCenter}" />
+
 										<DataGridTextColumn Header="Nhập"
 															Binding="{Binding ImportedQty}"
-															Width="90"
+															Width="*"
 															HeaderStyle="{StaticResource CenterHeaderStyle}">
 											<DataGridTextColumn.ElementStyle>
 												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellCenter}">
-													<Setter Property="Foreground"
-															Value="Green" />
-													<Setter Property="FontWeight"
-															Value="SemiBold" />
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="White" />
-														</DataTrigger>
-													</Style.Triggers>
+													   BasedOn="{StaticResource CellProfit}">
+													<Setter Property="HorizontalAlignment"
+															Value="Center" />
 												</Style>
 											</DataGridTextColumn.ElementStyle>
 										</DataGridTextColumn>
+
 										<DataGridTextColumn Header="Xuất"
 															Binding="{Binding SoldQty}"
-															Width="110"
+															Width="*"
 															HeaderStyle="{StaticResource CenterHeaderStyle}">
 											<DataGridTextColumn.ElementStyle>
 												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellCenter}">
-													<Setter Property="Foreground"
-															Value="Red" />
-													<Setter Property="FontWeight"
-															Value="SemiBold" />
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="White" />
-														</DataTrigger>
-													</Style.Triggers>
+													   BasedOn="{StaticResource CellDebt}">
+													<Setter Property="HorizontalAlignment"
+															Value="Center" />
 												</Style>
 											</DataGridTextColumn.ElementStyle>
 										</DataGridTextColumn>
 										<DataGridTextColumn Header="Tồn cuối"
 															Binding="{Binding ClosingQty}"
-															Width="120"
+															Width="*"
 															HeaderStyle="{StaticResource CenterHeaderStyle}">
 											<DataGridTextColumn.ElementStyle>
 												<Style TargetType="TextBlock"
@@ -671,139 +502,42 @@
 										<DataGridTextColumn Header="Giá trị tồn"
 															Binding="{Binding StockValue, StringFormat='{}{0:#,0} đ'}"
 															Width="150"
-															HeaderStyle="{StaticResource RightHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellMoney}">
-													<Setter Property="Foreground"
-															Value="Green" />
-													<Setter Property="FontWeight"
-															Value="Bold"></Setter>
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="White" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellProfit}" />
 									</DataGrid.Columns>
 								</DataGrid>
 
 								<DataGrid Style="{StaticResource CleanDataGrid}"
 										  ItemsSource="{Binding DebtRows}"
 										  Visibility="{Binding DebtGridVisibility}"
-										  PreviewMouseWheel="DataGrid_PreviewMouseWheel"
-										  CanUserAddRows="False"
-										  CanUserDeleteRows="False"
-										  CanUserReorderColumns="False"
-										  CanUserResizeRows="False"
-										  CanUserSortColumns="True"
-										  CanUserResizeColumns="False"
-										  HorizontalAlignment="Center"
-										  SelectionMode="Extended">
-									<DataGrid.RowStyle>
-										<Style TargetType="DataGridRow">
-											<Setter Property="Background"
-													Value="Transparent" />
-											<EventSetter Event="PreviewMouseDown"
-														 Handler="DataGridRow_PreviewMouseDown" />
-											<Style.Triggers>
-												<Trigger Property="IsSelected"
-														 Value="True">
-													<Setter Property="Background"
-															Value="#E0E7FF" />
-												</Trigger>
-												<Trigger Property="IsMouseOver"
-														 Value="True">
-													<Setter Property="Background"
-															Value="#F3F4F6" />
-													<Setter Property="Cursor"
-															Value="Hand" />
-												</Trigger>
-											</Style.Triggers>
-										</Style>
-									</DataGrid.RowStyle>
+										  PreviewMouseWheel="DataGrid_PreviewMouseWheel">
 									<DataGrid.Columns>
 										<DataGridTextColumn Header="Tên khách hàng"
 															Binding="{Binding CustomerName}"
 															Width="2*"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellLeft}">
-													<Setter Property="FontWeight"
-															Value="SemiBold" />
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource LeftHeaderStyle}"
+															ElementStyle="{StaticResource CellLeft}" />
 										<DataGridTextColumn Header="Nợ đầu"
 															Binding="{Binding OpeningDebt, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellMoney}">
-												</Style>
-
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellMoney}" />
 										<DataGridTextColumn Header="Phát sinh"
 															Binding="{Binding NewDebt, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellDebt}" />
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellDebt}" />
 										<DataGridTextColumn Header="Thu hồi"
 															Binding="{Binding PaidDebt, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock"
-													   BasedOn="{StaticResource CellProfit}" />
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellProfit}" />
+
 										<DataGridTextColumn Header="Nợ cuối"
 															Binding="{Binding ClosingDebt, StringFormat='{}{0:#,0} đ'}"
 															Width="*"
-															HeaderStyle="{StaticResource CenterHeaderStyle}">
-											<DataGridTextColumn.ElementStyle>
-												<Style TargetType="TextBlock">
-													<Setter Property="HorizontalAlignment"
-															Value="Right" />
-													<Setter Property="VerticalAlignment"
-															Value="Center" />
-													<Setter Property="Margin"
-															Value="8,0,12,0" />
-													<Setter Property="FontWeight"
-															Value="Bold" />
-													<Setter Property="FontSize"
-															Value="14" />
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding HasDebt}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="Red" />
-														</DataTrigger>
-														<DataTrigger Binding="{Binding HasDebt}"
-																	 Value="False">
-															<Setter Property="Foreground"
-																	Value="Green" />
-														</DataTrigger>
-														<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-																	 Value="True">
-															<Setter Property="Foreground"
-																	Value="White" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</DataGridTextColumn.ElementStyle>
-										</DataGridTextColumn>
+															HeaderStyle="{StaticResource RightHeaderStyle}"
+															ElementStyle="{StaticResource CellDynamicDebt}" />
 									</DataGrid.Columns>
 								</DataGrid>
 							</Grid>

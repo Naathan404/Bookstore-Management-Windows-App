@@ -60,224 +60,62 @@
 			</Border>
 
 			<Border Grid.Row="2"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1"
-					Padding="20">
+					Style="{StaticResource DataGridCardStyle}">
 				<DataGrid ItemsSource="{Binding PagedSuppliers}"
 						  Style="{StaticResource CleanDataGrid}">
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="STT"
-											Binding="{Binding STT}"
-											Width="45"
-											HeaderStyle="{StaticResource CenterHeaderStyle}">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Center" />
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="FontWeight"
-											Value="SemiBold" />
-									<Setter Property="Foreground"
-											Value="#A3AED0" />
-									<Style.Triggers>
-										<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-													 Value="True">
-											<Setter Property="Foreground"
-													Value="White" />
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
 						<DataGridTextColumn Header="Mã NCC"
-											Binding="{Binding DisplayID}"
-											Width="100"
-											HeaderStyle="{StaticResource CenterHeaderStyle}">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock"
-									   BasedOn="{StaticResource CellCenter}">
-								</Style>
-							</DataGridTextColumn.ElementStyle>
+											Width="120"
+											HeaderStyle="{StaticResource CenterHeaderStyle}"
+											ElementStyle="{StaticResource CellCode}"
+											SortMemberPath="MaNhaCungCap">
+							<DataGridTextColumn.Binding>
+								<MultiBinding StringFormat="NCC{0:D3}">
+									<Binding Path="MaNhaCungCap" />
+								</MultiBinding>
+							</DataGridTextColumn.Binding>
 						</DataGridTextColumn>
 
 						<DataGridTextColumn Header="Tên nhà cung cấp"
 											Binding="{Binding TenNhaCungCap}"
-											Width="*">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock"
-									   BasedOn="{StaticResource CellLeft}">
-									<Setter Property="HorizontalAlignment"
-											Value="Left"></Setter>
-									<Setter Property="FontWeight"
-											Value="Bold"></Setter>
-									<Setter Property="TextWrapping"
-											Value="Wrap"></Setter>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellName}"
+											Width="200" />
 
 						<DataGridTextColumn Header="Người đại diện"
 											Binding="{Binding NguoiDaiDien}"
-											Width="150">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock"
-									   BasedOn="{StaticResource CellLeft}">
-									<Setter Property="HorizontalAlignment"
-											Value="Left"></Setter>
-									<Setter Property="FontWeight"
-											Value="SemiBold"></Setter>
-									<Setter Property="TextWrapping"
-											Value="Wrap"></Setter>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellLeft}"
+											Width="150" />
 
 						<DataGridTextColumn Header="Số điện thoại"
 											Binding="{Binding SoDienThoai}"
 											Width="120"
-											HeaderStyle="{StaticResource CenterHeaderStyle}">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock"
-									   BasedOn="{StaticResource CellCenter}">
-									<Setter Property="FontWeight"
-											Value="SemiBold"></Setter>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellLeft}"/>
 
 						<DataGridTextColumn Header="Email"
 											Binding="{Binding Email}"
-											Width="200">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock"
-									   BasedOn="{StaticResource CellCenter}">
-									<Setter Property="FontWeight"
-											Value="SemiBold"></Setter>
-									<Setter Property="TextWrapping"
-											Value="Wrap"></Setter>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellLeft}"
+											Width="*" />
 
 						<DataGridTextColumn Header="Mã số thuế"
 											Binding="{Binding MaSoThue}"
-											Width="120">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock"
-									   BasedOn="{StaticResource CellRight}">
-									<Setter Property="FontWeight"
-											Value="SemiBold"></Setter>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellLeft}"
+											Width="120" />
 
 						<DataGridTemplateColumn Header="Thao tác"
-												Width="120"
+												Width="100"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<StackPanel Orientation="Horizontal"
-												HorizontalAlignment="Center">
-										<Button Width="32"
-												Height="32"
-												BorderThickness="0"
-												Cursor="Hand"
-												ToolTip="Sửa"
-												Command="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-												CommandParameter="{Binding}">
-											<Button.Style>
-												<Style TargetType="Button">
-													<Setter Property="Background"
-															Value="#E0E7FF" />
-													<Setter Property="Foreground"
-															Value="#4318FF" />
-
-													<Style.Triggers>
-														<Trigger Property="IsMouseOver"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#C7D2FE" />
-															<Setter Property="Foreground"
-																	Value="#250AA0" />
-														</Trigger>
-
-														<Trigger Property="IsPressed"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#A5B4FC" />
-															<Setter Property="Opacity"
-																	Value="0.8" />
-														</Trigger>
-													</Style.Triggers>
-												</Style>
-											</Button.Style>
-											<Button.Template>
-												<ControlTemplate TargetType="Button">
-													<Border x:Name="border"
-															Background="{TemplateBinding Background}"
-															CornerRadius="6">
-														<materialDesign:PackIcon Kind="Edit"
-																				 Width="15"
-																				 Height="15"
-																				 Foreground="#4318FF"
-																				 HorizontalAlignment="Center"
-																				 VerticalAlignment="Center" />
-													</Border>
-												</ControlTemplate>
-											</Button.Template>
-										</Button>
-
-										<Button Width="32"
-												Height="32"
-												BorderThickness="0"
-												ToolTip="Xóa"
-												Margin="8,0,0,0"
-												Command="{Binding DataContext.DeleteSupplierCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-												CommandParameter="{Binding}">
-											<Button.Style>
-												<Style TargetType="Button">
-													<Setter Property="Background"
-															Value="#FEE2E2" />
-													<Setter Property="Foreground"
-															Value="#EF4444" />
-													<Style.Triggers>
-														<Trigger Property="IsMouseOver"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#FECACA" />
-															<Setter Property="Foreground"
-																	Value="#DC2626" />
-														</Trigger>
-
-														<Trigger Property="IsPressed"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#FCA5A5" />
-															<Setter Property="Opacity"
-																	Value="0.8" />
-														</Trigger>
-													</Style.Triggers>
-												</Style>
-											</Button.Style>
-											<Button.Template>
-												<ControlTemplate TargetType="Button">
-													<Border x:Name="border"
-															Background="{TemplateBinding Background}"
-															CornerRadius="6">
-														<materialDesign:PackIcon Kind="Delete"
-																				 Width="15"
-																				 Height="15"
-																				 Foreground="#EF4444"
-																				 HorizontalAlignment="Center"
-																				 VerticalAlignment="Center" />
-													</Border>
-												</ControlTemplate>
-											</Button.Template>
-										</Button>
-									</StackPanel>
+									<components:DataGridActionPanel RowItem="{Binding}"
+																	ShowEdit="True"
+																	EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowDelete="True"
+																	DeleteCommand="{Binding DataContext.DeleteSupplierCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -292,6 +130,7 @@
 										  PaginationCommand="{Binding PhanTrangCommand}" />
 		</Grid>
 
+		<!-- POP UP -->
 		<Grid Background="#80000000"
 			  Panel.ZIndex="1000"
 			  Visibility="{Binding IsPopupVisible, Converter={StaticResource BoolToVis}}">

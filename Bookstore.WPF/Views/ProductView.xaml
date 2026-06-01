@@ -294,8 +294,8 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<components:FilterInputControl Grid.Column="0"
@@ -338,182 +338,25 @@
 			</Border>
 
 			<!-- Card 3: Danh sách sách -->
-			<Border Grid.Row="2"
-					CornerRadius="20"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1"
-					Padding="20">
-				<DataGrid Grid.Row="1"
-						  ItemsSource="{Binding PagedBooks}"
-						  CanUserSortColumns="False"
-						  AutoGenerateColumns="False"
-						  SelectionMode="Extended"
-						  SelectionUnit="FullRow"
-						  IsReadOnly="True"
-						  HeadersVisibility="Column"
-						  BorderThickness="0"
-						  MinRowHeight="52"
-						  FontSize="13"
-						  AlternatingRowBackground="#F8FAFC"
-						  RowBackground="White"
-						  Foreground="#2B3674"
-						  GridLinesVisibility="Horizontal"
-						  HorizontalGridLinesBrush="#E2E8F0"
-						  VerticalGridLinesBrush="Transparent"
-						  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-						  ScrollViewer.VerticalScrollBarVisibility="Auto"
-						  CanUserAddRows="False"
-						  CanUserDeleteRows="False"
-						  CanUserResizeColumns="False"
-						  CanUserResizeRows="False"
-						  CanUserReorderColumns="False"
-						  VirtualizingStackPanel.IsVirtualizing="True"
-						  VirtualizingStackPanel.VirtualizationMode="Recycling"
-						  ScrollViewer.IsDeferredScrollingEnabled="True">
-
-					<DataGrid.Resources>
-						<!-- Style Mặc định cho Header-->
-						<Style TargetType="ScrollBar"
-							   BasedOn="{StaticResource {x:Type ScrollBar}}">
-							<Style.Triggers>
-								<Trigger Property="Orientation"
-										 Value="Vertical">
-									<Setter Property="LayoutTransform">
-										<Setter.Value>
-											<ScaleTransform ScaleX="0.4" />
-										</Setter.Value>
-									</Setter>
-									<Setter Property="Margin"
-											Value="0,0,2,0" />
-								</Trigger>
-
-								<Trigger Property="Orientation"
-										 Value="Horizontal">
-									<Setter Property="LayoutTransform">
-										<Setter.Value>
-											<ScaleTransform ScaleY="0.4" />
-										</Setter.Value>
-									</Setter>
-									<Setter Property="Margin"
-											Value="0,0,0,2" />
-								</Trigger>
-							</Style.Triggers>
-						</Style>
-						<Style TargetType="DataGridColumnHeader">
-							<Setter Property="Background"
-									Value="#F8FAFC" />
-							<Setter Property="Foreground"
-									Value="#2B3674" />
-							<Setter Property="FontWeight"
-									Value="SemiBold" />
-							<Setter Property="FontSize"
-									Value="13" />
-							<Setter Property="Height"
-									Value="44" />
-							<Setter Property="BorderBrush"
-									Value="#E2E8F0" />
-							<Setter Property="BorderThickness"
-									Value="0,0,0,2" />
-							<Setter Property="Padding"
-									Value="12,0" />
-							<Setter Property="HorizontalContentAlignment"
-									Value="Center" />
-							<Setter Property="VerticalContentAlignment"
-									Value="Center" />
-						</Style>
-
-						<!-- Style Header-->
-						<Style x:Key="CenterHeaderStyle"
-							   TargetType="DataGridColumnHeader"
-							   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-							<Setter Property="HorizontalContentAlignment"
-									Value="Center" />
-						</Style>
-
-						<!-- Style Header -->
-						<Style x:Key="RightHeaderStyle"
-							   TargetType="DataGridColumnHeader"
-							   BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-							<Setter Property="HorizontalContentAlignment"
-									Value="Right" />
-						</Style>
-
-						<Style TargetType="DataGridCell">
-							<Setter Property="VerticalContentAlignment"
-									Value="Center" />
-							<Setter Property="HorizontalContentAlignment"
-									Value="Stretch" />
-							<Setter Property="BorderThickness"
-									Value="0" />
-							<Setter Property="FocusVisualStyle"
-									Value="{x:Null}" />
-							<Setter Property="Padding"
-									Value="12,0" />
-							<!-- Đệm lề-->
-						</Style>
-						<Style TargetType="DataGridRow">
-							<Setter Property="Background"
-									Value="Transparent" />
-							<Style.Triggers>
-								<Trigger Property="IsSelected"
-										 Value="True">
-									<Setter Property="Background"
-											Value="#E0E7FF" />
-								</Trigger>
-								<Trigger Property="IsMouseOver"
-										 Value="True">
-									<Setter Property="Background"
-											Value="#F3F4F6" />
-									<Setter Property="Cursor"
-											Value="Hand" />
-								</Trigger>
-							</Style.Triggers>
-						</Style>
-					</DataGrid.Resources>
-
+			<Border x:Name="DataGrid"
+					Grid.Row="2"
+					Style="{StaticResource DataGridCardStyle}">
+				<DataGrid ItemsSource="{Binding PagedBooks}"
+						  Style="{StaticResource CleanDataGrid}">
 					<DataGrid.Columns>
 						<!-- Cột STT-->
 						<DataGridTextColumn Header="STT"
 											Binding="{Binding STT}"
-											Width="45"
-											HeaderStyle="{StaticResource CenterHeaderStyle}">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Center" />
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="FontWeight"
-											Value="SemiBold" />
-									<Setter Property="Foreground"
-											Value="#A3AED0" />
-									<Style.Triggers>
-										<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}"
-													 Value="True">
-											<Setter Property="Foreground"
-													Value="White" />
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
-
+											Width="50"
+											HeaderStyle="{StaticResource CenterHeaderStyle}"
+											ElementStyle="{StaticResource CellCode}"/>
+						
 						<!-- Cột Tên Sách-->
 						<DataGridTextColumn Header="Tên sách"
 											Binding="{Binding TenSach}"
-											Width="*">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="TextWrapping"
-											Value="Wrap" />
-									<Setter Property="FontWeight"
-											Value="SemiBold" />
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											HeaderStyle="{StaticResource LeftHeaderStyle}"
+											ElementStyle="{StaticResource CellName}"
+											Width="200" />
 
 						<!-- Cột Tác Giả -->
 						<DataGridTemplateColumn Header="Tác giả"
@@ -663,16 +506,11 @@
 						<!-- Cột Tồn Kho  -->
 						<DataGridTextColumn Header="Tồn kho"
 											Binding="{Binding SoLuongTonKho}"
-											Width="80"
+											Width="*"
 											HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Center" />
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="FontWeight"
-											Value="SemiBold"></Setter>
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource CellCenter}">
 									<Style.Triggers>
 										<DataTrigger Binding="{Binding IsCanhBaoTonKho}"
 													 Value="True">
@@ -689,162 +527,35 @@
 						<!-- Cột Đã Bán  -->
 						<DataGridTextColumn Header="Đã bán"
 											Binding="{Binding TongDaBan}"
-											Width="80"
-											HeaderStyle="{StaticResource CenterHeaderStyle}">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Center" />
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="FontWeight"
-											Value="Bold" />
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											Width="*"
+											HeaderStyle="{StaticResource CenterHeaderStyle}"
+											ElementStyle="{StaticResource CellCenter}" />
 
 						<!-- Cột Giá Niêm Yết -->
 						<DataGridTextColumn Header="Giá Niêm Yết"
 											Binding="{Binding GiaNiemYet, StringFormat={}{0:N0} đ}"
-											Width="100"
-											HeaderStyle="{StaticResource RightHeaderStyle}">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Right" />
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="FontWeight"
-											Value="SemiBold"></Setter>
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											Width="*"
+											HeaderStyle="{StaticResource RightHeaderStyle}"
+											ElementStyle="{StaticResource CellMoney}" />
 
 						<!-- Cột Đơn Giá -->
 						<DataGridTextColumn Header="Đơn giá"
 											Binding="{Binding DonGiaBan, StringFormat={}{0:N0} đ}"
-											Width="100"
-											HeaderStyle="{StaticResource RightHeaderStyle}">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="HorizontalAlignment"
-											Value="Right" />
-									<Setter Property="VerticalAlignment"
-											Value="Center" />
-									<Setter Property="FontWeight"
-											Value="Bold" />
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
+											Width="*"
+											HeaderStyle="{StaticResource RightHeaderStyle}"
+											ElementStyle="{StaticResource CellProfit}" />
 
 						<!-- Cột Nút Hành Động -->
 						<DataGridTemplateColumn Header="Thao tác"
-												Width="120"
+												Width="100"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<StackPanel Orientation="Horizontal"
-												HorizontalAlignment="Center"
-												VerticalAlignment="Center">
-										<!-- Nút Sửa -->
-										<Button Width="32"
-												Height="32"
-												BorderThickness="0"
-												Cursor="Hand"
-												ToolTip="Sửa"
-												Command="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-												CommandParameter="{Binding}">
-											<Button.Style>
-												<Style TargetType="Button">
-													<Setter Property="Background"
-															Value="#E0E7FF" />
-													<Setter Property="Foreground"
-															Value="#4318FF" />
-
-													<Style.Triggers>
-														<Trigger Property="IsMouseOver"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#C7D2FE" />
-															<Setter Property="Foreground"
-																	Value="#250AA0" />
-														</Trigger>
-
-														<Trigger Property="IsPressed"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#A5B4FC" />
-															<Setter Property="Opacity"
-																	Value="0.8" />
-														</Trigger>
-													</Style.Triggers>
-												</Style>
-											</Button.Style>
-											<Button.Template>
-												<ControlTemplate TargetType="Button">
-													<Border x:Name="border"
-															Background="{TemplateBinding Background}"
-															CornerRadius="6">
-														<materialDesign:PackIcon Kind="Edit"
-																				 Width="15"
-																				 Height="15"
-																				 Foreground="#4318FF"
-																				 HorizontalAlignment="Center"
-																				 VerticalAlignment="Center" />
-													</Border>
-												</ControlTemplate>
-											</Button.Template>
-										</Button>
-										<!-- Nút Xóa -->
-										<Button Width="32"
-												Height="32"
-												BorderThickness="0"
-												Cursor="Hand"
-												ToolTip="Xóa"
-												Margin="6,0,0,0"
-												Command="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-												CommandParameter="{Binding}">
-											<Button.Style>
-												<Style TargetType="Button">
-													<Setter Property="Background"
-															Value="#FEE2E2" />
-													<Setter Property="Foreground"
-															Value="#EF4444" />
-													<Style.Triggers>
-														<Trigger Property="IsMouseOver"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#FECACA" />
-															<Setter Property="Foreground"
-																	Value="#DC2626" />
-														</Trigger>
-
-														<Trigger Property="IsPressed"
-																 Value="True">
-															<Setter Property="Background"
-																	Value="#FCA5A5" />
-															<Setter Property="Opacity"
-																	Value="0.8" />
-														</Trigger>
-													</Style.Triggers>
-												</Style>
-											</Button.Style>
-											<Button.Template>
-												<ControlTemplate TargetType="Button">
-													<Border x:Name="border"
-															Background="{TemplateBinding Background}"
-															CornerRadius="6">
-														<materialDesign:PackIcon Kind="Delete"
-																				 Width="15"
-																				 Height="15"
-																				 Foreground="#EF4444"
-																				 HorizontalAlignment="Center"
-																				 VerticalAlignment="Center" />
-													</Border>
-												</ControlTemplate>
-											</Button.Template>
-										</Button>
-									</StackPanel>
+									<components:DataGridActionPanel RowItem="{Binding}"
+																	ShowEdit="True"
+																	EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowDelete="True"
+																	DeleteCommand="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -858,40 +569,6 @@
 										  TotalPages="{Binding TongSoTrang}"
 										  TotalRecords="{Binding TongBanGhi}"
 										  PaginationCommand="{Binding PhanTrangCommand}" />
-			<!--<Border Grid.Row="3" Margin="0,12,0,0" Padding="12,8" CornerRadius="12" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding FirstPageCommand}" CommandParameter="{Binding}" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding PrevPageCommand}" CommandParameter="{Binding}" Margin="0,0,8,0">
-                        <materialDesign:PackIcon Kind="ChevronLeft" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-
-                    <ItemsControl ItemsSource="{Binding PageNumbers}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Content="{Binding}" Margin="0,0,4,0" Style="{StaticResource PaginationButtonStyle}"
-                                        Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" CommandParameter="{Binding}" Margin="8,0,0,0">
-                        <materialDesign:PackIcon Kind="ChevronRight" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-                    <Button Style="{StaticResource PaginationButtonStyle}" Command="{Binding LastPageCommand}" CommandParameter="{Binding}" Margin="4,0,0,0">
-                        <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="16" Height="16" Foreground="#A3AED0"/>
-                    </Button>
-
-                    <TextBlock Text="{Binding CurrentPage, StringFormat='Trang {0}'}" FontSize="12" Foreground="#A3AED0" VerticalAlignment="Center" Margin="12,0,0,0"/>
-                </StackPanel>
-            </Border>-->
 		</Grid>
 
 		<!--==================== POPUP THÊM SÁCH ====================-->
