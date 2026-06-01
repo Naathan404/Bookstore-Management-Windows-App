@@ -4,11 +4,8 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-			 mc:Ignorable="d"
-			 Background="#F4F7FE"
-			 HorizontalAlignment="Stretch"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
-			 VerticalAlignment="Stretch">
+			 mc:Ignorable="d">
 
 	<UserControl.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -175,207 +172,56 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Grid Background="{StaticResource BackgroundColor}">
-		<Grid Margin="5">
+	<Grid>
+		<Grid x:Name="MainReceipView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
-				<RowDefinition Height="90" />
+				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<!-- HEADER -->
-			<Border Grid.Row="0"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-
-					<StackPanel Grid.Column="0"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<materialDesign:PackIcon Kind="ReceiptText"
-												 Width="28"
-												 Height="28"
-												 Foreground="#4318FF"
-												 VerticalAlignment="Center"
-												 Margin="0,0,10,0" />
-						<TextBlock Text="QUẢN LÝ PHIẾU THU"
-								   FontSize="24"
-								   FontWeight="Bold"
-								   Foreground="#2B3674"
-								   VerticalAlignment="Center" />
-					</StackPanel>
-
-					<StackPanel Grid.Column="1"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<Button Style="{StaticResource MainGradientButton}"
-								Width="100"
-								Margin="0,0,10,0"
-								CommandParameter="{Binding}"
-								Command="{Binding MoPopupThemCommand}">
-							<StackPanel Orientation="Horizontal">
-								<materialDesign:PackIcon Kind="Plus"
-														 Width="16"
-														 Height="16"
-														 Foreground="White"
-														 Margin="0,0,6,0" />
-								<TextBlock Text="THÊM" />
-							</StackPanel>
-						</Button>
-					</StackPanel>
-				</Grid>
-			</Border>
+			<components:PageHeaderControl Title="QUẢN LÝ PHIẾU THU"
+										  HeaderIcon="ReceiptText"
+										  AddTitle="THÊM"
+										  AddIcon="Plus"
+										  AddCommand="{Binding MoPopupThemCommand}"
+										  AddCommandParameter="{Binding}"/>
 
 			<!-- FILTER -->
 			<Border Grid.Row="1"
-					Margin="0,0,0,12"
-					Padding="20"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
+					Style="{StaticResource FilterCardStyle}">
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="1.5*" />
-						<ColumnDefinition Width="1.5*" />
-						<ColumnDefinition Width="120" />
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<Border Grid.Column="0"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="Magnify"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<TextBox Grid.Column="1"
-									 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-									 Margin="0 0 5 0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Stretch"
-									 FontSize="13"
-									 Foreground="#2B3674"
-									 materialDesign:HintAssist.Hint="Tìm khách hàng hoặc người thu..." />
-						</Grid>
-					</Border>
+					<components:FilterInputControl Grid.Column="0"
+												   Margin="0,0,8,0"
+												   IconKind="Magnify"
+												   HintText="Tìm khách hàng hoặc người thu..."
+												   TextValue="{Binding SearchText}" />
 
-					<Border Grid.Column="1"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarStart"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding FromDate, UpdateSourceTrigger=PropertyChanged}"
-										Margin="0 0 5 0"
-										Background="Transparent"
-										BorderThickness="0"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Stretch"
-										FontSize="13"
-										Foreground="#2B3674"
-										materialDesign:HintAssist.Hint="Từ ngày" />
-						</Grid>
-					</Border>
+					<components:FilterDatePickerControl Grid.Column="1"
+														Margin="0,0,8,0"
+														IconKind="CalendarStart"
+														HintText="Từ ngày"
+														SelectedDate="{Binding FromDate}" />
 
-					<Border Grid.Column="2"
-							Style="{StaticResource FilterBorderStyle}"
-							Margin="0,0,8,0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="36" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<materialDesign:PackIcon Kind="CalendarEnd"
-													 Width="18"
-													 Height="18"
-													 Foreground="#A3AED0"
-													 VerticalAlignment="Center"
-													 HorizontalAlignment="Center" />
-							<DatePicker Grid.Column="1"
-										SelectedDate="{Binding ToDate, UpdateSourceTrigger=PropertyChanged}"
-										Margin="0 0 5 0"
-										Background="Transparent"
-										BorderThickness="0"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Stretch"
-										FontSize="13"
-										Foreground="#2B3674"
-										materialDesign:HintAssist.Hint="Đến ngày" />
-						</Grid>
-					</Border>
+					<components:FilterDatePickerControl Grid.Column="2"
+														Margin="0,0,8,0"
+														IconKind="CalendarEnd"
+														HintText="Đến ngày"
+														SelectedDate="{Binding ToDate}" />
 
-					<Border Grid.Column="3"
-							Background="#F4F7FE"
-							CornerRadius="10"
-							Padding="15,0"
-							Margin="0,0,10,0">
-						<StackPanel Orientation="Horizontal"
-									VerticalAlignment="Center">
-							<TextBlock Text="Tổng:"
-									   Foreground="#A3AED0"
-									   FontSize="12"
-									   VerticalAlignment="Center" />
-							<TextBlock Text="{Binding TongBanGhi}"
-									   FontWeight="Bold"
-									   Foreground="#4318FF"
-									   FontSize="15"
-									   Margin="8,0,0,0"
-									   VerticalAlignment="Center" />
-						</StackPanel>
-					</Border>
-
-					<Button Grid.Column="4"
-							Width="42"
-							Height="42"
-							ToolTip="Xóa tất cả bộ lọc"
-							Command="{Binding XoaLocCommand}"
-							CommandParameter="{Binding}"
-							Background="#FEE2E2"
-							BorderThickness="0"
-							Cursor="Hand">
-						<Button.Template>
-							<ControlTemplate TargetType="Button">
-								<Border Background="{TemplateBinding Background}"
-										CornerRadius="10">
-									<materialDesign:PackIcon Kind="FilterOff"
-															 Width="20"
-															 Height="20"
-															 Foreground="#EF4444"
-															 HorizontalAlignment="Center"
-															 VerticalAlignment="Center" />
-								</Border>
-							</ControlTemplate>
-						</Button.Template>
-					</Button>
+					<components:FilterActionPanel Grid.Column="3"
+												  ClearCommand="{Binding XoaLocCommand}"
+												  RefreshCommand="{Binding RefreshCommand}"
+												  ShowRefreshButton="True" />
 				</Grid>
 			</Border>
 
@@ -598,7 +444,12 @@
 
 
 			<!-- FOOTER -->
-			<Border Grid.Row="3"
+			<components:PaginationControl Grid.Row="3"
+										  CurrentPage="{Binding TrangHienTai}"
+										  TotalPages="{Binding TongSoTrang}"
+										  TotalRecords="{Binding TongBanGhi}"
+										  PaginationCommand="{Binding PhanTrangCommand}" />
+			<!--<Border Grid.Row="3"
 					Margin="0,12,0,0"
 					Padding="12,8"
 					CornerRadius="12"
@@ -655,7 +506,7 @@
 												 Foreground="#A3AED0" />
 					</Button>
 				</StackPanel>
-			</Border>
+			</Border>-->
 
 		</Grid>
 		

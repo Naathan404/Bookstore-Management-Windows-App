@@ -1,6 +1,7 @@
 ﻿using Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,18 +12,19 @@ using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    public class CustomerViewModel : BaseViewModel
+    // KẾ THỪA TỪ BASE LIST
+    public class CustomerViewModel : BaseListViewModel
     {
         #region COMPONENTS (Chứa bộ não Popup Thu Tiền)
-        // Nhúng Component xử lý Phiếu Thu vào đây
         public ReceiptPopupViewModel PopupThuTienVM { get; set; } = new ReceiptPopupViewModel();
         #endregion
 
-        #region PROPERTIES
+        #region PROPERTIES CHUYÊN BIỆT CỦA KHÁCH HÀNG
 
-        // --- Danh sách & Phân trang ---
-        private ObservableCollection<CustomerResponse> _danhSachKhachHangGoc = new();
+        // Danh sách gốc tải từ server
+        private List<CustomerResponse> _danhSachKhachHangGoc = new();
 
+        // Danh sách đã cắt trang để đưa lên DataGrid
         private ObservableCollection<CustomerResponse> _danhSachKhachHang = new();
         public ObservableCollection<CustomerResponse> DanhSachKhachHang
         {
@@ -30,51 +32,33 @@ namespace Bookstore.WPF.ViewModels
             set { _danhSachKhachHang = value; OnPropertyChanged(); }
         }
 
-        private int _trangHienTai = 1;
-        public int TrangHienTai
-        {
-            get => _trangHienTai;
-            set { _trangHienTai = value; OnPropertyChanged(); }
-        }
-
-        private int _tongSoTrang = 1;
-        public int TongSoTrang
-        {
-            get => _tongSoTrang;
-            set { _tongSoTrang = value; OnPropertyChanged(); }
-        }
-
-        private int _tongBanGhi;
-        public int TongBanGhi
-        {
-            get => _tongBanGhi;
-            set { _tongBanGhi = value; OnPropertyChanged(); }
-        }
-
         // --- Bộ Lọc (Filters) ---
-        private string _searchText = "";
-        public string SearchText
-        {
-            get => _searchText;
-            set { _searchText = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
-        }
+        // (Biến SearchKeyword đã có sẵn trong BaseListViewModel)
 
         private string _kieuTimKiem = "Số điện thoại";
         public string KieuTimKiem
         {
             get => _kieuTimKiem;
-            set { _kieuTimKiem = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
+            set { _kieuTimKiem = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
         }
 
         private string _locLoaiKhach = "Tất cả";
         public string LocLoaiKhach
         {
             get => _locLoaiKhach;
-            set { _locLoaiKhach = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
+            set { _locLoaiKhach = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
         }
 
-        // 1. Danh sách dùng cho ComboBox ở Popup Thêm/Sửa
+        private string _locCongNo = "Tất cả";
+        public string LocCongNo
+        {
+            get => _locCongNo;
+            set { _locCongNo = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
+        }
+
+        // Danh sách cho ComboBox
         private List<CustomerTierResponse> _danhSachLoaiKhachGocAPI = new();
+
         private ObservableCollection<string> _danhSachLoaiKhachForm = new();
         public ObservableCollection<string> DanhSachLoaiKhachForm
         {
@@ -82,7 +66,6 @@ namespace Bookstore.WPF.ViewModels
             set { _danhSachLoaiKhachForm = value; OnPropertyChanged(); }
         }
 
-        // 2. Danh sách dùng cho ComboBox Lọc
         private ObservableCollection<string> _danhSachLoaiKhachLoc = new();
         public ObservableCollection<string> DanhSachLoaiKhachLoc
         {
@@ -90,100 +73,206 @@ namespace Bookstore.WPF.ViewModels
             set { _danhSachLoaiKhachLoc = value; OnPropertyChanged(); }
         }
 
-        private string _locCongNo = "Tất cả";
-        public string LocCongNo
-        {
-            get => _locCongNo;
-            set { _locCongNo = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
-        }
+        public List<string> DanhSachKieuTimKiem { get; set; } = new List<string> { "Số điện thoại", "Tên khách hàng", "Email" };
+        public List<string> DanhSachLocCongNo { get; set; } = new List<string> { "Tất cả", "Không nợ", "Dưới 1 triệu", "Trên 5 triệu" };
+
 
         // --- Trạng thái Popup Khách Hàng ---
         private bool _isKhachHangPopupOpen;
-        public bool IsKhachHangPopupOpen
-        {
-            get => _isKhachHangPopupOpen;
-            set { _isKhachHangPopupOpen = value; OnPropertyChanged(); }
-        }
+        public bool IsKhachHangPopupOpen { get => _isKhachHangPopupOpen; set { _isKhachHangPopupOpen = value; OnPropertyChanged(); } }
 
         private string _popupTitle = "THÊM KHÁCH HÀNG MỚI";
-        public string PopupTitle
-        {
-            get => _popupTitle;
-            set { _popupTitle = value; OnPropertyChanged(); }
-        }
-
-        private bool _isCongNoVisible;
-        public bool IsCongNoVisible
-        {
-            get => _isCongNoVisible;
-            set { _isCongNoVisible = value; OnPropertyChanged(); }
-        }
+        public string PopupTitle { get => _popupTitle; set { _popupTitle = value; OnPropertyChanged(); } }
 
         private CustomerResponse _khachHangForm = new();
-        public CustomerResponse KhachHangForm
-        {
-            get => _khachHangForm;
-            set { _khachHangForm = value; OnPropertyChanged(); }
-        }
+        public CustomerResponse KhachHangForm { get => _khachHangForm; set { _khachHangForm = value; OnPropertyChanged(); } }
 
-        // Cờ nội bộ
+        // --- Điều khiển UI cho Popup ---
         private bool _dangSua = false;
-        private int _soDongTrenTrang = 10;
+
+        private bool _isCongNoVisible;
+        public bool IsCongNoVisible { get => _isCongNoVisible; set { _isCongNoVisible = value; OnPropertyChanged(); } }
+
+        // GIẢI QUYẾT YÊU CẦU: ẨN MÃ KHÁCH HÀNG KHI THÊM MỚI
+        private Visibility _maKhachHangVisibility = Visibility.Collapsed;
+        public Visibility MaKhachHangVisibility { get => _maKhachHangVisibility; set { _maKhachHangVisibility = value; OnPropertyChanged(); } }
 
         #endregion
 
         #region COMMANDS
 
-        // CRUD Khách hàng
         public ICommand MoPopupThemCommand { get; }
         public ICommand MoPopupSuaCommand { get; }
         public ICommand XoaKhachHangCommand { get; }
         public ICommand LuuKhachHangCommand { get; }
         public ICommand DongPopupKhachHangCommand { get; }
-
-        // Thu tiền (Chỉ cần giữ lại lệnh gọi mở Popup)
         public ICommand MoPopupThuTienCommand { get; }
-
-        // Tiện ích
         public ICommand XoaLocCommand { get; }
-        public ICommand PhanTrangCommand { get; }
+
         #endregion
 
         public CustomerViewModel()
         {
-            // Móc nối Commands Khách Hàng
             MoPopupThemCommand = new RelayCommand<object>(ExecuteMoPopupThem);
             MoPopupSuaCommand = new RelayCommand<CustomerResponse>(ExecuteMoPopupSua);
             XoaKhachHangCommand = new RelayCommand<CustomerResponse>(ExecuteXoaKhachHang);
             LuuKhachHangCommand = new RelayCommand<object>(ExecuteLuuKhachHang);
             DongPopupKhachHangCommand = new RelayCommand<object>(p => IsKhachHangPopupOpen = false);
 
-            // GIAO VIỆC MỞ POPUP THU TIỀN CHO THẰNG CON XỬ LÝ
             MoPopupThuTienCommand = new RelayCommand<CustomerResponse>(p => PopupThuTienVM.MoPopupThemMoi(p));
-
-            // Khi popup con báo đã lưu thành công -> Gọi API load lại data để có số nợ mới nhất
             PopupThuTienVM.OnSavedSuccess = () => _ = KhoiTaoDuLieuAsync();
 
             XoaLocCommand = new RelayCommand<object>(ExecuteXoaLoc);
-            PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
 
             _ = LoadDanhSachLoaiKhachAsync();
             _ = KhoiTaoDuLieuAsync();
         }
 
+        #region LOGIC LỌC VÀ TẢI DỮ LIỆU
 
-        #region METHODS
+        private void ExecuteXoaLoc(object obj)
+        {
+            SearchKeyword = "";
+            KieuTimKiem = "Số điện thoại";
+            LocLoaiKhach = "Tất cả";
+            LocCongNo = "Tất cả";
+            // Hàm Set sẽ tự động gọi ApplyFilter
+        }
 
-        // ==================== LOGIC THÊM / SỬA / XÓA ====================
+        private async Task KhoiTaoDuLieuAsync()
+        {
+            try
+            {
+                var result = await ApiClient.GetAsync<List<CustomerResponse>>("api/KhachHang");
+                if (result != null && result.Any())
+                {
+                    // Loại bỏ khách hàng vãng lai
+                    _danhSachKhachHangGoc = result.Where(item =>
+                        !(item.TenKhachHang != null && item.TenKhachHang.Equals("Khách hàng vãng lai", StringComparison.OrdinalIgnoreCase)) &&
+                        item.MaKhachHang != 1
+                    ).ToList();
+                }
+                else
+                {
+                    _danhSachKhachHangGoc = new List<CustomerResponse>();
+                }
+
+                // Trả về trang đầu và bắt đầu lọc
+                TrangHienTai = 1;
+                ApplyFilterAndPagination();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ==========================================
+        // GHI ĐÈ HÀM TỪ BASE LIST VIEW MODEL
+        // ==========================================
+        protected override void ApplyFilterAndPagination()
+        {
+            if (_danhSachKhachHangGoc == null) return;
+
+            // Chạy ngầm một Task để gọi API lọc nếu người dùng đang tìm bằng SearchKeyword
+            _ = DoApiSearchAndFilterAsync();
+        }
+
+        private async Task DoApiSearchAndFilterAsync()
+        {
+            var text = SearchKeyword?.ToLower().Trim() ?? "";
+            string endpoint = "api/KhachHang";
+
+            // NẾU CÓ SEARCH -> GỌI API ĐỂ TÌM KIẾM
+            if (!string.IsNullOrEmpty(text))
+            {
+                endpoint += KieuTimKiem switch
+                {
+                    "Tên khách hàng" => $"?ten={Uri.EscapeDataString(text)}",
+                    "Email" => $"?email={Uri.EscapeDataString(text)}",
+                    _ => $"?sdt={Uri.EscapeDataString(text)}"
+                };
+
+                try
+                {
+                    var result = await ApiClient.GetAsync<List<CustomerResponse>>(endpoint);
+                    var validCustomers = new List<CustomerResponse>();
+
+                    if (result != null)
+                    {
+                        validCustomers = result.Where(item =>
+                            !(item.TenKhachHang != null && item.TenKhachHang.Equals("Khách hàng vãng lai", StringComparison.OrdinalIgnoreCase)) &&
+                            item.MaKhachHang != 1
+                        ).ToList();
+                    }
+
+                    ProcessClientSideFiltering(validCustomers);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi lọc API: {ex.Message}");
+                }
+            }
+            else
+            {
+                // NẾU KHÔNG SEARCH -> DÙNG LẠI DANH SÁCH GỐC
+                ProcessClientSideFiltering(_danhSachKhachHangGoc);
+            }
+        }
+
+        // Hàm hỗ trợ lọc các tiêu chí còn lại (Loại khách, Công nợ) và Phân trang
+        private void ProcessClientSideFiltering(List<CustomerResponse> baseList)
+        {
+            var filtered = baseList.AsEnumerable();
+
+            if (LocLoaiKhach != "Tất cả")
+                filtered = filtered.Where(kh => kh.LoaiKhach == LocLoaiKhach);
+
+            if (LocCongNo != "Tất cả")
+            {
+                filtered = filtered.Where(kh => LocCongNo switch
+                {
+                    "Không nợ" => kh.CongNo == 0,
+                    "Dưới 1 triệu" => kh.CongNo > 0 && kh.CongNo < 1000000,
+                    "1 - 2 triệu" => kh.CongNo >= 1000000 && kh.CongNo < 2000000,
+                    "2 - 3 triệu" => kh.CongNo >= 2000000 && kh.CongNo < 3000000,
+                    "3 - 4 triệu" => kh.CongNo >= 3000000 && kh.CongNo < 4000000,
+                    "4 - 5 triệu" => kh.CongNo >= 4000000 && kh.CongNo < 5000000,
+                    "Trên 5 triệu" => kh.CongNo >= 5000000,
+                    _ => true
+                });
+            }
+
+            var resultList = filtered.ToList();
+
+            // Đồng bộ dữ liệu phân trang cho Base
+            TongBanGhi = resultList.Count;
+            TongSoTrang = (int)Math.Ceiling((double)TongBanGhi / PageSize);
+            if (TongSoTrang == 0) TongSoTrang = 1;
+
+            if (TrangHienTai > TongSoTrang) TrangHienTai = TongSoTrang;
+            if (TrangHienTai < 1) TrangHienTai = 1;
+
+            // Cắt dữ liệu đưa lên Grid
+            DanhSachKhachHang = new ObservableCollection<CustomerResponse>(
+                resultList.Skip((TrangHienTai - 1) * PageSize).Take(PageSize));
+        }
+
+        #endregion
+
+        #region LOGIC POPUP (Thêm / Sửa / Xóa)
+
         private void ExecuteMoPopupThem(object obj)
         {
             _dangSua = false;
             PopupTitle = "THÊM KHÁCH HÀNG MỚI";
             IsCongNoVisible = false;
 
+            // ẨN MÃ KHÁCH HÀNG KHI THÊM
+            MaKhachHangVisibility = Visibility.Collapsed;
+
             KhachHangForm = new CustomerResponse
             {
-                MaKhachHang = GetNextMaKhachHang(),
                 NgayTao = DateTime.Now,
                 NgaySinh = DateTime.Now,
                 LoaiKhach = "Cá nhân",
@@ -200,7 +289,9 @@ namespace Bookstore.WPF.ViewModels
             PopupTitle = "CHỈNH SỬA KHÁCH HÀNG";
             IsCongNoVisible = true;
 
-            // Clone object để tách biệt bộ nhớ
+            // HIỆN MÃ KHÁCH HÀNG KHI SỬA
+            MaKhachHangVisibility = Visibility.Visible;
+
             KhachHangForm = new CustomerResponse
             {
                 MaKhachHang = kh.MaKhachHang,
@@ -227,16 +318,10 @@ namespace Bookstore.WPF.ViewModels
                 try
                 {
                     bool isSuccess = await ApiClient.DeleteAsync($"api/KhachHang/{kh.MaKhachHang}");
-
                     if (isSuccess)
                     {
-                        var target = _danhSachKhachHangGoc.FirstOrDefault(x => x.MaKhachHang == kh.MaKhachHang);
-                        if (target != null)
-                        {
-                            _danhSachKhachHangGoc.Remove(target);
-                            _ = ApplyFilterAsync();
-                        }
                         MessageBox.Show("Xóa khách hàng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _ = KhoiTaoDuLieuAsync(); // Gọi lại load dữ liệu chuẩn
                     }
                 }
                 catch (Exception ex)
@@ -256,7 +341,6 @@ namespace Bookstore.WPF.ViewModels
 
             try
             {
-                // 1. CHUẨN BỊ PAYLOAD
                 int maLoai = _danhSachLoaiKhachGocAPI.FirstOrDefault(x => x.TenLoaiKhachHang == KhachHangForm.LoaiKhach)?.MaLoaiKhachHang ?? 1;
                 int gioiTinhNum = KhachHangForm.GioiTinh == "Nữ" ? 1 : 0;
 
@@ -272,50 +356,25 @@ namespace Bookstore.WPF.ViewModels
                     MaSoThue = string.IsNullOrWhiteSpace(KhachHangForm.MaSoThue) ? null : KhachHangForm.MaSoThue
                 };
 
-                // 2. GỌI API THEO CHẾ ĐỘ SỬA HOẶC THÊM
                 if (_dangSua)
                 {
                     var response = await ApiClient.PutAsync<object, CustomerResponse>($"api/KhachHang/{KhachHangForm.MaKhachHang}", requestData);
-
                     if (response != null)
                     {
-                        var target = _danhSachKhachHangGoc.First(x => x.MaKhachHang == KhachHangForm.MaKhachHang);
-                        target.TenKhachHang = response.TenKhachHang;
-                        target.SoDienThoai = response.SoDienThoai;
-                        target.Email = response.Email;
-                        target.DiaChi = response.DiaChi;
-                        target.MaSoThue = response.MaSoThue;
-                        target.NgaySinh = response.NgaySinh;
-                        target.GioiTinh = response.GioiTinh;
-                        target.LoaiKhach = KhachHangForm.LoaiKhach;
-
                         MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Cập nhật thất bại. Máy chủ không phản hồi dữ liệu!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
                     }
                 }
                 else
                 {
                     var response = await ApiClient.PostAsync<object, CustomerResponse>("api/KhachHang", requestData);
-
                     if (response != null)
                     {
-                        response.LoaiKhach = KhachHangForm.LoaiKhach;
-                        _danhSachKhachHangGoc.Insert(0, response);
                         MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Thêm thất bại. Máy chủ từ chối yêu cầu!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
                     }
                 }
 
                 IsKhachHangPopupOpen = false;
-                _ = ApplyFilterAsync();
+                _ = KhoiTaoDuLieuAsync(); // Gọi API load lại cho chắc ăn
             }
             catch (Exception ex)
             {
@@ -323,144 +382,19 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
+        #endregion
 
-        // ==================== LOGIC FILTER & PAGINATION ====================
-        private void ExecuteXoaLoc(object obj)
-        {
-            _searchText = "";
-            _kieuTimKiem = "Số điện thoại";
-            _locLoaiKhach = "Tất cả";
-            _locCongNo = "Tất cả";
-
-            OnPropertyChanged(nameof(SearchText));
-            OnPropertyChanged(nameof(KieuTimKiem));
-            OnPropertyChanged(nameof(LocLoaiKhach));
-            OnPropertyChanged(nameof(LocCongNo));
-
-            _ = ApplyFilterAsync();
-        }
-
-        private void ExecutePhanTrang(string action)
-        {
-            switch (action)
-            {
-                case "First": TrangHienTai = 1; break;
-                case "Prev": if (TrangHienTai > 1) TrangHienTai--; break;
-                case "Next": if (TrangHienTai < TongSoTrang) TrangHienTai++; break;
-                case "Last": TrangHienTai = TongSoTrang; break;
-                default:
-                    if (int.TryParse(action, out int page)) TrangHienTai = page;
-                    break;
-            }
-            _ = ApplyFilterAsync();
-        }
-
-        private async Task ApplyFilterAsync()
-        {
-            var text = SearchText.ToLower().Trim();
-            string endpoint = "api/KhachHang";
-
-            if (!string.IsNullOrEmpty(text))
-            {
-                endpoint += KieuTimKiem switch
-                {
-                    "Tên khách hàng" => $"?ten={Uri.EscapeDataString(text)}",
-                    "Email" => $"?email={Uri.EscapeDataString(text)}",
-                    _ => $"?sdt={Uri.EscapeDataString(text)}"
-                };
-            }
-
-            try
-            {
-                var result = await ApiClient.GetAsync<List<CustomerResponse>>(endpoint);
-                var validCustomers = new List<CustomerResponse>();
-
-                if (result != null)
-                {
-                    foreach (var item in result)
-                    {
-                        if ((item.TenKhachHang != null && item.TenKhachHang.Equals("Khách hàng vãng lai", StringComparison.OrdinalIgnoreCase)) ||
-                             item.MaKhachHang == 1) continue;
-                        validCustomers.Add(item);
-                    }
-                }
-
-                var filtered = validCustomers.AsEnumerable();
-
-                if (LocLoaiKhach != "Tất cả")
-                    filtered = filtered.Where(kh => kh.LoaiKhach == LocLoaiKhach);
-
-                if (LocCongNo != "Tất cả")
-                {
-                    filtered = filtered.Where(kh => LocCongNo switch
-                    {
-                        "Không nợ" => kh.CongNo == 0,
-                        "Dưới 1 triệu" => kh.CongNo > 0 && kh.CongNo < 1000000,
-                        "1 - 2 triệu" => kh.CongNo >= 1000000 && kh.CongNo < 2000000,
-                        "2 - 3 triệu" => kh.CongNo >= 2000000 && kh.CongNo < 3000000,
-                        "3 - 4 triệu" => kh.CongNo >= 3000000 && kh.CongNo < 4000000,
-                        "4 - 5 triệu" => kh.CongNo >= 4000000 && kh.CongNo < 5000000,
-                        "Trên 5 triệu" => kh.CongNo >= 5000000,
-                        _ => true
-                    });
-                }
-
-                var resultList = filtered.ToList();
-                TongBanGhi = resultList.Count;
-
-                TongSoTrang = Math.Max(1, (int)Math.Ceiling(TongBanGhi / (double)_soDongTrenTrang));
-                if (TrangHienTai > TongSoTrang) TrangHienTai = 1;
-
-                DanhSachKhachHang = new ObservableCollection<CustomerResponse>(
-                    resultList.Skip((TrangHienTai - 1) * _soDongTrenTrang).Take(_soDongTrenTrang));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi lọc API: {ex.Message}");
-            }
-        }
-
-        private async Task KhoiTaoDuLieuAsync()
-        {
-            try
-            {
-                var result = await ApiClient.GetAsync<List<CustomerResponse>>("api/KhachHang");
-
-                if (result != null && result.Any())
-                {
-                    var validCustomers = new List<CustomerResponse>();
-
-                    foreach (var item in result)
-                    {
-                        if ((item.TenKhachHang != null && item.TenKhachHang.Equals("Khách hàng vãng lai", StringComparison.OrdinalIgnoreCase)) ||
-                             item.MaKhachHang == 1) continue;
-                        validCustomers.Add(item);
-                    }
-                    _danhSachKhachHangGoc = new ObservableCollection<CustomerResponse>(validCustomers);
-                }
-                else
-                {
-                    _danhSachKhachHangGoc = new ObservableCollection<CustomerResponse>();
-                }
-                _ = ApplyFilterAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
+        #region TẢI DANH MỤC KHÁC
         private async Task LoadDanhSachLoaiKhachAsync()
         {
             try
             {
                 var result = await ApiClient.GetAsync<List<CustomerTierResponse>>("api/LoaiKhachHang");
-
                 if (result != null && result.Any())
                 {
                     _danhSachLoaiKhachGocAPI = result;
-
                     var tenLoaiList = result.Select(x => x.TenLoaiKhachHang).ToList();
+
                     DanhSachLoaiKhachForm = new ObservableCollection<string>(tenLoaiList);
 
                     tenLoaiList.Insert(0, "Tất cả");
@@ -468,23 +402,19 @@ namespace Bookstore.WPF.ViewModels
                 }
                 else
                 {
-                    DanhSachLoaiKhachForm = new ObservableCollection<string> { "Cá nhân", "Doanh nghiệp" };
-                    DanhSachLoaiKhachLoc = new ObservableCollection<string> { "Tất cả", "Cá nhân", "Doanh nghiệp" };
+                    SetDefaultLoaiKhach();
                 }
             }
             catch
             {
-                DanhSachLoaiKhachForm = new ObservableCollection<string> { "Cá nhân", "Doanh nghiệp" };
-                DanhSachLoaiKhachLoc = new ObservableCollection<string> { "Tất cả", "Cá nhân", "Doanh nghiệp" };
+                SetDefaultLoaiKhach();
             }
         }
 
-        #endregion
-
-        #region HELPER
-        private int GetNextMaKhachHang()
+        private void SetDefaultLoaiKhach()
         {
-            return (_danhSachKhachHangGoc.Any() ? _danhSachKhachHangGoc.Max(x => x.MaKhachHang) : 0) + 1;
+            DanhSachLoaiKhachForm = new ObservableCollection<string> { "Cá nhân", "Doanh nghiệp" };
+            DanhSachLoaiKhachLoc = new ObservableCollection<string> { "Tất cả", "Cá nhân", "Doanh nghiệp" };
         }
         #endregion
     }

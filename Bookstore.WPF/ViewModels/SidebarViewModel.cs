@@ -18,6 +18,15 @@ namespace Bookstore.WPF.ViewModels
             set { _homeTabName = value; OnPropertyChanged(); }
         }
 
+        private bool _isCollapsed;
+        public bool IsCollapsed
+        {
+            get => _isCollapsed;
+            set { _isCollapsed = value; OnPropertyChanged(); }
+        }
+
+        public ICommand ToggleSidebarCommand { get; }
+
         private Visibility _isDashboardVisible;
         public Visibility IsDashboardVisible
         {
@@ -248,11 +257,9 @@ namespace Bookstore.WPF.ViewModels
             _handleChangeView = changeViewAction;
             var listQuyen = AppState.CurrentPermissions;
 
-            //string debugstring = string.Empty;
-            //foreach (var s in AppState.CurrentPermissions) debugstring += s.ToString();
-            //MessageBox.Show(debugstring);
+            ToggleSidebarCommand = new RelayCommand<object>((p) => IsCollapsed = !IsCollapsed);
 
-            HomeTabName = AppState.CurrentUser.Username;
+            HomeTabName = AppState.CurrentUser.Name;
             // Đọc phân quyền từ api
             // ==========================================
             //IsDashboardVisible = listQuyen.Contains("DashboardView") ? Visibility.Visible : Visibility.Collapsed;

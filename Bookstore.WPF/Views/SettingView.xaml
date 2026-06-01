@@ -4,10 +4,8 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-			 mc:Ignorable="d"
-			 Background="#F4F7FE"
-			 HorizontalAlignment="Stretch"
-			 VerticalAlignment="Stretch">
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 mc:Ignorable="d">
 
 	<UserControl.Resources>
 		<SolidColorBrush x:Key="BackgroundColor"
@@ -78,7 +76,7 @@
 			<Setter Property="Margin"
 					Value="0,0,0,12" />
 		</Style>
-		
+
 		<Style x:Key="CustomSwitchStyle"
 			   TargetType="ToggleButton"
 			   BasedOn="{StaticResource MaterialDesignSwitchToggleButton}">
@@ -90,284 +88,230 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Grid Background="{StaticResource BackgroundColor}">
-		<Grid Margin="15">
+	<Grid>
+		<Grid x:Name="MainSettingView"
+			  Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
-				<RowDefinition Height="90" />
+				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 
-			<Border Grid.Row="0"
-					Margin="0,0,0,12"
-					Padding="20, 0, 20, 0"
-					CornerRadius="16"
-					Background="White"
-					BorderBrush="#E2E8F0"
-					BorderThickness="1">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
+			<components:PageHeaderControl Title="CÀI ĐẶT HỆ THỐNG"
+										  HeaderIcon="Cog"
+										  ShowAddButton="{Binding HasChanges}"
+										  AddTitle="LƯU LẠI"
+										  AddIcon="ContentSave"
+										  AddCommand="{Binding LuuCaiDatCommand}"
+										  AddCommandParameter="{Binding}"
+										  ShowReloadButton="True"
+										  ReloadCommand="{Binding TaiLaiCommand}" />
 
-					<StackPanel Grid.Column="0"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<materialDesign:PackIcon Kind="Cog"
-												 Width="28"
-												 Height="28"
-												 Foreground="{StaticResource PrimaryColor}"
-												 VerticalAlignment="Center"
-												 Margin="0,0,10,0" />
-						<TextBlock Text="CÀI ĐẶT HỆ THỐNG"
-								   FontSize="24"
-								   FontWeight="Bold"
-								   Foreground="#2B3674"
-								   VerticalAlignment="Center" />
-					</StackPanel>
+			<Grid Grid.Row="1"
+				  Margin="0,0,0,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="20" />
+					<ColumnDefinition Width="1*" />
+				</Grid.ColumnDefinitions>
 
-					<StackPanel Grid.Column="1"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
+				<StackPanel Grid.Column="0">
+					<Border Style="{StaticResource SettingCard}">
+						<StackPanel>
+							<TextBlock Text="NHẬP - XUẤT KHO"
+									   Style="{StaticResource SettingTitle}" />
 
-						<Button Command="{Binding LuuCaiDatCommand}"
-								CommandParameter="{Binding}"
-								Style="{StaticResource MainGradientButton}"
-								Visibility="{Binding HasChanges, Converter={StaticResource BoolToVis}}"
-								BorderThickness="0"
-								Height="40"
-								Width="100"
-								Margin="0,0,10,0">
-							<StackPanel Orientation="Horizontal">
-								<materialDesign:PackIcon Kind="ContentSave"
-														 Width="18"
-														 Height="18"
-														 Foreground="White"
-														 Margin="0,0,6,0" />
-								<TextBlock Text="LƯU LẠI"
-										   Foreground="White"
-										   FontWeight="SemiBold" />
-							</StackPanel>
-						</Button>
-						<Button Content="TẢI LẠI"
-								Command="{Binding TaiLaiCommand}"
-								CommandParameter="{Binding}"
-								Style="{StaticResource OutlineButtonStyle}"
-								Width="100"
-								Height="40"/>
-					</StackPanel>
-				</Grid>
-			</Border>
+							<TextBlock Text="Số lượng nhập tối thiểu"
+									   Foreground="#A3AED0"
+									   Margin="0,0,0,4" />
+							<Border Style="{StaticResource InputBox}">
+								<DockPanel>
+									<TextBlock Text="quyển"
+											   DockPanel.Dock="Right"
+											   Foreground="{StaticResource PrimaryColor}"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+									<TextBox Text="{Binding SoLuongNhapToiThieu, UpdateSourceTrigger=PropertyChanged}"
+											 BorderThickness="0"
+											 Background="Transparent"
+											 Foreground="#2B3674"
+											 FontWeight="Bold" />
+								</DockPanel>
+							</Border>
 
+							<TextBlock Text="Số lượng tồn tối đa trước khi nhập"
+									   Foreground="#A3AED0"
+									   Margin="0,0,0,4" />
+							<Border Style="{StaticResource InputBox}">
+								<DockPanel>
+									<TextBlock Text="quyển"
+											   DockPanel.Dock="Right"
+											   Foreground="#4318FF"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+									<TextBox Text="{Binding SoLuongTonToiDaCoTheNhap, UpdateSourceTrigger=PropertyChanged}"
+											 BorderThickness="0"
+											 Background="Transparent"
+											 Foreground="#2B3674"
+											 FontWeight="Bold" />
+								</DockPanel>
+							</Border>
 
-			<ScrollViewer Grid.Row="1"
-						  VerticalScrollBarVisibility="Auto">
-				<Grid Margin="0,0,10,0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1*" />
-						<ColumnDefinition Width="20" />
-						<ColumnDefinition Width="1*" />
-					</Grid.ColumnDefinitions>
+							<TextBlock Text="Số lượng tồn kho tối thiểu"
+									   Foreground="#A3AED0"
+									   Margin="0,0,0,4" />
+							<Border Style="{StaticResource InputBox}"
+									Margin="0">
+								<DockPanel>
+									<TextBlock Text="quyển"
+											   DockPanel.Dock="Right"
+											   Foreground="#4318FF"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+									<TextBox Text="{Binding SoLuongTonToiThieu, UpdateSourceTrigger=PropertyChanged}"
+											 BorderThickness="0"
+											 Background="Transparent"
+											 Foreground="#2B3674"
+											 FontWeight="Bold" />
+								</DockPanel>
+							</Border>
+						</StackPanel>
+					</Border>
 
-					<StackPanel Grid.Column="0">
-						<Border Style="{StaticResource SettingCard}">
-							<StackPanel>
-								<TextBlock Text="NHẬP - XUẤT KHO"
-										   Style="{StaticResource SettingTitle}" />
+					<Border Style="{StaticResource SettingCard}">
+						<StackPanel>
+							<TextBlock Text="TÀI CHÍNH"
+									   Style="{StaticResource SettingTitle}" />
 
-								<TextBlock Text="Số lượng nhập tối thiểu"
-										   Foreground="#A3AED0"
-										   Margin="0,0,0,4" />
-								<Border Style="{StaticResource InputBox}">
-									<DockPanel>
-										<TextBlock Text="quyển"
-												   DockPanel.Dock="Right"
-												   Foreground="{StaticResource PrimaryColor}"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-										<TextBox Text="{Binding SoLuongNhapToiThieu, UpdateSourceTrigger=PropertyChanged}"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 Foreground="#2B3674"
-												 FontWeight="Bold" />
-									</DockPanel>
-								</Border>
+							<TextBlock Text="Tỉ lệ đơn giá bán (Biên độ lợi nhuận)"
+									   Foreground="#A3AED0"
+									   Margin="0,0,0,4" />
+							<Border Style="{StaticResource InputBox}">
+								<DockPanel>
+									<TextBlock Text="%"
+											   DockPanel.Dock="Right"
+											   Foreground="#4318FF"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+									<TextBox Text="{Binding TiLeDonGiaBan, UpdateSourceTrigger=PropertyChanged}"
+											 BorderThickness="0"
+											 Background="Transparent"
+											 Foreground="#2B3674"
+											 FontWeight="Bold" />
+								</DockPanel>
+							</Border>
 
-								<TextBlock Text="Số lượng tồn tối đa trước khi nhập"
-										   Foreground="#A3AED0"
-										   Margin="0,0,0,4" />
-								<Border Style="{StaticResource InputBox}">
-									<DockPanel>
-										<TextBlock Text="quyển"
-												   DockPanel.Dock="Right"
-												   Foreground="#4318FF"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-										<TextBox Text="{Binding SoLuongTonToiDaCoTheNhap, UpdateSourceTrigger=PropertyChanged}"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 Foreground="#2B3674"
-												 FontWeight="Bold" />
-									</DockPanel>
-								</Border>
+							<TextBlock Text="Thuế giá trị gia tăng (VAT)"
+									   Foreground="#A3AED0"
+									   Margin="0,0,0,4" />
+							<Border Style="{StaticResource InputBox}">
+								<DockPanel>
+									<TextBlock Text="%"
+											   DockPanel.Dock="Right"
+											   Foreground="#4318FF"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+									<TextBox Text="{Binding ThueVAT, UpdateSourceTrigger=PropertyChanged}"
+											 BorderThickness="0"
+											 Background="Transparent"
+											 Foreground="#2B3674"
+											 FontWeight="Bold" />
+								</DockPanel>
+							</Border>
 
-								<TextBlock Text="Số lượng tồn kho tối thiểu"
-										   Foreground="#A3AED0"
-										   Margin="0,0,0,4" />
-								<Border Style="{StaticResource InputBox}"
-										Margin="0">
-									<DockPanel>
-										<TextBlock Text="quyển"
-												   DockPanel.Dock="Right"
-												   Foreground="#4318FF"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-										<TextBox Text="{Binding SoLuongTonToiThieu, UpdateSourceTrigger=PropertyChanged}"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 Foreground="#2B3674"
-												 FontWeight="Bold" />
-									</DockPanel>
-								</Border>
-							</StackPanel>
-						</Border>
+							<Border Background="#EEF2FF"
+									CornerRadius="8"
+									Padding="12"
+									Margin="0, 12, 0, 0">
+								<DockPanel>
+									<ToggleButton DockPanel.Dock="Right"
+												  IsChecked="{Binding TienThuLonHonNo}"
+												  Style="{StaticResource CustomSwitchStyle}" />
+									<TextBlock Text="Cho phép thu tiền vượt số tiền nợ"
+											   Foreground="#2B3674"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+								</DockPanel>
+							</Border>
+						</StackPanel>
+					</Border>
+				</StackPanel>
 
-						<Border Style="{StaticResource SettingCard}">
-							<StackPanel>
-								<TextBlock Text="TÀI CHÍNH"
-										   Style="{StaticResource SettingTitle}" />
+				<StackPanel Grid.Column="2">
+					<Border Style="{StaticResource SettingCard}">
+						<StackPanel>
+							<TextBlock Text="ƯU ĐÃI"
+									   Style="{StaticResource SettingTitle}" />
 
-								<TextBlock Text="Tỉ lệ đơn giá bán (Biên độ lợi nhuận)"
-										   Foreground="#A3AED0"
-										   Margin="0,0,0,4" />
-								<Border Style="{StaticResource InputBox}">
-									<DockPanel>
-										<TextBlock Text="%"
-												   DockPanel.Dock="Right"
-												   Foreground="#4318FF"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-										<TextBox Text="{Binding TiLeDonGiaBan, UpdateSourceTrigger=PropertyChanged}"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 Foreground="#2B3674"
-												 FontWeight="Bold" />
-									</DockPanel>
-								</Border>
+							<Border Background="#EEF2FF"
+									CornerRadius="8"
+									Padding="12"
+									Margin="0,0,0,12">
+								<DockPanel>
+									<ToggleButton DockPanel.Dock="Right"
+												  IsChecked="{Binding ChoPhepKetThucUuDai}"
+												  Style="{StaticResource CustomSwitchStyle}" />
+									<TextBlock Text="Cho phép tự động kết thúc ưu đãi"
+											   Foreground="#2B3674"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+								</DockPanel>
+							</Border>
 
-								<TextBlock Text="Thuế giá trị gia tăng (VAT)"
-										   Foreground="#A3AED0"
-										   Margin="0,0,0,4" />
-								<Border Style="{StaticResource InputBox}">
-									<DockPanel>
-										<TextBlock Text="%"
-												   DockPanel.Dock="Right"
-												   Foreground="#4318FF"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-										<TextBox Text="{Binding ThueVAT, UpdateSourceTrigger=PropertyChanged}"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 Foreground="#2B3674"
-												 FontWeight="Bold" />
-									</DockPanel>
-								</Border>
+							<Border Background="#EEF2FF"
+									CornerRadius="8"
+									Padding="12"
+									Margin="0,0,0,24">
+								<DockPanel>
+									<ToggleButton DockPanel.Dock="Right"
+												  IsChecked="{Binding CoKhoangCachCacKhoangGia}"
+												  Style="{StaticResource CustomSwitchStyle}" />
+									<TextBlock Text="Áp dụng khoảng cách các khoảng giá"
+											   Foreground="#2B3674"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+								</DockPanel>
+							</Border>
 
-								<Border Background="#EEF2FF"
-										CornerRadius="8"
-										Padding="12"
-										Margin="0, 12, 0, 0">
-									<DockPanel>
-										<ToggleButton DockPanel.Dock="Right"
-													  IsChecked="{Binding TienThuLonHonNo}"
-													  Style="{StaticResource CustomSwitchStyle}" />
-										<TextBlock Text="Cho phép thu tiền vượt số tiền nợ"
-												   Foreground="#2B3674"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-									</DockPanel>
-								</Border>
-							</StackPanel>
-						</Border>
-					</StackPanel>
+							<TextBlock Text="Số lượng ưu đãi tối thiểu để kích hoạt"
+									   Foreground="#A3AED0"
+									   Margin="0,0,0,4" />
+							<Border Style="{StaticResource InputBox}">
+								<DockPanel>
+									<TextBlock Text="sản phẩm"
+											   DockPanel.Dock="Right"
+											   Foreground="#4318FF"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+									<TextBox Text="{Binding SoLuongUuDaiToiThieu, UpdateSourceTrigger=PropertyChanged}"
+											 BorderThickness="0"
+											 Background="Transparent"
+											 Foreground="#2B3674"
+											 FontWeight="Bold" />
+								</DockPanel>
+							</Border>
 
-					<StackPanel Grid.Column="2">
-						<Border Style="{StaticResource SettingCard}">
-							<StackPanel>
-								<TextBlock Text="ƯU ĐÃI"
-										   Style="{StaticResource SettingTitle}" />
-
-								<Border Background="#EEF2FF"
-										CornerRadius="8"
-										Padding="12"
-										Margin="0,0,0,12">
-									<DockPanel>
-										<ToggleButton DockPanel.Dock="Right"
-													  IsChecked="{Binding ChoPhepKetThucUuDai}"
-													  Style="{StaticResource CustomSwitchStyle}" />
-										<TextBlock Text="Cho phép tự động kết thúc ưu đãi"
-												   Foreground="#2B3674"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-									</DockPanel>
-								</Border>
-
-								<Border Background="#EEF2FF"
-										CornerRadius="8"
-										Padding="12"
-										Margin="0,0,0,24">
-									<DockPanel>
-										<ToggleButton DockPanel.Dock="Right"
-													  IsChecked="{Binding CoKhoangCachCacKhoangGia}"
-													  Style="{StaticResource CustomSwitchStyle}" />
-										<TextBlock Text="Áp dụng khoảng cách các khoảng giá"
-												   Foreground="#2B3674"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-									</DockPanel>
-								</Border>
-
-								<TextBlock Text="Số lượng ưu đãi tối thiểu để kích hoạt"
-										   Foreground="#A3AED0"
-										   Margin="0,0,0,4" />
-								<Border Style="{StaticResource InputBox}">
-									<DockPanel>
-										<TextBlock Text="sản phẩm"
-												   DockPanel.Dock="Right"
-												   Foreground="#4318FF"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-										<TextBox Text="{Binding SoLuongUuDaiToiThieu, UpdateSourceTrigger=PropertyChanged}"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 Foreground="#2B3674"
-												 FontWeight="Bold" />
-									</DockPanel>
-								</Border>
-
-								<TextBlock Text="Số lượng ưu đãi tối đa"
-										   Foreground="#A3AED0"
-										   Margin="0,0,0,4" />
-								<Border Style="{StaticResource InputBox}"
-										Margin="0">
-									<DockPanel>
-										<TextBlock Text="sản phẩm"
-												   DockPanel.Dock="Right"
-												   Foreground="#4318FF"
-												   FontWeight="SemiBold"
-												   VerticalAlignment="Center" />
-										<TextBox Text="{Binding SoLuongUuDaiToiDa, UpdateSourceTrigger=PropertyChanged}"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 Foreground="#2B3674"
-												 FontWeight="Bold" />
-									</DockPanel>
-								</Border>
-							</StackPanel>
-						</Border>
-					</StackPanel>
-				</Grid>
-			</ScrollViewer>
+							<TextBlock Text="Số lượng ưu đãi tối đa"
+									   Foreground="#A3AED0"
+									   Margin="0,0,0,4" />
+							<Border Style="{StaticResource InputBox}"
+									Margin="0">
+								<DockPanel>
+									<TextBlock Text="sản phẩm"
+											   DockPanel.Dock="Right"
+											   Foreground="#4318FF"
+											   FontWeight="SemiBold"
+											   VerticalAlignment="Center" />
+									<TextBox Text="{Binding SoLuongUuDaiToiDa, UpdateSourceTrigger=PropertyChanged}"
+											 BorderThickness="0"
+											 Background="Transparent"
+											 Foreground="#2B3674"
+											 FontWeight="Bold" />
+								</DockPanel>
+							</Border>
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</Grid>
 		</Grid>
 	</Grid>
 </UserControl>
