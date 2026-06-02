@@ -11,6 +11,7 @@ namespace Bookstore.API.Models
         public DateTime NgayTao { get; set; }
         public string NguoiTao { get; set; } = string.Empty;
         public int MaNhaCungCap { get; set; }
+        public string GhiChu { get; set; } = string.Empty;
         [Column(TypeName = "decimal(18,2)")] public decimal TongTien { get; set; }
         public int GetID() => MaPhieuNhapSach;
 

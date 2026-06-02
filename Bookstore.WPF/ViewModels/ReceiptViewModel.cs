@@ -20,6 +20,21 @@ namespace Bookstore.WPF.ViewModels
 
         #region PROPERTIES CHUYÊN BIỆT CỦA PHIẾU THU
 
+        private string _searchText = "";
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                TrangHienTai = 1;
+                SearchKeyword = value;
+
+                ApplyFilterAndPagination();
+            }
+        }
+
         // Danh sách gốc tải từ server
         private List<ReceiptResponse> _danhSachPhieuThuGoc = new();
 
@@ -34,7 +49,7 @@ namespace Bookstore.WPF.ViewModels
         // Các bộ lọc riêng biệt (Từ ngày - Đến ngày)
         // (Lưu ý: Biến SearchKeyword đã có sẵn trong BaseListViewModel)
 
-        private DateTime? _fromDate;
+        private DateTime? _fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         public DateTime? FromDate
         {
             get => _fromDate;
@@ -42,12 +57,12 @@ namespace Bookstore.WPF.ViewModels
             {
                 _fromDate = value;
                 OnPropertyChanged();
-                TrangHienTai = 1;             // Khi đổi ngày thì tự nhảy về trang 1
+                TrangHienTai = 1;             
                 ApplyFilterAndPagination();
             }
         }
 
-        private DateTime? _toDate;
+        private DateTime? _toDate = DateTime.Today;
         public DateTime? ToDate
         {
             get => _toDate;
@@ -84,13 +99,12 @@ namespace Bookstore.WPF.ViewModels
 
             XoaLocCommand = new RelayCommand<object>(p =>
             {
+                SearchText = "";
                 SearchKeyword = "";
                 FromDate = null;
                 ToDate = null;
-                // Khi xóa lọc, các hàm set ở trên sẽ tự động gọi ApplyFilterAndPagination()
             });
 
-            // Khi thằng con (Popup) báo lưu thành công, tải lại lưới
             PopupThuTienVM.OnSavedSuccess = () => _ = LoadDataAsync();
 
             // Lần đầu mở trang thì tự động tải dữ liệu

@@ -292,7 +292,7 @@
 							 CommandParameter="Receipt">
 					<StackPanel Orientation="Horizontal">
 						<materialDesign:PackIcon Kind="ReceiptText" />
-						<TextBlock Text="Phiếu thu" />
+						<TextBlock Text="Thu tiền" />
 					</StackPanel>
 				</RadioButton>
 

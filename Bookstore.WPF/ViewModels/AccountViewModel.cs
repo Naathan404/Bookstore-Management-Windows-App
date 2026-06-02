@@ -318,6 +318,13 @@ namespace Bookstore.WPF.ViewModels
                 return;
             }
 
+            if (EditingAccount.Username.Equals("admin", StringComparison.OrdinalIgnoreCase) &&
+                !EditingAccount.SelectedRole.TenNhomNguoiDung.Equals("ADMIN", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("Tài khoản 'admin' bắt buộc phải thuộc nhóm quyền 'ADMIN' để đảm bảo an toàn hệ thống!", "Cảnh báo bảo mật", MessageBoxButton.OK, MessageBoxImage.Stop);
+                return;
+            }
+
             EditingAccount.MaNhomNguoiDung = EditingAccount.SelectedRole.MaNhomNguoiDung;
 
             try
@@ -372,6 +379,12 @@ namespace Bookstore.WPF.ViewModels
         private async Task DeleteAccountAsync(AccountDto acc)
         {
             if (acc == null) return;
+
+            if (acc.Username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("Đây là tài khoản quản trị của hệ thống. Bạn không thể xóa tài khoản này!", "Cảnh báo bảo mật", MessageBoxButton.OK, MessageBoxImage.Stop);
+                return;
+            }
 
             var confirm = MessageBox.Show($"Xóa vĩnh viễn tài khoản '{acc.Username}' ({acc.HoTen})?\nHành động này không thể hoàn tác!",
                 "Cảnh báo", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -481,6 +494,18 @@ namespace Bookstore.WPF.ViewModels
             {
                 MessageBox.Show("Vui lòng chọn một nhóm để lưu quyền!", "Thiếu thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
+
+            if (SelectedRole.TenNhomNguoiDung.Equals("ADMIN", StringComparison.OrdinalIgnoreCase))
+            {
+                if (ScreenPermissions.Any(p => !p.IsGranted))
+                {
+                    MessageBox.Show("Nhóm 'ADMIN' là nhóm quản trị. Không được phép tắt bất kỳ quyền nào của nhóm này!", "Cảnh báo bảo mật", MessageBoxButton.OK, MessageBoxImage.Stop);
+
+                    // Tự động bật (tick) lại toàn bộ trên giao diện cho người dùng thấy
+                    foreach (var p in ScreenPermissions) p.IsGranted = true;
+                    return;
+                }
             }
 
             var grantedIds = ScreenPermissions.Where(p => p.IsGranted).Select(p => p.MaChucNang).ToList();

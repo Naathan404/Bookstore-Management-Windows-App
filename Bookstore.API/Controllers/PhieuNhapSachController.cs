@@ -1,7 +1,5 @@
 ﻿using Bookstore.API.Data;
-using Bookstore.API.Interfaces;
 using Bookstore.API.Models;
-using Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,224 +8,186 @@ namespace Bookstore.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PhieuNhapSachController : Controller
+    public class PhieuNhapController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public PhieuNhapSachController(AppDbContext context)
+
+        public PhieuNhapController(AppDbContext context)
         {
             _context = context;
         }
 
-        private static System.Linq.Expressions.Expression<Func<PhieuNhapSach, ImportResponse>> MapToDTO()
-        {
-            return p => new ImportResponse
-            {
-                MaPhieuNhap = p.MaPhieuNhapSach,
-                NgayTao = p.NgayTao,
-                NguoiTao = p.NguoiTao,
-                TenNguoiTao = p.NguoiDung != null ? p.NguoiDung.HoTen : "Không xác định",
-                TenNhaCungCap = p.NhaCungCap != null ? p.NhaCungCap.TenNhaCungCap : "Không xác định",
-                TongTien = p.TongTien
-            };
-        }
-
-        // LỌC PHIẾU NHẬP THEO THỜI GIAN, TÁC GIẢ, KHÔNG CẦN LỌC THÌ KHÔNG CẦN THAM SỐ
-        // GET: api/PhieuNhapSach?maNCC=5&fromDate=2024-01-01&toDate=2024-12-31
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ImportResponse>>> GetPhieuNhap(
-            [FromQuery] int? maNCC,
-            [FromQuery] DateTime? fromDate,
-            [FromQuery] DateTime? toDate)
+        public async Task<ActionResult<IEnumerable<ImportOrderResponse>>> GetAll()
         {
-            var query = _context.PhieuNhapSach.AsQueryable();
+            var data = await _context.PhieuNhapSach
+                .Include(p => p.NhaCungCap)
+                .Join(_context.NguoiDung, p => p.NguoiTao, n => n.TenDangNhap, (p, n) => new ImportOrderResponse
+                {
+                    MaPhieuNhap = p.MaPhieuNhapSach,
+                    NgayNhap = p.NgayTao,
+                    MaNhaCungCap = p.MaNhaCungCap,
+                    TenNhaCungCap = p.NhaCungCap.TenNhaCungCap,
+                    TenNguoiTao = n.HoTen,
+                    TongTien = p.TongTien,
+                    GhiChu = p.GhiChu
+                })
+                .OrderByDescending(p => p.NgayNhap)
+                .ToListAsync();
 
-            if (maNCC.HasValue)
-            {
-                query = query.Where(p => p.MaNhaCungCap == maNCC.Value);
-            }
-
-            if (fromDate.HasValue)
-            {
-                query = query.Where(p => p.NgayTao.Date >= fromDate.Value.Date);
-            }
-
-            if (toDate.HasValue)
-            {
-                query = query.Where(p => p.NgayTao.Date <= toDate.Value.Date);
-            }
-
-            var result = await query
-                .Select(MapToDTO()) 
-                .OrderByDescending(x => x.NgayTao)
-                .ToListAsync(); 
-
-            return Ok(result);
+            return Ok(data);
         }
 
-        // LẤY PHIẾU NHẬP THEO ID
-        //GET: api/PhieuNhapSach/1
         [HttpGet("{id}")]
-        public async Task<ActionResult<ImportResponse>> GetById(int id)
+        public async Task<ActionResult<ImportOrderDetailResponse>> GetDetail(int id)
         {
             var phieuNhap = await _context.PhieuNhapSach
-                .Where(p => p.MaPhieuNhapSach == id)
-                .Select(MapToDTO())
-                .FirstOrDefaultAsync();
-            if (phieuNhap == null)
+                .Include(p => p.NhaCungCap)
+                .FirstOrDefaultAsync(p => p.MaPhieuNhapSach == id);
+
+            if (phieuNhap == null) return NotFound();
+
+            var nguoiDung = await _context.NguoiDung.FirstOrDefaultAsync(n => n.TenDangNhap == phieuNhap.NguoiTao);
+
+            var detail = new ImportOrderDetailResponse
             {
-                return NotFound(new { message = "Khong tim thay phieu nhap" });
+                MaPhieuNhap = phieuNhap.MaPhieuNhapSach,
+                NgayNhap = phieuNhap.NgayTao,
+                MaNhaCungCap = phieuNhap.MaNhaCungCap,
+                TenNhaCungCap = phieuNhap.NhaCungCap.TenNhaCungCap,
+                TenNguoiTao = nguoiDung?.HoTen ?? phieuNhap.NguoiTao,
+                TongTien = phieuNhap.TongTien,
+                ChiTietSach = new List<ImportOrderDetailItem>(),
+                GhiChu = phieuNhap.GhiChu
+            };
+
+            // Lấy chi tiết sách, join qua PhienBanSach và Sach
+            var chiTiets = await _context.CT_PhieuNhapSach
+                .Where(ct => ct.MaPhieuNhapSach == id)
+                .Include(ct => ct.PhienBanSach).ThenInclude(pb => pb.Sach)
+                .ToListAsync();
+
+            int stt = 1;
+            foreach (var ct in chiTiets)
+            {
+                detail.ChiTietSach.Add(new ImportOrderDetailItem
+                {
+                    STT = stt++,
+                    ISBN = ct.ISBN,
+                    TenSach = ct.PhienBanSach.Sach.TenSach,
+                    TacGia = "Đang cập nhật...", // Lấy tác giả cần join thêm TacGia_Sach
+                    SoLuong = ct.SoLuong,
+                    DonGia = ct.DonGiaNhap
+                });
             }
-            return Ok(phieuNhap);
+
+            return Ok(detail);
         }
 
-        //SỬA THÔNG TIN PHIẾU NHẬP
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePhieuNhapSach(int id, [FromBody] ImportRequest newPhieuNhap)
+
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] ImportOrderRequest request)
         {
-            var phieuNhap = await _context.PhieuNhapSach.FindAsync(id);
-            if (phieuNhap == null) throw new Exception($"Không thấy phiếu nhập {id}");
-
-            phieuNhap.MaNhaCungCap = newPhieuNhap.MaNhaCungCap;
-            // phieuNhap.NguoiTao = newPhieuNhap.NguoiTao;
-            // phieuNhap.NgayTao = DateTime.Now; //Cập nhật thời gian sửa đổi
-
-            await _context.SaveChangesAsync();
-
-            return Ok("Cập nhật phiếu nhập thành công");
-        }
-
-        // TẠO PHIẾU NHẬP VÀ CÁC CHI TIẾT PHIẾU NHẬP
-        //POST: api/PhieuNhapSach
-        [HttpPost()]
-        public async Task<IActionResult> CreatePhieuNhap([FromBody] ImportRequest request)
-        {
-            if (request.ChiTietSach == null || !request.ChiTietSach.Any())
-            {
-                return BadRequest("Nhập ít nhất 1 loại sách");
-            }
-
-            var tsSoLuongNhapToiThieu = await _context.ThamSo.FindAsync("SoLuongNhapToiThieu");
-            var tsSoLuongToiDa = await _context.ThamSo.FindAsync("SoLuongToiDaCoTheNhap");
-
-            int soLuongNhapToiThieu = tsSoLuongNhapToiThieu != null ? tsSoLuongNhapToiThieu.GiaTri : 150;
-            int soLuongToiDaCoTheNhap = tsSoLuongToiDa != null ? tsSoLuongToiDa.GiaTri : 300;
-
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Tạo phiếu nhập
-                PhieuNhapSach phieuNhap = new PhieuNhapSach()
+                var phieuNhap = new PhieuNhapSach
                 {
                     NgayTao = DateTime.Now,
-                    NguoiTao = request.NguoiTao,
                     MaNhaCungCap = request.MaNhaCungCap,
-                    TongTien = request.ChiTietSach.Sum(x => x.SoLuong * x.DonGiaNhap)
+                    NguoiTao = request.NguoiTao,
+                    TongTien = request.ChiTiet.Sum(c => c.SoLuong * c.DonGia),
+                    GhiChu = request.GhiChu
                 };
+
                 _context.PhieuNhapSach.Add(phieuNhap);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); 
 
-                // Tạo các chi tiết con
-                foreach (var item in request.ChiTietSach)
+                foreach (var item in request.ChiTiet)
                 {
-                    if (item.SoLuong < soLuongNhapToiThieu)
-                    {
-                        throw new Exception($"Số lượng nhập tối thiếu là {soLuongNhapToiThieu}");
-                    }
-
-                    CT_PhieuNhapSach chiTiet = new CT_PhieuNhapSach
+                    // Lưu chi tiết
+                    _context.CT_PhieuNhapSach.Add(new CT_PhieuNhapSach
                     {
                         MaPhieuNhapSach = phieuNhap.MaPhieuNhapSach,
                         ISBN = item.ISBN,
                         SoLuong = item.SoLuong,
-                        DonGiaNhap = item.DonGiaNhap
-                    };
-                    _context.CT_PhieuNhapSach.Add(chiTiet);
+                        DonGiaNhap = item.DonGia
+                    });
 
-                    // Cập nhật tồn kho
-                    var sach = await _context.PhienBanSach.FindAsync(item.ISBN);
-                    if (sach != null)
+                    // CỘNG DỒN TỒN KHO
+                    var phienBanSach = await _context.PhienBanSach.FirstOrDefaultAsync(p => p.ISBN == item.ISBN);
+                    if (phienBanSach != null)
                     {
-                        if (sach.TonKho > soLuongToiDaCoTheNhap)
-                        {
-                            throw new Exception($"Chỉ nhập sách có số lượng nhỏ hơn {soLuongToiDaCoTheNhap}");
-                        }
-                        sach.TonKho += item.SoLuong;
-                    }
-                    else
-                    {
-                        throw new Exception($"Sach {item.ISBN} khong hop le");
+                        phienBanSach.TonKho += item.SoLuong;
                     }
                 }
+
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                return Ok(new { message = "Nhập sách thành công", maPhieu = phieuNhap.MaPhieuNhapSach });
+                return Ok(new { Message = "Nhập kho thành công!" });
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-
-                // MẸO BẮT BUG: Gọi thẳng ex.InnerException để xem SQL Server đang chửi cái gì
-                var loiThatSu = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-
-                return StatusCode(500, $"Lỗi: {loiThatSu}");
+                return BadRequest($"Lỗi khi nhập kho: {ex.Message}");
             }
         }
 
-        //XÓA PHIẾU NHẬP CÁC CÁC CHI TIẾT
-        // DELETE: api/PhieuNhapSach/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePhieuNhap(int id)
+        [HttpGet("search-books")]
+        public async Task<ActionResult<IEnumerable<BookSearchResponse>>> SearchBooks([FromQuery] string keyword)
         {
-            var phieuNhap = await _context.PhieuNhapSach.FindAsync(id);
-
-            if (phieuNhap == null)
-            {
-                return NotFound(new { message = "Không tìm thấy phiếu nhập!" });
-            }
-
-            var tsSoLuongTonToiThieu = await _context.ThamSo.FindAsync("SoLuongTonToiThieu");
-            int soLuongTonToiThieu = (tsSoLuongTonToiThieu != null) ? tsSoLuongTonToiThieu.GiaTri : 20;
-
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
-            {
-                //Xử lý các phiếu nhập con
-                var danhSachChiTiet = await _context.CT_PhieuNhapSach
-                    .Where(ct => ct.MaPhieuNhapSach == id)
-                    .ToListAsync();
-
-                foreach (var chiTiet in danhSachChiTiet)
+            keyword = keyword.ToLower();
+            var books = await _context.PhienBanSach
+                .Include(p => p.Sach)
+                .Where(p => p.ISBN.ToLower().Contains(keyword) || p.Sach.TenSach.ToLower().Contains(keyword))
+                .Select(p => new BookSearchResponse
                 {
-                    var sach = await _context.PhienBanSach.FindAsync(chiTiet.ISBN);
-                    if (sach == null) throw new Exception($"Không tìm thấy sách");
-                    if (sach.TonKho - chiTiet.SoLuong < soLuongTonToiThieu)
-                    {
-                        throw new Exception($"Xóa phiếu nhập ảnh hưởng số lượng tồn tối thiểu của {chiTiet.ISBN}");
-                    }
-                    sach.TonKho -= chiTiet.SoLuong;
-                }
+                    ISBN = p.ISBN,
+                    TenSach = p.Sach.TenSach,
+                    TacGia = "Nhiều tác giả"
+                })
+                .Take(20)
+                .ToListAsync();
 
-                if (danhSachChiTiet.Any())
-                {
-                    _context.CT_PhieuNhapSach.RemoveRange(danhSachChiTiet);
-                    await _context.SaveChangesAsync(); // Chốt nhịp 1: Xóa toàn bộ con và cập nhật kho
-                }
-
-                _context.PhieuNhapSach.Remove(phieuNhap);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-
-                return Ok(new { message = "Xóa phiếu nhập thành công!" });
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-
-                var loiThatSu = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return BadRequest($"Lỗi: {loiThatSu}");
-            }
+            return Ok(books);
         }
 
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var phieu = await _context.PhieuNhapSach.FindAsync(id);
+            if (phieu == null) return NotFound();
+
+            var chiTiets = await _context.CT_PhieuNhapSach.Where(ct => ct.MaPhieuNhapSach == id).ToListAsync();
+
+            // Trừ lại kho
+            foreach (var ct in chiTiets)
+            {
+                var sach = await _context.PhienBanSach.FindAsync(ct.ISBN);
+                if (sach != null) sach.TonKho -= ct.SoLuong;
+            }
+
+            _context.PhieuNhapSach.Remove(phieu);
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Đã xóa phiếu nhập và hoàn lại tồn kho." });
+        }
+
+        public class UpdateGhiChuRequest
+        {
+            public string GhiChu { get; set; }
+        }
+
+        [HttpPut("{id}/ghichu")]
+        public async Task<IActionResult> UpdateGhiChu(int id, [FromBody] UpdateGhiChuRequest request)
+        {
+            var phieu = await _context.PhieuNhapSach.FindAsync(id);
+            if (phieu == null) return NotFound("Không tìm thấy phiếu nhập.");
+
+            phieu.GhiChu = request.GhiChu;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Cập nhật ghi chú thành công!" });
+        }
     }
 }
