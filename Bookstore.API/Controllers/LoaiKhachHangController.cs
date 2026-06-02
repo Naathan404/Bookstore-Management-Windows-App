@@ -20,7 +20,7 @@ namespace Bookstore.API.Controllers
         }
         private static Expression<Func<LoaiKhachHang, CustomerTierResponse>> MapToDTOResponse()
         {
-            return l => new Share.DTOResponses.CustomerTierResponse
+            return l => new CustomerTierResponse
             {
                 MaLoaiKhachHang = l.MaLoaiKhachHang,
                 TenLoaiKhachHang = l.TenLoaiKhachHang

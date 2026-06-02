@@ -1,4 +1,5 @@
 ﻿using Bookstore.Share.DTOs;
+using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Views.Components;
 using MaterialDesignThemes.Wpf;
@@ -15,11 +16,11 @@ namespace Bookstore.WPF.ViewModels
     public class ProductViewModel : BaseViewModel
     {
         #region Collections
-        private ObservableCollection<BookItem> _allBooks;
-        private ObservableCollection<BookItem> _filteredBooks;
+        private ObservableCollection<Models.BookItem> _allBooks;
+        private ObservableCollection<Models.BookItem> _filteredBooks;
         public ObservableCollection<string> ListNhaCungCap { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> ListNhaXuatBan { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<BookItem> ListTacPhamGoc { get; set; } = new ObservableCollection<BookItem>();
+        public ObservableCollection<Models.BookItem> ListTacPhamGoc { get; set; } = new ObservableCollection<Models.BookItem>();
         public ObservableCollection<TacGiaDTO> ListTatCaTacGia { get; set; } = new ObservableCollection<TacGiaDTO>();
         private TacGiaDTO _selectedTacGiaToAdd;
         public TacGiaDTO SelectedTacGiaToAdd
@@ -48,7 +49,7 @@ namespace Bookstore.WPF.ViewModels
         public ObservableCollection<string> ListHinhThucBia { get; set; }
 
         // Danh sách sách hiển thị trên 1 trang
-        public ObservableCollection<BookItem> PagedBooks { get; set; }
+        public ObservableCollection<Models.BookItem> PagedBooks { get; set; }
 
         // Danh sách Thể loại cho ComboBox
         public ObservableCollection<string> ListTheLoai { get; set; }
@@ -199,8 +200,8 @@ namespace Bookstore.WPF.ViewModels
                 IsNewProduct = !value;
             }
         }
-        private BookItem _selectedTacPhamGoc;
-        public BookItem SelectedTacPhamGoc
+        private Models.BookItem _selectedTacPhamGoc;
+        public Models.BookItem SelectedTacPhamGoc
         {
             get => _selectedTacPhamGoc;
             set
@@ -251,8 +252,8 @@ namespace Bookstore.WPF.ViewModels
         }
 
         // Biến chứa dữ liệu sách đang được thêm hoặc sửa
-        private BookItem _editingBook;
-        public BookItem EditingBook { get => _editingBook; set { _editingBook = value; OnPropertyChanged(); } }
+        private Models.BookItem _editingBook;
+        public Models.BookItem EditingBook { get => _editingBook; set { _editingBook = value; OnPropertyChanged(); } }
 
         private bool _isAddingNew;
         public bool IsAddingNew
@@ -325,9 +326,9 @@ namespace Bookstore.WPF.ViewModels
         /// </summary>
         public ProductViewModel()
         {
-            _allBooks = new ObservableCollection<BookItem>();
-            _filteredBooks = new ObservableCollection<BookItem>();
-            PagedBooks = new ObservableCollection<BookItem>();
+            _allBooks = new ObservableCollection<Models.BookItem>();
+            _filteredBooks = new ObservableCollection<Models.BookItem>();
+            PagedBooks = new ObservableCollection<Models.BookItem>();
             PageNumbers = new ObservableCollection<int>();
             ListTheLoai = new ObservableCollection<string>();
             ListTheLoaiTaoSach = new ObservableCollection<string>();
@@ -343,13 +344,12 @@ namespace Bookstore.WPF.ViewModels
             };
 
             IsAddPopupVisible = IsEditPopupVisible = Visibility.Hidden;
-            EditingBook = new BookItem();
+            EditingBook = new Models.BookItem();
             InitCommands();
 
             _ = LoadTheLoaiAsync();
             _ = LoadNhaXuatBanAsync();
             _ = LoadTacGiaAsync();
-            //_ = LoadNhaCungCapAsync();
             _ = LoadDataAsync();
         }
 
@@ -359,7 +359,6 @@ namespace Bookstore.WPF.ViewModels
             _ = LoadNhaXuatBanAsync();
             _ = LoadTiLeGiaBanAsync();
             _ = LoadTacGiaAsync();
-            //_ = LoadNhaCungCapAsync();
             _ = LoadDataAsync();
         }
 
@@ -367,7 +366,7 @@ namespace Bookstore.WPF.ViewModels
         {
             OpenAddPopupCommand = new RelayCommand<object>((p) => {
                 IsNewProduct = true; // Mặc định là đầu sách mới
-                EditingBook = new BookItem
+                EditingBook = new Models.BookItem
                 {
                     HinhAnh = "/Resources/Images/Books/default_book_cover.jpg",
                     SoLuongTonKho = 0,
@@ -379,10 +378,10 @@ namespace Bookstore.WPF.ViewModels
             });
 
             // COMMAND MỞ POPUP SỬA
-            OpenEditPopupCommand = new RelayCommand<BookItem>((book) => 
+            OpenEditPopupCommand = new RelayCommand<Models.BookItem>((book) => 
             {
                 if (book == null) return;
-                EditingBook = new BookItem
+                EditingBook = new Models.BookItem
                 {
                     Id = book.Id,
                     STT = book.STT,
@@ -407,7 +406,7 @@ namespace Bookstore.WPF.ViewModels
                 for (int i = 0; i < book.DanhSachTacGia.Count; i++)
                 {
                     var tg = book.DanhSachTacGia[i];
-                    EditingBook.DanhSachTacGia.Add(new TacGiaDTO 
+                    EditingBook.DanhSachTacGia.Add(new TacGiaDTO
                     { 
                         Id = tg.Id, 
                         TenTacGia = tg.TenTacGia 
@@ -502,7 +501,7 @@ namespace Bookstore.WPF.ViewModels
             });
 
             // --- xóa sách---
-            DeleteBookCommand = new RelayCommand<BookItem>(async (book) =>
+            DeleteBookCommand = new RelayCommand<Models.BookItem>(async (book) =>
             {
                 if (book == null) return;
 
@@ -558,68 +557,6 @@ namespace Bookstore.WPF.ViewModels
             ExportExcelCommand = new RelayCommand<object>((p) =>
             {
                 MessageBox.Show("Chức năng đang trong quá trình phát triển. Vui lòng quay lại sau!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                //try
-                //{
-                //    //  Cấu hình hộp thoại lưu file
-                //    SaveFileDialog sfd = new SaveFileDialog()
-                //    {
-                //        Filter = "Excel Workbook (*.xlsx)|*.xlsx",
-                //        FileName = $"DanhSachSach_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
-                //    };
-
-                //    if (sfd.ShowDialog() == true)
-                //    {
-                //        // Cấu hình EPPlus (Cần thiết cho bản miễn phí)
-                //        ExcelPackage.LicenseContext = LicenseContext.NonCommercial
-
-                //        using (var package = new ExcelPackage())
-                //        {
-                //            // Tạo một Sheet mới
-                //            var sheet = package.Workbook.Worksheets.Add("Danh Sách Sách");
-
-                //            // Tạo Header
-                //            string[] headers = { "STT", "Mã ISBN", "Tên Sách", "Tác Giả", "Thể Loại", "Giá Bán", "Số Lượng" };
-                //            for (int i = 0; i < headers.Length; i++)
-                //            {
-                //                var cell = sheet.Cells[1, i + 1];
-                //                cell.Value = headers[i];
-                //                cell.Style.Font.Bold = true;
-                //                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                //                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
-                //                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                //            }
-
-                //            //  Đổ dữ liệu từ FilteredBooks (hoặc _allBooks tùy ông muốn xuất cái nào)
-                //            var dataToExport = PagedBooks.ToList();
-                //            for (int i = 0; i < dataToExport.Count; i++)
-                //            {
-                //                var book = dataToExport[i];
-                //                sheet.Cells[i + 2, 1].Value = i + 1;
-                //                sheet.Cells[i + 2, 2].Value = book.ISBN;
-                //                sheet.Cells[i + 2, 3].Value = book.TenSach;
-                //                sheet.Cells[i + 2, 4].Value = book.TenTacGia;
-                //                sheet.Cells[i + 2, 5].Value = book.TenTheLoai;
-                //                sheet.Cells[i + 2, 6].Value = book.GiaBan;
-                //                sheet.Cells[i + 2, 7].Value = book.SoLuongTon;
-
-                //                // Format số cho đẹp
-                //                sheet.Cells[i + 2, 6].Style.Numberformat.Format = "#,##0";
-                //            }
-
-                //            // Tự động chỉnh độ rộng cột
-                //            sheet.Cells.AutoFitColumns();
-
-                //            //  Lưu file
-                //            File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
-
-                //            MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                //        }
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                //}
             });
 
 
@@ -824,8 +761,6 @@ namespace Bookstore.WPF.ViewModels
                 GoToPage(targetPage);
             }
         }
-
-        // GỘP 2 HÀM GoToPage LẠI THÀNH 1 HÀM CHUẨN DUY NHẤT
         private void GoToPage(int page)
         {
             // Kiểm tra an toàn để không bao giờ bị lỗi index
@@ -876,7 +811,7 @@ namespace Bookstore.WPF.ViewModels
                         int stt = 1;
                         foreach (var item in danhSachTuApi)
                         {
-                            var newBook = new BookItem
+                            var newBook = new Models.BookItem
                             {
                                 Id = item.Id,
                                 STT = stt++,
@@ -908,7 +843,7 @@ namespace Bookstore.WPF.ViewModels
                         ListTacPhamGoc.Clear();
                         foreach (var b in listTacPhamGoc)
                         {
-                            var newBook = new BookItem
+                            var newBook = new Models.BookItem
                             {
                                 TenSach = b.TenSach,
                                 TheLoai = b.TenTheLoai,
@@ -994,18 +929,6 @@ namespace Bookstore.WPF.ViewModels
                 });
             }
         }
-
-        private async Task LoadNhaCungCapAsync()
-        {
-            var data = await ApiClient.GetAsync<List<string>>("api/NhaCungCap");
-            if (data != null)
-            {
-                Application.Current.Dispatcher.Invoke(() => {
-                    ListNhaCungCap.Clear();
-                    foreach (var item in data) ListNhaCungCap.Add(item);
-                });
-            }
-        }
         // ===========================================================================================
 
         // ================================ VALIDATION ===========================================
@@ -1073,91 +996,6 @@ namespace Bookstore.WPF.ViewModels
             }
 
             return true; // Nếu qua hết các ải trên thì cho phép Lưu
-        }
-
-    }
-
-    public class BookItem : BaseViewModel
-    {
-        public int Id { get; set; }
-        public int STT { get; set; }
-
-        private string _tenSach = "";
-        public string TenSach { get => _tenSach; set { _tenSach = value; OnPropertyChanged(); } }
-
-        private ObservableCollection<TacGiaDTO> _danhSachTacGia = new ObservableCollection<TacGiaDTO>();
-        public ObservableCollection<TacGiaDTO> DanhSachTacGia
-        {
-            get => _danhSachTacGia;
-            set { _danhSachTacGia = value; OnPropertyChanged(); }
-        }
-
-        private string _theLoai = "";
-        public string TheLoai { get => _theLoai; set { _theLoai = value; OnPropertyChanged(); } }
-
-        private string _moTa = "";
-        public string MoTa { get => _moTa; set { _moTa = value; OnPropertyChanged(); } }
-
-        private string _hinhAnh = "default_book_cover.jpg";
-        public string HinhAnh { get => _hinhAnh; set { _hinhAnh = value; OnPropertyChanged(); } }
-
-        private string _isbn = "";
-        public string ISBN { get => _isbn; set { _isbn = value; OnPropertyChanged(); } }
-        public int NamXuatBan { get; set; } = 2000;
-        private string _nhaXuatBan = "";
-        public string NhaXuatBan { get => _nhaXuatBan; set { _nhaXuatBan = value; OnPropertyChanged(); } }
-        public int LanTaiBan { get; set; } = 1;
-        public string HinhThucBia { get; set; } = "Bìa mềm";
-        public int SoLuongTonKho { get; set; } = 0;
-        public int TongDaBan { get; set; } = 0;
-
-
-        private decimal _tiLeGiaBan = 1.0m;
-        public decimal TiLeGiaBan
-        {
-            get => _tiLeGiaBan;
-            set { _tiLeGiaBan = value; OnPropertyChanged(); }
-        }
-
-        private bool _isManualDonGiaBan = false;
-        public void ResetManualFlag() => _isManualDonGiaBan = false;
-
-
-
-        private decimal _giaNiemYet = 0;
-        public decimal GiaNiemYet
-        {
-            get => _giaNiemYet;
-            set
-            {
-                _giaNiemYet = value;
-                OnPropertyChanged();
-
-                if (!_isManualDonGiaBan)
-                {
-                    _donGiaBan = Math.Round(_giaNiemYet * _tiLeGiaBan);
-                    OnPropertyChanged(nameof(DonGiaBan));
-                }
-            }
-        }
-
-        private decimal _donGiaBan = 0;
-        public decimal DonGiaBan
-        {
-            get => _donGiaBan;
-            set
-            {
-                _donGiaBan = value;
-                _isManualDonGiaBan = true;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isCanhBaoTonKho;
-        public bool IsCanhBaoTonKho
-        {
-            get => _isCanhBaoTonKho;
-            set { _isCanhBaoTonKho = value; OnPropertyChanged(); }
         }
     }
 }
