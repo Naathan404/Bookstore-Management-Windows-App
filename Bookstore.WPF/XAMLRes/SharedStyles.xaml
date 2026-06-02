@@ -5,6 +5,7 @@
 
 	<BooleanToVisibilityConverter x:Key="BoolToVis" />
 	<converters:InvertZeroToVisConverter x:Key="InvertZeroToVis" />
+	<converters:InverseBoolConverter x:Key="InverseBoolConverter" />
 
 	<Thickness x:Key="MainViewMargin">20,10,20,10</Thickness>
 

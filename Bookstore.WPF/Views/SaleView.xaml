@@ -178,7 +178,7 @@
 							</ItemsControl>
 						</ScrollViewer>
 					</Border>
-					
+
 					<components:PaginationControl Grid.Row="2"
 												  CurrentPage="{Binding TrangHienTai}"
 												  TotalPages="{Binding TongSoTrang}"
@@ -419,18 +419,21 @@
 										<ColumnDefinition Width="Auto" />
 									</Grid.ColumnDefinitions>
 
-									<components:FilterInputControl Grid.Column="0"
-																   Margin="0,0,8,0"
-																   IconKind="Phone"
-																   HintText="Số điện thoại..."
-																   TextValue="{Binding SdtKhachHang}" />
+									<components:FormInputControl Grid.Column="0"
+																 Title="Số điện thoại"
+																 HintText="Nhập số điện thoại..."
+																 IconKind="Phone"
+																 IsRequired="True"
+																 TextValue="{Binding SdtKhachHang, UpdateSourceTrigger=PropertyChanged}" />
 
 
 									<Button Grid.Column="1"
 											Style="{StaticResource OutlineButtonStyle}"
-											Width="40"
-											Height="40"
+											Width="42"
+											Height="42"
+											Margin="8,0,0,0"
 											ToolTip="Chọn từ danh sách"
+											VerticalAlignment="Bottom"
 											Command="{Binding MoPopupChonKhachHangCommand}"
 											CommandParameter="{Binding}">
 										<materialDesign:PackIcon Kind="Magnify"
@@ -439,10 +442,13 @@
 									</Button>
 								</Grid>
 
-								<components:FilterInputControl Grid.Column="0"
-															   IconKind="Person"
-															   HintText="Tên khách hàng"
-															   TextValue="{Binding TenKhachHang}" />
+								<components:FormComboBoxControl Title="Tên khách hàng"
+																HintText="Chọn khách hàng..."
+																IconKind="Person"
+																ItemsSource="{Binding DanhSachKhachHangPopup}"
+																SelectedItem="{Binding KhachHangDuocChon, Mode=TwoWay}"
+																DisplayMemberPath="TenKhachHang"
+																IsEditable="False" />
 							</StackPanel>
 						</StackPanel>
 					</Border>
@@ -475,11 +481,14 @@
 							</StackPanel>
 
 							<Grid Margin="0,0,0,12">
-								<components:FilterComboBoxControl x:Name="ChonUuDai"
-																  IconKind="TagOutline"
-																  HintText="Chọn ưu đãi áp dụng..."
-																  ItemsSource="{Binding PromotionList}"
-																  SelectedItem="{Binding SelectedUuDai}" />
+								<components:FormComboBoxControl x:Name="ChonUuDai"
+																Title="Chọn ưu đãi áp dụng"
+																IconKind="TagApprove"
+																HintText="Ưu đãi khả dụng..."
+																ItemsSource="{Binding PromotionList}"
+																SelectedItem="{Binding SelectedUuDai}"
+																DisplayMemberPath="TenChuongTrinh"
+																IsEditable="False" />
 							</Grid>
 						</StackPanel>
 
@@ -580,9 +589,9 @@
 									Command="{Binding MoPopupThanhToanCommand}"
 									Height="42"
 									FontSize="14">
-									<TextBlock Text="THANH TOÁN"
-											   FontWeight="Medium"
-											   VerticalAlignment="Center" />
+								<TextBlock Text="THANH TOÁN"
+										   FontWeight="Medium"
+										   VerticalAlignment="Center" />
 							</Button>
 						</StackPanel>
 
