@@ -429,3 +429,5 @@ FodyWeavers.xsd
 
 appsettings.json
 *.json
+Bookstore.API/appsettings.json
+Bookstore.API/appsettings.*.json
