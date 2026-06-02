@@ -364,32 +364,32 @@ namespace Bookstore.WPF.ViewModels
                 }
             });
 
-            MoPopupChonKhachHangCommand = new RelayCommand(() => IsSelectCustomerOpen = true);
+            MoPopupChonKhachHangCommand = new RelayCommand<object>((p) => IsSelectCustomerOpen = true);
 
-            MoPopupThanhToanCommand = new RelayCommand(
-                () => { IsConfirmPaymentOpen = true; },
-                () => CartItems.Any() // Chỉ cần giỏ có đồ là cho mở Popup thanh toán (Khách hàng đã chọn bên ngoài rồi)
+            MoPopupThanhToanCommand = new RelayCommand<object>(
+                (p) => { IsConfirmPaymentOpen = true; },
+                (p) => CartItems.Any() // Chỉ cần giỏ có đồ là cho mở Popup thanh toán (Khách hàng đã chọn bên ngoài rồi)
             );
 
             // Đóng Popup / Hủy bỏ giao dịch
-            CloseDialogCommand = new RelayCommand(() => {
+            CloseDialogCommand = new RelayCommand<object>((p) => {
                 IsConfirmPaymentOpen = false;
                 IsBookDetailOpen = false;
                 IsSelectCustomerOpen = false; // Tiện tay đóng luôn cái chọn khách nếu có
             });
 
-            HuyBoGiaoDichCommand = new RelayCommand(() => { IsConfirmPaymentOpen = false; });
+            HuyBoGiaoDichCommand = new RelayCommand<object>((p) => { IsConfirmPaymentOpen = false; });
 
             // Xác nhận lưu hóa đơn xuống Database qua API
-            XacNhanTaoDonCommand = new RelayCommand(
-                () => ThucHienTaoDonHang(), // Rút gọn thành hàm Helper
-                () => IsKhachVangLai || KhachHangDuocChon != null
+            XacNhanTaoDonCommand = new RelayCommand<object>(
+                (p) => ThucHienTaoDonHang(), // Rút gọn thành hàm Helper
+                (p) => IsKhachVangLai || KhachHangDuocChon != null
             );
 
             #endregion
 
             #region CHỨC NĂNG LỌC KHỞI TẠO
-            XoaBoLocCommand = new RelayCommand(() =>
+            XoaBoLocCommand = new RelayCommand<object>((p) =>
             {
                 SearchKeyword = string.Empty;
                 KieuTimKiemSach = "Tên sách";

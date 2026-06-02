@@ -32,14 +32,14 @@ namespace Bookstore.WPF.ViewModels
             set { _selectedSupplier = value; OnPropertyChanged(); TrangHienTai = 1; ApplyFilterAndPagination(); }
         }
 
-        private DateTime? _filterFromDate;
+        private DateTime? _filterFromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         public DateTime? FilterFromDate
         {
             get => _filterFromDate;
             set { _filterFromDate = value; OnPropertyChanged(); TrangHienTai = 1; ApplyFilterAndPagination(); }
         }
 
-        private DateTime? _filterToDate;
+        private DateTime? _filterToDate = DateTime.Today;
         public DateTime? FilterToDate
         {
             get => _filterToDate;

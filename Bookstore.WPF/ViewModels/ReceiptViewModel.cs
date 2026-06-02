@@ -49,7 +49,7 @@ namespace Bookstore.WPF.ViewModels
         // Các bộ lọc riêng biệt (Từ ngày - Đến ngày)
         // (Lưu ý: Biến SearchKeyword đã có sẵn trong BaseListViewModel)
 
-        private DateTime? _fromDate = DateTime.Today.AddMonths(-1);
+        private DateTime? _fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         public DateTime? FromDate
         {
             get => _fromDate;
