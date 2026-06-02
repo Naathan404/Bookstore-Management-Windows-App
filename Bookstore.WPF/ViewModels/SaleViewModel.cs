@@ -431,7 +431,7 @@ namespace Bookstore.WPF.ViewModels
                 }
 
                 // 3. Tải toàn bộ Sách hiển thị
-                var books = await ApiClient.GetAsync<List<SachDTO>>("api/Sach/GetAll");
+                var books = await ApiClient.GetAsync<List<SachDTO>>("api/PhienBanSach");
                 if (books != null && books.Count > 0)
                 {
                     _allBooks = books.Select(dto => new BookSaleModel(new BookItem
@@ -439,12 +439,28 @@ namespace Bookstore.WPF.ViewModels
                         Id = dto.Id,
                         ISBN = dto.ISBN,
                         TenSach = dto.TenSach,
-                        DonGiaBan = dto.DonGiaBan,
+                        MoTa = dto.MoTa,
+                        TheLoai = dto.TheLoai,
+                        HinhAnh = string.IsNullOrEmpty(dto.HinhAnh) ? "default_book_cover.jpg" : dto.HinhAnh,
+
                         SoLuongTonKho = dto.SoLuongTonKho,
-                        HinhAnh = dto.HinhAnh
+                        TongDaBan = dto.TongDaBan,
+
+                        GiaNiemYet = dto.GiaNiemYet,
+                        DonGiaBan = dto.DonGiaBan,
+
+                        NamXuatBan = dto.NamXuatBan,
+                        NhaXuatBan = dto.NhaXuatBan,
+                        LanTaiBan = dto.LanTaiBan,
+                        HinhThucBia = dto.HinhThucBia,
+
+                        DanhSachTacGia = new ObservableCollection<TacGiaDTO>(dto.DanhSachTacGia ?? new List<TacGiaDTO>())
                     })).ToList();
 
-                    ApplyFilterAndPagination();
+                    // Reset giao diện về trạng thái rỗng đợi tìm kiếm
+                    DisplayBooks.Clear();
+                    TongBanGhi = 0;
+                    TongSoTrang = 1;
                 }
             }
             catch (Exception ex)
