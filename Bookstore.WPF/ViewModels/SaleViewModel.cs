@@ -129,7 +129,7 @@ namespace Bookstore.WPF.ViewModels
             set { _sachDuocChonXemChiTiet = value; OnPropertyChanged(); }
         }
 
-        public List<string> ListKieuTimKiem { get; set; } = new List<string> { "Tên sách", "Mã ISBN", "Tác giả" };
+        public List<string> ListKieuTimKiem { get; set; } = new List<string> { "Tên sách", "Mã ISBN" };
 
         private object _kieuTimKiemSach;
         public object KieuTimKiemSach
@@ -207,13 +207,13 @@ namespace Bookstore.WPF.ViewModels
 
         protected override void ApplyFilterAndPagination() //TODO: API Search
         {
-            if (string.IsNullOrWhiteSpace(SearchKeyword))
-            {
-                DisplayBooks.Clear();
-                TongBanGhi = 0;
-                TongSoTrang = 1;
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(SearchKeyword))
+            //{
+            //    DisplayBooks.Clear();
+            //    TongBanGhi = 0;
+            //    TongSoTrang = 1;
+            //    return;
+            //}
 
             var filtered = _allBooks.AsEnumerable();
             string query = SearchKeyword.ToLower().Trim();
@@ -434,33 +434,51 @@ namespace Bookstore.WPF.ViewModels
                 var books = await ApiClient.GetAsync<List<SachDTO>>("api/PhienBanSach");
                 if (books != null && books.Count > 0)
                 {
-                    _allBooks = books.Select(dto => new BookSaleModel(new BookItem
+                    _allBooks.Clear();
+                    int stt = 1;
+
+                    foreach (var item in books)
                     {
-                        Id = dto.Id,
-                        ISBN = dto.ISBN,
-                        TenSach = dto.TenSach,
-                        MoTa = dto.MoTa,
-                        TheLoai = dto.TheLoai,
-                        HinhAnh = string.IsNullOrEmpty(dto.HinhAnh) ? "default_book_cover.jpg" : dto.HinhAnh,
+                        // BƯỚC 1: Tạo đối tượng BookItem với logic lấy ảnh Y HỆT bên ProductViewModel
+                        var newBook = new Models.BookItem
+                        {
+                            Id = item.Id,
+                            STT = stt++,
+                            TenSach = item.TenSach,
+                            TheLoai = item.TheLoai,
+                            MoTa = item.MoTa,
+                            SoLuongTonKho = item.SoLuongTonKho,
+                            TongDaBan = item.TongDaBan,
+                            GiaNiemYet = item.GiaNiemYet,
+                            DonGiaBan = item.DonGiaBan,
 
-                        SoLuongTonKho = dto.SoLuongTonKho,
-                        TongDaBan = dto.TongDaBan,
+                            HinhAnh = string.IsNullOrEmpty(item.HinhAnh) ? "/Resources/Images/Books/default_book_cover.jpg" : item.HinhAnh,
 
-                        GiaNiemYet = dto.GiaNiemYet,
-                        DonGiaBan = dto.DonGiaBan,
+                            ISBN = item.ISBN,
+                            NamXuatBan = item.NamXuatBan,
+                            LanTaiBan = item.LanTaiBan,
+                            NhaXuatBan = item.NhaXuatBan,
+                            HinhThucBia = item.HinhThucBia
+                        };
 
-                        NamXuatBan = dto.NamXuatBan,
-                        NhaXuatBan = dto.NhaXuatBan,
-                        LanTaiBan = dto.LanTaiBan,
-                        HinhThucBia = dto.HinhThucBia,
+                        // Nạp danh sách tác giả vào BookItem
+                        if (item.DanhSachTacGia != null)
+                        {
+                            foreach (var tg in item.DanhSachTacGia)
+                            {
+                                newBook.DanhSachTacGia.Add(tg);
+                            }
+                        }
 
-                        DanhSachTacGia = new ObservableCollection<TacGiaDTO>(dto.DanhSachTacGia ?? new List<TacGiaDTO>())
-                    })).ToList();
+                        // BƯỚC 2: Bọc BookItem này vào bên trong BookSaleModel dùng cho nghiệp vụ bán hàng
+                        var saleBookItem = new BookSaleModel(newBook);
 
-                    // Reset giao diện về trạng thái rỗng đợi tìm kiếm
-                    DisplayBooks.Clear();
-                    TongBanGhi = 0;
-                    TongSoTrang = 1;
+                        // Thêm vào bộ nhớ đệm toàn cục của màn hình Sale
+                        _allBooks.Add(saleBookItem);
+                    }
+
+                    // Gọi hàm lọc và phân trang để đồng bộ hiển thị lên giao diện công khai lần đầu
+                    ApplyFilterAndPagination();
                 }
             }
             catch (Exception ex)

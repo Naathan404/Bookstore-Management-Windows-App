@@ -83,7 +83,6 @@
 									<DataTemplate>
 										<Border Margin="8"
 												Style="{StaticResource DarkCardStyle}">
-
 											<Grid Width="170"
 												  Height="220">
 												<Grid.RowDefinitions>
@@ -92,23 +91,45 @@
 												</Grid.RowDefinitions>
 
 												<Border Grid.Row="0"
-														CornerRadius="12,12,0,0"
-														ClipToBounds="True">
-													<Image Source="{Binding BookData.HinhAnh}"
-														   Stretch="UniformToFill"
-														   RenderOptions.BitmapScalingMode="HighQuality" />
+														CornerRadius="15,15,0,0"
+														Cursor="Hand">
+
+													<Border.Background>
+														<ImageBrush ImageSource="{Binding BookData.HinhAnh}"
+																	Stretch="UniformToFill" />
+													</Border.Background>
+
+													<Border.InputBindings>
+														<MouseBinding MouseAction="LeftClick"
+																	  Command="{Binding DataContext.XemChiTietSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	  CommandParameter="{Binding}" />
+													</Border.InputBindings>
 												</Border>
 
 												<StackPanel Grid.Row="1"
-															Margin="8">
-													<TextBlock Text="{Binding BookData.TenSach}"
-															   TextWrapping="Wrap"
-															   FontSize="13"
-															   MaxHeight="38"
-															   TextTrimming="CharacterEllipsis"
-															   FontWeight="Bold"
-															   Foreground="#2B3674"
-															   Margin="0,0,0,6" />
+															Margin="10,8,10,8">
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*" />
+															<ColumnDefinition Width="Auto" />
+														</Grid.ColumnDefinitions>
+
+														<TextBlock Grid.Column="0"
+																   Text="{Binding BookData.TenSach}"
+																   TextWrapping="Wrap"
+																   FontSize="13"
+																   MaxHeight="38"
+																   TextTrimming="CharacterEllipsis"
+																   FontWeight="Bold"
+																   Foreground="#2B3674"
+																   VerticalAlignment="Center" />
+
+														<components:TickComponent Grid.Column="1"
+																				  VerticalAlignment="Top"
+																				  IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+																				  Command="{Binding DataContext.ChonSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																				  CommandParameter="{Binding}" />
+													</Grid>
 
 													<Grid>
 														<TextBlock Text="{Binding BookData.DonGiaBan, StringFormat='{}{0:N0} đ'}"
@@ -136,24 +157,6 @@
 																   Visibility="{Binding IsGift, Converter={StaticResource BoolToVis}}" />
 													</Grid>
 												</StackPanel>
-
-												<Border Grid.RowSpan="2"
-														Background="Transparent"
-														Cursor="Hand">
-													<Border.InputBindings>
-														<MouseBinding MouseAction="LeftClick"
-																	  Command="{Binding DataContext.XemChiTietSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	  CommandParameter="{Binding}" />
-													</Border.InputBindings>
-												</Border>
-
-												<components:TickComponent HorizontalAlignment="Right"
-																		  VerticalAlignment="Top"
-																		  Margin="8"
-																		  IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"
-																		  Command="{Binding DataContext.ChonSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																		  CommandParameter="{Binding}" />
-
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -161,6 +164,8 @@
 							</ItemsControl>
 						</ScrollViewer>
 					</Border>
+
+					
 
 					<components:PaginationControl Grid.Row="2"
 												  CurrentPage="{Binding TrangHienTai}"
@@ -267,15 +272,16 @@
 													<StackPanel Grid.Column="1"
 																Orientation="Horizontal"
 																VerticalAlignment="Center">
-														<Button Style="{StaticResource MiniAddButtonStyle}"
+														<Button x:Name="btnMinus"
+																Style="{StaticResource MiniAddButtonStyle}"
 																ToolTip="Giảm số lượng"
-																IsEnabled="{Binding IsGift, Converter={StaticResource InverseBoolConverter}}"
 																Command="{Binding DataContext.GiamSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																CommandParameter="{Binding}">
 															<materialDesign:PackIcon Kind="Minus"
 																					 Width="16"
 																					 Height="16" />
 														</Button>
+
 														<TextBlock Text="{Binding SoLuongMua}"
 																   FontSize="14"
 																   FontWeight="Bold"
@@ -283,9 +289,10 @@
 																   Width="32"
 																   TextAlignment="Center"
 																   VerticalAlignment="Center" />
-														<Button Style="{StaticResource MiniAddButtonStyle}"
+
+														<Button x:Name="btnPlus"
+																Style="{StaticResource MiniAddButtonStyle}"
 																ToolTip="Tăng số lượng"
-																IsEnabled="{Binding IsGift, Converter={StaticResource InverseBoolConverter}}"
 																Command="{Binding DataContext.TangSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																CommandParameter="{Binding}">
 															<materialDesign:PackIcon Kind="Plus"
@@ -306,6 +313,18 @@
 													</Button>
 												</Grid>
 											</Border>
+
+											<DataTemplate.Triggers>
+												<DataTrigger Binding="{Binding IsGift}"
+															 Value="True">
+													<Setter TargetName="btnMinus"
+															Property="IsEnabled"
+															Value="False" />
+													<Setter TargetName="btnPlus"
+															Property="IsEnabled"
+															Value="False" />
+												</DataTrigger>
+											</DataTemplate.Triggers>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>
