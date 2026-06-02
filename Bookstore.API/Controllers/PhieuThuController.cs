@@ -4,223 +4,102 @@ using Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
-using System.Linq.Expressions;
 
 namespace Bookstore.API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class PhieuThuController : ControllerBase
     {
         private readonly AppDbContext _context;
+
         public PhieuThuController(AppDbContext context)
         {
             _context = context;
         }
 
-        private static Expression<Func<PhieuThuTien, ReceiptResponse>> MapToReceipResponse =
-          p => new ReceiptResponse
-          {
-              MaPhieuThuTien = p.MaPhieuThuTien,
-              NgayTao = p.NgayTao,
-              NguoiTao = p.NguoiTao,
-              TenNguoiTao = p.NguoiDung!.HoTen,
-              MaKhachHang = p.MaKhachHang,
-              TenKhachHang = p.KhachHang!.TenKhachHang,
-              SoTienThu = p.SoTienThu,
-              LyDoThu = p.LyDoThu,
-          };
-
+        // GET: api/PhieuThu
         [HttpGet]
-        public async Task<ActionResult<ReceiptResponse>> GetAllReceipts(
-            [FromQuery] DateTime? startDate,
-            [FromQuery] DateTime? endDate,
-            [FromQuery] string? nguoiTao,
-            [FromQuery] int? khachHang)
+        public async Task<ActionResult<IEnumerable<ReceiptResponse>>> GetDanhSachPhieuThu()
         {
-            var query = _context.PhieuThuTien.AsQueryable();
-
-            if (startDate.HasValue)
-            {
-                query = query.Where(p => p.NgayTao >=  startDate.Value.Date);
-            }
-            if (endDate.HasValue)
-            {
-                query = query.Where(p => p.NgayTao  <= endDate.Value.Date.AddDays(1));
-            }
-            if (!string.IsNullOrWhiteSpace(nguoiTao))
-            {
-                query = query.Where(p => p.NguoiTao.Equals(nguoiTao));
-            }
-            if (khachHang.HasValue)
-            {
-                query = query.Where(p => p.MaKhachHang ==  khachHang.Value);
-            }
-
-            var result = await query
-                .OrderByDescending(p => p.NgayTao)
-                .Select(MapToReceipResponse)
+            var result = await _context.PhieuThuTien
+                .Include(pt => pt.KhachHang)
+                // Kết nối với bảng NguoiDung để lấy họ tên nhân viên
+                .Join(_context.NguoiDung,
+                      pt => pt.NguoiTao,
+                      nd => nd.TenDangNhap,
+                      (pt, nd) => new ReceiptResponse
+                      {
+                          MaPhieuThuTien = pt.MaPhieuThuTien,
+                          NgayTao = pt.NgayTao,
+                          MaKhachHang = pt.MaKhachHang,
+                          TenKhachHang = pt.KhachHang.TenKhachHang,
+                          NguoiTao = pt.NguoiTao,
+                          TenNguoiTao = nd.HoTen, // Hiển thị họ tên nhân viên
+                          SoTienThu = pt.SoTienThu,
+                          LyDoThu = pt.LyDoThu
+                      })
+                .OrderByDescending(pt => pt.NgayTao)
                 .ToListAsync();
 
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ReceiptResponse>> GetReceipById(int id)
-        {
-            var receipt = await _context.PhieuThuTien
-                .Where(p => p.MaPhieuThuTien == id)
-                .Select(MapToReceipResponse)
-                .FirstOrDefaultAsync();
-            if (receipt == null)
-            {
-                return NotFound(new { Message = "Không tìm thấy phiếu thu" });
-            }
-
-            return Ok(receipt);
-        }
-
+        // POST: api/PhieuThu (THÊM MỚI)
         [HttpPost]
-        public async Task<ActionResult<ReceiptResponse>> CreateReceipt(ReceiptRequest request)
+        public async Task<ActionResult> CreatePhieuThu([FromBody] ReceiptRequest request)
         {
-            var nguoiDung = await _context.NguoiDung.FindAsync(request.NguoiTao);
-            if (nguoiDung == null)
-            {
-                return NotFound(new { Message = "Người tạo không hợp lệ" });
-            }
-
+            // 1. Kiểm tra khách hàng
             var khachHang = await _context.KhachHang.FindAsync(request.MaKhachHang);
-            if (khachHang == null)
-            {
-                return NotFound(new { Message = "Không tồn tại khách hàng" });
-            }
-            if (khachHang.TienNo <= 0)
-            {
-                return BadRequest(new { Message = "Khách hàng không có nợ" });
-            }
+            if (khachHang == null) return NotFound("Không tìm thấy khách hàng!");
 
-            var tsTienThuLonHonNo = await _context.ThamSo.FindAsync("TienThuLonHonNo");
-            bool tienThuLonHonNo = (tsTienThuLonHonNo == null || tsTienThuLonHonNo.GiaTri == 1); // true/false
-
-            if (!tienThuLonHonNo)
+            // 2. Kiểm tra tham số: Thu tiền lớn hơn nợ (Nếu quy định không cho phép)
+            var thamSoThuTien = await _context.ThamSo.FirstOrDefaultAsync(t => t.TenThamSo == "TienThuLonHonNo");
+            if (thamSoThuTien != null && thamSoThuTien.GiaTri == 0) // Giả sử 0 là không cho phép
             {
                 if (request.SoTienThu > khachHang.TienNo)
-                {
-                    return BadRequest(new { Message = "Tiền thu không được lớn hơn nợ" });
-                }
+                    return BadRequest("Số tiền thu không được lớn hơn số tiền khách đang nợ!");
             }
 
-            khachHang.TienNo -= request.SoTienThu;
-
-            PhieuThuTien newPhieuThu = new PhieuThuTien()
+            // 3. Tạo phiếu thu mới
+            var phieuThuMoi = new PhieuThuTien
             {
-                NguoiTao = request.NguoiTao,
                 MaKhachHang = request.MaKhachHang,
+                NguoiTao = request.NguoiTao,
+                NgayTao = DateTime.Now,
                 SoTienThu = request.SoTienThu,
                 LyDoThu = request.LyDoThu
             };
 
-            await _context.PhieuThuTien.AddAsync(newPhieuThu);
+            // 4. TRỪ NỢ KHÁCH HÀNG
+            khachHang.TienNo -= request.SoTienThu;
+            // Tránh nợ bị âm nếu có tham số cho phép thu lố
+            if (khachHang.TienNo < 0) khachHang.TienNo = 0;
+
+            _context.PhieuThuTien.Add(phieuThuMoi);
             await _context.SaveChangesAsync();
 
-            ReceiptResponse response = new ReceiptResponse
-            {
-                MaPhieuThuTien = newPhieuThu.MaPhieuThuTien,
-                NgayTao = newPhieuThu.NgayTao,
-                NguoiTao = newPhieuThu.NguoiTao,
-                TenNguoiTao = nguoiDung.HoTen,
-                MaKhachHang = newPhieuThu.MaKhachHang,
-                TenKhachHang = khachHang.TenKhachHang,
-                SoTienThu = newPhieuThu.SoTienThu,
-                LyDoThu = newPhieuThu.LyDoThu
-            };
-            return Ok(response);
+            return Ok(new { Message = "Tạo phiếu thu thành công!" });
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReceipt(int id, [FromBody] ReceiptRequest request)
-        {
-            var phieuThu = await _context.PhieuThuTien.FindAsync(id);
-            if (phieuThu == null)
-            {
-                return NotFound(new { Message = "Không tìm thấy phiếu thu" });
-            }
-
-            var nguoiDung = await _context.NguoiDung.FindAsync(request.NguoiTao);
-            if (nguoiDung == null)
-            {
-                return NotFound(new { Message = "Người sửa đổi không hợp lệ" });
-            }
-
-            var khachHangMoi = await _context.KhachHang.FindAsync(request.MaKhachHang);
-            if (khachHangMoi == null)
-            {
-                return NotFound(new { Message = "Khách hàng không có khách hàng mới" });
-            }
-
-            if (khachHangMoi.TienNo < 0)
-            {
-                return BadRequest(new { Message = "Khách hàng mới không có nợ" }); 
-            }
-
-            if (request.MaKhachHang == phieuThu.MaKhachHang)
-            {
-                khachHangMoi.TienNo += phieuThu.SoTienThu;
-            }
-            else
-            {
-                var khachHangCu = await _context.KhachHang.FindAsync(phieuThu.MaKhachHang);
-                if (khachHangCu == null)
-                {
-                    return NotFound(new {Message = "Không tìm thấy khách hàng cũ"});
-                }
-
-                khachHangCu.TienNo += phieuThu.SoTienThu;
-            }
-
-            var tsTienThuLonHonNo = await _context.ThamSo.FindAsync("TienThuLonHonNo");
-            bool tienThuLonHonNo = (tsTienThuLonHonNo == null || tsTienThuLonHonNo.GiaTri == 1);
-
-            if (!tienThuLonHonNo && request.SoTienThu > khachHangMoi.TienNo)
-            {
-                return BadRequest(new { Message = "Tiền thu không được lớn hơn nợ" });
-            }
-            khachHangMoi.TienNo -= request.SoTienThu;
-
-            phieuThu.NguoiTao = request.NguoiTao;
-            phieuThu.MaKhachHang = request.MaKhachHang;
-            phieuThu.SoTienThu = request.SoTienThu;
-            phieuThu.LyDoThu = request.LyDoThu;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { Message = "Lưu và cập nhật tiền dư thành công" });
-        }
-
+        // DELETE: api/PhieuThu/5 (XÓA PHIẾU THU & HOÀN NỢ)
         [HttpDelete("{id}")]
-        public async Task<IActionResult> deleteReceipt(int id)
+        public async Task<IActionResult> DeletePhieuThu(int id)
         {
             var phieuThu = await _context.PhieuThuTien.FindAsync(id);
-            if (phieuThu == null)
-            {
-                return NotFound(new { Mesage = "Không tìm thấy phiếu thu" });
-            }
-            string message = string.Empty;
+            if (phieuThu == null) return NotFound();
+
             var khachHang = await _context.KhachHang.FindAsync(phieuThu.MaKhachHang);
             if (khachHang != null)
             {
+                // HỦY PHIẾU THU -> CỘNG LẠI NỢ CHO KHÁCH
                 khachHang.TienNo += phieuThu.SoTienThu;
-                message = $"Đã xóa phiếu thu và cập nhật tiền nợ của khách hàng {khachHang.MaKhachHang}, {khachHang.TenKhachHang}";
             }
 
             _context.PhieuThuTien.Remove(phieuThu);
             await _context.SaveChangesAsync();
 
-            if (message.IsNullOrEmpty()) message = "Đã xóa phiếu thu";
-
-            return Ok(new { Message = message });
+            return Ok(new { Message = "Đã xóa phiếu thu và hoàn lại công nợ." });
         }
     }
 }
