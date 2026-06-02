@@ -6,6 +6,8 @@
 	<Style x:Key="DataGridCardStyle"
 		   TargetType="Border"
 		   BasedOn="{StaticResource CardStyle}">
+		<Setter Property="Padding"
+				Value="20" />
 		<Setter Property="Margin"
 				Value="0,0,0,8" />
 	</Style>

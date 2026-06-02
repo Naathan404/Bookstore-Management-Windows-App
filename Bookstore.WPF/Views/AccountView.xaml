@@ -381,15 +381,15 @@
 															   VerticalAlignment="Center"
 															   TextWrapping="Wrap" />
 
-													<CheckBox Grid.Column="1"
-															  IsChecked="{Binding IsGranted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-															  VerticalAlignment="Center"
-															  Cursor="Hand">
-														<CheckBox.LayoutTransform>
+													<components:TickComponent Grid.Column="1"
+																			  IsChecked="{Binding IsGranted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+																			  VerticalAlignment="Center"
+																			  Cursor="Hand">
+														<components:TickComponent.LayoutTransform>
 															<ScaleTransform ScaleX="1.2"
 																			ScaleY="1.2" />
-														</CheckBox.LayoutTransform>
-													</CheckBox>
+														</components:TickComponent.LayoutTransform>
+													</components:TickComponent>
 												</Grid>
 											</Border>
 										</DataTemplate>
