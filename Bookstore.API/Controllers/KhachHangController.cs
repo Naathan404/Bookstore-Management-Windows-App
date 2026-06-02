@@ -29,6 +29,7 @@ namespace Bookstore.API.Controllers
                 Email = k.Email,
                 DiaChi = k.DiaChi,
                 MaSoThue = k.MaSoThue,
+                MaLoaiKhachHang = k.MaLoaiKhachHang,
                 LoaiKhach = (k.LoaiKhachHang != null) ? k.LoaiKhachHang.TenLoaiKhachHang : "Khách vãng lai",
                 GioiTinh = (k.GioiTinh == 0) ? "Nam" : "Nữ",
                 NgaySinh = k.NgaySinh.HasValue

@@ -1,6 +1,7 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Models;
 using Bookstore.Share.DTO;
+using Bookstore.Share.DTO.Bookstore.Share.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -93,6 +94,144 @@ namespace Bookstore.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Danh sách ưu đãi khả dụng khi lập hóa đơn
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("khadung")]
+        public async Task<ActionResult<IEnumerable<PromotionDTO>>> GetUuDaiKhaDung([FromBody] CheckPromotionRequest request)
+        {
+            var now = DateTime.Now;
+
+            // LỚP LỌC 1 (DƯỚI DATABASE)
+            var activePromos = await _context.UuDai
+                .Where(u => u.CoTheSuDung
+                         && u.NgayBatDau <= now
+                         && u.NgayKetThuc >= now
+                         && u.SoLuongDaDung < u.SoLuongToiDa
+                         && (u.MaLoaiKhachHang == null || u.MaLoaiKhachHang == request.MaLoaiKhachHang))
+                .ToListAsync();
+
+            if (!activePromos.Any())
+                return Ok(new List<PromotionDTO>());
+
+            var promoIds = activePromos.Select(p => p.MaUuDai).ToList();
+
+            var hdGiamList = await _context.CTUD_HoaDon_Giam.Where(x => promoIds.Contains(x.MaUuDai)).ToListAsync();
+            var hdQuaList = await _context.CTUD_HoaDon_Qua.Where(x => promoIds.Contains(x.MaUuDai)).ToListAsync();
+            var sachGiamList = await _context.CTUD_Sach_Giam.Where(x => promoIds.Contains(x.MaUuDai)).ToListAsync();
+            var sachQuaList = await _context.CTUD_Sach_Qua.Where(x => promoIds.Contains(x.MaUuDai)).ToListAsync();
+            var dkSachList = await _context.UuDai_SachDieuKien.Where(x => promoIds.Contains(x.MaUuDai)).ToListAsync();
+            var tangSachList = await _context.UuDai_SachTang.Where(x => promoIds.Contains(x.MaUuDai)).ToListAsync();
+
+            // LỚP LỌC 2 (TRÊN RAM)
+            var eligiblePromos = new List<PromotionDTO>();
+
+            // SỬA TẠI ĐÂY: Ép Trim() cho toàn bộ ISBN từ giỏ hàng gửi lên
+            var cartDict = request.CartItems.ToDictionary(c => c.ISBN.Trim(), c => c.SoLuong);
+
+            foreach (var promo in activePromos)
+            {
+                var dto = new PromotionDTO
+                {
+                    MaUuDai = promo.MaUuDai,
+                    NgayTao = promo.NgayTao,
+                    NguoiTao = promo.NguoiTao,
+                    Code = promo.Code,
+                    TenChuongTrinh = promo.TenChuongTrinh,
+                    MoTa = promo.MoTa,
+                    NgayBatDau = promo.NgayBatDau,
+                    NgayKetThuc = promo.NgayKetThuc,
+                    SoLuongToiDa = promo.SoLuongToiDa,
+                    SoLuongDaDung = promo.SoLuongDaDung,
+                    MaLoaiKhachHang = promo.MaLoaiKhachHang,
+                    CoTheSuDung = promo.CoTheSuDung,
+                    MaLoaiUuDai = promo.MaLoaiUuDai - 1 // Trả về hệ (0,1,2,3) cho WPF
+                };
+
+                bool isEligible = false;
+
+                // DB Loại 1: Giảm giá hóa đơn
+                if (promo.MaLoaiUuDai == 1)
+                {
+                    var ct = hdGiamList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    if (ct != null && request.TamTinh >= ct.SoTienToiThieu)
+                    {
+                        isEligible = true;
+                        dto.SoTienToiThieu = ct.SoTienToiThieu;
+                        dto.SoTienToiDa = ct.SoTienToiDa;
+                        dto.SoTienGiam = ct.SoTienGiam;
+                        dto.TiLeGiam = ct.TiLeGiam;
+                        dto.GiamToiDa = ct.GiamToiDa;
+                    }
+                }
+                // DB Loại 2: Tặng quà hóa đơn
+                else if (promo.MaLoaiUuDai == 2)
+                {
+                    var ct = hdQuaList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    var tang = tangSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+
+                    if (ct != null && tang != null && request.TamTinh >= ct.SoTienToiThieu)
+                    {
+                        isEligible = true;
+                        dto.SoTienToiThieu = ct.SoTienToiThieu;
+                        dto.SoTienToiDa = ct.SoTienToiDa;
+                        dto.ISBNTang = tang.ISBN.Trim(); // Thêm Trim
+                        dto.SoLuongTang = tang.SoLuongTang;
+                    }
+                }
+                // DB Loại 3: Giảm giá đầu sách
+                else if (promo.MaLoaiUuDai == 3)
+                {
+                    var ct = sachGiamList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+
+                    if (ct != null && dk != null)
+                    {
+                        // SỬA TẠI ĐÂY: Lấy ISBN ra và Trim() sạch sẽ trước khi so khớp với giỏ hàng
+                        string cleanDbIsbn = dk.ISBN.Trim();
+                        if (cartDict.TryGetValue(cleanDbIsbn, out int soLuongGio) && soLuongGio >= dk.SoLuongMua)
+                        {
+                            isEligible = true;
+                            dto.ISBNDieuKien = cleanDbIsbn;
+                            dto.SoLuongMua = dk.SoLuongMua;
+                            dto.SoTienGiam = ct.SoTienGiam;
+                            dto.TiLeGiam = ct.TiLeGiam;
+                            dto.GiamToiDa = ct.GiamToiDa;
+                        }
+                    }
+                }
+                // DB Loại 4: Tặng quà đầu sách
+                else if (promo.MaLoaiUuDai == 4)
+                {
+                    var ct = sachQuaList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    var tang = tangSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+
+                    if (ct != null && dk != null && tang != null)
+                    {
+                        // SỬA TẠI ĐÂY: Tiếp tục tiến hành Trim() cho cả 2 đầu mã sách
+                        string cleanDbIsbn = dk.ISBN.Trim();
+                        if (cartDict.TryGetValue(cleanDbIsbn, out int soLuongGio) && soLuongGio >= dk.SoLuongMua)
+                        {
+                            isEligible = true;
+                            dto.ISBNDieuKien = cleanDbIsbn;
+                            dto.SoLuongMua = dk.SoLuongMua;
+                            dto.ISBNTang = tang.ISBN.Trim();
+                            dto.SoLuongTang = tang.SoLuongTang;
+                        }
+                    }
+                }
+
+                if (isEligible)
+                {
+                    eligiblePromos.Add(dto);
+                }
+            }
+
+            return Ok(eligiblePromos);
+        }
         // 2. POST: Thêm mới phiếu ưu đãi rẽ nhánh lưu đa bảng
         [HttpPost]
         public async Task<IActionResult> CreateUuDai([FromBody] PromotionDTO dto)

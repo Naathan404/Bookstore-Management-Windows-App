@@ -14,6 +14,7 @@ namespace Bookstore.Share.DTOResponses
         public string? Email { get; set; }
         public string? DiaChi { get; set; }
         public string? MaSoThue { get; set; }
+        public int? MaLoaiKhachHang { get; set; }
         public string? LoaiKhach { get; set; }
         public string? GioiTinh { get; set; }
         public DateTime? NgaySinh { get; set; }

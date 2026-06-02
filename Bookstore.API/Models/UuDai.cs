@@ -17,7 +17,7 @@ namespace Bookstore.API.Models
         public DateTime NgayKetThuc { get; set; }
         public int SoLuongToiDa { get; set; }
         public int SoLuongDaDung { get; set; }
-        public int MaLoaiKhachHang { get; set; }
+        public int? MaLoaiKhachHang { get; set; }
         public bool CoTheSuDung { get; set; }
         public int GetID() => MaUuDai;
 

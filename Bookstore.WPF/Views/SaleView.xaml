@@ -358,7 +358,7 @@
 												   Foreground="{StaticResource TextLightColor}"
 												   HorizontalAlignment="Left"
 												   VerticalAlignment="Center" />
-										<TextBlock Text="{Binding TamTinh, StringFormat='{}{0:N0} đ'}"
+										<TextBlock Text="{Binding GiaGocTamTinh, StringFormat='{}{0:N0} đ'}"
 												   FontSize="14"
 												   FontWeight="Bold"
 												   Foreground="{StaticResource WarningColor}"
@@ -490,7 +490,10 @@
 																ItemsSource="{Binding PromotionList}"
 																SelectedItem="{Binding SelectedUuDai}"
 																DisplayMemberPath="TenChuongTrinh"
-																IsEditable="False" />
+																IsEditable="False"
+																State="{Binding UuDaiState}"
+																HelperText="{Binding UuDaiHelperText}"
+																IsReadOnly="{Binding IsUuDaiReadOnly}"/>
 							</Grid>
 						</StackPanel>
 
@@ -534,7 +537,7 @@
 												<Button Grid.Column="2"
 														Style="{StaticResource MiniDeleteButtonStyle}"
 														ToolTip="Gỡ bỏ ưu đãi này"
-														Command="{Binding DataContext.GopUuDaiCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+														Command="{Binding DataContext.XoaUuDaiCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 														CommandParameter="{Binding}">
 													<materialDesign:PackIcon Kind="Close"
 																			 Width="16"

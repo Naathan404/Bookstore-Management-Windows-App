@@ -1,4 +1,5 @@
 ﻿using Bookstore.Share.DTO;
+using Bookstore.Share.DTO.Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Bookstore.Share.DTOs;
 using Bookstore.WPF.Models;
