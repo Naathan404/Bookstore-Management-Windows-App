@@ -23,7 +23,6 @@ namespace Bookstore.WPF.Views
         public SaleView()
         {
             InitializeComponent();
-            this.DataContext = new ViewModels.SaleViewModel();
         }
     }
 }

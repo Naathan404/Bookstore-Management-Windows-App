@@ -58,10 +58,14 @@
 				Value="White" />
 		<Setter Property="Cursor"
 				Value="Hand" />
+
+		<Setter Property="Background"
+				Value="{StaticResource GradientButtonBrush}" />
+
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
-					<Border Background="{StaticResource GradientButtonBrush}"
+					<Border Background="{TemplateBinding Background}"
 							CornerRadius="10">
 						<ContentPresenter HorizontalAlignment="Center"
 										  VerticalAlignment="Center" />
@@ -75,13 +79,22 @@
 					 Value="True">
 				<Setter Property="Opacity"
 						Value="0.85" />
-
 			</Trigger>
 
 			<Trigger Property="IsPressed"
 					 Value="True">
 				<Setter Property="Opacity"
 						Value="0.6" />
+			</Trigger>
+
+			<Trigger Property="IsEnabled"
+					 Value="False">
+				<Setter Property="Background"
+						Value="#E2E8F0" />
+				<Setter Property="Foreground"
+						Value="#94A3B8" />
+				<Setter Property="Opacity"
+						Value="1" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
@@ -202,5 +215,85 @@
 						Value="#F4F7FE" />
 			</Trigger>
 		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="MiniAddButtonStyle"
+		   TargetType="Button">
+		<Setter Property="Width"
+				Value="28" />
+		<Setter Property="Height"
+				Value="28" />
+		<Setter Property="Background"
+				Value="#E0E7FF" />
+		<Setter Property="Foreground"
+				Value="#4318FF" />
+		<Setter Property="Cursor"
+				Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border"
+							Background="{TemplateBinding Background}"
+							CornerRadius="6">
+						<ContentPresenter HorizontalAlignment="Center"
+										  VerticalAlignment="Center" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver"
+								 Value="True">
+							<Setter TargetName="border"
+									Property="Background"
+									Value="#C7D2FE" />
+						</Trigger>
+						<Trigger Property="IsPressed"
+								 Value="True">
+							<Setter TargetName="border"
+									Property="Background"
+									Value="#A5B4FC" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="MiniDeleteButtonStyle"
+		   TargetType="Button">
+		<Setter Property="Width"
+				Value="28" />
+		<Setter Property="Height"
+				Value="28" />
+		<Setter Property="Background"
+				Value="#FEE2E2" />
+		<Setter Property="Foreground"
+				Value="#EF4444" />
+		<Setter Property="Cursor"
+				Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border"
+							Background="{TemplateBinding Background}"
+							CornerRadius="6">
+						<ContentPresenter HorizontalAlignment="Center"
+										  VerticalAlignment="Center" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver"
+								 Value="True">
+							<Setter TargetName="border"
+									Property="Background"
+									Value="#FECACA" />
+						</Trigger>
+						<Trigger Property="IsPressed"
+								 Value="True">
+							<Setter TargetName="border"
+									Property="Background"
+									Value="#FCA5A5" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</Style>
 </ResourceDictionary>

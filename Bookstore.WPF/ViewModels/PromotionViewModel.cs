@@ -1,6 +1,7 @@
 ﻿using Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Bookstore.Share.DTOs;
+using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
 using Bookstore.WPF.ViewModels.Base;
@@ -26,15 +27,15 @@ namespace Bookstore.WPF.ViewModels
             set { _pagedPromotions = value; OnPropertyChanged(); }
         }
 
-        private ObservableCollection<LoaiKhachHangItem> _listLoaiKhachHang = new ObservableCollection<LoaiKhachHangItem>();
-        public ObservableCollection<LoaiKhachHangItem> ListLoaiKhachHang
+        private ObservableCollection<CustomerTierResponse> _listLoaiKhachHang = new ObservableCollection<CustomerTierResponse>();
+        public ObservableCollection<CustomerTierResponse> ListLoaiKhachHang
         {
             get => _listLoaiKhachHang;
             set { _listLoaiKhachHang = value; OnPropertyChanged(); }
         }
 
-        private ObservableCollection<SachItem> _listSach = new ObservableCollection<SachItem>();
-        public ObservableCollection<SachItem> ListSach
+        private ObservableCollection<BookItem> _listSach = new ObservableCollection<BookItem>();
+        public ObservableCollection<BookItem> ListSach
         {
             get => _listSach;
             set { _listSach = value; OnPropertyChanged(); }
@@ -169,7 +170,7 @@ namespace Bookstore.WPF.ViewModels
             {
                 foreach (var c in customerTypes)
                 {
-                    ListLoaiKhachHang.Add(new LoaiKhachHangItem { Id = c.MaLoaiKhachHang, TenLoai = c.TenLoaiKhachHang });
+                    ListLoaiKhachHang.Add(new CustomerTierResponse { MaLoaiKhachHang = c.MaLoaiKhachHang, TenLoaiKhachHang = c.TenLoaiKhachHang });
                 }
             }
 
@@ -182,7 +183,7 @@ namespace Bookstore.WPF.ViewModels
                     {
                         MessageBox.Show($"Báo động: Cuốn sách '{b.TenSach}' bị mất mã ISBN từ Backend trả về! Kiểm tra lại SachDTO ngay!", "Lỗi mapping JSON");
                     }
-                    ListSach.Add(new SachItem { ISBN = b.ISBN, TenSach = b.TenSach });
+                    ListSach.Add(new BookItem { ISBN = b.ISBN, TenSach = b.TenSach });
                 }
             }
 
@@ -529,16 +530,5 @@ namespace Bookstore.WPF.ViewModels
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "Lỗi xử lý"); }
         }
-    }
-    public class LoaiKhachHangItem
-    {
-        public int Id { get; set; }
-        public string TenLoai { get; set; }
-    }
-
-    public class SachItem
-    {
-        public string ISBN { get; set; }
-        public string TenSach { get; set; }
     }
 }
