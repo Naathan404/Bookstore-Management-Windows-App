@@ -90,7 +90,7 @@
 
 						<DataGridTextColumn Header="Khách hàng"
 											Binding="{Binding TenKhachHang}"
-											Width="200"
+											Width="*"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
 											ElementStyle="{StaticResource CellName}" />
 
@@ -102,7 +102,7 @@
 
 						<DataGridTextColumn Header="Lý do thu"
 											Binding="{Binding LyDoThu}"
-											Width="*"
+											Width="150"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
 											ElementStyle="{StaticResource CellLeft}" />
 

@@ -352,13 +352,14 @@
 											ElementStyle="{StaticResource CellCode}"/>
 						
 						<!-- Cột Tên Sách-->
-						<DataGridTextColumn Header="Tên sách"
+                        <DataGridTextColumn Header="Tên sách"
 											Binding="{Binding TenSach}"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
 											ElementStyle="{StaticResource CellName}"
-											Width="200" />
+											Width="200" >
+                        </DataGridTextColumn>
 
-						<!-- Cột Tác Giả -->
+                        <!-- Cột Tác Giả -->
 						<DataGridTemplateColumn Header="Tác giả"
 												Width="150">
 							<DataGridTemplateColumn.CellTemplate>
@@ -391,7 +392,7 @@
 
 						<!-- Cột Thể Loại -->
 						<DataGridTemplateColumn Header="Thể loại"
-												Width="150"
+												Width="165"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
@@ -506,7 +507,7 @@
 						<!-- Cột Tồn Kho  -->
 						<DataGridTextColumn Header="Tồn kho"
 											Binding="{Binding SoLuongTonKho}"
-											Width="*"
+											Width="80"
 											HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTextColumn.ElementStyle>
 								<Style TargetType="TextBlock"
@@ -527,14 +528,14 @@
 						<!-- Cột Đã Bán  -->
 						<DataGridTextColumn Header="Đã bán"
 											Binding="{Binding TongDaBan}"
-											Width="*"
+											Width="70"
 											HeaderStyle="{StaticResource CenterHeaderStyle}"
 											ElementStyle="{StaticResource CellCenter}" />
 
 						<!-- Cột Giá Niêm Yết -->
 						<DataGridTextColumn Header="Giá Niêm Yết"
 											Binding="{Binding GiaNiemYet, StringFormat={}{0:N0} đ}"
-											Width="*"
+											Width="105"
 											HeaderStyle="{StaticResource RightHeaderStyle}"
 											ElementStyle="{StaticResource CellMoney}" />
 
