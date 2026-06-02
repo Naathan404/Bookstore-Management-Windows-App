@@ -29,7 +29,8 @@ namespace Bookstore.API.Controllers
                     MaNhaCungCap = p.MaNhaCungCap,
                     TenNhaCungCap = p.NhaCungCap.TenNhaCungCap,
                     TenNguoiTao = n.HoTen,
-                    TongTien = p.TongTien
+                    TongTien = p.TongTien,
+                    GhiChu = p.GhiChu
                 })
                 .OrderByDescending(p => p.NgayNhap)
                 .ToListAsync();
@@ -56,7 +57,8 @@ namespace Bookstore.API.Controllers
                 TenNhaCungCap = phieuNhap.NhaCungCap.TenNhaCungCap,
                 TenNguoiTao = nguoiDung?.HoTen ?? phieuNhap.NguoiTao,
                 TongTien = phieuNhap.TongTien,
-                ChiTietSach = new List<ImportOrderDetailItem>()
+                ChiTietSach = new List<ImportOrderDetailItem>(),
+                GhiChu = phieuNhap.GhiChu
             };
 
             // Lấy chi tiết sách, join qua PhienBanSach và Sach
@@ -94,7 +96,8 @@ namespace Bookstore.API.Controllers
                     NgayTao = DateTime.Now,
                     MaNhaCungCap = request.MaNhaCungCap,
                     NguoiTao = request.NguoiTao,
-                    TongTien = request.ChiTiet.Sum(c => c.SoLuong * c.DonGia)
+                    TongTien = request.ChiTiet.Sum(c => c.SoLuong * c.DonGia),
+                    GhiChu = request.GhiChu
                 };
 
                 _context.PhieuNhapSach.Add(phieuNhap);
@@ -168,6 +171,23 @@ namespace Bookstore.API.Controllers
             _context.PhieuNhapSach.Remove(phieu);
             await _context.SaveChangesAsync();
             return Ok(new { Message = "Đã xóa phiếu nhập và hoàn lại tồn kho." });
+        }
+
+        public class UpdateGhiChuRequest
+        {
+            public string GhiChu { get; set; }
+        }
+
+        [HttpPut("{id}/ghichu")]
+        public async Task<IActionResult> UpdateGhiChu(int id, [FromBody] UpdateGhiChuRequest request)
+        {
+            var phieu = await _context.PhieuNhapSach.FindAsync(id);
+            if (phieu == null) return NotFound("Không tìm thấy phiếu nhập.");
+
+            phieu.GhiChu = request.GhiChu;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Cập nhật ghi chú thành công!" });
         }
     }
 }

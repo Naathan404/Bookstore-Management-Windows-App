@@ -12,6 +12,9 @@ namespace Bookstore.Share.DTOResponses
         public string TenNhaCungCap { get; set; } = string.Empty;
         public string TenNguoiTao { get; set; } = string.Empty;
         public decimal TongTien { get; set; }
+        public string GhiChu { get; set; }
+
+        public string DisplayID => $"PN{NgayNhap:ddMMyy}{MaPhieuNhap:D3}";
     }
 
     public class ImportOrderDetailResponse : ImportOrderResponse
@@ -36,6 +39,7 @@ namespace Bookstore.Share.DTOResponses
         public int MaNhaCungCap { get; set; }
         [Required]
         public string NguoiTao { get; set; } = string.Empty;
+        public string GhiChu { get; set; } = string.Empty;
         public List<ImportOrderItemRequest> ChiTiet { get; set; } = new();
     }
 

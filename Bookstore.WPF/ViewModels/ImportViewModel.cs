@@ -64,18 +64,22 @@ namespace Bookstore.WPF.ViewModels
         private ObservableCollection<BookSearchResponse> _searchBookResults;
         public ObservableCollection<BookSearchResponse> SearchBookResults { get => _searchBookResults; set { _searchBookResults = value; OnPropertyChanged(); } }
 
+        private BookSearchResponse _selectedSearchBook;
+        public BookSearchResponse SelectedSearchBook { get => _selectedSearchBook; set { _selectedSearchBook = value; OnPropertyChanged(); } }
 
         public ICommand ClearFilterCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand ViewDetailCommand { get; }
         public ICommand DeleteImportOrderCommand { get; }
         public ICommand OpenAddImportCommand { get; }
+        public ICommand ClosePopupCommand { get; }
 
         // Lệnh trong Popup Add
         public ICommand SearchBookCommand { get; }
         public ICommand AddBookToImportCommand { get; }
         public ICommand RemoveImportDetailCommand { get; }
         public ICommand SaveImportOrderCommand { get; }
+        public ICommand UpdateGhiChuCommand { get; }
 
 
         public ImportViewModel()
@@ -88,16 +92,23 @@ namespace Bookstore.WPF.ViewModels
                 FilterToDate = null;
                 SelectedSupplier = null;
             });
-            RefreshCommand = new RelayCommand<object>(async _ => await LoadDataAsync());
-            ViewDetailCommand = new RelayCommand<ImportOrderResponse>(async p => await LoadDetailAsync(p));
+            RefreshCommand = new RelayCommand<object>(async (p) => await LoadDataAsync());
+            ViewDetailCommand = new RelayCommand<ImportOrderResponse>(async (p) => await LoadDetailAsync(p));
             DeleteImportOrderCommand = new RelayCommand<ImportOrderResponse>(ExecuteDelete);
-            OpenAddImportCommand = new RelayCommand<object>(_ => PrepareAddPopup());
+            OpenAddImportCommand = new RelayCommand<object>((p) => PrepareAddPopup());
+            ClosePopupCommand = new RelayCommand<object>((p) =>
+            {
+                IsDetailPopupOpen = false;
+                IsAddPopupOpen = false;
+            });
 
             // Commands Popup
-            SearchBookCommand = new RelayCommand<object>(async _ => await ExecuteSearchBook());
-            AddBookToImportCommand = new RelayCommand<object>(_ => ExecuteAddBook());
+            SearchBookCommand = new RelayCommand<object>(async (p) => await ExecuteSearchBook());
+            AddBookToImportCommand = new RelayCommand<object>((p) => ExecuteAddBook());
             RemoveImportDetailCommand = new RelayCommand<ImportOrderItemUI>(ExecuteRemoveBook);
-            SaveImportOrderCommand = new RelayCommand<object>(async _ => await ExecuteSaveImportOrder());
+            SaveImportOrderCommand = new RelayCommand<object>(async (p) => await ExecuteSaveImportOrder());
+            UpdateGhiChuCommand = new RelayCommand<object>(async (p) => await ExecuteUpdateGhiChu());
+
 
             _ = LoadSuppliersAsync();
             _ = LoadDataAsync();
@@ -127,11 +138,22 @@ namespace Bookstore.WPF.ViewModels
         private async Task LoadDetailAsync(ImportOrderResponse order)
         {
             if (order == null) return;
-            var data = await ApiClient.GetAsync<ImportOrderDetailResponse>($"api/PhieuNhap/{order.MaPhieuNhap}");
-            if (data != null)
+            try
             {
-                DetailImportOrder = data;
-                IsDetailPopupOpen = true;
+                var data = await ApiClient.GetAsync<ImportOrderDetailResponse>($"api/PhieuNhap/{order.MaPhieuNhap}");
+                if (data != null)
+                {
+                    DetailImportOrder = data;
+                    IsDetailPopupOpen = true;
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi kết nối hoặc không lấy được dữ liệu chi tiết từ máy chủ!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Có lỗi xảy ra: {ex.Message}", "Lỗi hệ thống", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -198,27 +220,50 @@ namespace Bookstore.WPF.ViewModels
             SearchBookResults = data != null ? new ObservableCollection<BookSearchResponse>(data) : new();
         }
 
+        private async Task ExecuteUpdateGhiChu()
+        {
+            if (DetailImportOrder == null) return;
+
+            var payload = new { GhiChu = DetailImportOrder.GhiChu };
+
+            bool success = await ApiClient.PutAndCheckSuccessAsync($"api/PhieuNhap/{DetailImportOrder.MaPhieuNhap}/ghichu", payload);
+
+            if (success)
+            {
+                MessageBox.Show("Cập nhật ghi chú phiếu nhập thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                await LoadDataAsync();
+            }
+            else
+            {
+                MessageBox.Show("Cập nhật ghi chú thất bại! Vui lòng kiểm tra lại kết nối.", "Lỗi hệ thống", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void ExecuteAddBook()
         {
-            var selectedBook = SearchBookResults?.FirstOrDefault();
-            if (selectedBook != null)
+            if (SelectedSearchBook == null)
             {
-                if (NewImportOrder.ChiTiet.Any(x => x.ISBN == selectedBook.ISBN))
-                {
-                    MessageBox.Show("Sách này đã có trong danh sách nhập!"); return;
-                }
-
-                NewImportOrder.ChiTiet.Add(new ImportOrderItemUI
-                {
-                    STT = NewImportOrder.ChiTiet.Count + 1,
-                    ISBN = selectedBook.ISBN,
-                    TenSach = selectedBook.TenSach,
-                    TacGia = selectedBook.TacGia,
-                    SoLuong = 1,
-                    DonGia = 0
-                });
-                NewImportOrder.OnDetailChanged();
+                MessageBox.Show("Vui lòng chọn một cuốn sách từ kết quả tìm kiếm trước khi thêm!", "Nhắc nhở", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
+
+            if (NewImportOrder.ChiTiet.Any(x => x.ISBN == SelectedSearchBook.ISBN))
+            {
+                MessageBox.Show("Sách này đã có trong danh sách nhập! Vui lòng chỉnh sửa số lượng ở bảng bên dưới.", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            NewImportOrder.ChiTiet.Add(new ImportOrderItemUI
+            {
+                STT = NewImportOrder.ChiTiet.Count + 1,
+                ISBN = SelectedSearchBook.ISBN,
+                TenSach = SelectedSearchBook.TenSach,
+                TacGia = SelectedSearchBook.TacGia,
+                SoLuong = 1, 
+                DonGia = 0,
+                TargetValueChanged = () => NewImportOrder.OnDetailChanged()
+            });
+            NewImportOrder.OnDetailChanged();
         }
 
         private void ExecuteRemoveBook(ImportOrderItemUI item)
@@ -235,17 +280,34 @@ namespace Bookstore.WPF.ViewModels
         {
             if (NewImportOrder.SelectedSupplier == null)
             {
-                MessageBox.Show("Vui lòng chọn nhà cung cấp!"); return;
+                MessageBox.Show("Vui lòng chọn nhà cung cấp!", "Lỗi dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
             if (NewImportOrder.ChiTiet.Count == 0)
             {
-                MessageBox.Show("Vui lòng thêm sách cần nhập!"); return;
+                MessageBox.Show("Phiếu nhập phải có ít nhất 1 cuốn sách!", "Lỗi dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            foreach (var item in NewImportOrder.ChiTiet)
+            {
+                if (item.SoLuong <= 0)
+                {
+                    MessageBox.Show($"Sách '{item.TenSach}' có số lượng không hợp lệ. Phải lớn hơn 0!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                if (item.DonGia < 0)
+                {
+                    MessageBox.Show($"Sách '{item.TenSach}' có đơn giá không hợp lệ. Không thể là số âm!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
             }
 
             var request = new ImportOrderRequest
             {
                 MaNhaCungCap = NewImportOrder.SelectedSupplier.MaNhaCungCap,
                 NguoiTao = AppState.CurrentUser?.Username ?? "admin",
+                GhiChu = NewImportOrder.GhiChu,
                 ChiTiet = NewImportOrder.ChiTiet.Select(c => new ImportOrderItemRequest
                 {
                     ISBN = c.ISBN,
@@ -297,12 +359,15 @@ namespace Bookstore.WPF.ViewModels
         public string ISBN { get; set; } = "";
         public string TenSach { get; set; } = "";
         public string TacGia { get; set; } = "";
+        public string GhiChu { get; set; } = "";
+
+        public Action TargetValueChanged { get; set; }
 
         private int _soLuong;
-        public int SoLuong { get => _soLuong; set { _soLuong = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); } }
+        public int SoLuong { get => _soLuong; set { _soLuong = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); TargetValueChanged?.Invoke(); } }
 
         private decimal _donGia;
-        public decimal DonGia { get => _donGia; set { _donGia = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); } }
+        public decimal DonGia { get => _donGia; set { _donGia = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); TargetValueChanged?.Invoke(); } }
 
         public decimal ThanhTien => SoLuong * DonGia;
     }
