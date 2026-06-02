@@ -24,6 +24,7 @@
 										  AddIcon="Plus"
 										  AddCommand="{Binding OpenAddPopupCommand}"
 										  AddCommandParameter="{Binding}"
+										  
 										  ShowExportExcel="True"
 										  ExportExcelCommand="{Binding ExportExcelCommand}"
 										  ExportExcelCommandParameter="{Binding}" />

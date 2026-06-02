@@ -147,11 +147,13 @@
 
 		<TextBlock Text="{Binding HelperText, ElementName=Root}"
 				   FontSize="11"
-				   Margin="4,4,0,0">
+				   Margin="4,4,0,0"
+				   MinHeight="16">
 			<TextBlock.Style>
 				<Style TargetType="TextBlock">
 					<Setter Property="Visibility"
-							Value="Collapsed" />
+							Value="Hidden" />
+
 					<Style.Triggers>
 						<DataTrigger Binding="{Binding State, ElementName=Root}"
 									 Value="{x:Static local:FieldState.Error}">
@@ -160,6 +162,7 @@
 							<Setter Property="Foreground"
 									Value="{StaticResource DangerColor}" />
 						</DataTrigger>
+
 						<DataTrigger Binding="{Binding State, ElementName=Root}"
 									 Value="{x:Static local:FieldState.Warning}">
 							<Setter Property="Visibility"
@@ -167,6 +170,7 @@
 							<Setter Property="Foreground"
 									Value="{StaticResource WarningColor}" />
 						</DataTrigger>
+
 						<DataTrigger Binding="{Binding State, ElementName=Root}"
 									 Value="{x:Static local:FieldState.Success}">
 							<Setter Property="Visibility"

@@ -4,7 +4,9 @@ using Bookstore.Share.DTOs;
 using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.ViewModels.Base;
+using Bookstore.WPF.Views.Components;
 using MaterialDesignThemes.Wpf;
+using OfficeOpenXml.Sorting;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -90,7 +92,40 @@ namespace Bookstore.WPF.ViewModels
         public string SdtKhachHang
         {
             get => _sdtKhachHang;
-            set { _sdtKhachHang = value; OnPropertyChanged(); }
+            set
+            {
+                if (_sdtKhachHang != value)
+                {
+                    _sdtKhachHang = value;
+                    OnPropertyChanged();
+
+                    if (SdtState != FieldState.Normal && SdtState != FieldState.Success)
+                    {
+                        SdtState = FieldState.Normal;
+                        SdtHelperText = string.Empty;
+                    }
+                }
+            }
+        }
+        private FieldState _sdtState;
+        public FieldState SdtState
+        {
+            get => _sdtState;
+            set
+            {
+                _sdtState = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _sdtHelperText;
+        public string SdtHelperText
+        {
+            get => _sdtHelperText;
+            set
+            {
+                _sdtHelperText = value;
+                OnPropertyChanged();
+            }
         }
 
         private CustomerResponse _khachHangDuocChon;
@@ -110,9 +145,7 @@ namespace Bookstore.WPF.ViewModels
                 TinhToanHoaDonToanDien();
             }
         }
-
-        // Danh sách khách hàng dùng để đổ vào DataGrid/ListView bên trong Popup chọn khách
-        public ObservableCollection<CustomerResponse> DanhSachKhachHangPopup { get; set; } = new();
+        public ObservableCollection<CustomerResponse> DanhSachKhachHang { get; set; } = new();
 
         #endregion
 
@@ -232,7 +265,7 @@ namespace Bookstore.WPF.ViewModels
 
         #region COMMANDS & CONSTRUCTOR
         public ICommand MoPopupThanhToanCommand { get; set; }
-        public ICommand MoPopupChonKhachHangCommand { get; set; } // THÊM: Mở popup chọn khách
+        public ICommand MoPopupChonKhachHangCommand { get; set; }
         public ICommand CloseDialogCommand { get; set; }
         public ICommand XemChiTietSachCommand { get; set; }
         public ICommand ChonSachCommand { get; set; }
@@ -245,6 +278,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand HuyBoGiaoDichCommand { get; set; }
         public ICommand XoaBoLocCommand { get; set; }
         public ICommand GopUuDaiCommand { get; set; } // THÊM: Xóa ưu đãi khỏi bill
+        public ICommand TimKhachHangTheoSdtCommand { get; set; }
 
         public SaleViewModel()
         {
@@ -276,6 +310,10 @@ namespace Bookstore.WPF.ViewModels
                 }
                 TinhToanHoaDonToanDien();
             });
+            #endregion
+
+            #region CHỌN KHÁCH HÀNG
+            TimKhachHangTheoSdtCommand = new RelayCommand(async () => await ThucHienTimKhachHangAsync());
             #endregion
 
             #region GIỎ HÀNG
@@ -355,8 +393,6 @@ namespace Bookstore.WPF.ViewModels
                 }
             });
 
-            MoPopupChonKhachHangCommand = new RelayCommand<object>((p) => IsSelectCustomerOpen = true);
-
             MoPopupThanhToanCommand = new RelayCommand<object>(
                 (p) => { IsConfirmPaymentOpen = true; },
                 (p) => CartItems.Any() // Chỉ cần giỏ có đồ là cho mở Popup thanh toán (Khách hàng đã chọn bên ngoài rồi)
@@ -398,12 +434,12 @@ namespace Bookstore.WPF.ViewModels
             try
             {
                 // 1. Tải danh sách khách hàng cho Popup
-                var customers = await ApiClient.GetAsync<List<CustomerResponse>>("api/KhachHang");
-                if (customers != null && customers.Count > 0)
-                {
-                    DanhSachKhachHangPopup.Clear();
-                    foreach (var c in customers) DanhSachKhachHangPopup.Add(c);
-                }
+                //var customers = await ApiClient.GetAsync<List<CustomerResponse>>("api/KhachHang");
+                //if (customers != null && customers.Count > 0)
+                //{
+                //    DanhSachKhachHang.Clear();
+                //    foreach (var c in customers) DanhSachKhachHang.Add(c);
+                //}
 
                 // 2. Tải toàn bộ Ưu đãi (Khuyến mãi) đang có
                 var promos = await ApiClient.GetAsync<List<PromotionDTO>>("api/UuDai");
@@ -489,6 +525,56 @@ namespace Bookstore.WPF.ViewModels
                 SoLuongTonKho = book.BookData.SoLuongTonKho,
                 SoLuongMua = soLuong
             });
+        }
+
+        private async Task ThucHienTimKhachHangAsync()
+        {
+            string sdt = SdtKhachHang?.Trim();
+
+            // 1. Validate dữ liệu đầu vào trực tiếp trên Component
+            if (string.IsNullOrWhiteSpace(sdt))
+            {
+                SdtState = FieldState.Error;
+                SdtHelperText = "Vui lòng nhập số điện thoại trước khi tìm kiếm!";
+                return;
+            }
+
+            // 2. Bắt đầu gọi API
+            SdtState = FieldState.Warning;
+            SdtHelperText = "Đang tra cứu...";
+
+            try
+            {
+                // Gọi API tìm đúng cái số điện thoại đó
+                string url = $"api/KhachHang?sdt={Uri.EscapeDataString(sdt)}";
+                var result = await ApiClient.GetAsync<List<CustomerResponse>>(url);
+
+                DanhSachKhachHang.Clear();
+
+                if (result != null && result.Any())
+                {
+                    // Nạp kết quả vào ComboBox
+                    foreach (var customer in result) DanhSachKhachHang.Add(customer);
+
+                    // Bắt được người dùng -> Đẩy thẳng lên ComboBox và báo xanh lá cây
+                    KhachHangDuocChon = result.First();
+                    SdtState = FieldState.Success;
+                    SdtHelperText = "Đã tìm thấy thông tin khách hàng!";
+                }
+                else
+                {
+                    // Không tìm thấy -> Báo đỏ
+                    SdtState = FieldState.Error;
+                    SdtHelperText = "Không có khách hàng nào khớp với số này.";
+                    KhachHangDuocChon = null;
+                    TenKhachHang = "Khách hàng mới / Chưa đăng ký";
+                }
+            }
+            catch (Exception)
+            {
+                SdtState = FieldState.Error;
+                SdtHelperText = "Lỗi kết nối cơ sở dữ liệu.";
+            }
         }
 
         private void TinhToanHoaDonToanDien()

@@ -424,18 +424,18 @@
 																 HintText="Nhập số điện thoại..."
 																 IconKind="Phone"
 																 IsRequired="True"
-																 TextValue="{Binding SdtKhachHang, UpdateSourceTrigger=PropertyChanged}" />
-
+																 TextValue="{Binding SdtKhachHang, UpdateSourceTrigger=PropertyChanged}"
+																 State="{Binding SdtState}"
+																 HelperText="{Binding SdtHelperText}"
+																 Margin="0,0,8,0" />
 
 									<Button Grid.Column="1"
 											Style="{StaticResource OutlineButtonStyle}"
 											Width="42"
 											Height="42"
-											Margin="8,0,0,0"
-											ToolTip="Chọn từ danh sách"
 											VerticalAlignment="Bottom"
-											Command="{Binding MoPopupChonKhachHangCommand}"
-											CommandParameter="{Binding}">
+											ToolTip="Tìm khách hàng theo SĐT"
+											Command="{Binding TimKhachHangTheoSdtCommand}">
 										<materialDesign:PackIcon Kind="Magnify"
 																 Width="20"
 																 Height="20" />
@@ -443,9 +443,9 @@
 								</Grid>
 
 								<components:FormComboBoxControl Title="Tên khách hàng"
-																HintText="Chọn khách hàng..."
+																HintText="Chưa có thông tin khách hàng..."
 																IconKind="Person"
-																ItemsSource="{Binding DanhSachKhachHangPopup}"
+																ItemsSource="{Binding DanhSachKhachHang}"
 																SelectedItem="{Binding KhachHangDuocChon, Mode=TwoWay}"
 																DisplayMemberPath="TenKhachHang"
 																IsEditable="False" />
