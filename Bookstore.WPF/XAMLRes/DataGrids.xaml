@@ -4,19 +4,12 @@
 
 	<!--BASE DAtAGRID-->
 	<Style x:Key="DataGridCardStyle"
-		   TargetType="Border">
+		   TargetType="Border"
+		   BasedOn="{StaticResource CardStyle}">
 		<Setter Property="Padding"
 				Value="20" />
-		<Setter Property="CornerRadius"
-				Value="20" />
-		<Setter Property="Background"
-				Value="White" />
-		<Setter Property="BorderBrush"
-				Value="#E2E8F0" />
-		<Setter Property="BorderThickness"
-				Value="1" />
 		<Setter Property="Margin"
-				Value="0,0,0,0" />
+				Value="0,0,0,8" />
 	</Style>
 
 	<Style TargetType="DataGrid"
