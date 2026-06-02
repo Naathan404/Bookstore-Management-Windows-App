@@ -129,25 +129,13 @@ namespace Bookstore.WPF.ViewModels
             set { _sachDuocChonXemChiTiet = value; OnPropertyChanged(); }
         }
 
-        public List<string> ListKieuTimKiem { get; set; } = new List<string> { "Tên sách", "Mã ISBN" };
+        public ObservableCollection<string> ListKieuTimKiem { get; set; } = new ObservableCollection<string> { "Tên sách", "Mã ISBN" };
 
-        private object _kieuTimKiemSach;
+        private object _kieuTimKiemSach = "Tên sách";
         public object KieuTimKiemSach
         {
             get => _kieuTimKiemSach;
             set { _kieuTimKiemSach = value; OnPropertyChanged(); TrangHienTai = 1; ApplyFilterAndPagination(); }
-        }
-
-        public ObservableCollection<string> DanhSachKhoangGia { get; set; } = new ObservableCollection<string>
-{
-    "Tất cả", "Dưới 50.000 đ", "50.000 - 150.000 đ", "150.000 - 300.000 đ", "Trên 300.000 đ"
-};
-
-        private object _locGiaSach = "Tất cả";
-        public object LocGiaSach
-        {
-            get => _locGiaSach;
-            set { if (_locGiaSach != value) { _locGiaSach = value; OnPropertyChanged(); TrangHienTai = 1; ApplyFilterAndPagination(); } }
         }
 
         // Danh sách số trang cho ComboBox nhảy trang nhanh nếu UI có sử dụng
@@ -207,14 +195,6 @@ namespace Bookstore.WPF.ViewModels
 
         protected override void ApplyFilterAndPagination() //TODO: API Search
         {
-            //if (string.IsNullOrWhiteSpace(SearchKeyword))
-            //{
-            //    DisplayBooks.Clear();
-            //    TongBanGhi = 0;
-            //    TongSoTrang = 1;
-            //    return;
-            //}
-
             var filtered = _allBooks.AsEnumerable();
             string query = SearchKeyword.ToLower().Trim();
             string kieuTimKiem = KieuTimKiemSach?.ToString() ?? "Tên sách";
@@ -393,7 +373,6 @@ namespace Bookstore.WPF.ViewModels
             {
                 SearchKeyword = string.Empty;
                 KieuTimKiemSach = "Tên sách";
-                LocGiaSach = "Tất cả";
                 TrangHienTai = 1;
                 ApplyFilterAndPagination();
             });

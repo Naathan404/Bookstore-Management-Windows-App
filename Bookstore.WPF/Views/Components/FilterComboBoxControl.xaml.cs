@@ -1,5 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System.Collections;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,7 +30,7 @@ namespace Bookstore.WPF.Views.Components
         public static readonly DependencyProperty HintTextProperty =
             DependencyProperty.Register("HintText", typeof(string), typeof(FilterComboBoxControl), new PropertyMetadata("Chọn..."));
 
-        // 2. Nguồn dữ liệu (ItemsSource) - ĐÃ THÊM LẮNG NGHE SỰ KIỆN NẠP DATA
+        // 2. Nguồn dữ liệu (ItemsSource) - BẮT SỰ KIỆN NẠP DATA THÔNG MINH
         public IEnumerable ItemsSource
         {
             get { return (IEnumerable)GetValue(ItemsSourceProperty); }
@@ -37,22 +38,47 @@ namespace Bookstore.WPF.Views.Components
         }
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(FilterComboBoxControl),
-                new PropertyMetadata(null, OnItemsSourceChanged)); // Thêm OnItemsSourceChanged vào đây
+                new PropertyMetadata(null, OnItemsSourceChanged));
 
-        // HÀM TỰ ĐỘNG CHỌN PHẦN TỬ ĐẦU TIÊN KHI CÓ DỮ LIỆU
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is FilterComboBoxControl control && e.NewValue is IEnumerable enumerable)
+            if (d is FilterComboBoxControl control)
             {
-                // Nếu hiện tại chưa có lựa chọn nào (hoặc bị dìm về -1 do khởi tạo rỗng)
-                if (control.SelectedIndex == -1)
+                // Hủy lắng nghe danh sách cũ để chống tràn RAM
+                if (e.OldValue is INotifyCollectionChanged oldCollection)
                 {
-                    // Kiểm tra xem danh sách mới nạp vào có ít nhất 1 phần tử không
-                    var enumerator = enumerable.GetEnumerator();
-                    if (enumerator.MoveNext())
-                    {
-                        control.SelectedIndex = 0; // Chọn ngay vị trí đầu tiên!
-                    }
+                    oldCollection.CollectionChanged -= control.OnCollectionChanged;
+                }
+
+                // Bắt đầu lắng nghe sự thay đổi của danh sách mới (khi ViewModel gọi .Add hoặc .Clear)
+                if (e.NewValue is INotifyCollectionChanged newCollection)
+                {
+                    newCollection.CollectionChanged += control.OnCollectionChanged;
+                }
+
+                // Chạy thử luôn phòng trường hợp danh sách đã có sẵn data từ đầu
+                control.AutoSelectFirstItem();
+            }
+        }
+
+        // Hàm này sẽ tự động chạy mỗi khi API đổ data xong và ViewModel gọi .Add()
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            AutoSelectFirstItem();
+        }
+
+        // CHÌA KHÓA: TỰ ĐỘNG CHỌN OPTION ĐẦU TIÊN
+        private void AutoSelectFirstItem()
+        {
+            // Tránh việc ghi đè nếu người dùng đã cố tình chọn một item khác
+            if (ItemsSource != null && (SelectedItem == null || SelectedIndex == -1))
+            {
+                var enumerator = ItemsSource.GetEnumerator();
+                if (enumerator.MoveNext())
+                {
+                    // Gán cả 2 thuộc tính để đảm bảo Binding 2 chiều bắn tín hiệu chuẩn về ViewModel
+                    SelectedItem = enumerator.Current;
+                    SelectedIndex = 0;
                 }
             }
         }
@@ -76,7 +102,6 @@ namespace Bookstore.WPF.Views.Components
             DependencyProperty.Register("SelectedValue", typeof(object), typeof(FilterComboBoxControl),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        // Hứng theo số (0, 1, 2...)
         public int SelectedIndex
         {
             get { return (int)GetValue(SelectedIndexProperty); }
@@ -84,7 +109,7 @@ namespace Bookstore.WPF.Views.Components
         }
         public static readonly DependencyProperty SelectedIndexProperty =
             DependencyProperty.Register("SelectedIndex", typeof(int), typeof(FilterComboBoxControl),
-                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(-1, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)); // Đổi mặc định về -1 cho an toàn
 
         // 4. Các đường dẫn (Path)
         public string SelectedValuePath
