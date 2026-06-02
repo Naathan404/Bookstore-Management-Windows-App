@@ -79,34 +79,6 @@
 		</Style.Triggers>
 	</Style>
 
-
-
-	<Style TargetType="ScrollBar"
-		   BasedOn="{StaticResource {x:Type ScrollBar}}">
-		<Style.Triggers>
-			<Trigger Property="Orientation"
-					 Value="Vertical">
-				<Setter Property="LayoutTransform">
-					<Setter.Value>
-						<ScaleTransform ScaleX="0.4" />
-					</Setter.Value>
-				</Setter>
-				<Setter Property="Margin"
-						Value="0,0,2,0" />
-			</Trigger>
-			<Trigger Property="Orientation"
-					 Value="Horizontal">
-				<Setter Property="LayoutTransform">
-					<Setter.Value>
-						<ScaleTransform ScaleY="0.4" />
-					</Setter.Value>
-				</Setter>
-				<Setter Property="Margin"
-						Value="0,0,0,2" />
-			</Trigger>
-		</Style.Triggers>
-	</Style>
-
 	<Style x:Key="TabItemStyle"
 		   TargetType="TabItem"
 		   BasedOn="{StaticResource MaterialDesignTabItem}">
@@ -139,5 +111,31 @@
 			<SolidColorBrush x:Key="PrimaryHueMidBrush"
 							 Color="#4318FF" />
 		</Style.Resources>
+	</Style>
+
+	<Style TargetType="ScrollBar"
+		   BasedOn="{StaticResource {x:Type ScrollBar}}">
+		<Style.Triggers>
+			<Trigger Property="Orientation"
+					 Value="Vertical">
+				<Setter Property="LayoutTransform">
+					<Setter.Value>
+						<ScaleTransform ScaleX="0.4" />
+					</Setter.Value>
+				</Setter>
+				<Setter Property="Margin"
+						Value="8,0,0,0" />
+			</Trigger>
+			<Trigger Property="Orientation"
+					 Value="Horizontal">
+				<Setter Property="LayoutTransform">
+					<Setter.Value>
+						<ScaleTransform ScaleY="0.4" />
+					</Setter.Value>
+				</Setter>
+				<Setter Property="Margin"
+						Value="0,0,0,2" />
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 </ResourceDictionary>

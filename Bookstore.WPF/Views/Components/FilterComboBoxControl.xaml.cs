@@ -11,6 +11,7 @@ namespace Bookstore.WPF.Views.Components
         public FilterComboBoxControl()
         {
             InitializeComponent();
+            this.Loaded += (s, e) => AutoSelectFirstItem();
         }
 
         // 1. Icon và HintText

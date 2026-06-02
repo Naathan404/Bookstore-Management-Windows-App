@@ -6,6 +6,19 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d">
+	<UserControl.Resources>
+		<Style x:Key="CardHeader"
+			   TargetType="TextBlock">
+			<Setter Property="FontSize"
+					Value="16" />
+			<Setter Property="FontWeight"
+					Value="Bold" />
+			<Setter Property="Foreground"
+					Value="{StaticResource PrimaryDarkColor}" />
+			<Setter Property="VerticalAlignment"
+					Value="Center" />
+		</Style>
+	</UserControl.Resources>
 
 	<Grid>
 		<Grid Margin="{StaticResource MainViewMargin}">
@@ -22,6 +35,7 @@
 			<Grid Grid.Row="1">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="1.5*" />
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
@@ -164,9 +178,7 @@
 							</ItemsControl>
 						</ScrollViewer>
 					</Border>
-
 					
-
 					<components:PaginationControl Grid.Row="2"
 												  CurrentPage="{Binding TrangHienTai}"
 												  TotalPages="{Binding TongSoTrang}"
@@ -174,22 +186,27 @@
 												  PaginationCommand="{Binding PhanTrangCommand}" />
 				</Grid>
 
-				<Grid Name="Invoice"
-					  Grid.Column="1">
+				<Grid Grid.Column="1"
+					  Margin="0,0,8,0">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="200*" />
+						<RowDefinition Height="*" />
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
-					<Border Grid.Row="0"
+					<!-- ================= THẺ 1: GIỎ HÀNG ================= -->
+					<Border x:Name="Cart"
+							Grid.Row="0"
 							Style="{StaticResource DataGridCardStyle}"
 							Margin="0,0,0,8">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="*" />
+								<RowDefinition Height="Auto" />
+								<!-- Dòng mới chứa Tạm tính & Số lượng -->
 							</Grid.RowDefinitions>
 
+							<!-- Header Giỏ hàng -->
 							<StackPanel x:Name="GioHangHienTai"
 										Grid.Row="0"
 										Orientation="Horizontal"
@@ -200,25 +217,13 @@
 														 Foreground="#4318FF"
 														 VerticalAlignment="Center"
 														 Margin="0,0,8,0" />
-								<TextBlock Text="Giỏ Hàng Hiện Tại"
-										   FontSize="16"
-										   FontWeight="Bold"
-										   Foreground="#2B3674"
-										   VerticalAlignment="Center" />
-								<Border Background="#F4F7FE"
-										CornerRadius="8"
-										Padding="6,2"
-										Margin="8,0,0,0"
-										VerticalAlignment="Center">
-									<TextBlock Text="{Binding CartItems.Count, StringFormat='{}{0}'}"
-											   FontSize="11"
-											   FontWeight="Bold"
-											   Foreground="#4318FF" />
-								</Border>
+								<TextBlock Text="Giỏ Hàng"
+										   Style="{StaticResource CardHeader}" />
 							</StackPanel>
 
+							<!-- Danh sách sản phẩm -->
 							<ScrollViewer Grid.Row="1"
-										  VerticalScrollBarVisibility="Hidden"
+										  VerticalScrollBarVisibility="Auto"
 										  HorizontalScrollBarVisibility="Disabled">
 								<ItemsControl ItemsSource="{Binding CartItems}">
 									<ItemsControl.ItemTemplate>
@@ -269,11 +274,14 @@
 														</StackPanel>
 													</StackPanel>
 
-													<StackPanel Grid.Column="1"
+													<StackPanel x:Name="SoLuong"
+																Grid.Column="1"
 																Orientation="Horizontal"
-																VerticalAlignment="Center">
+																VerticalAlignment="Top">
 														<Button x:Name="btnMinus"
 																Style="{StaticResource MiniAddButtonStyle}"
+																Width="20"
+																Height="20"
 																ToolTip="Giảm số lượng"
 																Command="{Binding DataContext.GiamSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																CommandParameter="{Binding}">
@@ -281,17 +289,20 @@
 																					 Width="16"
 																					 Height="16" />
 														</Button>
-
-														<TextBlock Text="{Binding SoLuongMua}"
-																   FontSize="14"
-																   FontWeight="Bold"
-																   Foreground="{StaticResource PrimaryDarkColor}"
-																   Width="32"
-																   TextAlignment="Center"
-																   VerticalAlignment="Center" />
-
+														<TextBox Text="{Binding SoLuongMua, UpdateSourceTrigger=PropertyChanged}"
+																 FontWeight="Medium"
+																 Foreground="{StaticResource PrimaryDarkColor}"
+																 Width="24"
+																 TextAlignment="Center"
+																 VerticalAlignment="Center"
+																 BorderThickness="0"
+																 Background="Transparent"
+																 SelectionBrush="{StaticResource TextLightColor}"
+																 materialDesign:TextFieldAssist.DecorationVisibility="Collapsed" />
 														<Button x:Name="btnPlus"
 																Style="{StaticResource MiniAddButtonStyle}"
+																Width="20"
+																Height="20"
 																ToolTip="Tăng số lượng"
 																Command="{Binding DataContext.TangSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																CommandParameter="{Binding}">
@@ -300,20 +311,8 @@
 																					 Height="16" />
 														</Button>
 													</StackPanel>
-
-													<Button Grid.Column="2"
-															Margin="12,0,0,0"
-															Style="{StaticResource MiniDeleteButtonStyle}"
-															ToolTip="Xóa khỏi giỏ hàng"
-															Command="{Binding DataContext.XoaKhoiGioHangCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-															CommandParameter="{Binding}">
-														<materialDesign:PackIcon Kind="DeleteOutline"
-																				 Width="16"
-																				 Height="16" />
-													</Button>
 												</Grid>
 											</Border>
-
 											<DataTemplate.Triggers>
 												<DataTrigger Binding="{Binding IsGift}"
 															 Value="True">
@@ -329,13 +328,56 @@
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>
 							</ScrollViewer>
+
+							<!-- TỔNG KẾT ĐÁY GIỎ HÀNG -->
+							<Border Grid.Row="2"
+									Margin="0,8,0,0"
+									Padding="0,12,0,0"
+									BorderBrush="#E2E8F0"
+									BorderThickness="0,1,0,0">
+
+								<StackPanel Orientation="Vertical">
+
+									<Grid Margin="0,0,0,8">
+										<TextBlock Text="Số sản phẩm:"
+												   FontSize="14"
+												   Foreground="{StaticResource TextLightColor}"
+												   HorizontalAlignment="Left"
+												   VerticalAlignment="Center" />
+										<TextBlock Text="{Binding CartItems.Count}"
+												   FontSize="14"
+												   FontWeight="Bold"
+												   Foreground="{StaticResource PrimaryColor}"
+												   HorizontalAlignment="Right"
+												   VerticalAlignment="Center" />
+									</Grid>
+
+									<Grid>
+										<TextBlock Text="Tạm tính:"
+												   FontSize="14"
+												   Foreground="{StaticResource TextLightColor}"
+												   HorizontalAlignment="Left"
+												   VerticalAlignment="Center" />
+										<TextBlock Text="{Binding TamTinh, StringFormat='{}{0:N0} đ'}"
+												   FontSize="14"
+												   FontWeight="Bold"
+												   Foreground="{StaticResource WarningColor}"
+												   HorizontalAlignment="Right"
+												   VerticalAlignment="Center" />
+									</Grid>
+
+								</StackPanel>
+							</Border>
 						</Grid>
 					</Border>
 
-					<Border Grid.Row="1"
-							Style="{StaticResource DataGridCardStyle}">
+					<!-- ================= THẺ 2: KHÁCH HÀNG ================= -->
+					<Border x:Name="Customer"
+							Grid.Row="1"
+							Style="{StaticResource DataGridCardStyle}"
+							Margin="0">
 						<StackPanel>
-
+							<!-- Header Khách Hàng -->
 							<StackPanel Orientation="Horizontal"
 										Margin="0,0,0,12">
 								<materialDesign:PackIcon Kind="AccountOutline"
@@ -345,72 +387,80 @@
 														 VerticalAlignment="Center"
 														 Margin="0,0,8,0" />
 								<TextBlock Text="Thông tin khách hàng"
-										   FontSize="16"
-										   FontWeight="Bold"
-										   Foreground="#2B3674"
-										   VerticalAlignment="Center" />
+										   Style="{StaticResource CardHeader}" />
 							</StackPanel>
 
-							<Grid Margin="0,0,0,8">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
+							<!-- Lựa chọn Khách vãng lai -->
+							<components:TickComponent Text="Khách vãng lai"
+													  IsChecked="{Binding IsKhachVangLai, Mode=TwoWay}"
+													  Foreground="#2B3674"
+													  Margin="-4,0,0,0" />
 
-								<components:TickComponent Grid.Column="0"
-														  Text="Khách vãng lai"
-														  IsChecked="{Binding IsKhachVangLai, Mode=TwoWay}"
-														  FontSize="13"
-														  FontWeight="Medium"
-														  Foreground="#2B3674"
-														  VerticalAlignment="Center" />
-
-								<Button Grid.Column="1"
-										Content="CHỌN KHÁCH"
-										Style="{StaticResource MaterialDesignOutlinedButton}"
-										Foreground="{StaticResource PrimaryColor}"
-										BorderBrush="{StaticResource PrimaryColor}"
-										Height="28"
-										Padding="12,0"
-										Command="{Binding MoPopupChonKhachHangCommand}" />
-							</Grid>
-
-							<Border Background="#F8FAFC"
-									CornerRadius="8"
-									Padding="10"
-									Margin="0,0,0,16"
-									BorderBrush="#E2E8F0"
-									BorderThickness="1">
-								<StackPanel>
-									<TextBlock Text="{Binding TenKhachHang}"
-											   FontWeight="Bold"
-											   Foreground="#2B3674"
-											   FontSize="14" />
-									<TextBlock Text="{Binding SdtKhachHang}"
-											   Foreground="#707EAE"
-											   FontSize="12"
-											   Margin="0,4,0,0">
-										<TextBlock.Style>
-											<Style TargetType="TextBlock">
+							<!-- FORM NHẬP THÔNG TIN (Sẽ tự động ẩn đi nếu là Khách vãng lai) -->
+							<StackPanel>
+								<StackPanel.Style>
+									<Style TargetType="StackPanel">
+										<Setter Property="Visibility"
+												Value="Visible" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding IsKhachVangLai}"
+														 Value="True">
 												<Setter Property="Visibility"
-														Value="Visible" />
-												<Style.Triggers>
-													<DataTrigger Binding="{Binding SdtKhachHang}"
-																 Value="">
-														<Setter Property="Visibility"
-																Value="Collapsed" />
-													</DataTrigger>
-												</Style.Triggers>
-											</Style>
-										</TextBlock.Style>
-									</TextBlock>
-								</StackPanel>
-							</Border>
+														Value="Collapsed" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</StackPanel.Style>
 
-							<Border BorderBrush="#F4F7FE"
-									BorderThickness="0,1,0,0"
-									Margin="0,0,0,16" />
+								<!-- Dòng 1: Tên khách hàng & Nút Tìm -->
+								<Grid Margin="0,12,0,12">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
 
+									<components:FilterInputControl Grid.Column="0"
+																   Margin="0,0,8,0"
+																   IconKind="Phone"
+																   HintText="Số điện thoại..."
+																   TextValue="{Binding SdtKhachHang}" />
+
+
+									<Button Grid.Column="1"
+											Style="{StaticResource OutlineButtonStyle}"
+											Width="40"
+											Height="40"
+											ToolTip="Chọn từ danh sách"
+											Command="{Binding MoPopupChonKhachHangCommand}"
+											CommandParameter="{Binding}">
+										<materialDesign:PackIcon Kind="Magnify"
+																 Width="20"
+																 Height="20" />
+									</Button>
+								</Grid>
+
+								<components:FilterInputControl Grid.Column="0"
+															   IconKind="Person"
+															   HintText="Tên khách hàng"
+															   TextValue="{Binding TenKhachHang}" />
+							</StackPanel>
+						</StackPanel>
+					</Border>
+				</Grid>
+
+				<Border x:Name="Invoice"
+						Grid.Column="2"
+						Margin="0"
+						Style="{StaticResource DataGridCardStyle}">
+
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<StackPanel Grid.Row="0">
 							<StackPanel x:Name="ThongTinThanhToan"
 										Orientation="Horizontal"
 										Margin="0,0,0,12">
@@ -421,123 +471,123 @@
 														 VerticalAlignment="Center"
 														 Margin="0,0,8,0" />
 								<TextBlock Text="Thông tin thanh toán"
-										   FontSize="16"
-										   FontWeight="Bold"
-										   Foreground="#2B3674"
-										   VerticalAlignment="Center" />
+										   Style="{StaticResource CardHeader}" />
 							</StackPanel>
 
 							<Grid Margin="0,0,0,12">
-								<TextBlock Text="Tổng tiền tạm tính:"
-										   Foreground="{StaticResource PrimaryDarkColor}"
-										   FontSize="13"
-										   VerticalAlignment="Center" />
-								<TextBlock Text="{Binding TamTinh, StringFormat='{}{0:N0} đ'}"
-										   HorizontalAlignment="Right"
-										   Foreground="#2B3674"
-										   FontSize="14"
-										   FontWeight="Bold" />
-							</Grid>
-
-							<Grid Margin="0,0,0,8">
 								<components:FilterComboBoxControl x:Name="ChonUuDai"
 																  IconKind="TagOutline"
 																  HintText="Chọn ưu đãi áp dụng..."
 																  ItemsSource="{Binding PromotionList}"
 																  SelectedItem="{Binding SelectedUuDai}" />
 							</Grid>
+						</StackPanel>
 
-							<ItemsControl ItemsSource="{Binding AppliedPromotionList}"
-										  Margin="0,0,0,12">
+						<ScrollViewer Grid.Row="1"
+									  VerticalScrollBarVisibility="Hidden"
+									  HorizontalScrollBarVisibility="Disabled"
+									  Margin="0,0,0,12">
+							<ItemsControl ItemsSource="{Binding AppliedPromotionList}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Grid Margin="0,0,0,6">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="*" />
-												<ColumnDefinition Width="Auto" />
-												<ColumnDefinition Width="Auto" />
-											</Grid.ColumnDefinitions>
+										<Border Margin="0,0,0,8"
+												Padding="10,8"
+												Background="#F8FAFC"
+												CornerRadius="8"
+												BorderBrush="#E2E8F0"
+												BorderThickness="1">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="Auto" />
+													<ColumnDefinition Width="Auto" />
+												</Grid.ColumnDefinitions>
 
-											<TextBlock Grid.Column="0"
-													   Text="{Binding TenChuongTrinh}"
-													   FontSize="13"
-													   Foreground="#2B3674"
-													   VerticalAlignment="Center"
-													   TextWrapping="Wrap"
-													   Margin="0,0,8,0" />
-											<TextBlock Grid.Column="1"
-													   Text="{Binding MucGiamDisplay}"
-													   FontSize="13"
-													   FontWeight="SemiBold"
-													   Foreground="#10B981"
-													   VerticalAlignment="Center"
-													   Margin="0,0,12,0" />
+												<TextBlock Grid.Column="0"
+														   Text="{Binding TenChuongTrinh}"
+														   FontSize="13"
+														   FontWeight="SemiBold"
+														   Foreground="#2B3674"
+														   VerticalAlignment="Center"
+														   TextWrapping="Wrap"
+														   Margin="0,0,8,0" />
 
-											<Button Grid.Column="2"
-													Style="{StaticResource MiniDeleteButtonStyle}"
-													ToolTip="Gỡ bỏ ưu đãi này"
-													Command="{Binding DataContext.GopUuDaiCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-													CommandParameter="{Binding}">
-												<materialDesign:PackIcon Kind="Minus"
-																		 Width="16"
-																		 Height="16" />
-											</Button>
-										</Grid>
+												<TextBlock Grid.Column="1"
+														   Text="{Binding MucGiamDisplay}"
+														   FontSize="13"
+														   FontWeight="Bold"
+														   Foreground="#10B981"
+														   VerticalAlignment="Center"
+														   Margin="0,0,12,0" />
+
+												<Button Grid.Column="2"
+														Style="{StaticResource MiniDeleteButtonStyle}"
+														ToolTip="Gỡ bỏ ưu đãi này"
+														Command="{Binding DataContext.GopUuDaiCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+														CommandParameter="{Binding}">
+													<materialDesign:PackIcon Kind="Close"
+																			 Width="16"
+																			 Height="16" />
+												</Button>
+											</Grid>
+										</Border>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
+						</ScrollViewer>
 
-							<Border BorderBrush="#F4F7FE"
+						<StackPanel Grid.Row="2">
+							<Border BorderBrush="#E2E8F0"
 									BorderThickness="0,1,0,0"
-									Margin="0,0,0,12" />
+									Margin="0,0,0,16"
+									Padding="0,16,0,0">
+								<StackPanel Orientation="Vertical">
 
-							<Grid Margin="0,0,0,16">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
+									<Grid Margin="0,0,0,8">
+										<TextBlock Text="Tổng khuyến mãi:"
+												   Foreground="{StaticResource TextLightColor}"
+												   FontSize="14"
+												   HorizontalAlignment="Left"
+												   VerticalAlignment="Center" />
+										<TextBlock Text="{Binding GiamTien, StringFormat='- {0:N0} đ'}"
+												   Foreground="{StaticResource SuccessColor}"
+												   FontSize="14"
+												   FontWeight="Bold"
+												   HorizontalAlignment="Right"
+												   VerticalAlignment="Center" />
+									</Grid>
 
-								<StackPanel Grid.Column="0"
-											VerticalAlignment="Bottom">
-									<TextBlock Text="Đã giảm:"
-											   Foreground="{StaticResource PrimaryDarkColor}"
-											   FontSize="12" />
-									<TextBlock Text="{Binding GiamTien, StringFormat='-{0:N0} đ'}"
-											   Foreground="{StaticResource DangerColor}"
-											   FontSize="16"
-											   FontWeight="Bold" />
+									<Grid>
+										<TextBlock Text="Thành tiền:"
+												   Foreground="{StaticResource PrimaryDarkColor}"
+												   FontSize="14"
+												   FontWeight="Bold"
+												   HorizontalAlignment="Left"
+												   VerticalAlignment="Center" />
+										<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} đ'}"
+												   Foreground="{StaticResource DangerColor}"
+												   FontSize="18"
+												   FontWeight="UltraBold"
+												   HorizontalAlignment="Right"
+												   VerticalAlignment="Center" />
+									</Grid>
+
 								</StackPanel>
-
-								<StackPanel Grid.Column="1"
-											HorizontalAlignment="Right"
-											VerticalAlignment="Bottom">
-									<TextBlock Text="Tổng thanh toán:"
-											   Foreground="{StaticResource PrimaryDarkColor}"
-											   HorizontalAlignment="Right"
-											   FontSize="13" />
-									<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}"
-											   HorizontalAlignment="Right"
-											   Foreground="{StaticResource PrimaryColor}"
-											   FontSize="20"
-											   FontWeight="Black" />
-								</StackPanel>
-							</Grid>
+							</Border>
 
 							<Button Style="{StaticResource MainGradientButton}"
 									IsEnabled="{Binding IsThanhToanEnabled}"
-									Command="{Binding MoPopupThanhToanCommand}">
-								<StackPanel Orientation="Horizontal">
-									<materialDesign:PackIcon Kind="CreditCardOutline"
-															 Width="18"
-															 Height="18"
-															 Margin="0,0,8,0" />
-									<TextBlock Text="THANH TOÁN" />
-								</StackPanel>
+									Command="{Binding MoPopupThanhToanCommand}"
+									Height="42"
+									FontSize="14">
+									<TextBlock Text="THANH TOÁN"
+											   FontWeight="Medium"
+											   VerticalAlignment="Center" />
 							</Button>
-
 						</StackPanel>
-					</Border>
-				</Grid>
+
+					</Grid>
+				</Border>
 			</Grid>
 		</Grid>
 

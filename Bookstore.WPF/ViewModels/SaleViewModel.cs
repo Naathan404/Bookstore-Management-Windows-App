@@ -135,7 +135,18 @@ namespace Bookstore.WPF.ViewModels
         public object KieuTimKiemSach
         {
             get => _kieuTimKiemSach;
-            set { _kieuTimKiemSach = value; OnPropertyChanged(); TrangHienTai = 1; ApplyFilterAndPagination(); }
+            set
+            {
+                if (value == null) return;
+
+                if (_kieuTimKiemSach != value)
+                {
+                    _kieuTimKiemSach = value;
+                    OnPropertyChanged();
+                    TrangHienTai = 1;
+                    ApplyFilterAndPagination();
+                }
+            }
         }
 
         // Danh sách số trang cho ComboBox nhảy trang nhanh nếu UI có sử dụng
