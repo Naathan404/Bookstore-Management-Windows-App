@@ -24,24 +24,5 @@ namespace Bookstore.WPF.Views
         {
             InitializeComponent();
         }
-
-        private void btnTrang1_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void PopupDetail_Close(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ImportViewModel vm)
-            {
-                vm.CloseDetailPopup();
-            }
-        }
-        private void PopupAdd_Close(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ImportViewModel vm)
-            {
-                vm.CloseAddPopup();
-            }
-        }
     }
 }

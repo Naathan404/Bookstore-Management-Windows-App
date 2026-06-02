@@ -155,7 +155,7 @@
 			  HorizontalAlignment="Stretch"
 			  Panel.ZIndex="1000">
 			<Border Background="#80000000"
-					MouseLeftButtonDown="PopupDetail_Close" />
+					 />
 
 			<Border Width="680"
 					Background="White"
@@ -604,7 +604,7 @@
 							BorderThickness="1"
 							Cursor="Hand"
 							HorizontalAlignment="Center"
-							Click="PopupDetail_Close" />
+							 />
 				</Grid>
 			</Border>
 		</Grid>
@@ -616,7 +616,7 @@
 			  HorizontalAlignment="Stretch"
 			  Panel.ZIndex="1000">
 			<Border Background="#80000000"
-					MouseLeftButtonDown="PopupAdd_Close" />
+					 />
 
 			<Border Width="850"
 					Background="White"
@@ -1138,7 +1138,7 @@
 											BorderBrush="#E2E8F0"
 											BorderThickness="1"
 											Cursor="Hand"
-											Click="PopupAdd_Close" />
+											/>
 									<Button Content="TẠO PHIẾU"
 											Width="130"
 											Height="40"

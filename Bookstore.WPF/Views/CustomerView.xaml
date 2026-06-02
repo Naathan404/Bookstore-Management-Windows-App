@@ -96,28 +96,28 @@
 						<DataGridTextColumn Header="Tên khách hàng"
 											Binding="{Binding TenKhachHang}"
 											ElementStyle="{StaticResource CellName}"
-											Width="200" />
+											Width="*" />
 
 						<!-- SĐT -->
 						<DataGridTextColumn Header="Số điện thoại"
 											Binding="{Binding SoDienThoai}"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
 											ElementStyle="{StaticResource CellLeft}"
-											Width="100" />
+											Width="120" />
 
 						<!-- Email -->
 						<DataGridTextColumn Header="Email"
 											Binding="{Binding Email}"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
 											ElementStyle="{StaticResource CellLeft}"
-											Width="*" />
+											Width="160" />
 
 						<!-- Loại KH -->
 						<DataGridTextColumn Header="Loại KH"
 											Binding="{Binding LoaiKhach}"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
 											ElementStyle="{StaticResource CellName}"
-											Width="100" />
+											Width="80" />
 
 						<!-- Công nợ -->
 						<DataGridTextColumn Header="Công nợ"
