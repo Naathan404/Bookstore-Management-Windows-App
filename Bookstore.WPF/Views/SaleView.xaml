@@ -25,7 +25,8 @@
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<Grid Grid.Column="0"
+				<Grid x:Name="ProductSearch"
+					  Grid.Column="0"
 					  Margin="0,0,8,0">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -43,22 +44,21 @@
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
 
-
 							<components:FilterInputControl Grid.Column="0"
 														   Margin="0,0,8,0"
 														   IconKind="Book"
 														   HintText="Tìm kiếm sách..."
-														   TextValue="{Binding SearchTextSach}" />
+														   TextValue="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />
 
 							<components:FilterComboBoxControl x:Name="KieuTimKiem"
 															  Grid.Column="1"
 															  Margin="0,0,8,0"
-															  IconKind="QuestionMark"
+															  IconKind="FormatListBulleted"
 															  HintText="Tìm theo"
 															  ItemsSource="{Binding ListKieuTimKiem}"
 															  SelectedItem="{Binding KieuTimKiemSach}" />
 
-							<components:FilterActionPanel Grid.Column="4"
+							<components:FilterActionPanel Grid.Column="2"
 														  ClearCommand="{Binding XoaBoLocCommand}"
 														  RefreshCommand="{Binding RefreshCommand}"
 														  ShowRefreshButton="True" />
@@ -70,7 +70,8 @@
 							Style="{StaticResource DataGridCardStyle}">
 						<ScrollViewer VerticalScrollBarVisibility="Auto"
 									  HorizontalScrollBarVisibility="Disabled">
-							<ItemsControl ItemsSource="{Binding DanhSachSachHienThi}">
+
+							<ItemsControl ItemsSource="{Binding DisplayBooks}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<WrapPanel Orientation="Horizontal"
@@ -85,7 +86,6 @@
 
 											<Grid Width="170"
 												  Height="220">
-
 												<Grid.RowDefinitions>
 													<RowDefinition Height="145" />
 													<RowDefinition Height="*" />
@@ -133,7 +133,7 @@
 																   Foreground="{StaticResource SuccessColor}"
 																   FontWeight="Bold"
 																   FontSize="13"
-																   Visibility="{Binding BookData.IsGift, Converter={StaticResource BoolToVis}}" />
+																   Visibility="{Binding IsGift, Converter={StaticResource BoolToVis}}" />
 													</Grid>
 												</StackPanel>
 
@@ -167,10 +167,10 @@
 												  TotalPages="{Binding TongSoTrang}"
 												  TotalRecords="{Binding TongBanGhi}"
 												  PaginationCommand="{Binding PhanTrangCommand}" />
-					<!--TODO: Biding lại lệnh phân trang -->
 				</Grid>
 
-				<Grid Grid.Column="1">
+				<Grid Name="Invoice"
+					  Grid.Column="1">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="200*" />
 						<RowDefinition Height="Auto" />
@@ -205,7 +205,7 @@
 										Padding="6,2"
 										Margin="8,0,0,0"
 										VerticalAlignment="Center">
-									<TextBlock Text="{Binding DanhSachGioHang.Count, StringFormat='{}{0}'}"
+									<TextBlock Text="{Binding CartItems.Count, StringFormat='{}{0}'}"
 											   FontSize="11"
 											   FontWeight="Bold"
 											   Foreground="#4318FF" />
@@ -215,7 +215,7 @@
 							<ScrollViewer Grid.Row="1"
 										  VerticalScrollBarVisibility="Hidden"
 										  HorizontalScrollBarVisibility="Disabled">
-								<ItemsControl ItemsSource="{Binding DanhSachGioHang}">
+								<ItemsControl ItemsSource="{Binding CartItems}">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
 											<Border Margin="0,0,0,8"
@@ -234,25 +234,25 @@
 													<StackPanel Grid.Column="0"
 																VerticalAlignment="Center"
 																Margin="0,0,8,0">
-														<TextBlock Text="{Binding BookData.TenSach}"
+														<TextBlock Text="{Binding TenSach}"
 																   FontSize="13"
 																   FontWeight="Bold"
 																   Foreground="#2B3674"
 																   TextTrimming="CharacterEllipsis" />
 														<StackPanel Orientation="Horizontal"
 																	VerticalAlignment="Center">
-															<TextBlock Text="{Binding BookData.GiaBan, StringFormat='{}{0:N0} đ'}"
+															<TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}"
 																	   FontSize="12"
 																	   Foreground="#A3AED0"
 																	   Margin="0,2,6,0"
-																	   Visibility="{Binding BookData.IsNormalPrice, Converter={StaticResource BoolToVis}}" />
+																	   Visibility="{Binding IsNormalPrice, Converter={StaticResource BoolToVis}}" />
 															<StackPanel Orientation="Vertical"
-																		Visibility="{Binding BookData.IsPromotionApplied, Converter={StaticResource BoolToVis}}">
-																<TextBlock Text="{Binding BookData.GiaBan, StringFormat='{}{0:N0} đ'}"
+																		Visibility="{Binding IsPromotionApplied, Converter={StaticResource BoolToVis}}">
+																<TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}"
 																		   FontSize="12"
 																		   Foreground="#10B981"
 																		   FontWeight="Bold" />
-																<TextBlock Text="{Binding BookData.OriginalGiaBan, StringFormat='{}{0:N0} đ'}"
+																<TextBlock Text="{Binding OriginalGiaBan, StringFormat='{}{0:N0} đ'}"
 																		   FontSize="11"
 																		   Foreground="#A3AED0"
 																		   TextDecorations="Strikethrough" />
@@ -260,7 +260,7 @@
 															<TextBlock Text=" (HÀNG TẶNG)"
 																	   Foreground="#10B981"
 																	   FontSize="12"
-																	   Visibility="{Binding BookData.IsGift, Converter={StaticResource BoolToVis}}" />
+																	   Visibility="{Binding IsGift, Converter={StaticResource BoolToVis}}" />
 														</StackPanel>
 													</StackPanel>
 
@@ -269,13 +269,13 @@
 																VerticalAlignment="Center">
 														<Button Style="{StaticResource MiniAddButtonStyle}"
 																ToolTip="Giảm số lượng"
+																IsEnabled="{Binding IsGift, Converter={StaticResource InverseBoolConverter}}"
 																Command="{Binding DataContext.GiamSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																CommandParameter="{Binding}">
 															<materialDesign:PackIcon Kind="Minus"
 																					 Width="16"
 																					 Height="16" />
 														</Button>
-
 														<TextBlock Text="{Binding SoLuongMua}"
 																   FontSize="14"
 																   FontWeight="Bold"
@@ -283,9 +283,9 @@
 																   Width="32"
 																   TextAlignment="Center"
 																   VerticalAlignment="Center" />
-
 														<Button Style="{StaticResource MiniAddButtonStyle}"
 																ToolTip="Tăng số lượng"
+																IsEnabled="{Binding IsGift, Converter={StaticResource InverseBoolConverter}}"
 																Command="{Binding DataContext.TangSoLuongCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																CommandParameter="{Binding}">
 															<materialDesign:PackIcon Kind="Plus"
@@ -316,6 +316,81 @@
 					<Border Grid.Row="1"
 							Style="{StaticResource DataGridCardStyle}">
 						<StackPanel>
+
+							<StackPanel Orientation="Horizontal"
+										Margin="0,0,0,12">
+								<materialDesign:PackIcon Kind="AccountOutline"
+														 Width="22"
+														 Height="22"
+														 Foreground="{StaticResource PrimaryColor}"
+														 VerticalAlignment="Center"
+														 Margin="0,0,8,0" />
+								<TextBlock Text="Thông tin khách hàng"
+										   FontSize="16"
+										   FontWeight="Bold"
+										   Foreground="#2B3674"
+										   VerticalAlignment="Center" />
+							</StackPanel>
+
+							<Grid Margin="0,0,0,8">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<components:TickComponent Grid.Column="0"
+														  Text="Khách vãng lai"
+														  IsChecked="{Binding IsKhachVangLai, Mode=TwoWay}"
+														  FontSize="13"
+														  FontWeight="Medium"
+														  Foreground="#2B3674"
+														  VerticalAlignment="Center" />
+
+								<Button Grid.Column="1"
+										Content="CHỌN KHÁCH"
+										Style="{StaticResource MaterialDesignOutlinedButton}"
+										Foreground="{StaticResource PrimaryColor}"
+										BorderBrush="{StaticResource PrimaryColor}"
+										Height="28"
+										Padding="12,0"
+										Command="{Binding MoPopupChonKhachHangCommand}" />
+							</Grid>
+
+							<Border Background="#F8FAFC"
+									CornerRadius="8"
+									Padding="10"
+									Margin="0,0,0,16"
+									BorderBrush="#E2E8F0"
+									BorderThickness="1">
+								<StackPanel>
+									<TextBlock Text="{Binding TenKhachHang}"
+											   FontWeight="Bold"
+											   Foreground="#2B3674"
+											   FontSize="14" />
+									<TextBlock Text="{Binding SdtKhachHang}"
+											   Foreground="#707EAE"
+											   FontSize="12"
+											   Margin="0,4,0,0">
+										<TextBlock.Style>
+											<Style TargetType="TextBlock">
+												<Setter Property="Visibility"
+														Value="Visible" />
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding SdtKhachHang}"
+																 Value="">
+														<Setter Property="Visibility"
+																Value="Collapsed" />
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</TextBlock.Style>
+									</TextBlock>
+								</StackPanel>
+							</Border>
+
+							<Border BorderBrush="#F4F7FE"
+									BorderThickness="0,1,0,0"
+									Margin="0,0,0,16" />
 
 							<StackPanel x:Name="ThongTinThanhToan"
 										Orientation="Horizontal"
@@ -349,11 +424,11 @@
 								<components:FilterComboBoxControl x:Name="ChonUuDai"
 																  IconKind="TagOutline"
 																  HintText="Chọn ưu đãi áp dụng..."
-																  ItemsSource="{Binding ListUuDai}"
+																  ItemsSource="{Binding PromotionList}"
 																  SelectedItem="{Binding SelectedUuDai}" />
 							</Grid>
 
-							<ItemsControl ItemsSource="{Binding DanhSachUuDaiDaApDung}"
+							<ItemsControl ItemsSource="{Binding AppliedPromotionList}"
 										  Margin="0,0,0,12">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
@@ -365,15 +440,14 @@
 											</Grid.ColumnDefinitions>
 
 											<TextBlock Grid.Column="0"
-													   Text="{Binding TenUuDai}"
+													   Text="{Binding TenChuongTrinh}"
 													   FontSize="13"
 													   Foreground="#2B3674"
 													   VerticalAlignment="Center"
 													   TextWrapping="Wrap"
 													   Margin="0,0,8,0" />
-
 											<TextBlock Grid.Column="1"
-													   Text="{Binding SoTienGiam, StringFormat='-{0:N0} đ'}"
+													   Text="{Binding MucGiamDisplay}"
 													   FontSize="13"
 													   FontWeight="SemiBold"
 													   Foreground="#10B981"
@@ -431,6 +505,7 @@
 							</Grid>
 
 							<Button Style="{StaticResource MainGradientButton}"
+									IsEnabled="{Binding IsThanhToanEnabled}"
 									Command="{Binding MoPopupThanhToanCommand}">
 								<StackPanel Orientation="Horizontal">
 									<materialDesign:PackIcon Kind="CreditCardOutline"
@@ -534,9 +609,16 @@
 			  VerticalAlignment="Stretch"
 			  HorizontalAlignment="Stretch"
 			  Panel.ZIndex="1001">
-			<Border Background="#00000000"
+
+			<Border Background="Transparent"
 					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch" />
+					VerticalAlignment="Stretch">
+				<Border.InputBindings>
+					<MouseBinding MouseAction="LeftClick"
+								  Command="{Binding HuyBoGiaoDichCommand}" />
+				</Border.InputBindings>
+			</Border>
+
 			<Border Width="600"
 					Padding="28"
 					Background="White"
@@ -573,6 +655,7 @@
 
 					<StackPanel Grid.Row="1"
 								Margin="0,0,0,16">
+
 						<Grid Margin="0,0,0,6">
 							<TextBlock Text="Khách hàng:"
 									   Foreground="#A3AED0"
@@ -602,27 +685,46 @@
 						<Border Background="#F4F7FE"
 								CornerRadius="8"
 								Padding="12"
-								MaxHeight="150">
+								MaxHeight="180">
 							<ScrollViewer VerticalScrollBarVisibility="Auto">
-								<ItemsControl ItemsSource="{Binding DanhSachGioHang}">
+								<ItemsControl ItemsSource="{Binding CartItems}">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
 											<Grid Margin="0,4">
-												<TextBlock Text="{Binding TenSach}"
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="40" />
+													<ColumnDefinition Width="90" />
+												</Grid.ColumnDefinitions>
+
+												<TextBlock Grid.Column="0"
+														   Text="{Binding TenSach}"
 														   Foreground="#2B3674"
 														   FontWeight="Medium"
-														   Width="300"
-														   HorizontalAlignment="Left"
-														   TextTrimming="CharacterEllipsis" />
-												<TextBlock Text="{Binding SoLuongMua, StringFormat='x{0}'}"
+														   TextTrimming="CharacterEllipsis"
+														   Margin="0,0,12,0" />
+
+												<TextBlock Grid.Column="1"
+														   Text="{Binding SoLuongMua, StringFormat='x{0}'}"
 														   Foreground="#A3AED0"
-														   HorizontalAlignment="Right"
-														   Margin="0,0,100,0" />
-												<TextBlock Text="{Binding ThanhTien, StringFormat='{}{0:N0} đ'}"
+														   TextAlignment="Center" />
+
+												<TextBlock x:Name="txtThanhTien"
+														   Grid.Column="2"
+														   Text="{Binding ThanhTien, StringFormat='{}{0:N0} đ'}"
 														   Foreground="#4318FF"
 														   FontWeight="Bold"
 														   HorizontalAlignment="Right" />
 											</Grid>
+
+											<DataTemplate.Triggers>
+												<DataTrigger Binding="{Binding IsGift}"
+															 Value="True">
+													<Setter TargetName="txtThanhTien"
+															Property="Foreground"
+															Value="#10B981" />
+												</DataTrigger>
+											</DataTemplate.Triggers>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>
@@ -662,18 +764,33 @@
 									BorderBrush="#FFE066"
 									BorderThickness="0,1,0,0"
 									Padding="0,10,0,0">
-								<Grid>
-									<TextBlock Text="TỔNG TIỀN PHẢI THU:"
-											   FontSize="14"
-											   FontWeight="Bold"
-											   VerticalAlignment="Center"
-											   Foreground="#2B3674" />
-									<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}"
-											   HorizontalAlignment="Right"
-											   FontSize="22"
-											   FontWeight="Black"
-											   Foreground="#EF4444" />
-								</Grid>
+								<StackPanel>
+									<Grid Margin="0,0,0,4"
+										  Visibility="{Binding GiamTien, Converter={StaticResource InvertZeroToVis}}">
+										<TextBlock Text="Tổng khuyến mãi:"
+												   FontSize="13"
+												   VerticalAlignment="Center"
+												   Foreground="#F59E0B" />
+										<TextBlock Text="{Binding GiamTien, StringFormat='-{0:N0} đ'}"
+												   HorizontalAlignment="Right"
+												   FontSize="13"
+												   FontWeight="Bold"
+												   Foreground="#10B981" />
+									</Grid>
+
+									<Grid>
+										<TextBlock Text="TỔNG TIỀN PHẢI THU:"
+												   FontSize="14"
+												   FontWeight="Bold"
+												   VerticalAlignment="Center"
+												   Foreground="#2B3674" />
+										<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}"
+												   HorizontalAlignment="Right"
+												   FontSize="22"
+												   FontWeight="Black"
+												   Foreground="#EF4444" />
+									</Grid>
+								</StackPanel>
 							</Border>
 						</StackPanel>
 					</Border>
