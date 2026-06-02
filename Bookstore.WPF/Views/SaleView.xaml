@@ -427,12 +427,13 @@
 																 TextValue="{Binding SdtKhachHang, UpdateSourceTrigger=PropertyChanged}"
 																 State="{Binding SdtState}"
 																 HelperText="{Binding SdtHelperText}"
-																 Margin="0,0,8,0" />
+																 Margin="0,0,8,-8" />
 
 									<Button Grid.Column="1"
 											Style="{StaticResource OutlineButtonStyle}"
 											Width="42"
 											Height="42"
+											Margin="0,0,0,12"
 											VerticalAlignment="Bottom"
 											ToolTip="Tìm khách hàng theo SĐT"
 											Command="{Binding TimKhachHangTheoSdtCommand}">
@@ -448,7 +449,8 @@
 																ItemsSource="{Binding DanhSachKhachHang}"
 																SelectedItem="{Binding KhachHangDuocChon, Mode=TwoWay}"
 																DisplayMemberPath="TenKhachHang"
-																IsEditable="False" />
+																IsEditable="False"
+																Margin="0,0,0,-20"/>
 							</StackPanel>
 						</StackPanel>
 					</Border>
