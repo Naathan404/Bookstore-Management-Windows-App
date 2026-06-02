@@ -98,21 +98,21 @@
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="STT"
 											Binding="{Binding STT}"
-											Width="50"
+											Width="46"
 											HeaderStyle="{StaticResource CenterHeaderStyle}"
 											ElementStyle="{StaticResource CellText}">
 						</DataGridTextColumn>
 
 						<DataGridTextColumn Header="Code"
 											Binding="{Binding Code}"
-											Width="150"
+											Width="Auto"
 											HeaderStyle="{StaticResource CenterHeaderStyle}"
 											ElementStyle="{StaticResource CellCode}" />
 
 						<DataGridTextColumn Header="Chương trình"
 											Binding="{Binding TenChuongTrinh}"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
-											ElementStyle="{StaticResource CellLeft}"
+											ElementStyle="{StaticResource CellName}"
 											Width="*" />
 
 						<DataGridTextColumn Header="Loại"
@@ -187,7 +187,7 @@
 						</DataGridTemplateColumn>
 
 						<DataGridTemplateColumn Header="Thao tác"
-												Width="120"
+												Width="100"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>

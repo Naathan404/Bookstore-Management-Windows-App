@@ -81,7 +81,7 @@
 
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Mã phiếu"
-											Width="120"
+											Width="150"
 											HeaderStyle="{StaticResource CenterHeaderStyle}"
 											ElementStyle="{StaticResource CellCode}"
 											SortMemberPath="MaPhieuNhap">
