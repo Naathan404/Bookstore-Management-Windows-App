@@ -351,7 +351,7 @@
 										   Foreground="{StaticResource DangerColor}"
 										   Margin="4,0,0,8" />
 
-								<Grid>
+								<Grid >
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="20" />
@@ -363,14 +363,16 @@
 																 TextValue="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US}"
 																 IsRequired="True"
 																 IsCurrencyMode="True"
-																 IconKind="Download" />
+																 IconKind="Download" 
+                                                                 IsEnabled="{Binding IsCoreEditingAllowed}"/>
 
 									<components:FormInputControl Grid.Column="2"
 																 Title="Số tiền tối đa"
 																 IsCurrencyMode="True"
 																 TextValue="{Binding EditingPromotion.SoTienToiDa, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US}"
 																 IsRequired="True"
-																 IconKind="Upload" />
+																 IconKind="Upload" 
+                                                                 IsEnabled="{Binding IsCoreEditingAllowed}"/>
 								</Grid>
 							</StackPanel>
 
@@ -412,13 +414,15 @@
 																	Title="Tên sách bắt buộc mua"
 																	IconKind="Book"
 																	IsRequired="True"
-																	IsEditable="True" />
+																	IsEditable="True" 
+                                                                    IsEnabled="{Binding IsCoreEditingAllowed}"/>
 									<components:FormInputControl TextValue="{Binding EditingPromotion.SoLuongMua, UpdateSourceTrigger=PropertyChanged}"
 																 Grid.Column="2"
 																 IsRequired="True"
 																 IconKind="Counting4"
 																 UnitText="quyển"
-																 Title="Số lượng mua tối thiểu" />
+																 Title="Số lượng mua tối thiểu"
+                                                                 IsEnabled="{Binding IsCoreEditingAllowed}"/>
 
 								</Grid>
 							</StackPanel>
@@ -454,7 +458,8 @@
 																		 IconKind="Cash"
 																		 IsCurrencyMode="True"
 																		 UnitText="đ"
-																		 TextValue="{Binding EditingPromotion.SoTienGiam, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+																		 TextValue="{Binding EditingPromotion.SoTienGiam, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}"
+                                                                         IsEnabled="{Binding IsCoreEditingAllowed}"/>
 										</Grid>
 									</TabItem>
 
@@ -471,7 +476,8 @@
 																		 UnitText="%"
 																		 IconKind="Discount"
 																		 IsRequired="True"
-																		 TextValue="{Binding EditingPromotion.TiLeGiam, UpdateSourceTrigger=PropertyChanged}" />
+																		 TextValue="{Binding EditingPromotion.TiLeGiam, UpdateSourceTrigger=PropertyChanged}"
+                                                                         IsEnabled="{Binding IsCoreEditingAllowed}"/>
 
 											<components:FormInputControl Grid.Column="2"
 																		 Title="Giảm tối đa"
@@ -479,7 +485,8 @@
 																		 IsRequired="True"
 																		 IconKind="Cash"
 																		 UnitText="đ"
-																		 TextValue="{Binding EditingPromotion.GiamToiDa, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US }" />
+																		 TextValue="{Binding EditingPromotion.GiamToiDa, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US }" 
+                                                                         IsEnabled="{Binding IsCoreEditingAllowed}"/>
 										</Grid>
 									</TabItem>
 								</TabControl>
@@ -525,14 +532,16 @@
 																	Title="Tên sách tặng"
 																	IconKind="Book"
 																	IsRequired="True"
-																	IsEditable="True" />
+																	IsEditable="True" 
+                                                                    IsEnabled="{Binding IsCoreEditingAllowed}"/>
 
 									<components:FormInputControl TextValue="{Binding EditingPromotion.SoLuongTang, UpdateSourceTrigger=PropertyChanged}"
 																 Grid.Column="2"
 																 IsRequired="True"
 																 IconKind="Counting4"
 																 UnitText="quyển"
-																 Title="Số lượng tặng" />
+																 Title="Số lượng tặng" 
+                                                                 IsEnabled="{Binding IsCoreEditingAllowed}"/>
 								</Grid>
 							</StackPanel>
 						</StackPanel>

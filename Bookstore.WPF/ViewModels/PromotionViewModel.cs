@@ -297,11 +297,6 @@ namespace Bookstore.WPF.ViewModels
             var customerTypes = await ApiClient.GetAsync<List<CustomerTierResponse>>("api/LoaiKhachHang");
             if (customerTypes != null)
             {
-                ListLoaiKhachHang.Add(new CustomerTierResponse
-                {
-                    MaLoaiKhachHang = 0,
-                    TenLoaiKhachHang = "Tất cả"
-                });
                 foreach (var c in customerTypes)
                 {
                     ListLoaiKhachHang.Add(new CustomerTierResponse { 
@@ -444,7 +439,7 @@ namespace Bookstore.WPF.ViewModels
         }
         private async Task SavePromotionAsync()
         {
-            MessageBox.Show($"Loại ưu đãi: '{EditingPromotion.LoaiUuDai}'");
+            //MessageBox.Show($"Loại ưu đãi: '{EditingPromotion.LoaiUuDai}'");
             if (string.IsNullOrWhiteSpace(EditingPromotion.Code) || string.IsNullOrWhiteSpace(EditingPromotion.TenChuongTrinh))
             {
                 MessageBox.Show("Mã Code và Tên chương trình ưu đãi không được bỏ trống!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
