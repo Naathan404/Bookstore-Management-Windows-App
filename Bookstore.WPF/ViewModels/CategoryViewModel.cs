@@ -38,6 +38,18 @@ namespace Bookstore.WPF.ViewModels
         public ObservableCollection<TacGiaDTO> DanhSachTacGia { get; set; } = new ObservableCollection<TacGiaDTO>();
     }
 
+    public class LoaiKhachHangItem : BaseViewModel
+    {
+        public int Id { get; set; }
+        private int _stt;
+        public int Stt { get => _stt; set { _stt = value; OnPropertyChanged(); } }
+        private string _name = "";
+        public string Name { get => _name; set { _name = value; OnPropertyChanged(); } }
+        public decimal NoToiDa { get; set; }
+        public double TiLeTra { get; set; }
+        public string Type { get; set; } = "LoaiKhachHang";
+    }
+
     public class CategoryViewModel : BaseViewModel
     {
         #region Collections
@@ -45,7 +57,8 @@ namespace Bookstore.WPF.ViewModels
         private List<CategoryItem> _allTacGias = new List<CategoryItem>();
         private List<CategoryItem> _allTheLoais = new List<CategoryItem>();
         private List<CategoryItem> _allNXBs = new List<CategoryItem>();
-
+        private List<LoaiKhachHangItem> _allLoaiKhachHangs = new List<LoaiKhachHangItem>();
+        public ObservableCollection<LoaiKhachHangItem> FilteredLoaiKhachHangs { get; set; } = new ObservableCollection<LoaiKhachHangItem>();
         public ObservableCollection<DauSachItem> FilteredDauSachs { get; set; } = new ObservableCollection<DauSachItem>();
         public ObservableCollection<CategoryItem> FilteredTacGias { get; set; } = new ObservableCollection<CategoryItem>();
         public ObservableCollection<CategoryItem> FilteredTheLoais { get; set; } = new ObservableCollection<CategoryItem>();
@@ -61,6 +74,18 @@ namespace Bookstore.WPF.ViewModels
         private string _searchTheLoai = "";
         public string SearchNXB { get => _searchNXB; set { _searchNXB = value; OnPropertyChanged(); ApplyFilter("NXB"); } }
         private string _searchNXB = "";
+
+        private string _searchLoaiKhachHang = "";
+        public string SearchLoaiKhachHang { get => _searchLoaiKhachHang; set { _searchLoaiKhachHang = value; OnPropertyChanged(); ApplyFilter("LoaiKhachHang"); } }
+
+        private decimal _noToiDaForm;
+        public decimal NoToiDaForm { get => _noToiDaForm; set { _noToiDaForm = value; OnPropertyChanged(); } }
+
+        private double _tiLeTraForm;
+        public double TiLeTraForm { get => _tiLeTraForm; set { _tiLeTraForm = value; OnPropertyChanged(); } }
+
+        private Visibility _isLoaiKhachFieldsVisible = Visibility.Collapsed;
+        public Visibility IsLoaiKhachFieldsVisible { get => _isLoaiKhachFieldsVisible; set { _isLoaiKhachFieldsVisible = value; OnPropertyChanged(); } }
         #endregion
 
         #region Popup Căn bản (Thể loại, Tác giả, NXB)
@@ -125,6 +150,10 @@ namespace Bookstore.WPF.ViewModels
         public ICommand RemoveTacGiaCommand { get; set; }
         public ICommand SelectImageCommand { get; set; }
 
+
+        public ICommand OpenAddLoaiKhachHangCommand { get; set; }
+        public ICommand EditLoaiKhachCommand { get; set; }
+
         // Export Excel
         public ICommand ExportExcelCommand { get; set; }
         #endregion
@@ -147,41 +176,133 @@ namespace Bookstore.WPF.ViewModels
                 OpenPopup(false, item.Type, item.Id, item.Name, "CHỈNH SỬA DANH MỤC");
             });
 
-            ClosePopupCommand = new RelayCommand<object>((p) => IsPopupVisible = Visibility.Hidden);
+            ClosePopupCommand = new RelayCommand<object>((p) =>
+            {
+                IsPopupVisible = Visibility.Collapsed;
+                IsLoaiKhachFieldsVisible = Visibility.Collapsed;
+            });
+
+
+            //SaveCommand = new RelayCommand<object>(async (p) => {
+            //    if (string.IsNullOrWhiteSpace(EditingName))
+            //    {
+            //        MessageBox.Show("Vui lòng điền thông tin");
+            //        return;
+            //    }    
+            //    string path = $"api/{_currentEditType}";
+            //    object payload = _currentEditType switch
+            //    {
+            //        "TacGia" => _isAddMode ? new TacGiaDTO { TenTacGia = EditingName } : new TacGiaDTO { Id = _editingId, TenTacGia = EditingName },
+            //        "TheLoai" => _isAddMode ? new { TenTheLoai = EditingName } : (object)new { MaTheLoai = _editingId, TenTheLoai = EditingName },
+            //        _ => _isAddMode ? new { TenNhaXuatBan = EditingName } : (object)new { MaNhaXuatBan = _editingId, TenNhaXuatBan = EditingName }
+            //    };
+
+            //    bool success = _isAddMode ? await ApiClient.PostAndCheckSuccessAsync(path, payload) : await ApiClient.PutAndCheckSuccessAsync($"{path}/{_editingId}", payload);
+            //    if (success) MessageBox.Show("Cập nhật thành công!");
+            //    if (success) { IsPopupVisible = Visibility.Hidden; await LoadAllDataAsync(); }
+            //});
 
             SaveCommand = new RelayCommand<object>(async (p) => {
                 if (string.IsNullOrWhiteSpace(EditingName))
                 {
-                    MessageBox.Show("Vui lòng điền thông tin");
-                    return;
-                }    
-                string path = $"api/{_currentEditType}";
-                object payload = _currentEditType switch
-                {
-                    "TacGia" => _isAddMode ? new TacGiaDTO { TenTacGia = EditingName } : new TacGiaDTO { Id = _editingId, TenTacGia = EditingName },
-                    "TheLoai" => _isAddMode ? new { TenTheLoai = EditingName } : (object)new { MaTheLoai = _editingId, TenTheLoai = EditingName },
-                    _ => _isAddMode ? new { TenNhaXuatBan = EditingName } : (object)new { MaNhaXuatBan = _editingId, TenNhaXuatBan = EditingName }
-                };
+                    MessageBox.Show("Vui lòng điền thông tin!"); return;
+                }
 
-                bool success = _isAddMode ? await ApiClient.PostAndCheckSuccessAsync(path, payload) : await ApiClient.PutAndCheckSuccessAsync($"{path}/{_editingId}", payload);
-                if (success) MessageBox.Show("Cập nhật thành công!");
-                if (success) { IsPopupVisible = Visibility.Hidden; await LoadAllDataAsync(); }
+                string path = $"api/{_currentEditType}";
+                object payload;
+
+                if (_currentEditType == "LoaiKhachHang")
+                {
+                    if (NoToiDaForm < 0 || TiLeTraForm < 0)
+                    {
+                        MessageBox.Show("Giá trị cấu hình nợ và tỉ lệ không được là số âm!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    if (TiLeTraForm > 100)
+                    {
+                        MessageBox.Show("Tỉ lệ thanh toán tối thiểu không được vượt quá 100%!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    payload = _isAddMode
+                        ? new { TenLoaiKhachHang = EditingName, NoToiDa = NoToiDaForm, TiLeTraToiThieu = TiLeTraForm }
+                        : (object)new { MaLoaiKhachHang = _editingId, TenLoaiKhachHang = EditingName, NoToiDa = NoToiDaForm, TiLeTraToiThieu = TiLeTraForm };
+                }
+                else
+                {
+                    payload = _currentEditType switch
+                    {
+                        "TacGia" => _isAddMode ? new TacGiaDTO { TenTacGia = EditingName } : new TacGiaDTO { Id = _editingId, TenTacGia = EditingName },
+                        "TheLoai" => _isAddMode ? new { TenTheLoai = EditingName } : (object)new { MaTheLoai = _editingId, TenTheLoai = EditingName },
+                        _ => _isAddMode ? new { TenNhaXuatBan = EditingName } : (object)new { MaNhaXuatBan = _editingId, TenNhaXuatBan = EditingName }
+                    };
+                }
+
+                string finalUrl = _isAddMode ? path : $"{path}/{_editingId}";
+                bool success = _isAddMode ? await ApiClient.PostAndCheckSuccessAsync(finalUrl, payload) : await ApiClient.PutAndCheckSuccessAsync(finalUrl, payload);
+
+                if (success)
+                {
+                    MessageBox.Show("Cập nhật dữ liệu thành công!");
+                    IsPopupVisible = Visibility.Hidden;
+                    await LoadAllDataAsync();
+                }
             });
 
-            DeleteCommand = new RelayCommand<CategoryItem>(async (item) => {
-                if (item == null) return;
-                if (MessageBox.Show($"Xóa '{item.Name}'?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            //DeleteCommand = new RelayCommand<CategoryItem>(async (item) => {
+            //    if (item == null) return;
+            //    if (MessageBox.Show($"Xóa '{item.Name}'?", "Xác nhận", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            //    {
+            //        bool isSucces = (await ApiClient.DeleteAndCheckSuccessAsync($"api/{item.Type}/{item.Id}"));
+            //        if (isSucces)
+            //        {
+            //            MessageBox.Show("Xóa thành công!");
+            //            await LoadAllDataAsync();
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Không thể xóa do danh mục này đã phát sinh thông tin liên quan đến ít nhất một sách", "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
+            //        }    
+            //    }
+            //});
+
+            DeleteCommand = new RelayCommand<object>(async (p) => {
+                string type = "";
+                int id = 0;
+                string name = "";
+
+                if (p is CategoryItem item)
                 {
-                    bool isSucces = (await ApiClient.DeleteAndCheckSuccessAsync($"api/{item.Type}/{item.Id}"));
-                    if (isSucces)
+                    type = item.Type;
+                    id = item.Id;
+                    name = item.Name;
+                }
+                else if (p is LoaiKhachHangItem lkhItem)
+                {
+                    type = lkhItem.Type; 
+                    id = lkhItem.Id;
+                    name = lkhItem.Name;
+                }
+
+                if (id == 0) return; 
+
+                var result = MessageBox.Show($"Bạn có chắc chắn muốn xóa '{name}' không?", "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    string endpoint = $"api/{type}/{id}";
+
+                    // Gọi API xóa và kiểm tra kết quả trả về
+                    bool success = await ApiClient.DeleteAndCheckSuccessAsync(endpoint);
+                    if (success)
                     {
-                        MessageBox.Show("Xóa thành công!");
-                        await LoadAllDataAsync();
+                        MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await LoadAllDataAsync(); 
                     }
                     else
                     {
-                        MessageBox.Show("Không thể xóa do danh mục này đã phát sinh thông tin liên quan đến ít nhất một sách", "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }    
+                        MessageBox.Show("Không thể xóa danh mục do dành mục này đã phát sinh nghiệp vụ trong hệ thống.",
+                                        "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
             });
 
@@ -411,6 +532,21 @@ namespace Bookstore.WPF.ViewModels
                 }
             });
             #endregion
+
+            OpenAddLoaiKhachHangCommand = new RelayCommand<object>((p) => {
+                IsLoaiKhachFieldsVisible = Visibility.Visible; 
+                NoToiDaForm = 0;
+                TiLeTraForm = 0;
+                OpenPopup(true, "LoaiKhachHang", 0, "", "THÊM LOẠI KHÁCH HÀNG MỚI");
+            });
+
+            EditLoaiKhachCommand = new RelayCommand<LoaiKhachHangItem>((item) => {
+                if (item == null) return;
+                IsLoaiKhachFieldsVisible = Visibility.Visible; 
+                NoToiDaForm = item.NoToiDa;
+                TiLeTraForm = item.TiLeTra;
+                OpenPopup(false, item.Type, item.Id, item.Name, "CHỈNH SỬA LOẠI KHÁCH HÀNG");
+            });
         }
 
         private void OpenPopup(bool isAdd, string type, int id, string name, string title)
@@ -425,8 +561,7 @@ namespace Bookstore.WPF.ViewModels
                 var resTG = await ApiClient.GetAsync<List<TacGiaDTO>>("api/TacGia");
                 var resTL = await ApiClient.GetAsync<List<CategoryItem>>("api/TheLoai");
                 var resNXB = await ApiClient.GetAsync<List<CategoryItem>>("api/NhaXuatBan");
-
-                // ĐÃ SỬA: Dùng class đàng hoàng thay vì List<dynamic>
+                var resLKH = await ApiClient.GetAsync<List<LoaiKhachHangResponseDTO>>("api/LoaiKhachHang");
                 var resDS = await ApiClient.GetAsync<List<DauSachResponseDTO>>("api/Sach");
 
                 Application.Current.Dispatcher.Invoke(() => {
@@ -475,7 +610,23 @@ namespace Bookstore.WPF.ViewModels
                             _allDauSachs.Add(dsItem);
                         }
                     }
+                    _allLoaiKhachHangs.Clear();
+                    if (resLKH != null)
+                    {
+                        foreach (var x in resLKH)
+                        {
+                            _allLoaiKhachHangs.Add(new LoaiKhachHangItem
+                            {
+                                Id = x.MaLoaiKhachHang,      
+                                Name = x.TenLoaiKhachHang,
+                                NoToiDa = x.NoToiDa,
+                                TiLeTra = x.TiLeTraToiThieu,
+                                Type = "LoaiKhachHang"
+                            });
+                        }
+                    }
 
+                    ApplyFilter("LoaiKhachHang");
                     ApplyFilter("TacGia");
                     ApplyFilter("TheLoai");
                     ApplyFilter("NXB");
@@ -531,6 +682,16 @@ namespace Bookstore.WPF.ViewModels
                     FilteredNXBs.Add(item);
                 }
             }
+            else if (type == "LoaiKhachHang")
+            {
+                FilteredLoaiKhachHangs.Clear();
+                int stt = 1;
+                foreach (var item in _allLoaiKhachHangs.Where(x => x.Name.ToLower().Contains(SearchLoaiKhachHang.ToLower())))
+                {
+                    item.Stt = stt++;
+                    FilteredLoaiKhachHangs.Add(item);
+                }
+            }
         }
 
         public class DauSachResponseDTO
@@ -541,6 +702,14 @@ namespace Bookstore.WPF.ViewModels
             public string MoTa { get; set; }
             public string ImageUrl { get; set; }
             public List<TacGiaDTO> DanhSachTacGia { get; set; } = new List<TacGiaDTO>();
+        }
+
+        public class LoaiKhachHangResponseDTO
+        {
+            public int MaLoaiKhachHang { get; set; }
+            public string TenLoaiKhachHang { get; set; } = "";
+            public decimal NoToiDa { get; set; }
+            public double TiLeTraToiThieu { get; set; }
         }
     }
 }

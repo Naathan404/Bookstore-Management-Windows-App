@@ -324,7 +324,11 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("CustomerView"))
             {
                 _customerViewModel = new CustomerViewModel();
-                ShowKhachHangCommand = new RelayCommand<object>((p) => _handleChangeView(_customerViewModel));
+                ShowKhachHangCommand = new RelayCommand<object>((p) =>
+                {
+                    _customerViewModel.LoadMasterData();
+                    _handleChangeView(_customerViewModel);
+                });
             }
 
             if (listQuyen.Contains("ReceiptView"))
@@ -348,7 +352,11 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("PromotionView"))
             {
                 _promotionViewModel = new PromotionViewModel();
-                ShowUuDaiCommand = new RelayCommand<object>((p) => _handleChangeView(_promotionViewModel));
+                ShowUuDaiCommand = new RelayCommand<object>((p) =>
+                {
+                    _promotionViewModel.LoadMasterData();
+                    _handleChangeView(_promotionViewModel);
+                });
             }
 
 
