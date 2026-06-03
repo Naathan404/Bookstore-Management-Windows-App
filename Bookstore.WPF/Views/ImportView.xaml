@@ -447,7 +447,7 @@
 
                         <Grid Grid.Row="2" Margin="0,0,0,20">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2.2*" />
+                                <ColumnDefinition Width="1.5*" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="Auto" />
@@ -484,9 +484,10 @@
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock>
-											<Run Text="{Binding ISBN}" FontWeight="Bold" Foreground="#4318FF"/>
-											<Run Text=" - "/>
-											<Run Text="{Binding TenSach}"/>
+                                                <Run Text="{Binding ISBN}" FontWeight="Bold" Foreground="#4318FF"/>
+                                                <Run Text=" - "/>
+                                                <Run Text="{Binding TenSach}" FontWeight="Bold"/>
+                                                <Run Text="{Binding TonKho, StringFormat=' (Tồn: {0} cuốn)'}" FontStyle="Italic" FontSize="13"/>
                                         </TextBlock>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>

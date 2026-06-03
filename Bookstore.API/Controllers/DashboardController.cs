@@ -285,9 +285,15 @@ namespace Bookstore.API.Controllers
                     }).ToListAsync();
 
                 // Cảnh báo tồn kho dưới 10 cuốn
+                var threshold = await _context.ThamSo.Where(x => x.TenThamSo == "SoLuongTonToiThieu")
+                    .Select(x => x.GiaTri)
+                    .FirstOrDefaultAsync();
+
+                int minStock = threshold > 0 ? (int)threshold : 10;
+
                 var stockWarnings = await _context.PhienBanSach
                     .Include(x => x.Sach)
-                    .Where(x => x.TonKho < 10)
+                    .Where(x => x.TonKho <= minStock)
                     .Select(x => new StockWarningDto
                     {
                         Name = x.Sach.TenSach,

@@ -95,7 +95,7 @@
 							<TextBlock Text="NHẬP - XUẤT KHO"
 									   Style="{StaticResource SettingTitle}" />
 
-							<TextBlock Text="Số lượng nhập tối thiểu"
+							<TextBlock Text="Số lượng nhập tối thiểu cho 1 sách"
 									   Foreground="#A3AED0"
 									   Margin="0,0,0,4" />
 							<Border Style="{StaticResource InputBox}">
@@ -113,7 +113,7 @@
 								</DockPanel>
 							</Border>
 
-							<TextBlock Text="Số lượng tồn tối đa trước khi nhập"
+							<TextBlock Text="Số lượng tồn tối đa trước khi nhập cho 1 sách"
 									   Foreground="#A3AED0"
 									   Margin="0,0,0,4" />
 							<Border Style="{StaticResource InputBox}">
@@ -231,7 +231,7 @@
 											   VerticalAlignment="Center" />
 								</DockPanel>
 							</Border>
-
+							<!--
 							<Border Background="#EEF2FF"
 									CornerRadius="8"
 									Padding="12"
@@ -246,10 +246,11 @@
 											   VerticalAlignment="Center" />
 								</DockPanel>
 							</Border>
+                            -->
 
 							<TextBlock Text="Số lượng ưu đãi tối thiểu để kích hoạt"
 									   Foreground="#A3AED0"
-									   Margin="0,0,0,4" />
+									   Margin="0,0,0,10" />
 							<Border Style="{StaticResource InputBox}">
 								<DockPanel>
 									<TextBlock Text="sản phẩm"
@@ -285,7 +286,27 @@
 							</Border>
 						</StackPanel>
 					</Border>
-				</StackPanel>
+
+                    <Border Style="{StaticResource SettingCard}">
+                        <StackPanel>
+                            <TextBlock Text="BẢO MẬT"
+							   Style="{StaticResource SettingTitle}" />
+
+                            <TextBlock Text="Mật khẩu mặc định (*Bắt buộc 6 ký tự số)"
+							   Foreground="#A3AED0"
+							   Margin="0,0,0,4" />
+                            <Border Style="{StaticResource InputBox}">
+                                <DockPanel>
+                                    <TextBox Text="{Binding MatKhauMacDinh, UpdateSourceTrigger=PropertyChanged}"
+									 BorderThickness="0"
+									 Background="Transparent"
+									 Foreground="#2B3674"
+									 FontWeight="Bold" />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
 			</Grid>
 		</Grid>
 	</Grid>

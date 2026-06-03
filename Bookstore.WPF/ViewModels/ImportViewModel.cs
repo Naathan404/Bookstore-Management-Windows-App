@@ -67,6 +67,13 @@ namespace Bookstore.WPF.ViewModels
         private BookSearchResponse _selectedSearchBook;
         public BookSearchResponse SelectedSearchBook { get => _selectedSearchBook; set { _selectedSearchBook = value; OnPropertyChanged(); } }
 
+        private int _maxStockThreshold = 300; // Mặc định phòng hờ là 300
+        public int MaxStockThreshold
+        {
+            get => _maxStockThreshold;
+            set { _maxStockThreshold = value; OnPropertyChanged(); }
+        }
+
         public ICommand ClearFilterCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand ViewDetailCommand { get; }
@@ -81,6 +88,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand SaveImportOrderCommand { get; }
         public ICommand UpdateGhiChuCommand { get; }
 
+        int minImport = 1;
 
         public ImportViewModel()
         {
@@ -123,6 +131,14 @@ namespace Bookstore.WPF.ViewModels
                 SupplierList.Clear();
                 foreach (var item in data) SupplierList.Add(item);
             }
+
+            var minImportThamSo = await ApiClient.GetAsync<ThamSoDTO>($"api/ThamSo/SoLuongNhapToiThieu");
+            if(minImportThamSo != null)
+                minImport = minImportThamSo.GiaTri;
+
+            var maxStockToImport = await ApiClient.GetAsync<ThamSoDTO>($"api/ThamSo/SoLuongTonToiDaCoTheNhap");
+            if (maxStockToImport != null)
+                _maxStockThreshold = maxStockToImport.GiaTri;
         }
 
         private async Task LoadDataAsync()
@@ -274,6 +290,18 @@ namespace Bookstore.WPF.ViewModels
                 return;
             }
 
+            if (SelectedSearchBook.TonKho >= MaxStockThreshold)
+            {
+                MessageBox.Show($"Không thể nhập thêm sách này!\n\n" +
+                                $"• Lượng tồn hiện tại: {SelectedSearchBook.TonKho} cuốn.\n" +
+                                $"• Ngưỡng tồn tối đa quy định: {MaxStockThreshold} cuốn.\n\n" +
+                                $"Sách này vẫn còn đủ lượng tồn trên kệ, không cần nhập thêm.",
+                                "Không thể thêm",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Stop);
+                return;
+            }
+
             if (NewImportOrder.ChiTiet.Any(x => x.ISBN == SelectedSearchBook.ISBN))
             {
                 MessageBox.Show("Sách này đã có trong danh sách nhập! Vui lòng chỉnh sửa số lượng ở bảng bên dưới.", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -286,8 +314,8 @@ namespace Bookstore.WPF.ViewModels
                 ISBN = SelectedSearchBook.ISBN,
                 TenSach = SelectedSearchBook.TenSach,
                 TacGia = SelectedSearchBook.TacGia,
-                SoLuong = 1, 
-                DonGia = 0,
+                SoLuong = minImport, 
+                DonGia = SelectedSearchBook.GiaNiemYet,
                 TargetValueChanged = () => NewImportOrder.OnDetailChanged()
             });
             NewImportOrder.OnDetailChanged();

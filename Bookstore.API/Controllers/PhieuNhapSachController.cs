@@ -144,7 +144,9 @@ namespace Bookstore.API.Controllers
                 {
                     ISBN = p.ISBN,
                     TenSach = p.Sach.TenSach,
-                    TacGia = "Nhiều tác giả"
+                    TacGia = "Nhiều tác giả",
+                    GiaNiemYet = p.GiaNiemYet,
+                    TonKho = p.TonKho
                 })
                 .Take(20)
                 .ToListAsync();
