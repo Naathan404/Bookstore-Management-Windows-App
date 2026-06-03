@@ -55,5 +55,7 @@ namespace Bookstore.Share.DTOResponses
         public string ISBN { get; set; } = string.Empty;
         public string TenSach { get; set; } = string.Empty;
         public string TacGia { get; set; } = string.Empty;
+        public decimal GiaNiemYet { get; set; }
+        public int TonKho { get; set; }
     }
 }

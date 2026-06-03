@@ -337,7 +337,7 @@ namespace Bookstore.WPF.ViewModels
 
                 if (success)
                 {
-                    MessageBox.Show(IsAddMode ? "Thêm tài khoản thành công!\nMật khẩu mặc định: 123456" : "Cập nhật tài khoản thành công!",
+                    MessageBox.Show(IsAddMode ? "Thêm tài khoản thành công!\n" : "Cập nhật tài khoản thành công!",
                         "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     IsAccountPopupVisible = false;
@@ -359,7 +359,7 @@ namespace Bookstore.WPF.ViewModels
         {
             if (acc == null) return;
 
-            var confirm = MessageBox.Show($"Đặt lại mật khẩu của '{acc.Username}' về mặc định (123456)?",
+            var confirm = MessageBox.Show($"Đặt lại mật khẩu của '{acc.Username}' về mặc định?",
                 "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (confirm != MessageBoxResult.Yes) return;

@@ -1,5 +1,6 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Models;
+using Bookstore.API.Utils;
 using Bookstore.Share.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace Bookstore.API.Controllers
     {
         private readonly AppDbContext _context;
 
-        private const string DefaultPasswordHash =
+        private string DefaultPasswordHash =
             "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676";
 
         public NguoiDungController(AppDbContext context)
@@ -152,6 +153,10 @@ namespace Bookstore.API.Controllers
         [HttpPost("{username}/reset-password")]
         public async Task<IActionResult> ResetPassword(string username)
         {
+            var newPass = await _context.ThamSo.Where(x => x.TenThamSo == "MatKhauMacDinh").Select(x => x.GiaTri).FirstOrDefaultAsync();
+            string newPassString = newPass > - 0 ? newPass.ToString() : "123456";
+            DefaultPasswordHash = HashHelper.SHA256_Encode(HashHelper.Base64_Encode(newPassString));
+            
             var user = await _context.NguoiDung
                 .FirstOrDefaultAsync(u => u.TenDangNhap == username);
 
