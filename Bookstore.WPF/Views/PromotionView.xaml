@@ -360,7 +360,7 @@
 
 									<components:FormInputControl Grid.Column="0"
 																 Title="Số tiền tối thiểu"
-																 TextValue="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged}"
+																 TextValue="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US}"
 																 IsRequired="True"
 																 IsCurrencyMode="True"
 																 IconKind="Download" />
@@ -368,7 +368,7 @@
 									<components:FormInputControl Grid.Column="2"
 																 Title="Số tiền tối đa"
 																 IsCurrencyMode="True"
-																 TextValue="{Binding EditingPromotion.SoTienToiDa, UpdateSourceTrigger=PropertyChanged}"
+																 TextValue="{Binding EditingPromotion.SoTienToiDa, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US}"
 																 IsRequired="True"
 																 IconKind="Upload" />
 								</Grid>
@@ -454,7 +454,7 @@
 																		 IconKind="Cash"
 																		 IsCurrencyMode="True"
 																		 UnitText="đ"
-																		 TextValue="{Binding EditingPromotion.SoTienGiam, UpdateSourceTrigger=PropertyChanged}" />
+																		 TextValue="{Binding EditingPromotion.SoTienGiam, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
 										</Grid>
 									</TabItem>
 
@@ -479,7 +479,7 @@
 																		 IsRequired="True"
 																		 IconKind="Cash"
 																		 UnitText="đ"
-																		 TextValue="{Binding EditingPromotion.GiamToiDa, UpdateSourceTrigger=PropertyChanged}" />
+																		 TextValue="{Binding EditingPromotion.GiamToiDa, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US }" />
 										</Grid>
 									</TabItem>
 								</TabControl>
