@@ -25,9 +25,7 @@
 										  AddIcon="Plus"
 										  AddCommand="{Binding OpenAddPopupCommand}"
 										  AddCommandParameter="{Binding}"
-										  ShowExportExcel="True"
-										  ExportExcelCommand="{Binding ExportExcelCommand}"
-										  ExportExcelCommandParameter="{Binding}" />
+										   />
 
 			<!-- Card 2: Search Filters -->
 			<Border Grid.Row="1"
@@ -364,10 +362,12 @@
 																 Title="Số tiền tối thiểu"
 																 TextValue="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged}"
 																 IsRequired="True"
+																 IsCurrencyMode="True"
 																 IconKind="Download" />
 
 									<components:FormInputControl Grid.Column="2"
 																 Title="Số tiền tối đa"
+																 IsCurrencyMode="True"
 																 TextValue="{Binding EditingPromotion.SoTienToiDa, UpdateSourceTrigger=PropertyChanged}"
 																 IsRequired="True"
 																 IconKind="Upload" />
@@ -452,6 +452,7 @@
 											<components:FormInputControl Title="Số tiền giảm"
 																		 IsRequired="True"
 																		 IconKind="Cash"
+																		 IsCurrencyMode="True"
 																		 UnitText="đ"
 																		 TextValue="{Binding EditingPromotion.SoTienGiam, UpdateSourceTrigger=PropertyChanged}" />
 										</Grid>
@@ -474,6 +475,7 @@
 
 											<components:FormInputControl Grid.Column="2"
 																		 Title="Giảm tối đa"
+																		 IsCurrencyMode="True"
 																		 IsRequired="True"
 																		 IconKind="Cash"
 																		 UnitText="đ"

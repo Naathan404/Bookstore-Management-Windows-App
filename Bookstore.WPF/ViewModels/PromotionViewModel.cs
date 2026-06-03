@@ -7,7 +7,10 @@ using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
 using Bookstore.WPF.ViewModels.Base;
+using Microsoft.Win32;
+using OfficeOpenXml;
 using OfficeOpenXml.Export.HtmlExport;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -171,7 +175,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand OpenEditPopupCommand { get; set; }
         public ICommand SavePromotionCommand { get; set; }
         public ICommand ClosePopupCommand { get; set; }
-
+        public ICommand ExportExcelCommand { get; set; }
         public PromotionViewModel()
         {
             InitCommands();

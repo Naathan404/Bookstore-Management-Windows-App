@@ -15,6 +15,7 @@ namespace Bookstore.Share.DTO
             public DateTime NgayTao { get; set; } = DateTime.Now;
             public string NguoiTao { get; set; } = string.Empty;
             public PromotionType MaLoaiUuDai { get; set; }
+            public string LoaiUuDai { get; set; } = string.Empty;
             public string Code { get; set; } = string.Empty;
             public string TenChuongTrinh { get; set; } = string.Empty;
             public string MoTa { get; set; } = string.Empty;
@@ -63,14 +64,6 @@ namespace Bookstore.Share.DTO
             public DateTime ThoiGianKetThuc => NgayKetThuc;
             public string SoLuongToiDaDisplay => SoLuongToiDa == 0 ? "Vô hạn" : SoLuongToiDa.ToString();
 
-            public string LoaiUuDai => MaLoaiUuDai switch
-            {
-                PromotionType.HoaDonGiam => "Giảm giá / Hóa đơn",
-                PromotionType.HoaDonQua => "Tặng quà / Hóa đơn",
-                PromotionType.SachGiam => "Giảm giá / Đầu sách",
-                PromotionType.SachQua => "Tặng quà / Đầu sách",
-                _ => "Không xác định"
-            };
 
             // Đã đồng bộ lại khớp với logic Code
             // TODO: Dơ

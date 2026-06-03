@@ -30,7 +30,9 @@ namespace Bookstore.API.Controllers
         {
             try
             {
-                var uuDais = await _context.UuDai.ToListAsync();
+                var uuDais = await _context.UuDai
+                    .Include(u => u.LoaiUuDai)
+                    .ToListAsync();
                 if (!uuDais.Any()) return Ok(new List<PromotionDTO>());
 
                 var uIds = uuDais.Select(u => u.MaUuDai).ToList();
@@ -59,7 +61,8 @@ namespace Bookstore.API.Controllers
                         SoLuongDaDung = u.SoLuongDaDung,
                         MaLoaiKhachHang = u.MaLoaiKhachHang,
                         CoTheSuDung = u.CoTheSuDung,
-                        MaLoaiUuDai = u.MaLoaiUuDai
+                        MaLoaiUuDai = u.MaLoaiUuDai,
+                        LoaiUuDai = u.LoaiUuDai?.TenLoaiUuDai ?? "Chưa xác định"
                     };
 
                     if (u.MaLoaiUuDai == PromotionType.HoaDonGiam) // 1. Giảm giá Hóa đơn
