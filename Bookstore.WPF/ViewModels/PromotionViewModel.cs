@@ -176,6 +176,13 @@ namespace Bookstore.WPF.ViewModels
         public ICommand SavePromotionCommand { get; set; }
         public ICommand ClosePopupCommand { get; set; }
         public ICommand ExportExcelCommand { get; set; }
+
+        public async void LoadMasterData()
+        {
+            _ = InitDropdownData();
+            _ = LoadDataAsync();
+        }
+
         public PromotionViewModel()
         {
             InitCommands();
@@ -294,6 +301,7 @@ namespace Bookstore.WPF.ViewModels
         }
         private async Task InitDropdownData()
         {
+            ListLoaiKhachHang.Clear();
             var customerTypes = await ApiClient.GetAsync<List<CustomerTierResponse>>("api/LoaiKhachHang");
             if (customerTypes != null)
             {

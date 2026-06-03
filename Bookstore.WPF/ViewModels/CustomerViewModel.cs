@@ -117,6 +117,12 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
+        public async void LoadMasterData()
+        {
+            _ = LoadDanhSachLoaiKhachAsync();
+            _ = KhoiTaoDuLieuAsync();
+        }
+
         public CustomerViewModel()
         {
             MoPopupThemCommand = new RelayCommand<object>(ExecuteMoPopupThem);

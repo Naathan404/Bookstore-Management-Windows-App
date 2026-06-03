@@ -380,8 +380,8 @@ namespace Bookstore.API.Data
 
             // Loại khách hàng và khách hàng
             modelBuilder.Entity<LoaiKhachHang>().HasData(
-                new LoaiKhachHang { MaLoaiKhachHang = 1, TenLoaiKhachHang = "Cá nhân", NoToiDa = 1000000m, TiLeTraToiThieu = 0.5 },
-                new LoaiKhachHang { MaLoaiKhachHang = 2, TenLoaiKhachHang = "Doanh nghiệp", NoToiDa = 5000000m, TiLeTraToiThieu = 0.25 }
+                new LoaiKhachHang { MaLoaiKhachHang = 1, TenLoaiKhachHang = "Cá nhân", NoToiDa = 1000000m, TiLeTraToiThieu = 50 },
+                new LoaiKhachHang { MaLoaiKhachHang = 2, TenLoaiKhachHang = "Doanh nghiệp", NoToiDa = 5000000m, TiLeTraToiThieu = 25 }
             );
 
             modelBuilder.Entity<KhachHang>().HasData(

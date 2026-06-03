@@ -23,7 +23,9 @@ namespace Bookstore.API.Controllers
             return l => new CustomerTierResponse
             {
                 MaLoaiKhachHang = l.MaLoaiKhachHang,
-                TenLoaiKhachHang = l.TenLoaiKhachHang
+                TenLoaiKhachHang = l.TenLoaiKhachHang,
+                NoToiDa = l.NoToiDa,
+                TiLeTraToiThieu = l.TiLeTraToiThieu
             };
         }
 

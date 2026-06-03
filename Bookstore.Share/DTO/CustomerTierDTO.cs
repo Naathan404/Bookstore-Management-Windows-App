@@ -17,5 +17,7 @@ namespace Bookstore.Share.DTO
     {
         public int MaLoaiKhachHang { get; set; }
         public string TenLoaiKhachHang { get; set; } = string.Empty;
+        public decimal NoToiDa { get; set; }
+        public double TiLeTraToiThieu { get; set; }
     }
 }
