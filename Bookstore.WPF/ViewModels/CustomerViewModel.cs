@@ -326,7 +326,7 @@ namespace Bookstore.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Xóa thất bại. Chi tiết: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Không thể xóa khách hàng do khách hàng này đã phát sinh lịch sử mua hàng!", "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

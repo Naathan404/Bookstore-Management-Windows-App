@@ -329,7 +329,7 @@
 															ElementStyle="{StaticResource CellName}" />
 
 										<DataGridTemplateColumn Header="Thể loại"
-																Width="150"
+																Width="170"
 																HeaderStyle="{StaticResource CenterHeaderStyle}">
 											<DataGridTemplateColumn.CellTemplate>
 												<DataTemplate>

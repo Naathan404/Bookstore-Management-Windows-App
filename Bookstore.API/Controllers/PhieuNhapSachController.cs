@@ -153,6 +153,26 @@ namespace Bookstore.API.Controllers
         }
 
 
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    var phieu = await _context.PhieuNhapSach.FindAsync(id);
+        //    if (phieu == null) return NotFound();
+
+        //    var chiTiets = await _context.CT_PhieuNhapSach.Where(ct => ct.MaPhieuNhapSach == id).ToListAsync();
+
+        //    // Trừ lại kho
+        //    foreach (var ct in chiTiets)
+        //    {
+        //        var sach = await _context.PhienBanSach.FindAsync(ct.ISBN);
+        //        if (sach != null) sach.TonKho -= ct.SoLuong;
+        //    }
+
+        //    _context.PhieuNhapSach.Remove(phieu);
+        //    await _context.SaveChangesAsync();
+        //    return Ok(new { Message = "Đã xóa phiếu nhập và hoàn lại tồn kho." });
+        //}
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -161,14 +181,16 @@ namespace Bookstore.API.Controllers
 
             var chiTiets = await _context.CT_PhieuNhapSach.Where(ct => ct.MaPhieuNhapSach == id).ToListAsync();
 
-            // Trừ lại kho
             foreach (var ct in chiTiets)
             {
                 var sach = await _context.PhienBanSach.FindAsync(ct.ISBN);
                 if (sach != null) sach.TonKho -= ct.SoLuong;
             }
 
+            _context.CT_PhieuNhapSach.RemoveRange(chiTiets);
+
             _context.PhieuNhapSach.Remove(phieu);
+
             await _context.SaveChangesAsync();
             return Ok(new { Message = "Đã xóa phiếu nhập và hoàn lại tồn kho." });
         }

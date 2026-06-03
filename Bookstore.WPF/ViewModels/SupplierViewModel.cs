@@ -267,7 +267,7 @@ namespace Bookstore.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Xóa thất bại: {ex.Message}", "Lỗi xóa dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Không thể xóa do nhà cung cấp này đã phát sinh phiếu nhập!", "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
