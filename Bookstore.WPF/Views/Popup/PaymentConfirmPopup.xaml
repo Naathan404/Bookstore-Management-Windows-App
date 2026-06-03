@@ -1,0 +1,305 @@
+﻿<UserControl x:Class="Bookstore.WPF.Views.Popup.PaymentConfirmPopup"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+			 xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 mc:Ignorable="d">
+	<UserControl.Resources>
+		<Style x:Key="Content"
+			   TargetType="TextBlock">
+			<Setter Property="FontSize"
+					Value="13" />
+			<Setter Property="Foreground"
+					Value="{StaticResource TextLightColor}" />
+
+		</Style>
+	</UserControl.Resources>
+	<Grid Style="{StaticResource PopupOverlayStyle}"
+		  Visibility="{Binding IsOpen, Converter={StaticResource BoolToVis}}">
+
+		<Border Background="Transparent">
+			<Border.InputBindings>
+				<MouseBinding MouseAction="LeftClick"
+							  Command="{Binding HuyBoGiaoDichCommand}" />
+			</Border.InputBindings>
+		</Border>
+
+		<Border Width="600"
+				Style="{StaticResource PopupCardStyle}">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<components:PopupHeaderControl Grid.Row="0"
+											   Title="THANH TOÁN"
+											   IconKind="PlaylistCheck" />
+
+				<Grid Grid.Row="1"
+					  Margin="0,0,0,16">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Grid Grid.Row="0"
+						  Margin="0,0,0,6">
+						<TextBlock Text="Khách hàng:"
+								   Style="{StaticResource Content}" />
+						<TextBlock Text="{Binding TenKhachHang}"
+								   HorizontalAlignment="Right"
+								   FontWeight="Bold"
+								   Foreground="{StaticResource PrimaryDarkColor}"
+								   FontSize="13" />
+					</Grid>
+
+					<Grid Grid.Row="1"
+						  Margin="0,0,0,0">
+						<TextBlock Text="Số điện thoại:"
+								   Style="{StaticResource Content}" />
+						<TextBlock Text="{Binding SdtKhachHang}"
+								   HorizontalAlignment="Right"
+								   Foreground="{StaticResource PrimaryDarkColor}"
+								   FontSize="13" />
+					</Grid>
+				</Grid>
+
+				<TextBlock Grid.Row="2"
+						   Text="DANH SÁCH SẢN PHẨM"
+						   Foreground="{StaticResource PrimaryDarkColor}"
+						   FontWeight="Bold"
+						   Margin="0,0,0,8"
+						   FontSize="16" />
+
+				<Border Grid.Row="3"
+						Style="{StaticResource DarkCardStyle}"
+						Height="150"
+						Margin="0,0,0,16"
+						Padding="12">
+					<ScrollViewer VerticalScrollBarVisibility="Auto"
+								  PanningMode="VerticalOnly">
+						<ItemsControl ItemsSource="{Binding CartItems}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid Margin="0,4">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="40" />
+											<ColumnDefinition Width="90" />
+										</Grid.ColumnDefinitions>
+
+										<TextBlock Grid.Column="0"
+												   Text="{Binding TenSach}"
+												   Foreground="#2B3674"
+												   FontWeight="Medium"
+												   TextTrimming="CharacterEllipsis"
+												   Margin="0,0,12,0" />
+										<TextBlock Grid.Column="1"
+												   Text="{Binding SoLuongMua, StringFormat='x{0}'}"
+												   Foreground="#A3AED0"
+												   TextAlignment="Center" />
+										<TextBlock x:Name="txtThanhTien"
+												   Grid.Column="2"
+												   Text="{Binding ThanhTien, StringFormat='{}{0:N0} đ'}"
+												   Foreground="#4318FF"
+												   FontWeight="Bold"
+												   HorizontalAlignment="Right" />
+									</Grid>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding IsGift}"
+													 Value="True">
+											<Setter TargetName="txtThanhTien"
+													Property="Foreground"
+													Value="#10B981" />
+										</DataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+				</Border>
+
+				<Border Grid.Row="4"
+						Margin="0,0,0,16">
+					<StackPanel>
+						<Grid Margin="0,0,0,4"
+							  Visibility="{Binding GiamTien, Converter={StaticResource InvertZeroToVis}}">
+							<TextBlock Text="Tổng khuyến mãi:"
+									   Style="{StaticResource Content}" />
+							<TextBlock Text="{Binding GiamTien, StringFormat='-{0:N0} đ'}"
+									   HorizontalAlignment="Right"
+									   FontSize="13"
+									   FontWeight="Bold"
+									   Foreground="{StaticResource SuccessColor}" />
+						</Grid>
+
+						<Grid>
+							<TextBlock Text="Thành tiền:"
+									   Foreground="{StaticResource PrimaryDarkColor}"
+									   FontWeight="Bold"
+									   FontSize="16" />
+							<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}"
+									   HorizontalAlignment="Right"
+									   FontSize="16"
+									   FontWeight="Black"
+									   Foreground="{StaticResource DangerColor}" />
+						</Grid>
+					</StackPanel>
+				</Border>
+
+
+
+				<TabControl Style="{StaticResource TabControlStyle}"
+							Grid.Row="5"
+							Margin="0,0,0,16">
+					<TabItem Header="TIỀN MẶT">
+						<Border Style="{StaticResource CardStyle}"
+								Height="200"
+								Padding="24,16,24,0">
+
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<components:FormInputControl Title="Số tiền khách đưa"
+															 Grid.Row="0"
+															 IsRequired="True"
+															 IconKind="CashPlus"
+															 UnitText="đ"
+															 IsCurrencyMode="True"
+															 State="{Binding TienKhachDuaState}"
+															 HelperText="{Binding TienKhachDuaHelperText}"
+															 FontWeight="Bold"
+															 Foreground="{StaticResource PrimaryColor}"
+															 TextValue="{Binding TienKhachDua, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+
+								<Grid Grid.Row="1">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="20" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+
+									<components:FormInputControl Title="Số tiền trả khách"
+																 Grid.Column="0"
+																 IconKind="CashMinus"
+																 UnitText="đ"
+																 IsCurrencyMode="True"
+																 IsEnabled="False"
+																 TextValue="{Binding TienTraKhach, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+
+									<components:FormInputControl Title="Số tiền còn lại"
+																 Grid.Column="2"
+																 IconKind="CashReturn"
+																 UnitText="đ"
+																 IsCurrencyMode="True"
+																 IsEnabled="False"
+																 TextValue="{Binding TienConNo, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+								</Grid>
+
+							</Grid>
+						</Border>
+					</TabItem>
+
+					<TabItem Header="CHUYỂN KHOẢN">
+						<Border Style="{StaticResource CardStyle}"
+								Padding="12"
+								Height="200">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+
+								<Border Grid.Column="0"
+										Width="160"
+										Height="160"
+										Margin="0,0,12,0"
+										Style="{StaticResource CardStyle}"
+										Padding="8">
+									<Image Source="/Resources/Images/QrPay.png"
+										   Stretch="Uniform"
+										   RenderOptions.BitmapScalingMode="HighQuality" />
+								</Border>
+
+								<StackPanel Grid.Column="1"
+											VerticalAlignment="Center">
+									<TextBlock Text="QUÉT MÃ ĐỂ THANH TOÁN"
+											   FontWeight="Bold"
+											   FontSize="16"
+											   Foreground="{StaticResource PrimaryColor}"
+											   Margin="0,0,0,16" />
+
+									<Grid Margin="0,0,0,10">
+										<TextBlock Text="Ngân hàng:"
+												   Foreground="{StaticResource TextLightColor}"
+												   FontSize="13" />
+										<TextBlock Text="Vietcombank (VCB)"
+												   HorizontalAlignment="Right"
+												   FontWeight="SemiBold"
+												   Foreground="{StaticResource PrimaryDarkColor}"
+												   FontSize="13" />
+									</Grid>
+
+									<Grid Margin="0,0,0,10">
+										<TextBlock Text="Chủ tài khoản:"
+												   Foreground="{StaticResource TextLightColor}"
+												   FontSize="13" />
+										<TextBlock Text="NGUYEN GIA HUNG"
+												   HorizontalAlignment="Right"
+												   FontWeight="SemiBold"
+												   Foreground="{StaticResource PrimaryDarkColor}"
+												   FontSize="13" />
+									</Grid>
+
+									<Grid Margin="0,0,0,16">
+										<TextBlock Text="Số tài khoản:"
+												   Foreground="{StaticResource TextLightColor}"
+												   FontSize="13"
+												   VerticalAlignment="Center" />
+										<TextBlock Text="1035283213"
+												   HorizontalAlignment="Right"
+												   FontWeight="Black"
+												   Foreground="{StaticResource DangerColor}"
+												   FontSize="16" />
+									</Grid>
+
+									<TextBlock Text="* Vui lòng kiểm tra kỹ tên người nhận trước khi chuyển."
+											   FontStyle="Italic"
+											   Foreground="{StaticResource TextLightColor}"
+											   FontSize="12" />
+								</StackPanel>
+							</Grid>
+						</Border>
+					</TabItem>
+				</TabControl>
+
+
+				<StackPanel Grid.Row="7"
+							Orientation="Horizontal"
+							HorizontalAlignment="Right">
+					<Button Content="HỦY"
+							Style="{StaticResource OutlineButtonStyle}"
+							Width="80"
+							Margin="0,0,12,0"
+							Command="{Binding HuyBoGiaoDichCommand}" />
+					<Button Content="ĐÃ THU"
+							Style="{StaticResource MainGradientButton}"
+							Width="100"
+							Command="{Binding XacNhanTaoDonCommand}" />
+				</StackPanel>
+			</Grid>
+		</Border>
+	</Grid>
+</UserControl>

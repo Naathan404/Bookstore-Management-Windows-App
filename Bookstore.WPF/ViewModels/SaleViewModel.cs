@@ -7,6 +7,7 @@ using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.ViewModels.Base;
 using Bookstore.WPF.Views.Components;
+using Bookstore.WPF.Views.Popup;
 using MaterialDesignThemes.Wpf;
 using OfficeOpenXml.Sorting;
 using System;
@@ -24,14 +25,19 @@ namespace Bookstore.WPF.ViewModels
     {
         private bool _isCalculating = false;
 
+        #region QUẢN LÝ POPUP ĐỘC LẬP
+        public PaymentConfirmPopupViewModel PaymentConfirmPopupViewModel { get; set; } = new PaymentConfirmPopupViewModel();
+        //public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();
+        #endregion
+
         #region Trạng thái popup
 
-        private bool _isConfirmPaymentOpen;
-        public bool IsConfirmPaymentOpen
-        {
-            get => _isConfirmPaymentOpen;
-            set { _isConfirmPaymentOpen = value; OnPropertyChanged(); }
-        }
+        //private bool _isConfirmPaymentOpen;
+        //public bool IsConfirmPaymentOpen
+        //{
+        //    get => _isConfirmPaymentOpen;
+        //    set { _isConfirmPaymentOpen = value; OnPropertyChanged(); }
+        //}
 
         private bool _isSelectCustomerOpen;
         public bool IsSelectCustomerOpen
@@ -238,21 +244,21 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
-        #region Phương thức thanh toán
-        private bool _isThanhToanTienMat = true;
-        public bool IsThanhToanTienMat
-        {
-            get => _isThanhToanTienMat;
-            set { _isThanhToanTienMat = value; OnPropertyChanged(); }
-        }
+        //#region Phương thức thanh toán
+        //private bool _isThanhToanTienMat = true;
+        //public bool IsThanhToanTienMat
+        //{
+        //    get => _isThanhToanTienMat;
+        //    set { _isThanhToanTienMat = value; OnPropertyChanged(); }
+        //}
 
-        private bool _isThanhToanChuyenKhoan;
-        public bool IsThanhToanChuyenKhoan
-        {
-            get => _isThanhToanChuyenKhoan;
-            set { _isThanhToanChuyenKhoan = value; OnPropertyChanged(); }
-        }
-        #endregion
+        //private bool _isThanhToanChuyenKhoan;
+        //public bool IsThanhToanChuyenKhoan
+        //{
+        //    get => _isThanhToanChuyenKhoan;
+        //    set { _isThanhToanChuyenKhoan = value; OnPropertyChanged(); }
+        //}
+        //#endregion
 
         #region COMMANDS & CONSTRUCTOR
         public ICommand MoPopupThanhToanCommand { get; set; }
@@ -265,8 +271,8 @@ namespace Bookstore.WPF.ViewModels
         public ICommand TangSoLuongCommand { get; set; }
         public ICommand GiamSoLuongCommand { get; set; }
         public ICommand XoaKhoiGioHangCommand { get; set; }
-        public ICommand XacNhanTaoDonCommand { get; set; }
-        public ICommand HuyBoGiaoDichCommand { get; set; }
+        //public ICommand XacNhanTaoDonCommand { get; set; }
+        //public ICommand HuyBoGiaoDichCommand { get; set; }
         public ICommand XoaBoLocCommand { get; set; }
         public ICommand XoaUuDaiCommand { get; set; } // THÊM: Xóa ưu đãi khỏi bill
         public ICommand TimKhachHangTheoSdtCommand { get; set; }
@@ -304,7 +310,9 @@ namespace Bookstore.WPF.ViewModels
             #endregion
 
             #region CHỌN KHÁCH HÀNG
+
             TimKhachHangTheoSdtCommand = new RelayCommand(async () => await ThucHienTimKhachHangAsync());
+
             #endregion
 
             #region GIỎ HÀNG
@@ -384,25 +392,38 @@ namespace Bookstore.WPF.ViewModels
             });
 
             MoPopupThanhToanCommand = new RelayCommand(
-    () => { IsConfirmPaymentOpen = true; },
+                () =>
+                {
+                    PaymentConfirmPopupViewModel.ShowPopup(
+                        tenKH: TenKhachHang,
+                        sdtKH: SdtKhachHang,
+                        items: CartItems,
+                        giamGia: GiamTien,
+                        tongTien: TongTienThanhToan,
+                        onConfirm: () =>
+                        {
+                            ThucHienTaoDonHang();
+                        }
+                    );
+                },
     () => IsThanhToanEnabled
-);
+            );
 
             // Đóng Popup / Hủy bỏ giao dịch
             CloseDialogCommand = new RelayCommand<object>((p) =>
             {
-                IsConfirmPaymentOpen = false;
-                IsBookDetailOpen = false;
-                IsSelectCustomerOpen = false; // Tiện tay đóng luôn cái chọn khách nếu có
+                ////IsConfirmPaymentOpen = false;
+                //IsBookDetailOpen = false;
+                //IsSelectCustomerOpen = false; // Tiện tay đóng luôn cái chọn khách nếu có
             });
 
-            HuyBoGiaoDichCommand = new RelayCommand<object>((p) => { IsConfirmPaymentOpen = false; });
+            //HuyBoGiaoDichCommand = new RelayCommand<object>((p) => { IsConfirmPaymentOpen = false; });
 
             // Xác nhận lưu hóa đơn xuống Database qua API
-            XacNhanTaoDonCommand = new RelayCommand<object>(
-                (p) => ThucHienTaoDonHang(), // Rút gọn thành hàm Helper
-                (p) => IsKhachVangLai || KhachHangDuocChon != null
-            );
+            //XacNhanTaoDonCommand = new RelayCommand<object>(
+            //    (p) => ThucHienTaoDonHang(), // Rút gọn thành hàm Helper
+            //    (p) => IsKhachVangLai || KhachHangDuocChon != null
+            //);
 
             #endregion
 

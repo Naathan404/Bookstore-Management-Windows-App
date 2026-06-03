@@ -58,5 +58,13 @@ namespace Bookstore.WPF.Views.Components
 
         public FieldState State { get => (FieldState)GetValue(StateProperty); set => SetValue(StateProperty, value); }
         public static readonly DependencyProperty StateProperty = DependencyProperty.Register("State", typeof(FieldState), typeof(FormInputControl), new PropertyMetadata(FieldState.Normal));
+        // Thêm công tắc IsCurrencyMode vào FormInputControl
+        public bool IsCurrencyMode
+        {
+            get { return (bool)GetValue(IsCurrencyModeProperty); }
+            set { SetValue(IsCurrencyModeProperty, value); }
+        }
+        public static readonly DependencyProperty IsCurrencyModeProperty =
+            DependencyProperty.Register("IsCurrencyMode", typeof(bool), typeof(FormInputControl), new PropertyMetadata(false));
     }
 }

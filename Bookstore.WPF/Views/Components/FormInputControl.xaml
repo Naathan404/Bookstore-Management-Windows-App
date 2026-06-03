@@ -5,6 +5,7 @@
 			 xmlns:local="clr-namespace:Bookstore.WPF.Views.Components"
 			 Foreground="{StaticResource PrimaryDarkColor}"
 			 FontWeight="Normal"
+			 xmlns:helpers="clr-namespace:Bookstore.WPF.Helpers"
 			 x:Name="Root">
 
 	<StackPanel>
@@ -87,6 +88,7 @@
 						 BorderThickness="0"
 						 VerticalAlignment="Stretch"
 						 FontSize="14"
+						 helpers:TextBoxFormatHelper.IsCurrency="{Binding IsCurrencyMode, ElementName=Root}"
 						 Foreground="{Binding Foreground, ElementName=Root}"
 						 FontWeight="{Binding FontWeight, ElementName=Root}"
 						 CaretBrush="{StaticResource PrimaryColor}"

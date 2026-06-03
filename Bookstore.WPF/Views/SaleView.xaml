@@ -5,6 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 xmlns:popup="clr-namespace:Bookstore.WPF.Views.Popup"
 			 mc:Ignorable="d">
 	<UserControl.Resources>
 		<Style x:Key="CardHeader"
@@ -21,6 +22,7 @@
 	</UserControl.Resources>
 
 	<Grid>
+		
 		<Grid Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -604,223 +606,10 @@
 				</Border>
 			</Grid>
 		</Grid>
+		
+		<popup:PaymentConfirmPopup DataContext="{Binding PaymentConfirmPopupViewModel}" />
+		
 
-		<Grid x:Name="PopupXacNhan"
-			  Background="#80000000"
-			  Visibility="{Binding IsConfirmPaymentOpen, Converter={StaticResource BoolToVis}}"
-			  VerticalAlignment="Stretch"
-			  HorizontalAlignment="Stretch"
-			  Panel.ZIndex="1001">
-
-			<Border Background="Transparent"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch">
-				<Border.InputBindings>
-					<MouseBinding MouseAction="LeftClick"
-								  Command="{Binding HuyBoGiaoDichCommand}" />
-				</Border.InputBindings>
-			</Border>
-
-			<Border Width="600"
-					Padding="28"
-					Background="White"
-					CornerRadius="20"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<!--<Border Grid.Row="0"
-							Margin="0,0,0,16"
-							BorderBrush="#F4F7FE"
-							BorderThickness="0,0,0,1">
-						<StackPanel Orientation="Horizontal"
-									Margin="0,0,0,10">
-							<materialDesign:PackIcon Kind="PlaylistCheck"
-													 Width="24"
-													 Height="24"
-													 Foreground="#4318FF"
-													 VerticalAlignment="Center"
-													 Margin="0,0,8,0" />
-							<TextBlock Text="Xác Nhận Đơn Hàng &amp; Thanh Toán"
-									   FontSize="18"
-									   FontWeight="Bold"
-									   Foreground="#2B3674"
-									   VerticalAlignment="Center" />
-						</StackPanel>
-					</Border>-->
-
-					<StackPanel Grid.Row="1"
-								Margin="0,0,0,16">
-
-						<Grid Margin="0,0,0,6">
-							<TextBlock Text="Khách hàng:"
-									   Foreground="#A3AED0"
-									   FontSize="13" />
-							<TextBlock Text="{Binding TenKhachHang}"
-									   HorizontalAlignment="Right"
-									   FontWeight="SemiBold"
-									   Foreground="#2B3674"
-									   FontSize="13" />
-						</Grid>
-						<Grid Margin="0,0,0,12">
-							<TextBlock Text="Số điện thoại:"
-									   Foreground="#A3AED0"
-									   FontSize="13" />
-							<TextBlock Text="{Binding SdtKhachHang}"
-									   HorizontalAlignment="Right"
-									   Foreground="#2B3674"
-									   FontSize="13" />
-						</Grid>
-
-						<TextBlock Text="Danh sách sản phẩm mua:"
-								   Foreground="#2B3674"
-								   FontWeight="Bold"
-								   Margin="0,4,0,6"
-								   FontSize="13" />
-
-						<Border Background="#F4F7FE"
-								CornerRadius="8"
-								Padding="12"
-								MaxHeight="180">
-							<ScrollViewer VerticalScrollBarVisibility="Auto">
-								<ItemsControl ItemsSource="{Binding CartItems}">
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<Grid Margin="0,4">
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="40" />
-													<ColumnDefinition Width="90" />
-												</Grid.ColumnDefinitions>
-
-												<TextBlock Grid.Column="0"
-														   Text="{Binding TenSach}"
-														   Foreground="#2B3674"
-														   FontWeight="Medium"
-														   TextTrimming="CharacterEllipsis"
-														   Margin="0,0,12,0" />
-
-												<TextBlock Grid.Column="1"
-														   Text="{Binding SoLuongMua, StringFormat='x{0}'}"
-														   Foreground="#A3AED0"
-														   TextAlignment="Center" />
-
-												<TextBlock x:Name="txtThanhTien"
-														   Grid.Column="2"
-														   Text="{Binding ThanhTien, StringFormat='{}{0:N0} đ'}"
-														   Foreground="#4318FF"
-														   FontWeight="Bold"
-														   HorizontalAlignment="Right" />
-											</Grid>
-
-											<DataTemplate.Triggers>
-												<DataTrigger Binding="{Binding IsGift}"
-															 Value="True">
-													<Setter TargetName="txtThanhTien"
-															Property="Foreground"
-															Value="#10B981" />
-												</DataTrigger>
-											</DataTemplate.Triggers>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</ScrollViewer>
-						</Border>
-					</StackPanel>
-
-					<Border Grid.Row="2"
-							Background="#FFF9DB"
-							CornerRadius="12"
-							Padding="16"
-							Margin="0,0,0,24"
-							BorderBrush="#FFE066"
-							BorderThickness="1">
-						<StackPanel>
-							<TextBlock Text="CHỌN PHƯƠNG THỨC THANH TOÁN:"
-									   FontSize="13"
-									   FontWeight="Bold"
-									   Foreground="#F59E0B"
-									   Margin="0,0,0,10" />
-							<StackPanel Orientation="Horizontal"
-										HorizontalAlignment="Center">
-								<RadioButton Content="Tiền mặt"
-											 IsChecked="{Binding IsThanhToanTienMat}"
-											 Margin="0,0,32,0"
-											 FontSize="14"
-											 FontWeight="SemiBold"
-											 Foreground="#2B3674" />
-								<RadioButton Content="Chuyển khoản (Ví / Thẻ)"
-											 IsChecked="{Binding IsThanhToanChuyenKhoan}"
-											 FontSize="14"
-											 FontWeight="SemiBold"
-											 Foreground="#2B3674" />
-							</StackPanel>
-
-							<Border Margin="0,16,0,0"
-									BorderBrush="#FFE066"
-									BorderThickness="0,1,0,0"
-									Padding="0,10,0,0">
-								<StackPanel>
-									<Grid Margin="0,0,0,4"
-										  Visibility="{Binding GiamTien, Converter={StaticResource InvertZeroToVis}}">
-										<TextBlock Text="Tổng khuyến mãi:"
-												   FontSize="13"
-												   VerticalAlignment="Center"
-												   Foreground="#F59E0B" />
-										<TextBlock Text="{Binding GiamTien, StringFormat='-{0:N0} đ'}"
-												   HorizontalAlignment="Right"
-												   FontSize="13"
-												   FontWeight="Bold"
-												   Foreground="#10B981" />
-									</Grid>
-
-									<Grid>
-										<TextBlock Text="TỔNG TIỀN PHẢI THU:"
-												   FontSize="14"
-												   FontWeight="Bold"
-												   VerticalAlignment="Center"
-												   Foreground="#2B3674" />
-										<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} VNĐ'}"
-												   HorizontalAlignment="Right"
-												   FontSize="22"
-												   FontWeight="Black"
-												   Foreground="#EF4444" />
-									</Grid>
-								</StackPanel>
-							</Border>
-						</StackPanel>
-					</Border>
-
-					<StackPanel Grid.Row="3"
-								Orientation="Horizontal"
-								HorizontalAlignment="Right">
-						<Button Content="HỦY BỎ"
-								Style="{StaticResource MaterialDesignOutlinedButton}"
-								Width="120"
-								Height="40"
-								Margin="0,0,12,0"
-								Foreground="#707EAE"
-								BorderBrush="#E2E8F0"
-								Command="{Binding HuyBoGiaoDichCommand}" />
-						<Button Content="XÁC NHẬN TẠO ĐƠN"
-								Style="{StaticResource MaterialDesignRaisedButton}"
-								Width="180"
-								Height="40"
-								Background="#05CD99"
-								BorderThickness="0"
-								Foreground="White"
-								FontWeight="Bold"
-								Command="{Binding XacNhanTaoDonCommand}" />
-					</StackPanel>
-				</Grid>
-			</Border>
-		</Grid>
 
 		<Grid x:Name="PopupThongTinSach"
 			  Background="#80000000"
