@@ -32,46 +32,86 @@
 										  ShowExportPdf="True"
 										  ExportPdfCommand="{Binding ExportPdfCommand}"
 										  ExportPdfCommandParameter="{Binding}" />
-
-			<Border Grid.Row="1"
+<!---->
+            <Border Grid.Row="1"
 					Style="{StaticResource FilterCardStyle}">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
-					<components:FilterComboBoxControl Grid.Column="0"
-													  Margin="0,0,8,0"
+                    <components:FilterComboBoxControl Width="220" Margin="0,0,12,0"
 													  IconKind="QuestionMark"
 													  HintText="Loại báo cáo"
 													  ItemsSource="{Binding ReportTypeList}"
 													  SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}" />
 
-					<components:FilterDatePickerControl Grid.Column="1"
-														Margin="0,0,8,0"
-														IconKind="CalendarStart"
-														HintText="Từ ngày"
-														SelectedDate="{Binding FromDate}" />
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+								Visibility="{Binding RevenueSecondaryFilterVisibility}">
+                        <components:FilterDatePickerControl Width="150" Margin="0,0,8,0"
+															IconKind="CalendarStart"
+															HintText="Từ ngày"
+															SelectedDate="{Binding FromDate}" />
 
-					<components:FilterDatePickerControl Grid.Column="2"
-														Margin="0,0,8,0"
-														IconKind="CalendarEnd"
-														HintText="Đến ngày"
-														SelectedDate="{Binding ToDate}" />
+                        <components:FilterDatePickerControl Width="150" Margin="0,0,8,0"
+															IconKind="CalendarEnd"
+															HintText="Đến ngày"
+															SelectedDate="{Binding ToDate}" />
 
-					<components:FilterComboBoxControl Grid.Column="3"
-													  Margin="0,0,8,0"
-													  IconKind="FilterVariant"
-													  HintText="Lọc theo"
-													  ItemsSource="{Binding RevenueSubFilterTypeList}"
-													  SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}" />
-				</Grid>
-			</Border>
+                        <components:FilterComboBoxControl Width="140" Margin="0,0,8,0"
+														  IconKind="FilterVariant"
+														  HintText="Lọc theo"
+														  ItemsSource="{Binding RevenueSubFilterTypeList}"
+														  SelectedIndex="{Binding SelectedRevenueSubFilterType, Mode=TwoWay}" />
 
-			<ScrollViewer Grid.Row="2"
+                        <components:FilterComboBoxControl Width="180" Margin="0,0,8,0"
+														  IconKind="FilterList"
+														  HintText="Mục cụ thể"
+														  ItemsSource="{Binding RevenueSubItemsSource}"
+														  SelectedItem="{Binding SelectedRevenueSubItem}"
+														  Visibility="{Binding RevenueSubItemFilterVisibility}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedReportTypeIndex}" Value="1">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <components:FilterComboBoxControl Width="250" Margin="0,0,8,0"
+														  IconKind="BookmarkOutline"
+														  HintText="Lọc theo Thể loại sách"
+														  ItemsSource="{Binding CategoryList}"
+														  SelectedItem="{Binding SelectedInventoryCategory}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+								Visibility="{Binding DebtSecondaryFilterVisibility}">
+                        <components:FilterDatePickerControl Width="150" Margin="0,0,8,0"
+															IconKind="CalendarStart"
+															HintText="Từ ngày"
+															SelectedDate="{Binding FromDate}" />
+
+                        <components:FilterDatePickerControl Width="150" Margin="0,0,8,0"
+															IconKind="CalendarEnd"
+															HintText="Đến ngày"
+															SelectedDate="{Binding ToDate}" />
+
+                        <components:FilterComboBoxControl Width="200" Margin="0,0,8,0"
+														  IconKind="AccountGroup"
+														  HintText="Loại khách hàng"
+														  ItemsSource="{Binding CustomerTypeList}"
+														  SelectedItem="{Binding SelectedCustomerType}" />
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+
+
+            <ScrollViewer Grid.Row="2"
 						  VerticalScrollBarVisibility="Auto">
 				<Grid>
 					<Grid.RowDefinitions>
@@ -182,14 +222,15 @@
 							</Grid>
 
 							<Grid Grid.Row="1"
-								  MinHeight="250">
+								  MinHeight="300">
 								<lvc:CartesianChart Series="{Binding RevenueChartSeries}"
 													XAxes="{Binding RevenueXAxes}"
 													YAxes="{Binding RevenueYAxes}"
 													Visibility="{Binding RevenueChartVisibility}"
 													ZoomMode="None"
 													TooltipPosition="Top"
-													LegendPosition="Hidden" />
+													LegendPosition="Hidden"
+                                                    Margin="0 0 0 0"/>
 								<lvc:CartesianChart Series="{Binding InventoryChartSeries}"
 													XAxes="{Binding InventoryXAxes}"
 													YAxes="{Binding InventoryYAxes}"
@@ -329,7 +370,7 @@
 															ElementStyle="{StaticResource CellName}" />
 
 										<DataGridTemplateColumn Header="Thể loại"
-																Width="150"
+																Width="170"
 																HeaderStyle="{StaticResource CenterHeaderStyle}">
 											<DataGridTemplateColumn.CellTemplate>
 												<DataTemplate>

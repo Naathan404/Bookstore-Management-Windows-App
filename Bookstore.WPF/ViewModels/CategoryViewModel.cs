@@ -174,7 +174,7 @@ namespace Bookstore.WPF.ViewModels
                     }
                     else
                     {
-                        MessageBox.Show("Xóa thất bại. Vui lòng thử lại sau.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Không thể xóa do danh mục này đã phát sinh thông tin liên quan đến ít nhất một sách", "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
                     }    
                 }
             });
@@ -256,7 +256,7 @@ namespace Bookstore.WPF.ViewModels
                     }
                     else
                     {
-                        MessageBox.Show("Xóa Đầu sách thất bại. Vui lòng thử lại sau.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Không thể xóa đầu sách do đầu sách này đã xuất hiện trong ít nhất 1 hóa đơn.", "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
                     }    
                 }
             });

@@ -409,35 +409,83 @@ namespace Bookstore.API.Controllers
 
                     if (!string.IsNullOrEmpty(filter.CustomerType))
                     {
-                        if(filter.CustomerType != "Tất cả khách hàng")
-                        {
-                            customerQuery = customerQuery.Where(x => x.LoaiKhachHang.TenLoaiKhachHang == filter.CustomerType);
-                        }    
+                        customerQuery = customerQuery.Where(x => x.LoaiKhachHang.TenLoaiKhachHang == filter.CustomerType);
                     }
+
+                    //var customers = await customerQuery.ToListAsync();
+
+                    //// Quét hóa đơn và phiếu thu tiền phát sinh trong khoảng thời gian lọc
+                    //var invoices = await _context.HoaDon
+                    //    .Where(x => x.NgayTao >= fromDate && x.NgayTao <= toDate && x.MaKhachHang != 0)
+                    //    .ToListAsync();
+
+                    //var receipts = await _context.PhieuThuTien
+                    //    .Where(x => x.NgayTao >= fromDate && x.NgayTao <= toDate && x.MaKhachHang != 0)
+                    //    .ToListAsync();
+
+                    //var debtRows = new List<DebtReportRowDto>();
+
+                    //foreach (var c in customers)
+                    //{
+                    //    // Số nợ phát sinh mới do mua sách chưa trả hết tiền
+                    //    decimal newDebt = invoices.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.TongTien - x.SoTienTra);
+
+                    //    // Số nợ giảm đi thu hồi được từ các phiếu thu tiền mặt
+                    //    decimal paidDebt = receipts.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.SoTienThu);
+
+                    //    decimal closingDebt = c.TienNo; // Số nợ hiện tại cuối kỳ
+                    //    decimal openingDebt = closingDebt - newDebt + paidDebt; // Tính ngược lại nợ đầu kỳ
+
+                    //    debtRows.Add(new DebtReportRowDto
+                    //    {
+                    //        CustomerName = c.TenKhachHang,
+                    //        CustomerType = c.LoaiKhachHang.TenLoaiKhachHang,
+                    //        OpeningDebt = openingDebt,
+                    //        NewDebt = newDebt,
+                    //        PaidDebt = paidDebt,
+                    //        ClosingDebt = closingDebt,
+                    //    });
+                    //}
+
+                    //result.DebtRows = debtRows.OrderByDescending(x => x.ClosingDebt).ToList();
+
+                    //// Gom dữ liệu biểu đồ đường biến động theo dòng thời gian ngày
+                    //int totalDays = (filter.ToDate.Date - filter.FromDate.Date).Days + 1;
+                    //var debtAxisLabels = new List<string>();
+                    //var debtNewSeries = new List<decimal>();
+                    //var debtPaidSeries = new List<decimal>();
+
+                    //var invoicesByDay = invoices.GroupBy(x => x.NgayTao.Date).ToDictionary(g => g.Key, g => g.Sum(x => x.TongTien - x.SoTienTra));
+                    //var receiptsByDay = receipts.GroupBy(x => x.NgayTao.Date).ToDictionary(g => g.Key, g => g.Sum(x => x.SoTienThu));
 
                     var customers = await customerQuery.ToListAsync();
 
-                    // Quét hóa đơn và phiếu thu tiền phát sinh trong khoảng thời gian lọc
+                    var validCustomerIds = customers.Select(x => x.MaKhachHang).ToList();
+
                     var invoices = await _context.HoaDon
-                        .Where(x => x.NgayTao >= fromDate && x.NgayTao <= toDate && x.MaKhachHang != 0)
+                        .Where(x => x.NgayTao >= fromDate
+                                 && x.NgayTao <= toDate
+                                 && x.MaKhachHang != 0
+                                 && validCustomerIds.Contains(x.MaKhachHang)) 
                         .ToListAsync();
 
                     var receipts = await _context.PhieuThuTien
-                        .Where(x => x.NgayTao >= fromDate && x.NgayTao <= toDate && x.MaKhachHang != 0)
+                        .Where(x => x.NgayTao >= fromDate
+                                 && x.NgayTao <= toDate
+                                 && x.MaKhachHang != 0
+                                 && validCustomerIds.Contains(x.MaKhachHang)) 
                         .ToListAsync();
 
                     var debtRows = new List<DebtReportRowDto>();
 
                     foreach (var c in customers)
                     {
-                        // Số nợ phát sinh mới do mua sách chưa trả hết tiền
                         decimal newDebt = invoices.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.TongTien - x.SoTienTra);
 
-                        // Số nợ giảm đi thu hồi được từ các phiếu thu tiền mặt
                         decimal paidDebt = receipts.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.SoTienThu);
 
-                        decimal closingDebt = c.TienNo; // Số nợ hiện tại cuối kỳ
-                        decimal openingDebt = closingDebt - newDebt + paidDebt; // Tính ngược lại nợ đầu kỳ
+                        decimal closingDebt = c.TienNo; 
+                        decimal openingDebt = closingDebt - newDebt + paidDebt; 
 
                         debtRows.Add(new DebtReportRowDto
                         {
@@ -452,7 +500,6 @@ namespace Bookstore.API.Controllers
 
                     result.DebtRows = debtRows.OrderByDescending(x => x.ClosingDebt).ToList();
 
-                    // Gom dữ liệu biểu đồ đường biến động theo dòng thời gian ngày
                     int totalDays = (filter.ToDate.Date - filter.FromDate.Date).Days + 1;
                     var debtAxisLabels = new List<string>();
                     var debtNewSeries = new List<decimal>();
@@ -461,7 +508,7 @@ namespace Bookstore.API.Controllers
                     var invoicesByDay = invoices.GroupBy(x => x.NgayTao.Date).ToDictionary(g => g.Key, g => g.Sum(x => x.TongTien - x.SoTienTra));
                     var receiptsByDay = receipts.GroupBy(x => x.NgayTao.Date).ToDictionary(g => g.Key, g => g.Sum(x => x.SoTienThu));
 
-                    for (int i = 0; i < Math.Min(totalDays, 30); i++) // Giới hạn tối đa hiển thị 30 điểm mốc tránh dày đặc chart
+                    for (int i = 0; i < Math.Min(totalDays, 30); i++) 
                     {
                         var day = filter.FromDate.Date.AddDays(i);
                         debtAxisLabels.Add(day.ToString("dd/MM"));
