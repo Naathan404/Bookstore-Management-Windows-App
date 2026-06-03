@@ -20,6 +20,17 @@ namespace Bookstore.WPF.ViewModels
         // ==========================================
         // BỘ LỌC TÙY CHỈNH CỦA BÁO CÁO
 
+        //private int _selectedReportTypeIndex = 0;
+        //public int SelectedReportTypeIndex
+        //{
+        //    get => _selectedReportTypeIndex;
+        //    set
+        //    {
+        //        _selectedReportTypeIndex = value;
+        //        OnPropertyChanged(nameof(SelectedReportTypeIndex));
+        //    }
+        //}
+
         private int _selectedReportTypeIndex = 0;
         public int SelectedReportTypeIndex
         {
@@ -28,8 +39,25 @@ namespace Bookstore.WPF.ViewModels
             {
                 _selectedReportTypeIndex = value;
                 OnPropertyChanged(nameof(SelectedReportTypeIndex));
+
+                OnPropertyChanged(nameof(RevenueSecondaryFilterVisibility));
+                OnPropertyChanged(nameof(DebtSecondaryFilterVisibility));
+                OnPropertyChanged(nameof(RevenueSubItemFilterVisibility));
             }
         }
+
+        private string _selectedInventoryCategory;
+        public string SelectedInventoryCategory
+        {
+            get => _selectedInventoryCategory;
+            set 
+            { 
+                _selectedInventoryCategory = value; 
+                OnPropertyChanged(nameof(SelectedInventoryCategory)); 
+            }
+        }
+
+
 
         private DateTime _fromDate = DateTime.Today.AddMonths(-1);
         public DateTime FromDate
@@ -55,6 +83,7 @@ namespace Bookstore.WPF.ViewModels
                 OnPropertyChanged(nameof(SelectedRevenueSubFilterType));
                 OnPropertyChanged(nameof(RevenueSubItemFilterVisibility));
                 OnPropertyChanged(nameof(RevenueSubItemsSource));
+                SelectedRevenueSubItem = null; 
             }
         }
 
@@ -69,7 +98,11 @@ namespace Bookstore.WPF.ViewModels
         public string SelectedCustomerType
         {
             get => _selectedCustomerType;
-            set { _selectedCustomerType = value; OnPropertyChanged(nameof(SelectedCustomerType)); }
+            set 
+            { 
+                _selectedCustomerType = value; 
+                OnPropertyChanged(nameof(SelectedCustomerType)); 
+            }
         }
 
         public ObservableCollection<string> StaffList { get; set; } = new ObservableCollection<string>();
@@ -126,7 +159,8 @@ namespace Bookstore.WPF.ViewModels
 
         public Visibility RevenueSecondaryFilterVisibility => SelectedReportTypeIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
         public Visibility DebtSecondaryFilterVisibility => SelectedReportTypeIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility RevenueSubItemFilterVisibility => SelectedRevenueSubFilterType != 0 ? Visibility.Visible : Visibility.Collapsed;
+        //public Visibility RevenueSubItemFilterVisibility => SelectedRevenueSubFilterType != 0 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility RevenueSubItemFilterVisibility => (SelectedReportTypeIndex == 0 && SelectedRevenueSubFilterType != 0) ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility RevenueChartVisibility => SelectedReportTypeIndex == 0 ? Visibility.Visible : Visibility.Hidden;
         public Visibility InventoryChartVisibility => SelectedReportTypeIndex == 1 ? Visibility.Visible : Visibility.Hidden;
@@ -194,9 +228,25 @@ namespace Bookstore.WPF.ViewModels
         {
             ApplyReportCommand = new RelayCommand<object>(async (p) =>
             {
-                OnPropertyChanged(nameof(SelectedReportTypeIndex));
+                //OnPropertyChanged(nameof(SelectedReportTypeIndex));
+                //OnPropertyChanged(nameof(RevenueSecondaryFilterVisibility));
+                //OnPropertyChanged(nameof(DebtSecondaryFilterVisibility));
+                //OnPropertyChanged(nameof(RevenueChartVisibility));
+                //OnPropertyChanged(nameof(InventoryChartVisibility));
+                //OnPropertyChanged(nameof(DebtChartVisibility));
+                //OnPropertyChanged(nameof(RevenueGridVisibility));
+                //OnPropertyChanged(nameof(InventoryGridVisibility));
+                //OnPropertyChanged(nameof(DebtGridVisibility));
+                //OnPropertyChanged(nameof(ChartTitle));
+                //OnPropertyChanged(nameof(ChartIconKind));
+                //OnPropertyChanged(nameof(TableTitle));
+
+                // Kích hoạt thông báo để UI cập nhật ẩn/hiện các group bộ lọc lập tức
                 OnPropertyChanged(nameof(RevenueSecondaryFilterVisibility));
                 OnPropertyChanged(nameof(DebtSecondaryFilterVisibility));
+                OnPropertyChanged(nameof(RevenueSubItemFilterVisibility));
+
+                // Đồng bộ biểu đồ và lưới hiển thị
                 OnPropertyChanged(nameof(RevenueChartVisibility));
                 OnPropertyChanged(nameof(InventoryChartVisibility));
                 OnPropertyChanged(nameof(DebtChartVisibility));
@@ -273,8 +323,9 @@ namespace Bookstore.WPF.ViewModels
                 var customers = await client.GetFromJsonAsync<List<string>>("api/report/filter/customers");
 
                 if (staffs != null) foreach (var s in staffs) StaffList.Add(s);
-                if (categories != null) foreach (var c in categories) CategoryList.Add(c);
                 CustomerTypeList.Add("Tất cả khách hàng");
+                CategoryList.Add("Tất cả thể loại");
+                if (categories != null) foreach (var c in categories) CategoryList.Add(c);
                 if (customers != null) foreach (var c in customers) CustomerTypeList.Add(c);
             }
             catch { /* Bỏ qua lỗi load filter */ }
@@ -288,6 +339,32 @@ namespace Bookstore.WPF.ViewModels
                 return;
             }
 
+            string finalCategory = null;
+            if (SelectedReportTypeIndex == 0 && SelectedRevenueSubFilterType == 2)
+            {
+                finalCategory = SelectedRevenueSubItem;
+            }
+            else if (SelectedReportTypeIndex == 1)
+            {
+                finalCategory = SelectedInventoryCategory;
+            }
+
+            if (finalCategory == "Tất cả thể loại")
+            {
+                finalCategory = null;
+            }
+
+            string finalCustomerType = null;
+            if (SelectedReportTypeIndex == 2) 
+            {
+                finalCustomerType = SelectedCustomerType;
+            }
+            if (finalCustomerType == "Tất cả khách hàng")
+            {
+                finalCustomerType = null;
+            }
+
+
             IsLoading = true;
             StatusText = "Đang tải dữ liệu...";
 
@@ -300,9 +377,9 @@ namespace Bookstore.WPF.ViewModels
                     ReportType = SelectedReportTypeIndex,
                     FromDate = FromDate,
                     ToDate = ToDate,
-                    StaffName = SelectedRevenueSubFilterType == 1 ? SelectedRevenueSubItem : null,
-                    CategoryName = SelectedRevenueSubFilterType == 2 ? SelectedRevenueSubItem : null,
-                    CustomerType = SelectedCustomerType
+                    StaffName = SelectedReportTypeIndex == 0 && SelectedRevenueSubFilterType == 1 ? SelectedRevenueSubItem : null,
+                    CategoryName = finalCategory,
+                    CustomerType = finalCustomerType
                 };
 
                 var result = await client.PostAsJsonAsync("api/report/generate", filter);
