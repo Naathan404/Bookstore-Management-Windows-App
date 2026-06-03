@@ -1,6 +1,6 @@
 ﻿using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
-using Bookstore.WPF.Utils;
+using Bookstore.WPF.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,9 +11,9 @@ using System.Windows.Input;
 
 namespace Bookstore.WPF.ViewModels
 {
-    public class InvoiceViewModel : BaseViewModel
+    public class InvoiceViewModel : BaseListViewModel
     {
-        #region PROPERTIES
+        #region DATA
         private ObservableCollection<InvoiceResponse> _danhSachHoaDonGoc = new();
 
         private ObservableCollection<InvoiceResponse> _danhSachHoaDon = new();
@@ -22,63 +22,46 @@ namespace Bookstore.WPF.ViewModels
             get => _danhSachHoaDon;
             set { _danhSachHoaDon = value; OnPropertyChanged(); }
         }
+        #endregion
 
-        private int _trangHienTai = 1;
-        public int TrangHienTai
-        {
-            get => _trangHienTai;
-            set { _trangHienTai = value; OnPropertyChanged(); }
-        }
-
-        private int _tongSoTrang = 1;
-        public int TongSoTrang
-        {
-            get => _tongSoTrang;
-            set { _tongSoTrang = value; OnPropertyChanged(); }
-        }
-
-        private int _tongBanGhi;
-        public int TongBanGhi
-        {
-            get => _tongBanGhi;
-            set { _tongBanGhi = value; OnPropertyChanged(); }
-        }
-
-        private int _soDongTrenTrang = 10;
-
-        // --- Filters ---
-        private string _searchText = "";
-        public string SearchText
-        {
-            get => _searchText;
-            set { _searchText = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
-        }
+        #region BỘ LỌC TÙY CHỈNH (Ngoài SearchKeyword đã có ở Base)
 
         private DateTime? _fromDate;
         public DateTime? FromDate
         {
             get => _fromDate;
-            set { _fromDate = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
+            set { _fromDate = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
         }
 
         private DateTime? _toDate;
         public DateTime? ToDate
         {
             get => _toDate;
-            set { _toDate = value; OnPropertyChanged(); _ = ApplyFilterAsync(); }
+            set { _toDate = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
         }
+
         #endregion
 
         #region COMMANDS
         public ICommand XoaLocCommand { get; }
-        public ICommand PhanTrangCommand { get; }
+        public ICommand RefreshCommand { get; }
         public ICommand XemChiTietCommand { get; }
         #endregion
 
         public InvoiceViewModel()
         {
+            // Thiết lập số dòng trên trang mặc định (kế thừa từ BaseListViewModel)
+            PageSize = 10;
+
             XoaLocCommand = new RelayCommand<object>(ExecuteXoaLoc);
-            PhanTrangCommand = new RelayCommand<string>(ExecutePhanTrang);
+
+            // Gán logic tải lại API vào nút Refresh
+            RefreshCommand = new RelayCommand<object>(async (p) =>
+            {
+                ExecuteXoaLoc(null);
+                await LoadDataAsync();
+            });
+
             XemChiTietCommand = new RelayCommand<InvoiceResponse>(ExecuteXemChiTiet);
 
             _ = LoadDataAsync();
@@ -88,13 +71,14 @@ namespace Bookstore.WPF.ViewModels
         {
             try
             {
-                // Khi có API thật, endpoint sẽ là api/HoaDon
                 var result = await ApiClient.GetAsync<List<InvoiceResponse>>("api/HoaDon");
                 if (result != null)
                 {
                     _danhSachHoaDonGoc = new ObservableCollection<InvoiceResponse>(result);
                 }
-                _ = ApplyFilterAsync();
+
+                // Thay vì gọi ApplyFilterAsync cũ, ta gọi thẳng hàm chuẩn của class Base
+                ApplyFilterAndPagination();
             }
             catch (Exception ex)
             {
@@ -102,12 +86,17 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private async Task ApplyFilterAsync()
+        // ======================================================================
+        // HÀM LÕI: GHI ĐÈ LẠI HÀM CỦA BASE CLASS ĐỂ THỰC HIỆN LỌC RIÊNG CHO HÓA ĐƠN
+        // ======================================================================
+        protected override void ApplyFilterAndPagination()
         {
             if (_danhSachHoaDonGoc == null) return;
 
             var filtered = _danhSachHoaDonGoc.AsEnumerable();
-            var text = SearchText.ToLower().Trim();
+
+            // Dùng SearchKeyword thay cho SearchText cũ
+            var text = SearchKeyword?.ToLower().Trim() ?? "";
 
             if (!string.IsNullOrEmpty(text))
             {
@@ -126,47 +115,40 @@ namespace Bookstore.WPF.ViewModels
                 filtered = filtered.Where(hd => hd.NgayTao.Date <= ToDate.Value.Date);
             }
 
+            // Chốt danh sách sau khi lọc
             var resultList = filtered.ToList();
             TongBanGhi = resultList.Count;
 
-            TongSoTrang = Math.Max(1, (int)Math.Ceiling(TongBanGhi / (double)_soDongTrenTrang));
+            // Tính toán phân trang dựa vào PageSize của class mẹ
+            TongSoTrang = Math.Max(1, (int)Math.Ceiling(TongBanGhi / (double)PageSize));
             if (TrangHienTai > TongSoTrang) TrangHienTai = 1;
 
+            // Cắt lấy dữ liệu cho trang hiện tại
             DanhSachHoaDon = new ObservableCollection<InvoiceResponse>(
-                resultList.Skip((TrangHienTai - 1) * _soDongTrenTrang).Take(_soDongTrenTrang));
-
-            await Task.CompletedTask;
+                resultList.Skip((TrangHienTai - 1) * PageSize).Take(PageSize));
         }
 
         private void ExecuteXoaLoc(object obj)
         {
-            _searchText = "";
+            // Reset Date (nhưng không gọi Apply ngay lập tức để tránh tính toán nhiều lần)
             _fromDate = null;
             _toDate = null;
-
-            OnPropertyChanged(nameof(SearchText));
             OnPropertyChanged(nameof(FromDate));
             OnPropertyChanged(nameof(ToDate));
 
-            _ = ApplyFilterAsync();
-        }
+            // Khi gán lại SearchKeyword, hàm set trong BaseListViewModel sẽ tự động gọi ApplyFilterAndPagination()
+            SearchKeyword = string.Empty;
 
-        private void ExecutePhanTrang(string action)
-        {
-            switch (action)
+            // Phòng hờ trường hợp SearchKeyword vốn đã rỗng thì phải ép nó load lại
+            if (string.IsNullOrEmpty(SearchKeyword))
             {
-                case "First": TrangHienTai = 1; break;
-                case "Prev": if (TrangHienTai > 1) TrangHienTai--; break;
-                case "Next": if (TrangHienTai < TongSoTrang) TrangHienTai++; break;
-                case "Last": TrangHienTai = TongSoTrang; break;
+                ApplyFilterAndPagination();
             }
-            _ = ApplyFilterAsync();
         }
 
         private void ExecuteXemChiTiet(InvoiceResponse hd)
         {
             if (hd == null) return;
-            // Logic mở popup xem chi tiết các CT_HoaDon (Sẽ xử lý sau khi làm popup)
             string maHdFormat = $"HD{hd.NgayTao:ddMMyy}{hd.MaHoaDon:D3}";
             MessageBox.Show($"Xem chi tiết hóa đơn: {maHdFormat}", "Thông báo");
         }

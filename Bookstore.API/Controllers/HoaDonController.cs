@@ -161,8 +161,7 @@ namespace Bookstore.API.Controllers
                         if (khachHang != null)
                         {
                             decimal tienNo = request.TongTien - request.SoTienTra;
-                            // TODO: Đảm bảo model KhachHang của bạn có thuộc tính CongNo
-                            // khachHang.CongNo += tienNo; 
+                            khachHang.TienNo += tienNo; 
                         }
                     }
                     else
