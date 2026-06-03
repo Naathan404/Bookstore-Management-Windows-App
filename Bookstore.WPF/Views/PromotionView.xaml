@@ -24,9 +24,7 @@
 										  AddIcon="Plus"
 										  AddCommand="{Binding OpenAddPopupCommand}"
 										  AddCommandParameter="{Binding}"
-										  ShowExportExcel="True"
-										  ExportExcelCommand="{Binding ExportExcelCommand}"
-										  ExportExcelCommandParameter="{Binding}" />
+										   />
 
 			<!-- Card 2: Search Filters -->
 			<Border Grid.Row="1"

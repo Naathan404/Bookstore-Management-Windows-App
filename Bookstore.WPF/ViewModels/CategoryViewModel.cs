@@ -2,10 +2,13 @@
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
 using Microsoft.Win32;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -121,6 +124,9 @@ namespace Bookstore.WPF.ViewModels
         public ICommand CloseDauSachPopupCommand { get; set; }
         public ICommand RemoveTacGiaCommand { get; set; }
         public ICommand SelectImageCommand { get; set; }
+
+        // Export Excel
+        public ICommand ExportExcelCommand { get; set; }
         #endregion
 
         public CategoryViewModel()
@@ -176,6 +182,150 @@ namespace Bookstore.WPF.ViewModels
                     {
                         MessageBox.Show("Không thể xóa do danh mục này đã phát sinh thông tin liên quan đến ít nhất một sách", "Xóa thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
                     }    
+                }
+            });
+
+            // xuất excel
+            ExportExcelCommand = new RelayCommand<object>((p) =>
+            {
+                try
+                {
+                    //  Cấu hình hộp thoại lưu file
+                    SaveFileDialog sfd = new SaveFileDialog()
+                    {
+                        Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                        FileName = $"DanhMucNhaSach_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
+                    };
+
+                    if (sfd.ShowDialog() == true)
+                    {
+                        // Cấu hình EPPlus (Cần thiết cho bản miễn phí)
+                        ExcelPackage.License.SetNonCommercialPersonal("Quan");
+
+                        using (var package = new ExcelPackage())
+                        {
+                            // Tạo một Sheet mới
+                            var sheet = package.Workbook.Worksheets.Add("Danh Sách Đầu Sách");
+                            var sheet2 = package.Workbook.Worksheets.Add("Danh Sách Tác Giả");
+                            var sheet3 = package.Workbook.Worksheets.Add("Danh Sách Thể Loại");
+                            var sheet4 = package.Workbook.Worksheets.Add("Danh Sách Nhà Xuất Bản");
+
+                            // Tạo sheet cho Đầu Sách
+                            // Tạo Header
+                            string[] headers = { "STT", "Tên Đầu Sách", "Tên Tác Giả", "Tên Thể Loại", "Mô Tả" };
+                            for (int i = 0; i < headers.Length; i++)
+                            {
+                                var cell = sheet.Cells[1, i + 1];
+                                cell.Value = headers[i];
+                                cell.Style.Font.Bold = true;
+                                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                            }
+
+                            //  Đổ dữ liệu từ _allDauSachs vào Excel
+                            var dataToExport = _allDauSachs.ToList();
+                            for (int i = 0; i < dataToExport.Count; i++)
+                            {
+                                var book = dataToExport[i];
+                                sheet.Cells[i + 2, 1].Value = i + 1;
+                                sheet.Cells[i + 2, 2].Value = book.Name;
+                                sheet.Cells[i + 2, 3].Value = book.DanhSachTacGia == null ? "" : string.Join(", ", book.DanhSachTacGia.Select(t => t.TenTacGia));
+                                sheet.Cells[i + 2, 4].Value = book.TenTheLoai;
+                                sheet.Cells[i + 2, 5].Value = book.MoTa;
+                               
+                            }
+
+                            // Tạo sheet cho Tác Giả
+                            // Tạo Header
+                            string[] header2s = { "STT", "Tên Tác Giả",};
+                            for (int i = 0; i < header2s.Length; i++)
+                            {
+                                var cell = sheet2.Cells[1, i + 1];
+                                cell.Value = header2s[i];
+                                cell.Style.Font.Bold = true;
+                                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                            }
+
+                            //  Đổ dữ liệu từ _allTacGias vào Excel
+                            var dataToExport2 = _allTacGias.ToList();
+                            for (int i = 0; i < dataToExport2.Count; i++)
+                            {
+                                var TacGia = dataToExport2[i];
+                                sheet2.Cells[i + 2, 1].Value = i + 1;
+                                sheet2.Cells[i + 2, 2].Value = TacGia.Name;                            
+                            }
+
+
+                            // Tạo sheet cho Thể Loại
+                            // Tạo Header
+                            string[] headers3 = { "STT", "Tên Thể Loại"};
+                            for (int i = 0; i < headers3.Length; i++)
+                            {
+                                var cell = sheet3.Cells[1, i + 1];
+                                cell.Value = headers3[i];
+                                cell.Style.Font.Bold = true;
+                                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                            }
+
+                            //  Đổ dữ liệu từ _allTheLoais vào Excel
+                            var dataToExport3 = _allTheLoais.ToList();
+                            for (int i = 0; i < dataToExport3.Count; i++)
+                            {
+                                var TheLoai = dataToExport3[i];
+                                sheet3.Cells[i + 2, 1].Value = i + 1;
+                                sheet3.Cells[i + 2, 2].Value = TheLoai.Name;
+                            }
+
+                            // Tạo sheet cho Nhà Xuất Bản
+                            // Tạo Header
+                            string[] headers4 = { "STT", "Tên Nhà Xuất Bản" };
+                            for (int i = 0; i < headers4.Length; i++)
+                            {
+                                var cell = sheet4.Cells[1, i + 1];
+                                cell.Value = headers4[i];
+                                cell.Style.Font.Bold = true;
+                                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                            }
+
+                            //  Đổ dữ liệu từ _allNXBs vào Excel
+                            var dataToExport4 = _allNXBs.ToList();
+                            for (int i = 0; i < dataToExport4.Count; i++)
+                            {
+                                var nxb = dataToExport4[i];
+                                sheet4.Cells[i + 2, 1].Value = i + 1;
+                                sheet4.Cells[i + 2, 2].Value = nxb.Name;
+                            }
+
+                            // Tự động chỉnh độ rộng cột
+                            sheet.Cells.AutoFitColumns();
+                            sheet2.Cells.AutoFitColumns();
+                            sheet3.Cells.AutoFitColumns();
+                            sheet4.Cells.AutoFitColumns();
+
+                            // Căn giữa cột số thứ tự
+                            sheet.Cells[2, 1, dataToExport.Count() + 4, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            sheet2.Cells[2, 1, dataToExport.Count() + 4, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            sheet3.Cells[2, 1, dataToExport.Count() + 4, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            sheet4.Cells[2, 1, dataToExport.Count() + 4, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+
+                            //  Lưu file
+                            File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
+
+                            MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
             #endregion
