@@ -492,7 +492,7 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
 
-                            <Button Grid.Column="3" Content="THÊM MÓN" 
+                            <Button Grid.Column="3" Content="THÊM SÁCH" 
 							Command="{Binding AddBookToImportCommand}"
                                     CommandParameter="{Binding}"
                                     Width="90"

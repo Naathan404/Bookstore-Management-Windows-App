@@ -35,8 +35,8 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
@@ -45,7 +45,7 @@
 					<components:FilterInputControl Grid.Column="0"
 												   Margin="0,0,8,0"
 												   IconKind="Magnify"
-												   HintText="Tên chương trình..."
+												   HintText="Tìm ưu đãi"
 												   TextValue="{Binding SearchTenKM}" />
 
 

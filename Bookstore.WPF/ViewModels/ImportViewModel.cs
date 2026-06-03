@@ -198,17 +198,44 @@ namespace Bookstore.WPF.ViewModels
             IsAddPopupOpen = true;
         }
 
+        //private async void ExecuteDelete(ImportOrderResponse order)
+        //{
+        //    if (order == null) return;
+        //    if (MessageBox.Show($"Bạn có chắc muốn xóa phiếu nhập này? Tồn kho sẽ bị trừ đi tương ứng.",
+        //        "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+        //    {
+        //        bool success = await ApiClient.DeleteAsync($"api/PhieuNhap/{order.MaPhieuNhap}");
+        //        if (success)
+        //        {
+        //            MessageBox.Show("Xóa phiếu nhập thành công!");
+        //            await LoadDataAsync();
+        //        }
+        //    }
+        //}
+
         private async void ExecuteDelete(ImportOrderResponse order)
         {
             if (order == null) return;
+
             if (MessageBox.Show($"Bạn có chắc muốn xóa phiếu nhập này? Tồn kho sẽ bị trừ đi tương ứng.",
                 "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                bool success = await ApiClient.DeleteAsync($"api/PhieuNhap/{order.MaPhieuNhap}");
-                if (success)
+                try
                 {
-                    MessageBox.Show("Xóa phiếu nhập thành công!");
-                    await LoadDataAsync();
+                    bool success = await ApiClient.DeleteAsync($"api/PhieuNhap/{order.MaPhieuNhap}");
+                    if (success)
+                    {
+                        MessageBox.Show("Xóa phiếu nhập thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await LoadDataAsync();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Xóa thất bại! Có thể do hệ thống máy chủ từ chối thao tác.", "Cảnh báo lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi kết nối hệ thống: {ex.Message}", "Lỗi chí mạng", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
