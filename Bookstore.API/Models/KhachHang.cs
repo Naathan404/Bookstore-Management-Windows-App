@@ -8,7 +8,7 @@ namespace Bookstore.API.Models
     {
         [Key]
         public int MaKhachHang { get; set; }
-        public int MaLoaiKhachHang { get; set; }
+        public int? MaLoaiKhachHang { get; set; }
         public DateTime NgayTao { get; set; }
         public string TenKhachHang { get; set; } = string.Empty;
         public int GioiTinh { get; set; } // 0: Nam, 1: Nu
