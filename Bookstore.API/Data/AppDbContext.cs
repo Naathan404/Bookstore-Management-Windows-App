@@ -1,4 +1,5 @@
 ﻿using Bookstore.API.Models;
+using Bookstore.Share.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.API.Data
@@ -15,7 +16,7 @@ namespace Bookstore.API.Data
 
         //
         public DbSet<KhachHang> KhachHang { get; set; }
-        public DbSet<LoaiKhachHang> LoaiKhachHang { get; set;  }
+        public DbSet<LoaiKhachHang> LoaiKhachHang { get; set; }
         //
         public DbSet<TacGia> TacGia { get; set; }
         public DbSet<TheLoai> TheLoai { get; set; }
@@ -41,14 +42,14 @@ namespace Bookstore.API.Data
         //
         public DbSet<HoaDon> HoaDon { get; set; }
         public DbSet<CT_HoaDon> CT_HoaDon { get; set; }
-        public DbSet<HoaDon_UuDai> HoaDon_Uudai { get; set;  }
+        public DbSet<HoaDon_UuDai> HoaDon_Uudai { get; set; }
         public DbSet<PhieuThuTien> PhieuThuTien { get; set; }
 
         //
         public DbSet<BC_Sach> BC_Sach { get; set; }
         public DbSet<CT_BC_Sach> CT_BC_Sach { get; set; }
         public DbSet<BC_KhachHang> BC_KhachHang { get; set; }
-        public DbSet<CT_BC_KhachHang> CT_BC_KhachHang { get;set; }
+        public DbSet<CT_BC_KhachHang> CT_BC_KhachHang { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -111,12 +112,12 @@ namespace Bookstore.API.Data
 
             modelBuilder.Entity<CT_PhieuNhapSach>()
                 .HasOne(p => p.PhieuNhapSach)
-                .WithMany(p => p.CT_PhieuNhapSach) 
+                .WithMany(p => p.CT_PhieuNhapSach)
                 .HasForeignKey(p => p.MaPhieuNhapSach)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CT_PhieuNhapSach>()
-                .HasOne(p => p.PhienBanSach) 
+                .HasOne(p => p.PhienBanSach)
                 .WithMany()
                 .HasForeignKey(p => p.ISBN)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -126,10 +127,14 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UuDai>()
-                .HasOne<LoaiUuDai>().WithMany().HasForeignKey(u => u.MaLoaiUuDai)
+                .HasOne(u => u.LoaiUuDai)
+                .WithMany()                
+                .HasForeignKey(u => u.MaLoaiUuDai)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<UuDai>()
-                .HasOne<LoaiKhachHang>().WithMany().HasForeignKey(u => u.MaLoaiKhachHang)
+                .HasOne(u => u.LoaiKhachHang)
+                .WithMany()
+                .HasForeignKey(u => u.MaLoaiKhachHang)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CTUD_HoaDon_Giam>()
@@ -167,7 +172,7 @@ namespace Bookstore.API.Data
 
             modelBuilder.Entity<CT_HoaDon>()
                 .HasOne(p => p.HoaDon)
-                .WithMany(h => h.ChiTietHoaDons) 
+                .WithMany(h => h.ChiTietHoaDons)
                 .HasForeignKey(p => p.MaHoaDon)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -206,8 +211,8 @@ namespace Bookstore.API.Data
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<NguoiDung>()
-               .HasOne(n => n.NhomNguoiDung)                     
-               .WithMany(nhom => nhom.NguoiDungs)                
+               .HasOne(n => n.NhomNguoiDung)
+               .WithMany(nhom => nhom.NguoiDungs)
                .HasForeignKey(n => n.MaNhomNguoiDung)
                .OnDelete(DeleteBehavior.Restrict);
 
@@ -431,7 +436,7 @@ namespace Bookstore.API.Data
                     TongTienDaMua = 15000000m,
                     TienNo = 0m,
                     DiaChi = "Khu công nghệ cao, TP. Thủ Đức",
-                    MaSoThue = "0312345678" 
+                    MaSoThue = "0312345678"
                 },
 
                 // Khách thiếu nợ 
@@ -478,7 +483,7 @@ namespace Bookstore.API.Data
                 new NhaXuatBan { MaNhaXuatBan = 6, TenNhaXuatBan = "NXB Hội Nhà văn" },
                 new NhaXuatBan { MaNhaXuatBan = 7, TenNhaXuatBan = "NXB Thông tin và Truyền thông" },
                 new NhaXuatBan { MaNhaXuatBan = 8, TenNhaXuatBan = "NXB Phụ Nữ" },
-                new NhaXuatBan { MaNhaXuatBan = 9, TenNhaXuatBan = "O'Reilly Media" }, 
+                new NhaXuatBan { MaNhaXuatBan = 9, TenNhaXuatBan = "O'Reilly Media" },
                 new NhaXuatBan { MaNhaXuatBan = 10, TenNhaXuatBan = "Pearson Education" }
             );
 
@@ -674,7 +679,7 @@ namespace Bookstore.API.Data
                 {
                     MaPhieuNhapSach = 1,
                     NgayTao = new DateTime(2024, 3, 1, 9, 0, 0),
-                    NguoiTao = "admin", 
+                    NguoiTao = "admin",
                     MaNhaCungCap = 1,
                     TongTien = 22000000m
                 },
@@ -724,24 +729,24 @@ namespace Bookstore.API.Data
 
             /// Những bạn liên quan đến ưu đãi
             modelBuilder.Entity<LoaiUuDai>().HasData(
-                new LoaiUuDai { MaLoaiUuDai = 1, TenLoaiUuDai = "Giảm giá Hóa đơn", ApDungToiDa = 1 },
-                new LoaiUuDai { MaLoaiUuDai = 2, TenLoaiUuDai = "Tặng quà theo Hóa đơn", ApDungToiDa = 1 },
-                new LoaiUuDai { MaLoaiUuDai = 3, TenLoaiUuDai = "Giảm giá trực tiếp trên Sách", ApDungToiDa = 5 },
-                new LoaiUuDai { MaLoaiUuDai = 4, TenLoaiUuDai = "Tặng sách khi mua Sách", ApDungToiDa = 5 }
+                new LoaiUuDai { MaLoaiUuDai = PromotionType.HoaDonGiam, TenLoaiUuDai = "Giảm giá Hóa đơn", ApDungToiDa = 1 },
+                new LoaiUuDai { MaLoaiUuDai = PromotionType.HoaDonQua, TenLoaiUuDai = "Tặng quà theo Hóa đơn", ApDungToiDa = 1 },
+                new LoaiUuDai { MaLoaiUuDai = PromotionType.SachGiam, TenLoaiUuDai = "Giảm giá trực tiếp trên Sách", ApDungToiDa = 5 },
+                new LoaiUuDai { MaLoaiUuDai = PromotionType.SachQua, TenLoaiUuDai = "Tặng sách khi mua Sách", ApDungToiDa = 5 }
             );
 
             modelBuilder.Entity<UuDai>().HasData(
                             // Trạng thái 1: ĐANG ÁP DỤNG 
-                            new UuDai { MaUuDai = 1, NgayTao = DateTime.Now.AddDays(-10), NguoiTao = "admin", MaLoaiUuDai = 1, Code = "PROMO10", TenChuongTrinh = "Giảm 10% Hóa đơn > 500k", MoTa = "Chương trình kích cầu", NgayBatDau = DateTime.Now.AddDays(-5), NgayKetThuc = DateTime.Now.AddDays(30), SoLuongToiDa = 1000, SoLuongDaDung = 136, MaLoaiKhachHang = 1, CoTheSuDung = true },
+                            new UuDai { MaUuDai = 1, NgayTao = DateTime.Now.AddDays(-10), NguoiTao = "admin", MaLoaiUuDai = PromotionType.HoaDonGiam, Code = "PROMO10", TenChuongTrinh = "Giảm 10% Hóa đơn > 500k", MoTa = "Chương trình kích cầu", NgayBatDau = DateTime.Now.AddDays(-5), NgayKetThuc = DateTime.Now.AddDays(30), SoLuongToiDa = 1000, SoLuongDaDung = 136, MaLoaiKhachHang = 1, CoTheSuDung = true },
 
                             // Trạng thái 2: HẾT HẠN 
-                            new UuDai { MaUuDai = 2, NgayTao = new DateTime(2023, 1, 1), NguoiTao = "quanlh", MaLoaiUuDai = 2, Code = "DTN1M", TenChuongTrinh = "Hóa đơn 1Tr tặng Đắc Nhân Tâm", MoTa = "Tri ân khách VIP", NgayBatDau = new DateTime(2023, 1, 1), NgayKetThuc = new DateTime(2023, 12, 31), SoLuongToiDa = 50, SoLuongDaDung = 50, MaLoaiKhachHang = 2, CoTheSuDung = true },
+                            new UuDai { MaUuDai = 2, NgayTao = new DateTime(2023, 1, 1), NguoiTao = "quanlh", MaLoaiUuDai = PromotionType.HoaDonQua, Code = "DTN1M", TenChuongTrinh = "Hóa đơn 1Tr tặng Đắc Nhân Tâm", MoTa = "Tri ân khách VIP", NgayBatDau = new DateTime(2023, 1, 1), NgayKetThuc = new DateTime(2023, 12, 31), SoLuongToiDa = 50, SoLuongDaDung = 50, MaLoaiKhachHang = 2, CoTheSuDung = true },
 
                             // Trạng thái 3: TẠM DỪNG 
-                            new UuDai { MaUuDai = 3, NgayTao = DateTime.Now.AddDays(-2), NguoiTao = "hungng", MaLoaiUuDai = 3, Code = "MATBIEC20K", TenChuongTrinh = "Giảm 20k Mắt Biếc", MoTa = "Sale sách Hot", NgayBatDau = DateTime.Now.AddDays(-1), NgayKetThuc = DateTime.Now.AddDays(60), SoLuongToiDa = 200, SoLuongDaDung = 20, MaLoaiKhachHang = 1, CoTheSuDung = false },
+                            new UuDai { MaUuDai = 3, NgayTao = DateTime.Now.AddDays(-2), NguoiTao = "hungng", MaLoaiUuDai = PromotionType.SachGiam, Code = "MATBIEC20K", TenChuongTrinh = "Giảm 20k Mắt Biếc", MoTa = "Sale sách Hot", NgayBatDau = DateTime.Now.AddDays(-1), NgayKetThuc = DateTime.Now.AddDays(60), SoLuongToiDa = 200, SoLuongDaDung = 20, MaLoaiKhachHang = 1, CoTheSuDung = false },
 
                             // Trạng thái 4: CHƯA ÁP DỤNG 
-                            new UuDai { MaUuDai = 4, NgayTao = DateTime.Now, NguoiTao = "sonph", MaLoaiUuDai = 4, Code = "CODESTACK300", TenChuongTrinh = "Combo Dev: Mua 2 tặng 1", MoTa = "Đồng hành cùng IT", NgayBatDau = DateTime.Now.AddDays(15), NgayKetThuc = DateTime.Now.AddDays(45), SoLuongToiDa = 100, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true }
+                            new UuDai { MaUuDai = 4, NgayTao = DateTime.Now, NguoiTao = "sonph", MaLoaiUuDai = PromotionType.SachQua, Code = "CODESTACK300", TenChuongTrinh = "Combo Dev: Mua 2 tặng 1", MoTa = "Đồng hành cùng IT", NgayBatDau = DateTime.Now.AddDays(15), NgayKetThuc = DateTime.Now.AddDays(45), SoLuongToiDa = 100, SoLuongDaDung = 0, MaLoaiKhachHang = 1, CoTheSuDung = true }
                         );
 
 
@@ -798,7 +803,7 @@ namespace Bookstore.API.Data
                 new CT_HoaDon { MaHoaDon = 1, ISBN = "978-604-1-09887-1", SoLuong = 1, DonGia = 110000m, GiaVon = 100000m },
 
                 // Chi tiết HD 2: 2 Clean Code (Giá bán 450k/cuốn)
-                new CT_HoaDon { MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, DonGia = 450000m, GiaVon = 440000m},
+                new CT_HoaDon { MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, DonGia = 450000m, GiaVon = 440000m },
 
                 // Chi tiết HD 3: 5 Doraemon tập 1 (20k/cuốn) + 1 Rừng Na Uy (145k)
                 new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-2-11111-1", SoLuong = 5, DonGia = 20000m, GiaVon = 18000m },

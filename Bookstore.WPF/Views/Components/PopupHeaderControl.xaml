@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="Bookstore.WPF.Views.Components.PopupHeaderControl"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 x:Name="Root">
+
+	<StackPanel Orientation="Horizontal"
+				HorizontalAlignment="Center"
+				Margin="0,0,0,20">
+		<materialDesign:PackIcon Kind="{Binding IconKind, ElementName=Root}"
+								 Width="26"
+								 Height="26"
+								 Foreground="{StaticResource PrimaryColor}"
+								 Margin="0,0,10,0"
+								 VerticalAlignment="Center" />
+
+		<TextBlock Text="{Binding Title, ElementName=Root}"
+				   FontSize="20"
+				   FontWeight="Bold"
+				   Foreground="{StaticResource PrimaryDarkColor}"
+				   VerticalAlignment="Center" />
+	</StackPanel>
+</UserControl>

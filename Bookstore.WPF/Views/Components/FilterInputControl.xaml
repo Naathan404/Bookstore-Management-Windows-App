@@ -38,7 +38,7 @@
 					 materialDesign:HintAssist.Hint="{Binding HintText, ElementName=Root}"
 					 materialDesign:HintAssist.Foreground="{StaticResource TextLightColor}"
 					 materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource PrimaryColor}"
-					 Margin="0,0,10,0">
+					 Margin="0,4,8,4">
 			</TextBox>
 		</Grid>
 
