@@ -19,7 +19,14 @@ namespace Bookstore.WPF.ViewModels.Base
         public string SearchKeyword
         {
             get => _searchKeyword;
-            set { _searchKeyword = value; OnPropertyChanged(); }
+            set
+            {
+                _searchKeyword = value;
+                OnPropertyChanged();
+
+                TrangHienTai = 1;
+                ApplyFilterAndPagination();
+            }
         }
 
         protected int _pageSize = 10;

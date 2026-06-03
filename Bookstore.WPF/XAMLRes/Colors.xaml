@@ -18,6 +18,14 @@
 					 Color="#10B981" />
 	<SolidColorBrush x:Key="WarningColor"
 					 Color="#F59E0B" />
+	<SolidColorBrush x:Key="PrimaryBgLightColor"
+					 Color="#E9E3FF" />
+	<SolidColorBrush x:Key="DangerBgLightColor"
+					 Color="#FEE2E2" />
+	<SolidColorBrush x:Key="SuccessBgLightColor"
+					 Color="#E6F4EA" />
+	<SolidColorBrush x:Key="WarningBgLightColor"
+					 Color="#FFF9DB" />
 
 	<!-- Gradient Brushes -->
 	<LinearGradientBrush x:Key="GradientButtonBrush"

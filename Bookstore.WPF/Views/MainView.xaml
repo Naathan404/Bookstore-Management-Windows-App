@@ -6,6 +6,7 @@
 		xmlns:views="clr-namespace:Bookstore.WPF.Views"
 		xmlns:viewmodels="clr-namespace:Bookstore.WPF.ViewModels"
 		xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+		xmlns:Popup="clr-namespace:Bookstore.WPF.Views.Popup"
 		mc:Ignorable="d"
 		Title="Sahara Bookstore - Quản lý Nhà Sách"
 		Height="768"
@@ -64,6 +65,9 @@
 
 		<DataTemplate DataType="{x:Type viewmodels:ReceiptViewModel}">
 			<views:ReceiptView />
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type viewmodels:PaymentConfirmPopupViewModel}">
+			<Popup:PaymentConfirmPopup />
 		</DataTemplate>
 
 	</Window.Resources>

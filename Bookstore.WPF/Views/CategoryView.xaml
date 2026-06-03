@@ -17,7 +17,11 @@
 
 			<components:PageHeaderControl Title="QUẢN LÝ DANH MỤC"
 										  HeaderIcon="CategoryPlus"
-										  ShowAddButton="False" />
+										  ShowAddButton="False"
+                                          
+                                          ShowExportExcel="True"
+                                          ExportExcelCommand="{Binding ExportExcelCommand}"
+                                          ExportExcelCommandParameter="{Binding}"/>
 
 			<TabControl Grid.Row="1"
 						Style="{StaticResource TabControlStyle}">

@@ -38,9 +38,29 @@
 											 Foreground="#A3AED0" />
 				</Button>
 
-				<Button Content="{Binding CurrentPage, ElementName=Root}"
-						Style="{StaticResource PaginationButtonStyle}"
-						Margin="4,0,4,0" />
+				<Border Margin="4,0,4,0">
+					<StackPanel Orientation="Horizontal"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Stretch">
+
+						<TextBlock Text="{Binding CurrentPage, ElementName=Root}"
+								   Width="40"
+								   Foreground="{StaticResource TextLightColor}"
+								   FontWeight="Medium"
+								   TextAlignment="Center" />
+
+						<TextBlock Text="/"
+								   Foreground="{StaticResource TextLightColor}"
+								   FontWeight="Medium"/>
+
+						<TextBlock Text="{Binding TotalPages, ElementName=Root}"
+								   Foreground="{StaticResource TextLightColor}"
+								   Width="40"
+								   FontWeight="Medium"
+								   TextAlignment="Center" />
+
+					</StackPanel>
+				</Border>
 
 				<Button Style="{StaticResource PaginationButtonStyle}"
 						Command="{Binding PaginationCommand, ElementName=Root}"
@@ -67,14 +87,9 @@
 					   HorizontalAlignment="Right"
 					   VerticalAlignment="Center"
 					   Foreground="#A3AED0"
-					   FontSize="13"
 					   FontWeight="Medium">
 				<TextBlock.Text>
-					<MultiBinding StringFormat="Trang {0}/{1} (Tổng: {2})">
-						<Binding Path="CurrentPage"
-								 ElementName="Root" />
-						<Binding Path="TotalPages"
-								 ElementName="Root" />
+					<MultiBinding StringFormat="Tổng: {0}">
 						<Binding Path="TotalRecords"
 								 ElementName="Root" />
 					</MultiBinding>

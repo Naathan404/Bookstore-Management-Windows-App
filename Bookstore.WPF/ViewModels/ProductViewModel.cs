@@ -556,7 +556,74 @@ namespace Bookstore.WPF.ViewModels
             // xuất excel
             ExportExcelCommand = new RelayCommand<object>((p) =>
             {
-                MessageBox.Show("Chức năng đang trong quá trình phát triển. Vui lòng quay lại sau!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    //  Cấu hình hộp thoại lưu file
+                    SaveFileDialog sfd = new SaveFileDialog()
+                    {
+                        Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                        FileName = $"DanhSachSach_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
+                    };
+
+                    if (sfd.ShowDialog() == true)
+                    {
+                        // Cấu hình EPPlus (Cần thiết cho bản miễn phí)
+                        ExcelPackage.License.SetNonCommercialPersonal("Quan");
+
+                        using (var package = new ExcelPackage())
+                        {
+                            // Tạo một Sheet mới
+                            var sheet = package.Workbook.Worksheets.Add("Danh Sách Sách");
+
+                            // Tạo Header
+                            string[] headers = { "STT", "Mã ISBN", "Tên Sách","Lần Tái Bản", "Tác Giả", "Thể Loại", "Giá Niêm Yết", "Giá Bán", "Số Lượng" };
+                            for (int i = 0; i < headers.Length; i++)
+                            {
+                                var cell = sheet.Cells[1, i + 1];
+                                cell.Value = headers[i];
+                                cell.Style.Font.Bold = true;
+                                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                            }
+
+                            //  Đổ dữ liệu từ FilteredBooks (hoặc _allBooks tùy ông muốn xuất cái nào)
+                            var dataToExport = _filteredBooks.ToList();
+                            for (int i = 0; i < dataToExport.Count; i++)
+                            {
+                                var book = dataToExport[i];
+                                sheet.Cells[i + 2, 1].Value = i + 1;
+                                sheet.Cells[i + 2, 2].Value = book.ISBN;
+                                sheet.Cells[i + 2, 3].Value = book.TenSach;
+                                sheet.Cells[i + 2, 4].Value = book.LanTaiBan;
+                                sheet.Cells[i + 2, 5].Value = book.DanhSachTacGia == null ? "" : string.Join(", ", book.DanhSachTacGia.Select(t => t.TenTacGia));
+                                sheet.Cells[i + 2, 6].Value = book.TheLoai;
+                                sheet.Cells[i + 2, 7].Value = book.GiaNiemYet;
+                                sheet.Cells[i + 2, 8].Value = book.DonGiaBan;
+                                sheet.Cells[i + 2, 9].Value = book.SoLuongTonKho;
+
+                                // Format số cho đẹp
+                                sheet.Cells[i + 2, 7].Style.Numberformat.Format = "#,##0";
+                                sheet.Cells[i + 2, 8].Style.Numberformat.Format = "#,##0";
+                            }
+
+                            // Tự động chỉnh độ rộng cột
+                            sheet.Cells.AutoFitColumns();
+
+                            // Căn giữa cột số thứ tự
+                            sheet.Cells[2, 1, dataToExport.Count() + 4, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                            //  Lưu file
+                            File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
+
+                            MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             });
 
 

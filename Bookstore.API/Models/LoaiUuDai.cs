@@ -1,14 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Bookstore.Share.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookstore.API.Models
 {
     public class LoaiUuDai : IEntity<int>
-        // LOAI UU DAI
     {
         [Key]
-        public int MaLoaiUuDai { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public PromotionType MaLoaiUuDai { get; set; }
         public string TenLoaiUuDai { get; set; } = string.Empty;
         public int ApDungToiDa { get; set; }
-        public int GetID() => MaLoaiUuDai;
+        public int GetID() => (int)MaLoaiUuDai;
     }
 }
