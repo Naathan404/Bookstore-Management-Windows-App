@@ -2,11 +2,13 @@
 using Bookstore.API.Models;
 using Bookstore.Share.DTO;
 using Bookstore.Share.DTO.Bookstore.Share.DTO;
+using Bookstore.Share.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Bookstore.API.Controllers
@@ -29,6 +31,16 @@ namespace Bookstore.API.Controllers
             try
             {
                 var uuDais = await _context.UuDai.ToListAsync();
+                if (!uuDais.Any()) return Ok(new List<PromotionDTO>());
+
+                var uIds = uuDais.Select(u => u.MaUuDai).ToList();
+                var hGiamList = await _context.CTUD_HoaDon_Giam.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
+                var hQuaList = await _context.CTUD_HoaDon_Qua.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
+                var sGiamList = await _context.CTUD_Sach_Giam.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
+                var sQuaList = await _context.CTUD_Sach_Qua.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
+                var dkSachList = await _context.UuDai_SachDieuKien.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
+                var tangSachList = await _context.UuDai_SachTang.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
+
                 var resultList = new List<PromotionDTO>();
 
                 foreach (var u in uuDais)
@@ -38,8 +50,6 @@ namespace Bookstore.API.Controllers
                         MaUuDai = u.MaUuDai,
                         NgayTao = u.NgayTao,
                         NguoiTao = u.NguoiTao,
-                        // TRỪ 1: Biến đổi từ hệ (1,2,3,4) của DB về hệ (0,1,2,3) cho ComboBox XAML
-                        MaLoaiUuDai = u.MaLoaiUuDai - 1,
                         Code = u.Code,
                         TenChuongTrinh = u.TenChuongTrinh,
                         MoTa = u.MoTa,
@@ -48,38 +58,38 @@ namespace Bookstore.API.Controllers
                         SoLuongToiDa = u.SoLuongToiDa,
                         SoLuongDaDung = u.SoLuongDaDung,
                         MaLoaiKhachHang = u.MaLoaiKhachHang,
-                        CoTheSuDung = u.CoTheSuDung
+                        CoTheSuDung = u.CoTheSuDung,
+                        MaLoaiUuDai = u.MaLoaiUuDai
                     };
 
-                    // Rẽ nhánh nạp dữ liệu dựa trên hệ số gốc (1,2,3,4)
-                    if (u.MaLoaiUuDai == 1) // 1. Giảm giá Hóa đơn
+                    if (u.MaLoaiUuDai == PromotionType.HoaDonGiam) // 1. Giảm giá Hóa đơn
                     {
-                        var ct = await _context.CTUD_HoaDon_Giam.FirstOrDefaultAsync(x => x.MaUuDai == u.MaUuDai);
+                        var ct = hGiamList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (ct != null)
                         {
                             dto.SoTienToiThieu = ct.SoTienToiThieu; dto.SoTienToiDa = ct.SoTienToiDa;
                             dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; dto.GiamToiDa = ct.GiamToiDa;
                         }
                     }
-                    else if (u.MaLoaiUuDai == 2) // 2. Tặng quà theo Hóa đơn
+                    else if (u.MaLoaiUuDai == PromotionType.HoaDonQua) // 2. Tặng quà theo Hóa đơn
                     {
-                        var ct = await _context.CTUD_HoaDon_Qua.FirstOrDefaultAsync(x => x.MaUuDai == u.MaUuDai);
+                        var ct = hQuaList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (ct != null) { dto.SoTienToiThieu = ct.SoTienToiThieu; dto.SoTienToiDa = ct.SoTienToiDa; }
-                        var q = await _context.UuDai_SachTang.FirstOrDefaultAsync(x => x.MaUuDai == u.MaUuDai);
+                        var q = tangSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (q != null) { dto.ISBNTang = q.ISBN; dto.SoLuongTang = q.SoLuongTang; }
                     }
-                    else if (u.MaLoaiUuDai == 3) // 3. Giảm giá trực tiếp trên Sách
+                    else if (u.MaLoaiUuDai == PromotionType.SachGiam) // 3. Giảm giá trực tiếp trên Sách
                     {
-                        var ct = await _context.CTUD_Sach_Giam.FirstOrDefaultAsync(x => x.MaUuDai == u.MaUuDai);
+                        var ct = sGiamList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (ct != null) { dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; dto.GiamToiDa = ct.GiamToiDa; }
-                        var dk = await _context.UuDai_SachDieuKien.FirstOrDefaultAsync(x => x.MaUuDai == u.MaUuDai);
+                        var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (dk != null) { dto.ISBNDieuKien = dk.ISBN; dto.SoLuongMua = dk.SoLuongMua; }
                     }
-                    else if (u.MaLoaiUuDai == 4) // 4. Tặng sách khi mua Sách
+                    else if (u.MaLoaiUuDai == PromotionType.SachQua) // 4. Tặng sách khi mua Sách
                     {
-                        var dk = await _context.UuDai_SachDieuKien.FirstOrDefaultAsync(x => x.MaUuDai == u.MaUuDai);
+                        var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (dk != null) { dto.ISBNDieuKien = dk.ISBN; dto.SoLuongMua = dk.SoLuongMua; }
-                        var q = await _context.UuDai_SachTang.FirstOrDefaultAsync(x => x.MaUuDai == u.MaUuDai);
+                        var q = tangSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (q != null) { dto.ISBNTang = q.ISBN; dto.SoLuongTang = q.SoLuongTang; }
                     }
 
@@ -147,13 +157,13 @@ namespace Bookstore.API.Controllers
                     SoLuongDaDung = promo.SoLuongDaDung,
                     MaLoaiKhachHang = promo.MaLoaiKhachHang,
                     CoTheSuDung = promo.CoTheSuDung,
-                    MaLoaiUuDai = promo.MaLoaiUuDai - 1 // Trả về hệ (0,1,2,3) cho WPF
+                    MaLoaiUuDai = promo.MaLoaiUuDai
                 };
 
                 bool isEligible = false;
 
                 // DB Loại 1: Giảm giá hóa đơn
-                if (promo.MaLoaiUuDai == 1)
+                if (promo.MaLoaiUuDai == PromotionType.HoaDonGiam)
                 {
                     var ct = hdGiamList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
                     if (ct != null && request.TamTinh >= ct.SoTienToiThieu)
@@ -167,7 +177,7 @@ namespace Bookstore.API.Controllers
                     }
                 }
                 // DB Loại 2: Tặng quà hóa đơn
-                else if (promo.MaLoaiUuDai == 2)
+                else if (promo.MaLoaiUuDai == PromotionType.HoaDonQua)
                 {
                     var ct = hdQuaList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
                     var tang = tangSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
@@ -182,7 +192,7 @@ namespace Bookstore.API.Controllers
                     }
                 }
                 // DB Loại 3: Giảm giá đầu sách
-                else if (promo.MaLoaiUuDai == 3)
+                else if (promo.MaLoaiUuDai == PromotionType.SachGiam)
                 {
                     var ct = sachGiamList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
                     var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
@@ -203,7 +213,7 @@ namespace Bookstore.API.Controllers
                     }
                 }
                 // DB Loại 4: Tặng quà đầu sách
-                else if (promo.MaLoaiUuDai == 4)
+                else if (promo.MaLoaiUuDai == PromotionType.SachQua)
                 {
                     var ct = sachQuaList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
                     var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
@@ -246,8 +256,7 @@ namespace Bookstore.API.Controllers
             {
                 NgayTao = DateTime.Now,
                 NguoiTao = "WPF Client",
-                // CỘNG 1: Đổi từ hệ số (0,1,2,3) của UI sang hệ số (1,2,3,4) để lưu trữ đúng chuẩn CSDL
-                MaLoaiUuDai = dto.MaLoaiUuDai + 1,
+                MaLoaiUuDai = dto.MaLoaiUuDai,
                 Code = dto.Code.ToUpper(),
                 TenChuongTrinh = dto.TenChuongTrinh,
                 MoTa = dto.MoTa,
@@ -264,24 +273,23 @@ namespace Bookstore.API.Controllers
 
             int id = master.MaUuDai;
 
-            // Kiểm tra theo hệ số lưu DB (1 đến 4)
-            if (master.MaLoaiUuDai == 1)
+            if (master.MaLoaiUuDai == PromotionType.HoaDonGiam)
             {
                 _context.CTUD_HoaDon_Giam.Add(new CTUD_HoaDon_Giam { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
             }
-            else if (master.MaLoaiUuDai == 2)
+            else if (master.MaLoaiUuDai == PromotionType.HoaDonQua)
             {
                 _context.CTUD_HoaDon_Qua.Add(new CTUD_HoaDon_Qua { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa });
                 if (!string.IsNullOrEmpty(dto.ISBNTang))
                     _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = dto.ISBNTang, SoLuongTang = dto.SoLuongTang });
             }
-            else if (master.MaLoaiUuDai == 3)
+            else if (master.MaLoaiUuDai == PromotionType.SachGiam)
             {
                 _context.CTUD_Sach_Giam.Add(new CTUD_Sach_Giam { MaUuDai = id, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
                 if (!string.IsNullOrEmpty(dto.ISBNDieuKien))
                     _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = dto.ISBNDieuKien, SoLuongMua = dto.SoLuongMua });
             }
-            else if (master.MaLoaiUuDai == 4)
+            else if (master.MaLoaiUuDai == PromotionType.SachQua)
             {
                 _context.CTUD_Sach_Qua.Add(new CTUD_Sach_Qua { MaUuDai = id });
                 if (!string.IsNullOrEmpty(dto.ISBNDieuKien))
@@ -317,20 +325,20 @@ namespace Bookstore.API.Controllers
             var t = await _context.UuDai_SachTang.Where(x => x.MaUuDai == id).ToListAsync(); _context.UuDai_SachTang.RemoveRange(t);
 
             // Gán lại hệ số MaLoaiUuDai mới (UI + 1)
-            master.MaLoaiUuDai = dto.MaLoaiUuDai + 1;
+            master.MaLoaiUuDai = dto.MaLoaiUuDai;
 
-            if (master.MaLoaiUuDai == 1) _context.CTUD_HoaDon_Giam.Add(new CTUD_HoaDon_Giam { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
-            else if (master.MaLoaiUuDai == 2)
+            if (master.MaLoaiUuDai == PromotionType.HoaDonGiam) _context.CTUD_HoaDon_Giam.Add(new CTUD_HoaDon_Giam { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
+            else if (master.MaLoaiUuDai == PromotionType.HoaDonQua)
             {
                 _context.CTUD_HoaDon_Qua.Add(new CTUD_HoaDon_Qua { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa });
                 if (!string.IsNullOrEmpty(dto.ISBNTang)) _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = dto.ISBNTang, SoLuongTang = dto.SoLuongTang });
             }
-            else if (master.MaLoaiUuDai == 3)
+            else if (master.MaLoaiUuDai == PromotionType.SachGiam)
             {
                 _context.CTUD_Sach_Giam.Add(new CTUD_Sach_Giam { MaUuDai = id, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
                 if (!string.IsNullOrEmpty(dto.ISBNDieuKien)) _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = dto.ISBNDieuKien, SoLuongMua = dto.SoLuongMua });
             }
-            else if (master.MaLoaiUuDai == 4)
+            else if (master.MaLoaiUuDai == PromotionType.SachQua)
             {
                 _context.CTUD_Sach_Qua.Add(new CTUD_Sach_Qua { MaUuDai = id });
                 if (!string.IsNullOrEmpty(dto.ISBNDieuKien)) _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = dto.ISBNDieuKien, SoLuongMua = dto.SoLuongMua });

@@ -358,7 +358,7 @@
 												   Foreground="{StaticResource TextLightColor}"
 												   HorizontalAlignment="Left"
 												   VerticalAlignment="Center" />
-										<TextBlock Text="{Binding GiaGocTamTinh, StringFormat='{}{0:N0} đ'}"
+										<TextBlock Text="{Binding TamTinh, StringFormat='{}{0:N0} đ'}"
 												   FontSize="14"
 												   FontWeight="Bold"
 												   Foreground="{StaticResource WarningColor}"

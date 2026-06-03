@@ -2,6 +2,7 @@
 using Bookstore.Share.DTO.Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Bookstore.Share.DTOs;
+using Bookstore.Share.Enums;
 using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.ViewModels.Base;
@@ -240,7 +241,7 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region 5. THANH TOÁN VÀ TIỀN BẠC (Billing)
-        public decimal GiaGocTamTinh => CartItems.Where(x => !x.IsGift).Sum(x => x.OriginalGiaBan * x.SoLuongMua);
+        public decimal TamTinh => CartItems.Where(x => !x.IsGift).Sum(x => x.OriginalGiaBan * x.SoLuongMua);
 
         private decimal _giamTien;
         public decimal GiamTien
@@ -249,7 +250,7 @@ namespace Bookstore.WPF.ViewModels
             set { _giamTien = value; OnPropertyChanged(); }
         }
 
-        public decimal TongTienThanhToan => Math.Max(0, GiaGocTamTinh - GiamTien);
+        public decimal TongTienThanhToan => Math.Max(0, TamTinh - GiamTien);
 
         public bool IsThanhToanEnabled
         {
@@ -605,7 +606,7 @@ namespace Bookstore.WPF.ViewModels
 
                 var request = new CheckPromotionRequest
                 {
-                    TamTinh = GiaGocTamTinh,
+                    TamTinh = TamTinh,
                     MaLoaiKhachHang = targetLoaiKhachId,
                     CartItems = CartItems.Where(c => !c.IsGift).Select(c => new CartItemRequest
                     {
@@ -703,9 +704,10 @@ namespace Bookstore.WPF.ViewModels
                 // BƯỚC 2: PHA 1 - ÁP DỤNG ƯU ĐÃI THEO ĐẦU SÁCH (LOẠI 2 & 3)
                 // ====================================================================
                 // Chỉ quét những ưu đãi khách HÀNG ĐÃ CHỌN (Nằm trong AppliedPromotionList)
-                foreach (var promo in AppliedPromotionList.Where(p => p.MaLoaiUuDai == 2 || p.MaLoaiUuDai == 3).ToList())
+                foreach (var promo in AppliedPromotionList
+                    .Where(p => p.MaLoaiUuDai == PromotionType.SachGiam || p.MaLoaiUuDai == PromotionType.SachQua).ToList())
                 {
-                    if (promo.MaLoaiUuDai == 2 && !string.IsNullOrEmpty(promo.ISBNDieuKien))
+                    if (promo.MaLoaiUuDai == PromotionType.SachGiam && !string.IsNullOrEmpty(promo.ISBNDieuKien))
                     {
                         var matchItem = CartItems.FirstOrDefault(x => x.ISBN == promo.ISBNDieuKien && !x.IsGift);
                         if (matchItem != null && matchItem.SoLuongMua >= promo.SoLuongMua)
@@ -714,18 +716,18 @@ namespace Bookstore.WPF.ViewModels
                             matchItem.GiaBan = promo.TiLeGiam > 0
                                 ? Math.Round(matchItem.OriginalGiaBan * (decimal)(100 - promo.TiLeGiam) / 100)
                                 : Math.Max(0, matchItem.OriginalGiaBan - promo.SoTienGiam);
-                            promo.MucGiamDisplay = "🎁";
+                            promo.MucGiamDisplay = "Giảm sách";
                         }
                         else AppliedPromotionList.Remove(promo);
                     }
-                    else if (promo.MaLoaiUuDai == 3 && !string.IsNullOrEmpty(promo.ISBNDieuKien) && !string.IsNullOrEmpty(promo.ISBNTang))
+                    else if (promo.MaLoaiUuDai == PromotionType.SachQua && !string.IsNullOrEmpty(promo.ISBNDieuKien) && !string.IsNullOrEmpty(promo.ISBNTang))
                     {
                         var triggerItem = CartItems.FirstOrDefault(x => x.ISBN == promo.ISBNDieuKien && !x.IsGift);
                         if (triggerItem != null && triggerItem.SoLuongMua >= promo.SoLuongMua)
                         {
                             int soLuongTangFormat = (triggerItem.SoLuongMua / promo.SoLuongMua) * promo.SoLuongTang;
                             ThemQuaTangVaoGio(promo.ISBNTang, soLuongTangFormat);
-                            promo.MucGiamDisplay = "🎁";
+                            promo.MucGiamDisplay = "Tặng sách";
                         }
                         else AppliedPromotionList.Remove(promo);
                     }
@@ -735,37 +737,38 @@ namespace Bookstore.WPF.ViewModels
                 // BƯỚC 3: PHA 2 - ÁP DỤNG ƯU ĐÃI TRÊN TỔNG HÓA ĐƠN (LOẠI 0 & 1)
                 // ====================================================================
                 decimal tongTienGiamBill = 0;
-                foreach (var promo in AppliedPromotionList.Where(p => p.MaLoaiUuDai == 0 || p.MaLoaiUuDai == 1).ToList())
+                foreach (var promo in AppliedPromotionList
+                    .Where(p => p.MaLoaiUuDai == PromotionType.HoaDonGiam || p.MaLoaiUuDai == PromotionType.HoaDonQua).ToList())
                 {
                     // --- CỐT LÕI: DÙNG GiaGocTamTinh ĐỂ SO SÁNH ---
-                    if (GiaGocTamTinh < promo.SoTienToiThieu)
+                    if (TamTinh < promo.SoTienToiThieu)
                     {
                         AppliedPromotionList.Remove(promo);
                         continue;
                     }
 
-                    if (promo.MaLoaiUuDai == 0)
+                    if (promo.MaLoaiUuDai == PromotionType.HoaDonGiam)
                     {
-                        // Dùng GiaGocTamTinh để tính % giảm
+                        // Dùng TamTinh để tính % giảm
                         decimal valueGiam = promo.TiLeGiam > 0
-                            ? GiaGocTamTinh * (decimal)(promo.TiLeGiam / 100)
+                            ? TamTinh * (decimal)(promo.TiLeGiam / 100)
                             : promo.SoTienGiam;
 
                         if (promo.GiamToiDa > 0 && valueGiam > promo.GiamToiDa) valueGiam = promo.GiamToiDa;
                         tongTienGiamBill += valueGiam;
                         promo.MucGiamDisplay = $"- {valueGiam:N0} đ";
                     }
-                    else if (promo.MaLoaiUuDai == 1 && !string.IsNullOrEmpty(promo.ISBNTang))
+                    else if (promo.MaLoaiUuDai == PromotionType.HoaDonQua && !string.IsNullOrEmpty(promo.ISBNTang))
                     {
                         ThemQuaTangVaoGio(promo.ISBNTang, promo.SoLuongTang > 0 ? promo.SoLuongTang : 1);
-                        promo.MucGiamDisplay = "HD - QUÀ";
+                        promo.MucGiamDisplay = "Tặng quà";
                     }
                 }
 
                 // ====================================================================
                 // BƯỚC 4: CHỐT SỐ LIỆU VÀ GỌI API CẬP NHẬT
                 // ====================================================================
-                OnPropertyChanged(nameof(GiaGocTamTinh)); 
+                OnPropertyChanged(nameof(TamTinh)); 
                 GiamTien = tongTienGiamBill;      
                 OnPropertyChanged(nameof(TongTienThanhToan)); // = TamTinh - GiamTien
 
@@ -801,7 +804,7 @@ namespace Bookstore.WPF.ViewModels
                     ISBN = sachGocHeThong.BookData.ISBN,
                     TenSach = $"{sachGocHeThong.BookData.TenSach}",
                     OriginalGiaBan = sachGocHeThong.BookData.DonGiaBan,
-                    GiaBan = 0, // Hàng tặng nên ép giá về 0
+                    GiaBan = 0,
                     SoLuongMua = soLuong,
                     SoLuongTonKho = sachGocHeThong.BookData.SoLuongTonKho,
                     IsGift = true

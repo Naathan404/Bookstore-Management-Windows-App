@@ -3,6 +3,8 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:local="clr-namespace:Bookstore.WPF.Views.Components"
+			 Foreground="{StaticResource PrimaryDarkColor}"
+			 FontWeight="Normal"
 			 x:Name="Root">
 
 	<StackPanel>
@@ -55,7 +57,7 @@
 		</StackPanel>
 
 		<Border x:Name="ContainerBorder"
-				Height="42"
+				Height="{Binding InputHeight, ElementName=Root}"
 				CornerRadius="10"
 				Background="{StaticResource BackgroundColor}"
 				BorderBrush="#E2E8F0"
@@ -64,6 +66,7 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
 				<materialDesign:PackIcon x:Name="Icon"
@@ -82,14 +85,75 @@
 						 IsReadOnly="{Binding IsReadOnly, ElementName=Root}"
 						 Background="Transparent"
 						 BorderThickness="0"
-						 VerticalAlignment="Center"
+						 VerticalAlignment="Stretch"
 						 FontSize="14"
-						 Foreground="{StaticResource PrimaryDarkColor}"
+						 Foreground="{Binding Foreground, ElementName=Root}"
+						 FontWeight="{Binding FontWeight, ElementName=Root}"
 						 CaretBrush="{StaticResource PrimaryColor}"
 						 materialDesign:HintAssist.Hint="{Binding HintText, ElementName=Root}"
 						 materialDesign:HintAssist.Foreground="#A3AED0"
-						 materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-						 Margin="8,0,12,0" />
+						 materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource PrimaryColor}"
+						 materialDesign:TextFieldAssist.UnderlineCornerRadius="5"
+						 Margin="8,4,12,4">
+					<TextBox.Style>
+						<Style TargetType="TextBox"
+							   BasedOn="{StaticResource MaterialDesignTextBox}">
+							<Setter Property="VerticalContentAlignment"
+									Value="Center" />
+							<Setter Property="TextWrapping"
+									Value="NoWrap" />
+							<Setter Property="TextAlignment"
+									Value="Justify" />
+							<Setter Property="AcceptsReturn"
+									Value="False" />
+							<Setter Property="VerticalScrollBarVisibility"
+									Value="Hidden" />
+							
+
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsMultiLine, ElementName=Root}"
+											 Value="True">
+									<Setter Property="VerticalContentAlignment"
+											Value="Center" />
+									<Setter Property="TextWrapping"
+											Value="Wrap" />
+									<Setter Property="AcceptsReturn"
+											Value="True" />
+									<Setter Property="VerticalScrollBarVisibility"
+											Value="Auto" />
+									<Setter Property="materialDesign:TextFieldAssist.DecorationVisibility"
+											Value="Collapsed" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBox.Style>
+				</TextBox>
+				<TextBlock Grid.Column="2"
+						   Text="{Binding UnitText, ElementName=Root}"
+						   FontSize="13"
+						   FontWeight="Bold"
+						   Foreground="#A3AED0"
+						   VerticalAlignment="Center"
+						   Margin="0,0,12,0">
+					<TextBlock.Style>
+						<Style TargetType="TextBlock">
+							<Setter Property="Visibility"
+									Value="Visible" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding UnitText, ElementName=Root}"
+											 Value="">
+									<Setter Property="Visibility"
+											Value="Collapsed" />
+								</DataTrigger>
+								<DataTrigger Binding="{Binding UnitText, ElementName=Root}"
+											 Value="{x:Null}">
+									<Setter Property="Visibility"
+											Value="Collapsed" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBlock.Style>
+				</TextBlock>
 			</Grid>
 
 			<Border.Style>
@@ -181,4 +245,26 @@
 			</TextBlock.Style>
 		</TextBlock>
 	</StackPanel>
+	<UserControl.Triggers>
+		<EventTrigger RoutedEvent="GotKeyboardFocus">
+			<BeginStoryboard>
+				<Storyboard>
+					<ColorAnimation Storyboard.TargetName="Icon"
+									Storyboard.TargetProperty="(materialDesign:PackIcon.Foreground).(SolidColorBrush.Color)"
+									To="#4318FF"
+									Duration="0:0:0.15" />
+				</Storyboard>
+			</BeginStoryboard>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="LostKeyboardFocus">
+			<BeginStoryboard>
+				<Storyboard>
+					<ColorAnimation Storyboard.TargetName="Icon"
+									Storyboard.TargetProperty="(materialDesign:PackIcon.Foreground).(SolidColorBrush.Color)"
+									To="#A3AED0"
+									Duration="0:0:0.15" />
+				</Storyboard>
+			</BeginStoryboard>
+		</EventTrigger>
+	</UserControl.Triggers>
 </UserControl>

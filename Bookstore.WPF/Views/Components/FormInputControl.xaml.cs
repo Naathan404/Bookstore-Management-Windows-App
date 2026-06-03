@@ -14,11 +14,35 @@ namespace Bookstore.WPF.Views.Components
         public string TextValue { get => (string)GetValue(TextValueProperty); set => SetValue(TextValueProperty, value); }
         public static readonly DependencyProperty TextValueProperty = DependencyProperty.Register("TextValue", typeof(string), typeof(FormInputControl), new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        public double InputHeight
+        {
+            get { return (double)GetValue(InputHeightProperty); }
+            set { SetValue(InputHeightProperty, value); }
+        }
+        public static readonly DependencyProperty InputHeightProperty =
+            DependencyProperty.Register("InputHeight", typeof(double), typeof(FormInputControl), new PropertyMetadata(42.0));
+        public bool IsMultiLine
+        {
+            get { return (bool)GetValue(IsMultiLineProperty); }
+            set { SetValue(IsMultiLineProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsMultiLineProperty =
+            DependencyProperty.Register("IsMultiLine", typeof(bool), typeof(FormInputControl), new PropertyMetadata(false));
         public string HintText { get => (string)GetValue(HintTextProperty); set => SetValue(HintTextProperty, value); }
         public static readonly DependencyProperty HintTextProperty = DependencyProperty.Register("HintText", typeof(string), typeof(FormInputControl), new PropertyMetadata(""));
 
         public string HelperText { get => (string)GetValue(HelperTextProperty); set => SetValue(HelperTextProperty, value); }
         public static readonly DependencyProperty HelperTextProperty = DependencyProperty.Register("HelperText", typeof(string), typeof(FormInputControl), new PropertyMetadata(""));
+
+        public string UnitText
+        {
+            get { return (string)GetValue(UnitTextProperty); }
+            set { SetValue(UnitTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty UnitTextProperty =
+            DependencyProperty.Register("UnitText", typeof(string), typeof(FormInputControl), new PropertyMetadata(string.Empty));
 
         public PackIconKind IconKind { get => (PackIconKind)GetValue(IconKindProperty); set => SetValue(IconKindProperty, value); }
         public static readonly DependencyProperty IconKindProperty = DependencyProperty.Register("IconKind", typeof(PackIconKind), typeof(FormInputControl), new PropertyMetadata(PackIconKind.Pencil));

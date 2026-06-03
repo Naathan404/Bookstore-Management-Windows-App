@@ -64,6 +64,24 @@ namespace Bookstore.WPF.Views.Components
         public string DisplayMemberPath { get { return (string)GetValue(DisplayMemberPathProperty); } set { SetValue(DisplayMemberPathProperty, value); } }
         public static readonly DependencyProperty DisplayMemberPathProperty = DependencyProperty.Register("DisplayMemberPath", typeof(string), typeof(FormComboBoxControl), new PropertyMetadata(string.Empty));
 
+        public object SelectedValue
+        {
+            get { return GetValue(SelectedValueProperty); }
+            set { SetValue(SelectedValueProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedValueProperty =
+            DependencyProperty.Register("SelectedValue", typeof(object), typeof(FormComboBoxControl),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public string SelectedValuePath
+        {
+            get { return (string)GetValue(SelectedValuePathProperty); }
+            set { SetValue(SelectedValuePathProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedValuePathProperty =
+            DependencyProperty.Register("SelectedValuePath", typeof(string), typeof(FormComboBoxControl), new PropertyMetadata(string.Empty));
         public bool IsEditable { get { return (bool)GetValue(IsEditableProperty); } set { SetValue(IsEditableProperty, value); } }
         public static readonly DependencyProperty IsEditableProperty = DependencyProperty.Register("IsEditable", typeof(bool), typeof(FormComboBoxControl), new PropertyMetadata(false));
     }

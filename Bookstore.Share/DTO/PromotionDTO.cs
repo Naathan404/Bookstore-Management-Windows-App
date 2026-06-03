@@ -2,19 +2,19 @@
 
 namespace Bookstore.Share.DTO
 {
+    using global::Bookstore.Share.Enums;
     using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
     namespace Bookstore.Share.DTO
     {
-        // Bổ sung giao diện INotifyPropertyChanged để UI tự cập nhật khi dữ liệu thay đổi
         public class PromotionDTO : INotifyPropertyChanged
         {
             public int MaUuDai { get; set; }
             public DateTime NgayTao { get; set; } = DateTime.Now;
             public string NguoiTao { get; set; } = string.Empty;
-            public int MaLoaiUuDai { get; set; } // 0: HD_Giam, 1: HD_Qua, 2: Sach_Giam, 3: Sach_Qua 
+            public PromotionType MaLoaiUuDai { get; set; }
             public string Code { get; set; } = string.Empty;
             public string TenChuongTrinh { get; set; } = string.Empty;
             public string MoTa { get; set; } = string.Empty;
@@ -65,14 +65,15 @@ namespace Bookstore.Share.DTO
 
             public string LoaiUuDai => MaLoaiUuDai switch
             {
-                0 => "Giảm giá / Tổng hóa đơn",
-                1 => "Tặng quà / Tổng hóa đơn",
-                2 => "Giảm giá / Đầu sách",
-                3 => "Tặng quà / Đầu sách",
+                PromotionType.HoaDonGiam => "Giảm giá / Hóa đơn",
+                PromotionType.HoaDonQua => "Tặng quà / Hóa đơn",
+                PromotionType.SachGiam => "Giảm giá / Đầu sách",
+                PromotionType.SachQua => "Tặng quà / Đầu sách",
                 _ => "Không xác định"
             };
 
             // Đã đồng bộ lại khớp với logic Code
+            // TODO: Dơ
             public string LoaiKhachHangApDung => MaLoaiKhachHang switch
             {
                 0 => "Tất cả khách hàng",
@@ -140,5 +141,12 @@ namespace Bookstore.Share.DTO
     {
         public string ISBN { get; set; } = string.Empty;
         public int SoLuong { get; set; }
+    }
+
+    public class PromotionTypeResponse
+    {
+        public PromotionType MaLoaiUuDai { get; set; }
+        public string TenLoaiUuDai { get; set; } = string.Empty;
+        public int ApDungToiDa { get; set; }
     }
 }
