@@ -374,7 +374,8 @@ namespace Bookstore.API.Data
                 new ThamSo { TenThamSo = "ChoPhepKetThucUuDai", GiaTri = 1 },
                 new ThamSo { TenThamSo = "SoLuongTonToiThieu", GiaTri = 20 },
                 new ThamSo { TenThamSo = "ThueVAT", GiaTri = 8 },
-                new ThamSo { TenThamSo = "TienThuLonHonNo", GiaTri = 1 }
+                new ThamSo { TenThamSo = "TienThuLonHonNo", GiaTri = 1 },
+                new ThamSo { TenThamSo = "MatKhauMacDinh", GiaTri = 123456 } 
             );
 
             // Loại khách hàng và khách hàng

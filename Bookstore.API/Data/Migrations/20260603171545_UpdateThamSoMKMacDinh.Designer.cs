@@ -4,6 +4,7 @@ using Bookstore.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260603171545_UpdateThamSoMKMacDinh")]
+    partial class UpdateThamSoMKMacDinh
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -964,7 +967,10 @@ namespace Bookstore.API.Data.Migrations
             modelBuilder.Entity("Bookstore.API.Models.LoaiUuDai", b =>
                 {
                     b.Property<int>("MaLoaiUuDai")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaLoaiUuDai"));
 
                     b.Property<int>("ApDungToiDa")
                         .HasColumnType("int");
@@ -2600,7 +2606,7 @@ namespace Bookstore.API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaLoaiKhachHang")
+                    b.Property<int>("MaLoaiKhachHang")
                         .HasColumnType("int");
 
                     b.Property<int>("MaLoaiUuDai")
@@ -3045,20 +3051,17 @@ namespace Bookstore.API.Data.Migrations
 
             modelBuilder.Entity("Bookstore.API.Models.UuDai", b =>
                 {
-                    b.HasOne("Bookstore.API.Models.LoaiKhachHang", "LoaiKhachHang")
+                    b.HasOne("Bookstore.API.Models.LoaiKhachHang", null)
                         .WithMany()
                         .HasForeignKey("MaLoaiKhachHang")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("Bookstore.API.Models.LoaiUuDai", "LoaiUuDai")
+                    b.HasOne("Bookstore.API.Models.LoaiUuDai", null)
                         .WithMany()
                         .HasForeignKey("MaLoaiUuDai")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("LoaiKhachHang");
-
-                    b.Navigation("LoaiUuDai");
                 });
 
             modelBuilder.Entity("Bookstore.API.Models.UuDai_SachDieuKien", b =>

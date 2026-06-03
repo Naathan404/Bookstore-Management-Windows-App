@@ -3,6 +3,7 @@ using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -56,6 +57,19 @@ namespace Bookstore.WPF.ViewModels
         private int _soLuongUuDaiToiDa;
         public int SoLuongUuDaiToiDa { get => _soLuongUuDaiToiDa; set { _soLuongUuDaiToiDa = value; OnPropertyChanged(); CheckChanges(); } }
         #endregion
+
+        private int _matKhauMacDinh;
+        public int MatKhauMacDinh
+        {
+            get => _matKhauMacDinh;
+            set
+            {
+                _matKhauMacDinh = value;
+                OnPropertyChanged();
+                CheckChanges();
+            }
+        }
+            
         private Dictionary<string, int> _originalValues = new();
 
         // Biến kích hoạt ẩn/hiện nút
@@ -99,7 +113,8 @@ namespace Bookstore.WPF.ViewModels
                     FetchSetting("SoLuongUuDaiToiThieu", v => SoLuongUuDaiToiThieu = v),
                     FetchSetting("ThueVAT", v => ThueVAT = v),
                     FetchSetting("TienThuLonHonNo", v => TienThuLonHonNo = v == 1),
-                    FetchSetting("TiLeDonGiaBan", v => TiLeDonGiaBan = v)
+                    FetchSetting("TiLeDonGiaBan", v => TiLeDonGiaBan = v),
+                    FetchSetting("MatKhauMacDinh", v => MatKhauMacDinh = v)
                 };
 
                 await Task.WhenAll(tasks);
@@ -119,6 +134,44 @@ namespace Bookstore.WPF.ViewModels
         private async void ExecuteLuuCaiDat(object obj)
         {
             IsLoading = true;
+            if (MatKhauMacDinh.ToString().Length != 6)
+            {
+                MessageBox.Show("Mật khẩu mặc định phải đúng 6 ký tự số", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (SoLuongNhapToiThieu < 0 || SoLuongTonToiDaCoTheNhap < 0 || SoLuongTonToiThieu < 0 ||
+                SoLuongUuDaiToiThieu < 0 || SoLuongUuDaiToiDa < 0)
+            {
+                MessageBox.Show("Các trường số lượng cấu hình phải là số dương hoặc bằng 0!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (ThueVAT < 0 || TiLeDonGiaBan < 0)
+            {
+                MessageBox.Show("Thuế VAT và Tỉ lệ đơn giá bán không thể là số âm!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+
+            if (ThueVAT > 100)
+            {
+                MessageBox.Show("Thuế VAT không thể vượt quá 100%!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (SoLuongTonToiThieu > SoLuongTonToiDaCoTheNhap)
+            {
+                MessageBox.Show("Số lượng tồn tối thiểu không được lớn hơn Số lượng tồn tối đa có thể nhập!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (SoLuongUuDaiToiThieu > SoLuongUuDaiToiDa)
+            {
+                MessageBox.Show("Số lượng ưu đãi tối thiểu không được lớn hơn Số lượng ưu đãi tối đa!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
                 var tasks = new List<Task>()
@@ -132,7 +185,8 @@ namespace Bookstore.WPF.ViewModels
                     UpdateSetting("SoLuongUuDaiToiThieu", SoLuongUuDaiToiThieu),
                     UpdateSetting("ThueVAT", ThueVAT),
                     UpdateSetting("TienThuLonHonNo", TienThuLonHonNo ? 1 : 0),
-                    UpdateSetting("TiLeDonGiaBan", TiLeDonGiaBan)
+                    UpdateSetting("TiLeDonGiaBan", TiLeDonGiaBan),
+                    UpdateSetting("MatKhauMacDinh", MatKhauMacDinh)
                 };
 
                 await Task.WhenAll(tasks);
@@ -160,6 +214,10 @@ namespace Bookstore.WPF.ViewModels
 
         private async Task UpdateSetting(string tenThamSo, int giaTri)
         {
+            if(tenThamSo == "MatKhauMacDinh")
+            {
+                if (giaTri.ToString().Length != 6) return;
+            }    
             var request = new ThamSoDTO { TenThamSo = tenThamSo, GiaTri = giaTri };
             await ApiClient.PutAsync<object, object>($"api/ThamSo/{tenThamSo}", request);
         }
@@ -178,7 +236,8 @@ namespace Bookstore.WPF.ViewModels
                 GetOrig("ChoPhepKetThucUuDai") != (ChoPhepKetThucUuDai ? 1 : 0) ||
                 GetOrig("CoKhoangCachCacKhoangGia") != (CoKhoangCachCacKhoangGia ? 1 : 0) ||
                 GetOrig("SoLuongUuDaiToiThieu") != SoLuongUuDaiToiThieu ||
-                GetOrig("SoLuongUuDaiToiDa") != SoLuongUuDaiToiDa;
+                GetOrig("SoLuongUuDaiToiDa") != SoLuongUuDaiToiDa ||
+                GetOrig("MatKhauMacDinh") != MatKhauMacDinh;
         }
         private int GetOrig(string key) => _originalValues.ContainsKey(key) ? _originalValues[key] : 0;
     }

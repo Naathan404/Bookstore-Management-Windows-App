@@ -67,6 +67,13 @@ namespace Bookstore.WPF.ViewModels
         private BookSearchResponse _selectedSearchBook;
         public BookSearchResponse SelectedSearchBook { get => _selectedSearchBook; set { _selectedSearchBook = value; OnPropertyChanged(); } }
 
+        private int _maxStockThreshold = 300; // Mặc định phòng hờ là 300
+        public int MaxStockThreshold
+        {
+            get => _maxStockThreshold;
+            set { _maxStockThreshold = value; OnPropertyChanged(); }
+        }
+
         public ICommand ClearFilterCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand ViewDetailCommand { get; }
@@ -81,6 +88,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand SaveImportOrderCommand { get; }
         public ICommand UpdateGhiChuCommand { get; }
 
+        int minImport = 1;
 
         public ImportViewModel()
         {
@@ -123,6 +131,14 @@ namespace Bookstore.WPF.ViewModels
                 SupplierList.Clear();
                 foreach (var item in data) SupplierList.Add(item);
             }
+
+            var minImportThamSo = await ApiClient.GetAsync<ThamSoDTO>($"api/ThamSo/SoLuongNhapToiThieu");
+            if(minImportThamSo != null)
+                minImport = minImportThamSo.GiaTri;
+
+            var maxStockToImport = await ApiClient.GetAsync<ThamSoDTO>($"api/ThamSo/SoLuongTonToiDaCoTheNhap");
+            if (maxStockToImport != null)
+                _maxStockThreshold = maxStockToImport.GiaTri;
         }
 
         private async Task LoadDataAsync()
@@ -274,6 +290,18 @@ namespace Bookstore.WPF.ViewModels
                 return;
             }
 
+            if (SelectedSearchBook.TonKho >= MaxStockThreshold)
+            {
+                MessageBox.Show($"Không thể nhập thêm sách này!\n\n" +
+                                $"• Lượng tồn hiện tại: {SelectedSearchBook.TonKho} cuốn.\n" +
+                                $"• Ngưỡng tồn tối đa quy định: {MaxStockThreshold} cuốn.\n\n" +
+                                $"Sách này vẫn còn đủ lượng tồn trên kệ, không cần nhập thêm.",
+                                "Không thể thêm",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Stop);
+                return;
+            }
+
             if (NewImportOrder.ChiTiet.Any(x => x.ISBN == SelectedSearchBook.ISBN))
             {
                 MessageBox.Show("Sách này đã có trong danh sách nhập! Vui lòng chỉnh sửa số lượng ở bảng bên dưới.", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -286,8 +314,9 @@ namespace Bookstore.WPF.ViewModels
                 ISBN = SelectedSearchBook.ISBN,
                 TenSach = SelectedSearchBook.TenSach,
                 TacGia = SelectedSearchBook.TacGia,
-                SoLuong = 1, 
-                DonGia = 0,
+                SoLuong = minImport, 
+                DonGia = SelectedSearchBook.GiaNiemYet, 
+                MinImport = minImport,
                 TargetValueChanged = () => NewImportOrder.OnDetailChanged()
             });
             NewImportOrder.OnDetailChanged();
@@ -318,6 +347,12 @@ namespace Bookstore.WPF.ViewModels
 
             foreach (var item in NewImportOrder.ChiTiet)
             {
+                if (item.SoLuong < minImport)
+                {
+                    MessageBox.Show($"Không thể lưu phiếu!\n\nSách '{item.TenSach}' có số lượng nhập ({item.SoLuong} cuốn) nhỏ hơn mức tối thiểu quy định của nhà sách ({minImport} cuốn).",
+                                    "Lưu thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 if (item.SoLuong <= 0)
                 {
                     MessageBox.Show($"Sách '{item.TenSach}' có số lượng không hợp lệ. Phải lớn hơn 0!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -387,11 +422,23 @@ namespace Bookstore.WPF.ViewModels
         public string TenSach { get; set; } = "";
         public string TacGia { get; set; } = "";
         public string GhiChu { get; set; } = "";
+        public int MinImport { get; set; } = 150;
 
         public Action TargetValueChanged { get; set; }
 
         private int _soLuong;
-        public int SoLuong { get => _soLuong; set { _soLuong = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); TargetValueChanged?.Invoke(); } }
+        public int SoLuong 
+        { 
+            get => _soLuong; 
+            set 
+            {
+
+                _soLuong = value;
+                OnPropertyChanged(nameof(SoLuong)); 
+                OnPropertyChanged(nameof(ThanhTien)); 
+                TargetValueChanged?.Invoke(); 
+            } 
+        }
 
         private decimal _donGia;
         public decimal DonGia { get => _donGia; set { _donGia = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); TargetValueChanged?.Invoke(); } }
