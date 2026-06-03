@@ -315,7 +315,8 @@ namespace Bookstore.WPF.ViewModels
                 TenSach = SelectedSearchBook.TenSach,
                 TacGia = SelectedSearchBook.TacGia,
                 SoLuong = minImport, 
-                DonGia = SelectedSearchBook.GiaNiemYet,
+                DonGia = SelectedSearchBook.GiaNiemYet, 
+                MinImport = minImport,
                 TargetValueChanged = () => NewImportOrder.OnDetailChanged()
             });
             NewImportOrder.OnDetailChanged();
@@ -346,6 +347,12 @@ namespace Bookstore.WPF.ViewModels
 
             foreach (var item in NewImportOrder.ChiTiet)
             {
+                if (item.SoLuong < minImport)
+                {
+                    MessageBox.Show($"Không thể lưu phiếu!\n\nSách '{item.TenSach}' có số lượng nhập ({item.SoLuong} cuốn) nhỏ hơn mức tối thiểu quy định của nhà sách ({minImport} cuốn).",
+                                    "Lưu thất bại", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 if (item.SoLuong <= 0)
                 {
                     MessageBox.Show($"Sách '{item.TenSach}' có số lượng không hợp lệ. Phải lớn hơn 0!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -415,11 +422,23 @@ namespace Bookstore.WPF.ViewModels
         public string TenSach { get; set; } = "";
         public string TacGia { get; set; } = "";
         public string GhiChu { get; set; } = "";
+        public int MinImport { get; set; } = 150;
 
         public Action TargetValueChanged { get; set; }
 
         private int _soLuong;
-        public int SoLuong { get => _soLuong; set { _soLuong = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); TargetValueChanged?.Invoke(); } }
+        public int SoLuong 
+        { 
+            get => _soLuong; 
+            set 
+            {
+
+                _soLuong = value;
+                OnPropertyChanged(nameof(SoLuong)); 
+                OnPropertyChanged(nameof(ThanhTien)); 
+                TargetValueChanged?.Invoke(); 
+            } 
+        }
 
         private decimal _donGia;
         public decimal DonGia { get => _donGia; set { _donGia = value; OnPropertyChanged(); OnPropertyChanged(nameof(ThanhTien)); TargetValueChanged?.Invoke(); } }

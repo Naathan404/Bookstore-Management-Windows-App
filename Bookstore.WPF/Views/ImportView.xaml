@@ -286,7 +286,8 @@
                                  Background="Transparent" BorderThickness="0"
                                  VerticalAlignment="Center" HorizontalAlignment="Stretch"
                                  FontSize="13" Foreground="#2B3674"
-                                 materialDesign:HintAssist.Hint="Ghi chú..." />
+                                 materialDesign:HintAssist.Hint="Ghi chú..."
+                                         Margin=" 0 0 15 0"/>
 
                                 <Button Grid.Column="2" Content="CẬP NHẬT" 
                                 Command="{Binding UpdateGhiChuCommand}"
@@ -538,6 +539,27 @@
                                             CommandParameter="{Binding}" 
                                             Background="Transparent" BorderThickness="0" Foreground="#EF4444" Width="30" Height="30" ToolTip="Xóa">
                                                 <materialDesign:PackIcon Kind="TrashCanOutline" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Width="60" Header="">
+                                    <DataGridTemplateColumn.HeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridTemplateColumn.HeaderStyle>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding DataContext.RemoveImportDetailCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                CommandParameter="{Binding}" 
+                                                Style="{StaticResource MaterialDesignIconForegroundButton}" 
+                                                Foreground="#EF4444" 
+                                                Width="30" Height="30" 
+                                                HorizontalAlignment="Center"
+                                                ToolTip="Xóa sách này khỏi danh sách nhập">
+                                                <materialDesign:PackIcon Kind="TrashCanOutline" Width="18" Height="18" />
                                             </Button>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
