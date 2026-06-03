@@ -136,7 +136,7 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region Giỏ hàng
-        public ObservableCollection<CartItemModel> CartItems { get; set; } = new();
+        public ObservableCollection<CartItemModel> CartItems => CartService.Instance.CartItems;
         #endregion
 
         #region Xem sách
@@ -285,7 +285,7 @@ namespace Bookstore.WPF.ViewModels
                 if (book.IsSelected)
                 {
                     if (itemTrongGio == null)
-                        ThucHienThemVaoGioCore(book, 1);
+                        CartService.Instance.AddToCart(book, 1);
                 }
                 else
                 {
@@ -304,6 +304,8 @@ namespace Bookstore.WPF.ViewModels
             #region GIỎ HÀNG
             CartItems.CollectionChanged += (s, e) =>
             {
+                DongBoTrangThaiChonSach();
+                TinhToanHoaDon();
                 if (e.NewItems != null)
                 {
                     foreach (CartItemModel item in e.NewItems)
@@ -321,19 +323,8 @@ namespace Bookstore.WPF.ViewModels
 
             ThemVaoGioHangCommand = new RelayCommand<BookSaleModel>((book) =>
             {
-                if (book == null || book.BookData.SoLuongTonKho <= 0) return;
+                CartService.Instance.AddToCart(book, 1);
 
-                var item = CartItems.FirstOrDefault(i => i.ISBN == book.BookData.ISBN && !i.IsGift);
-
-                if (item != null)
-                {
-                    if (item.SoLuongMua < item.SoLuongTonKho) item.SoLuongMua++;
-                }
-                else
-                {
-                    ThucHienThemVaoGioCore(book, 1);
-                }
-                TinhToanHoaDon();
             });
 
             TangSoLuongCommand = new RelayCommand<CartItemModel>((item) =>
@@ -385,26 +376,10 @@ namespace Bookstore.WPF.ViewModels
                 },
     () => IsThanhToanEnabled
             );
-
-            // Đóng Popup / Hủy bỏ giao dịch
-            CloseDialogCommand = new RelayCommand<object>((p) =>
-            {
-                ////IsConfirmPaymentOpen = false;
-                //IsBookDetailOpen = false;
-                //IsSelectCustomerOpen = false; // Tiện tay đóng luôn cái chọn khách nếu có
-            });
-
-            //HuyBoGiaoDichCommand = new RelayCommand<object>((p) => { IsConfirmPaymentOpen = false; });
-
-            // Xác nhận lưu hóa đơn xuống Database qua API
-            //XacNhanTaoDonCommand = new RelayCommand<object>(
-            //    (p) => ThucHienTaoDonHang(), // Rút gọn thành hàm Helper
-            //    (p) => IsKhachVangLai || KhachHangDuocChon != null
-            //);
-
             #endregion
 
             #region CHỨC NĂNG LỌC KHỞI TẠO
+
             XoaBoLocCommand = new RelayCommand<object>((p) =>
             {
                 SearchKeyword = string.Empty;
@@ -412,6 +387,7 @@ namespace Bookstore.WPF.ViewModels
                 TrangHienTai = 1;
                 ApplyFilterAndPagination();
             });
+
             #endregion
         }
         #endregion
@@ -659,19 +635,6 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private void ThucHienThemVaoGioCore(BookSaleModel book, int soLuong)
-        {
-            CartItems.Add(new CartItemModel
-            {
-                ISBN = book.BookData.ISBN,
-                TenSach = book.BookData.TenSach,
-                OriginalGiaBan = book.BookData.DonGiaBan,
-                GiaBan = book.BookData.DonGiaBan,
-                SoLuongTonKho = book.BookData.SoLuongTonKho,
-                SoLuongMua = soLuong
-            });
-        }
-
         private void TinhToanHoaDon()
         {
             if (_isCalculating) return;
@@ -771,10 +734,10 @@ namespace Bookstore.WPF.ViewModels
                 _ = FetchUuDaiKhaDungAsync();
 
                 // Đồng bộ trạng thái Tick xanh ở lưới sản phẩm bên ngoài
-                foreach (var book in DisplayBooks)
-                {
-                    book.IsSelected = CartItems.Any(x => x.ISBN == book.BookData.ISBN && !x.IsGift);
-                }
+                //foreach (var book in DisplayBooks)
+                //{
+                //    book.IsSelected = CartItems.Any(x => x.ISBN == book.BookData.ISBN && !x.IsGift);
+                //}
                 CommandManager.InvalidateRequerySuggested();
             }
             finally
@@ -804,6 +767,22 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
+        private void DongBoTrangThaiChonSach()
+        {
+            if (DisplayBooks == null || !DisplayBooks.Any()) return;
+
+            foreach (var book in DisplayBooks)
+            {
+                // Kiểm tra xem sách này có mặt trong giỏ hàng (không tính quà tặng) không
+                bool isInCart = CartItems.Any(c => c.ISBN == book.BookData.ISBN && !c.IsGift);
+
+                // Chỉ gán lại nếu trạng thái bị sai lệnh (tránh kích hoạt OnPropertyChanged liên tục gây lag UI)
+                if (book.IsSelected != isInCart)
+                {
+                    book.IsSelected = isInCart;
+                }
+            }
+        }
         private void ThucHienTaoDonHang()
         {
             // TODO: Gọi API Post hóa đơn. Sau đó Clear giỏ hàng, đóng popup.
