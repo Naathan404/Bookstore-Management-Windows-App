@@ -430,7 +430,86 @@
 					</Grid>
 				</TabItem>
 
-			</TabControl>
+                <TabItem Header="LOẠI KHÁCH HÀNG">
+                    <Grid Margin="0,15,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0"
+							  Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <components:FilterInputControl Grid.Column="0"
+														   IconKind="Building"
+														   HintText="Tìm Loại khách hàng..."
+														   TextValue="{Binding SearchLoaiKhachHang}" />
+                            <Button Grid.Column="2"
+									Style="{StaticResource MainGradientButton}"
+									Width="200"
+									Command="{Binding OpenAddLoaiKhachHangCommand}"
+									CommandParameter="{Binding}"
+									Content="+ THÊM NHÀ XUẤT BẢN"
+									FontWeight="SemiBold" />
+                        </Grid>
+                        <Border Grid.Row="1"
+								Style="{StaticResource DataGridCardStyle}">
+                            <DataGrid Grid.Row="1"
+									  ItemsSource="{Binding FilteredLoaiKhachHangs}"
+									  Style="{StaticResource CleanDataGrid}">
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="STT"
+														Binding="{Binding Stt}"
+														Width="50"
+														HeaderStyle="{StaticResource CenterHeaderStyle}"
+														ElementStyle="{StaticResource CellText}" />
+                                    <!-- Cột tên loại khách hàng -->
+                                    <DataGridTextColumn Header="Tên Loại khách hàng"
+														Binding="{Binding Name}"
+														HeaderStyle="{StaticResource LeftHeaderStyle}"
+														ElementStyle="{StaticResource CellName}"
+														Width="*" />
+
+                                    <!-- Cột nợ-->
+                                    <DataGridTextColumn Header="Nợ tối đa có thể giao dịch"
+														Binding="{Binding Name}"
+														HeaderStyle="{StaticResource LeftHeaderStyle}"
+														ElementStyle="{StaticResource CellName}"
+														Width="*" />
+
+                                    <!-- Cột tỉ lệ trả-->
+                                    <DataGridTextColumn Header="Tỉ lệ thanh toán tối thiểu"
+														Binding="{Binding Name}"
+														HeaderStyle="{StaticResource LeftHeaderStyle}"
+														ElementStyle="{StaticResource CellName}"
+														Width="*" />
+
+                                    <!-- Cột thao tác-->
+                                    <DataGridTemplateColumn Header="Thao tác"
+															Width="100"
+															HeaderStyle="{StaticResource CenterHeaderStyle}">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <components:DataGridActionPanel RowItem="{Binding}"
+																				ShowEdit="True"
+																				EditCommand="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																				ShowDelete="True"
+																				DeleteCommand="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
 
 			<Grid Grid.RowSpan="2"
 				  Panel.ZIndex="1000"
