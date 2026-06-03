@@ -116,6 +116,18 @@ namespace Bookstore.WPF.ViewModels
         }
         public ObservableCollection<PromotionTypeResponse> AvailablePromotionTypes { get; set; }
             = new ObservableCollection<PromotionTypeResponse>();
+        public PromotionType SelectedMaLoaiUuDai
+        {
+            get => EditingPromotion?.MaLoaiUuDai ?? default;
+            set
+            {
+                if (EditingPromotion != null)
+                {
+                    EditingPromotion.MaLoaiUuDai = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private PromotionDTO _editingPromotion = new PromotionDTO();
         public PromotionDTO EditingPromotion { get => _editingPromotion; set { _editingPromotion = value; OnPropertyChanged(); } }
@@ -223,6 +235,7 @@ namespace Bookstore.WPF.ViewModels
                 IsCoreEditingAllowed = true;
                 IsGiamTienMode = true;
                 IsGiamPhanTramMode = false;
+                OnPropertyChanged(nameof(SelectedMaLoaiUuDai));
             });
 
             OpenEditPopupCommand = new RelayCommand<PromotionDTO>(promo =>
@@ -268,6 +281,7 @@ namespace Bookstore.WPF.ViewModels
                     CoTheSuDung = promo.CoTheSuDung
                 };
                 IsPopupVisible = true;
+                OnPropertyChanged(nameof(SelectedMaLoaiUuDai));
             });
 
             ClosePopupCommand = new RelayCommand<object>(p => IsPopupVisible = false);
@@ -426,7 +440,7 @@ namespace Bookstore.WPF.ViewModels
         }
         private async Task SavePromotionAsync()
         {
-            MessageBox.Show($"Mã sách tặng đang là: '{EditingPromotion.ISBNTang}'");
+            MessageBox.Show($"Loại ưu đãi: '{EditingPromotion.LoaiUuDai}'");
             if (string.IsNullOrWhiteSpace(EditingPromotion.Code) || string.IsNullOrWhiteSpace(EditingPromotion.TenChuongTrinh))
             {
                 MessageBox.Show("Mã Code và Tên chương trình ưu đãi không được bỏ trống!", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);

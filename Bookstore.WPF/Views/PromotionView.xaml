@@ -233,518 +233,335 @@
 		</Grid>
 
 		<!-- Pop up -->
-		<Grid Background="Transparent"
-			  VerticalAlignment="Stretch"
-			  HorizontalAlignment="Stretch"
-			  Panel.ZIndex="1000"
-			  Visibility="{Binding IsPopupVisible, Converter={StaticResource BoolToVis}}">
+		<components:FormPopupControl Title="{Binding PopupTitle, FallbackValue='LẬP PHIẾU THÔNG TIN ƯU ĐÃI'}"
+									 IconKind="TicketPercent"
+									 IsOpen="{Binding IsPopupVisible}"
+									 CloseCommand="{Binding ClosePopupCommand}">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
 
-			<Border Background="#80000000">
-				<Border.InputBindings>
-					<MouseBinding MouseAction="LeftClick"
-								  Command="{Binding ClosePopupCommand}" />
-				</Border.InputBindings>
-			</Border>
 
-			<Border Width="820"
-					MaxHeight="720"
-					Background="White"
-					CornerRadius="20"
-					Padding="30"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center">
-				<Grid>
-					<Grid.Resources>
-						<Style x:Key="BaseInputBorder"
-							   TargetType="Border">
-							<Setter Property="CornerRadius"
-									Value="10" />
-							<Setter Property="Background"
-									Value="White" />
-							<Setter Property="BorderBrush"
-									Value="#E2E8F0" />
-							<Setter Property="BorderThickness"
-									Value="1.5" />
-							<Style.Triggers>
-								<Trigger Property="IsEnabled"
-										 Value="False">
-									<Setter Property="Background"
-											Value="#F1F5F9" />
-									<Setter Property="BorderBrush"
-											Value="#CBD5E1" />
-								</Trigger>
-							</Style.Triggers>
-						</Style>
-					</Grid.Resources>
-
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<StackPanel Grid.Row="0"
-								Orientation="Horizontal"
-								HorizontalAlignment="Center"
-								Margin="0,0,0,20">
-						<materialDesign:PackIcon Kind="TicketPercent"
-												 Width="26"
-												 Height="26"
-												 Foreground="#4318FF"
-												 Margin="0,0,10,0"
-												 VerticalAlignment="Center" />
-						<TextBlock Text="{Binding PopupTitle, FallbackValue='LẬP PHIẾU THÔNG TIN ƯU ĐÃI'}"
-								   FontSize="20"
+				<ScrollViewer Grid.Row="0"
+							  VerticalScrollBarVisibility="Auto"
+							  Margin="0,0,0,15"
+							  Padding="0,0,10,0">
+					<StackPanel>
+						<TextBlock Text="1. THÔNG TIN CHUNG"
+								   FontSize="16"
 								   FontWeight="Bold"
-								   Foreground="#2B3674"
-								   VerticalAlignment="Center" />
-					</StackPanel>
+								   Foreground="{StaticResource PrimaryColor}"
+								   Margin="0,8,0,8" />
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="20" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
 
-					<ScrollViewer Grid.Row="1"
-								  VerticalScrollBarVisibility="Auto"
-								  Margin="0,0,0,15"
-								  Padding="0,0,10,0">
+							<StackPanel Grid.Column="0">
+								<components:FormInputControl Title="Tên chương trình"
+															 TextValue="{Binding EditingPromotion.TenChuongTrinh, UpdateSourceTrigger=PropertyChanged}"
+															 IsRequired="True" />
+
+								<components:FormInputControl Title="Mã ưu đãi"
+															 IconKind="MusicAccidentalSharp"
+															 IsEnabled="{Binding IsCoreEditingAllowed}"
+															 TextValue="{Binding EditingPromotion.Code, UpdateSourceTrigger=PropertyChanged}"
+															 IsRequired="True"
+															 Foreground="{StaticResource PrimaryColor}"
+															 FontWeight="Bold" />
+
+								<components:FormComboBoxControl Title="Loại khách hàng áp dụng"
+																IsRequired="True"
+																IsEnabled="{Binding IsCoreEditingAllowed}"
+																ItemsSource="{Binding ListLoaiKhachHang}"
+																SelectedValue="{Binding EditingPromotion.MaLoaiKhachHang, UpdateSourceTrigger=PropertyChanged}"
+																DisplayMemberPath="TenLoaiKhachHang"
+																SelectedValuePath="Id"
+																IconKind="People" />
+							</StackPanel>
+
+							<StackPanel Grid.Column="2">
+								<components:FormDatePickerControl Title="Ngày có hiệu lực"
+																  IsRequired="True"
+																  HintText="Chọn ngày..."
+																  IconKind="CalendarStart"
+																  IsEnabled="{Binding IsCoreEditingAllowed}"
+																  SelectedDate="{Binding EditingPromotion.NgayBatDau, UpdateSourceTrigger=PropertyChanged}" />
+
+								<components:FormDatePickerControl Title="Ngày hết hạn"
+																  IsRequired="True"
+																  IconKind="CalendarEnd"
+																  HintText="Chọn ngày..."
+																  SelectedDate="{Binding EditingPromotion.NgayKetThuc, UpdateSourceTrigger=PropertyChanged}" />
+
+								<components:FormInputControl Title="Số lượng phát hành tối đa"
+															 TextValue="{Binding EditingPromotion.SoLuongToiDa, UpdateSourceTrigger=PropertyChanged}"
+															 IsRequired="True"
+															 IconKind="Counter" />
+							</StackPanel>
+						</Grid>
+
+						<components:FormInputControl Title="Mô tả chương trình"
+													 TextValue="{Binding EditingPromotion.MoTa, UpdateSourceTrigger=PropertyChanged}"
+													 InputHeight="84"
+													 IsMultiLine="True"
+													 ShowIcon="False" />
+
+
+						<TextBlock Text="2. CẤU HÌNH LOẠI ƯU ĐÃI"
+								   FontSize="16"
+								   FontWeight="Bold"
+								   Foreground="{StaticResource PrimaryColor}"
+								   Margin="0,8,0,8" />
+
+						<components:FormComboBoxControl Title="Loại ưu đãi"
+														IsRequired="True"
+														IconKind="TagOutline"
+														ItemsSource="{Binding AvailablePromotionTypes}"
+														SelectedValue="{Binding SelectedMaLoaiUuDai, UpdateSourceTrigger=PropertyChanged}"
+														SelectedValuePath="MaLoaiUuDai"
+														DisplayMemberPath="TenLoaiUuDai"
+														IsEnabled="{Binding IsCoreEditingAllowed}" />
+
 						<StackPanel>
-							<TextBlock Text="1. THÔNG TIN CHUNG"
-									   FontSize="16"
-									   FontWeight="Bold"
-									   Foreground="{StaticResource PrimaryColor}"
-									   Margin="0,8,0,8" />
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="20" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+							<StackPanel>
+								<StackPanel.Style>
+									<Style TargetType="StackPanel">
+										<Setter Property="Visibility"
+												Value="Collapsed" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.HoaDonQua}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.HoaDonGiam}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</StackPanel.Style>
 
-								<StackPanel Grid.Column="0">
-									<components:FormInputControl x:Name="txtTenChuongTrinh"
-																 Title="Tên chương trình"
-																 TextValue="{Binding EditingPromotion.TenChuongTrinh, UpdateSourceTrigger=PropertyChanged}"
-																 IsRequired="True" />
+								<TextBlock Text="ĐIỀU KIỆN ÁP DỤNG CHO HÓA ĐƠN"
+										   FontWeight="Bold"
+										   Foreground="{StaticResource DangerColor}"
+										   Margin="4,0,0,8" />
 
-									<components:FormInputControl x:Name="txtCode"
-																 Title="Mã ưu đãi"
-																 IconKind="MusicAccidentalSharp"
-																 IsEnabled="{Binding IsCoreEditingAllowed}"
-																 TextValue="{Binding EditingPromotion.Code, UpdateSourceTrigger=PropertyChanged}"
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="20" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+
+									<components:FormInputControl Grid.Column="0"
+																 Title="Số tiền tối thiểu"
+																 TextValue="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged}"
 																 IsRequired="True"
-																 Foreground="{StaticResource PrimaryColor}"
-																 FontWeight="Bold" />
+																 IconKind="Download" />
 
-									<components:FormComboBoxControl x:Name="cboLoaiKhachHang"
-																	Title="Loại khách hàng áp dụng"
+									<components:FormInputControl Grid.Column="2"
+																 Title="Số tiền tối đa"
+																 TextValue="{Binding EditingPromotion.SoTienToiDa, UpdateSourceTrigger=PropertyChanged}"
+																 IsRequired="True"
+																 IconKind="Upload" />
+								</Grid>
+							</StackPanel>
+
+							<StackPanel>
+								<StackPanel.Style>
+									<Style TargetType="StackPanel">
+										<Setter Property="Visibility"
+												Value="Collapsed" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.SachQua}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.SachGiam}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</StackPanel.Style>
+
+								<TextBlock Text="ĐIỀU KIỆN ÁP DỤNG KHI MUA SÁCH"
+										   FontWeight="Bold"
+										   Foreground="{StaticResource DangerColor}"
+										   Margin="4,0,0,8" />
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="2*" />
+										<ColumnDefinition Width="20" />
+										<ColumnDefinition Width="1*" />
+									</Grid.ColumnDefinitions>
+
+									<components:FormComboBoxControl ItemsSource="{Binding ListSach}"
+																	SelectedValue="{Binding EditingPromotion.ISBNDieuKien, UpdateSourceTrigger=PropertyChanged}"
+																	DisplayMemberPath="TenSach"
+																	SelectedValuePath="ISBN"
+																	Title="Tên sách bắt buộc mua"
+																	IconKind="Book"
 																	IsRequired="True"
-																	IsEnabled="{Binding IsCoreEditingAllowed}"
-																	ItemsSource="{Binding ListLoaiKhachHang}"
-																	SelectedValue="{Binding EditingPromotion.MaLoaiKhachHang, UpdateSourceTrigger=PropertyChanged}"
-																	DisplayMemberPath="TenLoaiKhachHang"
-																	SelectedValuePath="Id"
-																	IconKind="People" />
-								</StackPanel>
-
-								<StackPanel Grid.Column="2">
-									<components:FormDatePickerControl x:Name="dpNgayBatDau"
-																	  Title="Ngày có hiệu lực"
-																	  IsRequired="True"
-																	  HintText="Chọn ngày..."
-																	  IconKind="CalendarStart"
-																	  IsEnabled="{Binding IsCoreEditingAllowed}"
-																	  SelectedDate="{Binding EditingPromotion.NgayBatDau, UpdateSourceTrigger=PropertyChanged}" />
-									<!--<Border Style="{StaticResource BaseInputBorder}"
-											Height="50"
-											Margin="0,0,0,12"
-											IsEnabled="{Binding IsCoreEditingAllowed}">
-										<Grid>
-											<TextBlock Text="Ngày có hiệu lực *"
-													   FontSize="10"
-													   Margin="12,4,0,0"
-													   VerticalAlignment="Top">
-												<TextBlock.Style>
-													<Style TargetType="TextBlock">
-														<Setter Property="Foreground"
-																Value="#A3AED0" />
-														<Style.Triggers>
-															<DataTrigger Binding="{Binding SelectedDate, ElementName=dpNgayBatDau}"
-																		 Value="{x:Null}">
-																<Setter Property="Foreground"
-																		Value="#EF4444" />
-															</DataTrigger>
-														</Style.Triggers>
-													</Style>
-												</TextBlock.Style>
-											</TextBlock>
-											<DatePicker x:Name="dpNgayBatDau"
-														SelectedDate="{Binding EditingPromotion.NgayBatDau, UpdateSourceTrigger=PropertyChanged}"
-														BorderThickness="0"
-														Background="Transparent"
-														VerticalAlignment="Bottom"
-														Margin="10,0,10,4"
-														Padding="0" />
-										</Grid>
-									</Border>-->
-
-									<components:FormDatePickerControl x:Name="dpNgayKetThuc"
-																	  Title="Ngày hết hạn"
-																	  IsRequired="True"
-																	  IconKind="CalendarEnd"
-																	  HintText="Chọn ngày..."
-																	  SelectedDate="{Binding EditingPromotion.NgayKetThuc, UpdateSourceTrigger=PropertyChanged}" />
-
-									<!--<Border Style="{StaticResource BaseInputBorder}"
-											Height="50"
-											Margin="0,0,0,12">
-										<Grid>
-											<TextBlock Text="Ngày hết hạn *"
-													   FontSize="10"
-													   Margin="12,4,0,0"
-													   VerticalAlignment="Top">
-												<TextBlock.Style>
-													<Style TargetType="TextBlock">
-														<Setter Property="Foreground"
-																Value="#A3AED0" />
-														<Style.Triggers>
-															<DataTrigger Binding="{Binding SelectedDate, ElementName=dpNgayKetThuc}"
-																		 Value="{x:Null}">
-																<Setter Property="Foreground"
-																		Value="#EF4444" />
-															</DataTrigger>
-														</Style.Triggers>
-													</Style>
-												</TextBlock.Style>
-											</TextBlock>
-											<DatePicker x:Name="dpNgayKetThuc"
-														SelectedDate="{Binding EditingPromotion.NgayKetThuc, UpdateSourceTrigger=PropertyChanged}"
-														BorderThickness="0"
-														Background="Transparent"
-														VerticalAlignment="Bottom"
-														Margin="10,0,10,4"
-														Padding="0" />
-										</Grid>
-									</Border>-->
-
-									<components:FormInputControl x:Name="txtSoLuongToiDa"
-																 Title="Số lượng phát hành tối đa"
-																 TextValue="{Binding EditingPromotion.SoLuongToiDa, UpdateSourceTrigger=PropertyChanged}"
+																	IsEditable="True" />
+									<components:FormInputControl TextValue="{Binding EditingPromotion.SoLuongMua, UpdateSourceTrigger=PropertyChanged}"
+																 Grid.Column="2"
 																 IsRequired="True"
-																 IconKind="Counter" />
+																 IconKind="Counting4"
+																 UnitText="quyển"
+																 Title="Số lượng mua tối thiểu" />
 
-									<!--<Border Style="{StaticResource BaseInputBorder}"
-											Height="50"
-											Margin="0,0,0,12"
-											IsEnabled="{Binding IsCoreEditingAllowed}">
-										<Grid>
-											<TextBlock Text="Số lượng phát hành tối đa *"
-													   FontSize="10"
-													   Margin="12,4,0,0"
-													   VerticalAlignment="Top">
-												<TextBlock.Style>
-													<Style TargetType="TextBlock">
-														<Setter Property="Foreground"
-																Value="#A3AED0" />
-														<Style.Triggers>
-															<DataTrigger Binding="{Binding Text, ElementName=txtSoLuongToiDa}"
-																		 Value="">
-																<Setter Property="Foreground"
-																		Value="#EF4444" />
-															</DataTrigger>
-															<DataTrigger Binding="{Binding Text, ElementName=txtSoLuongToiDa}"
-																		 Value="{x:Null}">
-																<Setter Property="Foreground"
-																		Value="#EF4444" />
-															</DataTrigger>
-														</Style.Triggers>
-													</Style>
-												</TextBlock.Style>
-											</TextBlock>
-											<TextBox 
-													 Text="{Binding EditingPromotion.SoLuongToiDa, UpdateSourceTrigger=PropertyChanged}"
-													 FontSize="13"
-													 FontWeight="SemiBold"
-													 Foreground="#2B3674"
-													 BorderThickness="0"
-													 Background="Transparent"
-													 VerticalAlignment="Bottom"
-													 Margin="10,0,10,6"
-													 Padding="0" />
+								</Grid>
+							</StackPanel>
+
+							<StackPanel>
+								<StackPanel.Style>
+									<Style TargetType="StackPanel">
+										<Setter Property="Visibility"
+												Value="Collapsed" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.HoaDonGiam}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.SachGiam}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</StackPanel.Style>
+
+
+								<TabControl Style="{StaticResource TabControlStyle}"
+											SelectedIndex="{Binding DiscountTabIndex, UpdateSourceTrigger=PropertyChanged}">
+
+									<TabItem Header="GIẢM TIỀN TRỰC TIẾP">
+										<Grid Margin="0,15,0,0">
+											<components:FormInputControl Title="Số tiền giảm"
+																		 IsRequired="True"
+																		 IconKind="Cash"
+																		 UnitText="đ"
+																		 TextValue="{Binding EditingPromotion.SoTienGiam, UpdateSourceTrigger=PropertyChanged}" />
 										</Grid>
-									</Border>-->
-								</StackPanel>
-							</Grid>
+									</TabItem>
 
-							<components:FormInputControl x:Name="txtMoTa"
-														 Title="Mô tả chương trình"
-														 TextValue="{Binding EditingPromotion.MoTa, UpdateSourceTrigger=PropertyChanged}"
-														 InputHeight="84"
-														 IsMultiLine="True"
-														 ShowIcon="False" />
+									<TabItem Header="GIẢM THEO TỈ LỆ (%)">
+										<Grid Margin="0,15,0,0">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*" />
+												<ColumnDefinition Width="20" />
+												<ColumnDefinition Width="*" />
+											</Grid.ColumnDefinitions>
 
+											<components:FormInputControl Grid.Column="0"
+																		 Title="Tỉ lệ giảm"
+																		 UnitText="%"
+																		 IconKind="Discount"
+																		 IsRequired="True"
+																		 TextValue="{Binding EditingPromotion.TiLeGiam, UpdateSourceTrigger=PropertyChanged}" />
 
-							<TextBlock Text="2. CẤU HÌNH LOẠI ƯU ĐÃI"
-									   FontSize="16"
-									   FontWeight="Bold"
-									   Foreground="{StaticResource PrimaryColor}"
-									   Margin="0,8,0,8" />
-
-							<components:FormComboBoxControl x:Name="CbbLoaiUuDai"
-															Title="Loại ưu đãi"
-															IsRequired="True"
-															IconKind="TagOutline"
-															HintText="Chọn loại ưu đãi để tiếp tục..."
-															ItemsSource="{Binding AvailablePromotionTypes}"
-															SelectedValue="{Binding EditingPromotion.MaLoaiUuDai, UpdateSourceTrigger=PropertyChanged}"
-															SelectedValuePath="MaLoaiUuDai"
-															DisplayMemberPath="TenLoaiUuDai"
-															IsEnabled="{Binding IsCoreEditingAllowed}" />
+											<components:FormInputControl Grid.Column="2"
+																		 Title="Giảm tối đa"
+																		 IsRequired="True"
+																		 IconKind="Cash"
+																		 UnitText="đ"
+																		 TextValue="{Binding EditingPromotion.GiamToiDa, UpdateSourceTrigger=PropertyChanged}" />
+										</Grid>
+									</TabItem>
+								</TabControl>
+							</StackPanel>
 
 
 							<StackPanel>
-								<StackPanel x:Name="DieuKienHoaDon">
-									<StackPanel.Style>
-										<Style TargetType="StackPanel">
-											<Setter Property="Visibility"
-													Value="Collapsed" />
-											<Style.Triggers>
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.HoaDonQua}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
+								<StackPanel.Style>
+									<Style TargetType="StackPanel">
+										<Setter Property="Visibility"
+												Value="Collapsed" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.HoaDonQua}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding SelectedMaLoaiUuDai}"
+														 Value="{x:Static enums:PromotionType.SachQua}">
+												<Setter Property="Visibility"
+														Value="Visible" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</StackPanel.Style>
 
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.HoaDonGiam}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
-											</Style.Triggers>
-										</Style>
-									</StackPanel.Style>
+								<TextBlock Text="QUÀ TẶNG"
+										   FontWeight="Bold"
+										   Foreground="{StaticResource DangerColor}"
+										   Margin="4,0,0,8" />
 
-									<TextBlock Text="ĐIỀU KIỆN ÁP DỤNG CHO HÓA ĐƠN"
-											   FontWeight="Bold"
-											   Foreground="{StaticResource DangerColor}"
-											   Margin="4,0,0,8" />
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="2*" />
+										<ColumnDefinition Width="20" />
+										<ColumnDefinition Width="1*" />
+									</Grid.ColumnDefinitions>
 
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="*" />
-											<ColumnDefinition Width="20" />
-											<ColumnDefinition Width="*" />
-										</Grid.ColumnDefinitions>
+									<components:FormComboBoxControl ItemsSource="{Binding ListSach}"
+																	SelectedValue="{Binding EditingPromotion.ISBNTang, UpdateSourceTrigger=PropertyChanged}"
+																	DisplayMemberPath="TenSach"
+																	SelectedValuePath="ISBN"
+																	Title="Tên sách tặng"
+																	IconKind="Book"
+																	IsRequired="True"
+																	IsEditable="True" />
 
-										<components:FormInputControl x:Name="txtSoTienToiThieu"
-																	 Grid.Column="0"
-																	 Title="Số tiền tối thiểu"
-																	 TextValue="{Binding EditingPromotion.SoTienToiThieu, UpdateSourceTrigger=PropertyChanged}"
-																	 IsRequired="True"
-																	 IconKind="Download" />
-
-										<components:FormInputControl x:Name="txtSoTienToiDa"
-																	 Grid.Column="2"
-																	 Title="Số tiền tối đa"
-																	 TextValue="{Binding EditingPromotion.SoTienToiDa, UpdateSourceTrigger=PropertyChanged}"
-																	 IsRequired="True"
-																	 IconKind="Upload" />
-									</Grid>
-								</StackPanel>
-
-								<StackPanel x:Name="DieuKienSach">
-									<StackPanel.Style>
-										<Style TargetType="StackPanel">
-											<Setter Property="Visibility"
-													Value="Collapsed" />
-											<Style.Triggers>
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.SachQua}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
-
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.SachGiam}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
-											</Style.Triggers>
-										</Style>
-									</StackPanel.Style>
-
-									<TextBlock Text="ĐIỀU KIỆN ÁP DỤNG KHI MUA SÁCH"
-											   FontWeight="Bold"
-											   Foreground="{StaticResource DangerColor}"
-											   Margin="4,0,0,8" />
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="2*" />
-											<ColumnDefinition Width="20" />
-											<ColumnDefinition Width="1*" />
-										</Grid.ColumnDefinitions>
-
-										<components:FormComboBoxControl x:Name="cbbSachDieuKien"
-																		ItemsSource="{Binding ListSach}"
-																		SelectedValue="{Binding EditingPromotion.ISBNDieuKien, UpdateSourceTrigger=PropertyChanged}"
-																		DisplayMemberPath="TenSach"
-																		SelectedValuePath="ISBN"
-																		Title="Tên sách bắt buộc mua"
-																		IconKind="Book"
-																		IsRequired="True"
-																		IsEditable="True" />
-										<components:FormInputControl x:Name="txtSoLuongMua"
-																	 TextValue="{Binding EditingPromotion.SoLuongMua, UpdateSourceTrigger=PropertyChanged}"
-																	 Grid.Column="2"
-																	 IsRequired="True"
-																	 IconKind="Counting4"
-																	 UnitText="quyển"
-																	 Title="Số lượng mua tối thiểu" />
-
-									</Grid>
-								</StackPanel>
-
-								<StackPanel x:Name="GiamGia">
-									<StackPanel.Style>
-										<Style TargetType="StackPanel">
-											<Setter Property="Visibility"
-													Value="Collapsed" />
-											<Style.Triggers>
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.HoaDonGiam}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.SachGiam}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
-											</Style.Triggers>
-										</Style>
-									</StackPanel.Style>
-
-
-									<TabControl Style="{StaticResource TabControlStyle}"
-												SelectedIndex="{Binding DiscountTabIndex, UpdateSourceTrigger=PropertyChanged}">
-
-										<TabItem Header="GIẢM TIỀN TRỰC TIẾP">
-											<Grid Margin="0,15,0,0">
-												<components:FormInputControl x:Name="txtSoTienGiam"
-																			 Title="Số tiền giảm"
-																			 IsRequired="True"
-																			 IconKind="Cash"
-																			 UnitText="đ"
-																			 TextValue="{Binding EditingPromotion.SoTienGiam, UpdateSourceTrigger=PropertyChanged}" />
-											</Grid>
-										</TabItem>
-
-										<TabItem Header="GIẢM THEO TỈ LỆ (%)">
-											<Grid Margin="0,15,0,0">
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="20" />
-													<ColumnDefinition Width="*" />
-												</Grid.ColumnDefinitions>
-
-												<components:FormInputControl x:Name="txtTiLeGiam"
-																			 Grid.Column="0"
-																			 Title="Tỉ lệ giảm"
-																			 UnitText="%"
-																			 IconKind="Discount"
-																			 IsRequired="True"
-																			 TextValue="{Binding EditingPromotion.TiLeGiam, UpdateSourceTrigger=PropertyChanged}" />
-
-												<components:FormInputControl x:Name="txtGiamToiDa"
-																			 Grid.Column="2"
-																			 Title="Giảm tối đa"
-																			 IsRequired="True"
-																			 IconKind="Cash"
-																			 UnitText="đ"
-																			 TextValue="{Binding EditingPromotion.GiamToiDa, UpdateSourceTrigger=PropertyChanged}" />
-											</Grid>
-										</TabItem>
-									</TabControl>
-								</StackPanel>
-
-
-								<StackPanel x:Name="QuaTang">
-									<StackPanel.Style>
-										<Style TargetType="StackPanel">
-											<Setter Property="Visibility"
-													Value="Collapsed" />
-											<Style.Triggers>
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.HoaDonQua}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
-
-												<DataTrigger Binding="{Binding SelectedValue, ElementName=CbbLoaiUuDai}"
-															 Value="{x:Static enums:PromotionType.SachQua}">
-													<Setter Property="Visibility"
-															Value="Visible" />
-												</DataTrigger>
-											</Style.Triggers>
-										</Style>
-									</StackPanel.Style>
-
-									<TextBlock Text="QUÀ TẶNG"
-											   FontWeight="Bold"
-											   Foreground="{StaticResource DangerColor}"
-											   Margin="4,0,0,8" />
-
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="2*" />
-											<ColumnDefinition Width="20" />
-											<ColumnDefinition Width="1*" />
-										</Grid.ColumnDefinitions>
-
-										<components:FormComboBoxControl x:Name="cbbSachTang"
-																		ItemsSource="{Binding ListSach}"
-																		SelectedValue="{Binding EditingPromotion.ISBNTang, UpdateSourceTrigger=PropertyChanged}"
-																		DisplayMemberPath="TenSach"
-																		SelectedValuePath="ISBN"
-																		Title="Tên sách tặng"
-																		IconKind="Book"
-																		IsRequired="True"
-																		IsEditable="True" />
-
-										<components:FormInputControl x:Name="txtSoLuongTang"
-																	 TextValue="{Binding EditingPromotion.SoLuongTang, UpdateSourceTrigger=PropertyChanged}"
-																	 Grid.Column="2"
-																	 IsRequired="True"
-																	 IconKind="Counting4"
-																	 UnitText="quyển"
-																	 Title="Số lượng tặng" />
-									</Grid>
-								</StackPanel>
+									<components:FormInputControl TextValue="{Binding EditingPromotion.SoLuongTang, UpdateSourceTrigger=PropertyChanged}"
+																 Grid.Column="2"
+																 IsRequired="True"
+																 IconKind="Counting4"
+																 UnitText="quyển"
+																 Title="Số lượng tặng" />
+								</Grid>
 							</StackPanel>
 						</StackPanel>
-					</ScrollViewer>
+					</StackPanel>
+				</ScrollViewer>
 
-					<Grid Grid.Row="2"
-						  Margin="0,0,0,0">
-						<StackPanel Orientation="Horizontal"
-									HorizontalAlignment="Right">
-							<Button Content="HỦY BỎ"
-									Command="{Binding ClosePopupCommand}"
-									CommandParameter="{Binding}"
-									Width="80"
-									Margin="0,0,12,0"
-									Style="{StaticResource OutlineButtonStyle}" />
-							<Button Content="{Binding SaveButtonText, FallbackValue='LƯU ƯU ĐÃI'}"
-									Command="{Binding SavePromotionCommand}"
-									CommandParameter="{Binding}"
-									Style="{StaticResource MainGradientButton}"
-									Width="150"
-									FontSize="13"
-									FontWeight="SemiBold"
-									Foreground="White"
-									Cursor="Hand">
-							</Button>
-						</StackPanel>
-					</Grid>
-
+				<Grid Grid.Row="1"
+					  Margin="0,0,0,0">
+					<StackPanel Orientation="Horizontal"
+								HorizontalAlignment="Right">
+						<Button Content="HỦY BỎ"
+								Command="{Binding ClosePopupCommand}"
+								CommandParameter="{Binding}"
+								Width="80"
+								Margin="0,0,12,0"
+								Style="{StaticResource OutlineButtonStyle}" />
+						<Button Content="{Binding SaveButtonText, FallbackValue='LƯU ƯU ĐÃI'}"
+								Command="{Binding SavePromotionCommand}"
+								CommandParameter="{Binding}"
+								Style="{StaticResource MainGradientButton}"
+								Width="150"
+								FontSize="13"
+								FontWeight="SemiBold"
+								Foreground="White"
+								Cursor="Hand">
+						</Button>
+					</StackPanel>
 				</Grid>
-			</Border>
-		</Grid>
+
+			</Grid>
+
+		</components:FormPopupControl>
 	</Grid>
 </UserControl>

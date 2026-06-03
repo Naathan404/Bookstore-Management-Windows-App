@@ -24,7 +24,7 @@ namespace Bookstore.WPF.ViewModels
     {
         private bool _isCalculating = false;
 
-        #region 1. UI STATES (Trạng thái giao diện & Các Popup)
+        #region Trạng thái popup
 
         private bool _isConfirmPaymentOpen;
         public bool IsConfirmPaymentOpen
@@ -46,24 +46,9 @@ namespace Bookstore.WPF.ViewModels
             get => _isBookDetailOpen;
             set { _isBookDetailOpen = value; OnPropertyChanged(); }
         }
-
-        private bool _isThanhToanTienMat = true;
-        public bool IsThanhToanTienMat
-        {
-            get => _isThanhToanTienMat;
-            set { _isThanhToanTienMat = value; OnPropertyChanged(); }
-        }
-
-        private bool _isThanhToanChuyenKhoan;
-        public bool IsThanhToanChuyenKhoan
-        {
-            get => _isThanhToanChuyenKhoan;
-            set { _isThanhToanChuyenKhoan = value; OnPropertyChanged(); }
-        }
-
         #endregion
 
-        #region 2. THÔNG TIN KHÁCH HÀNG (Hiển thị ở màn hình chính, chọn qua Popup)
+        #region Thẻ khách hàng (màn hình chính)
 
         private bool _isKhachVangLai = true; // Mặc định ban đầu luôn là khách vãng lai
         public bool IsKhachVangLai
@@ -151,11 +136,14 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
-        #region 3. DỮ LIỆU SÁCH VÀ GIỎ HÀNG (Dữ liệu Core)
+        #region Giỏ hàng
+        public ObservableCollection<CartItemModel> CartItems { get; set; } = new();
+        #endregion
+
+        #region Xem sách
 
         private List<BookSaleModel> _allBooks = new(); // Bộ nhớ đệm lưu trữ toàn bộ sách tải về từ API
         public ObservableCollection<BookSaleModel> DisplayBooks { get; set; } = new(); // Đổ ra WrapPanel hiển thị sách (Chỉ hiện khi có kết quả tìm kiếm)
-        public ObservableCollection<CartItemModel> CartItems { get; set; } = new(); // ĐÂY CHÍNH LÀ GIỎ HÀNG CỦA BẠN!
 
         private BookSaleModel _sachDuocChonXemChiTiet;
         public BookSaleModel SachDuocChonXemChiTiet
@@ -183,16 +171,11 @@ namespace Bookstore.WPF.ViewModels
                 }
             }
         }
-
-        // Danh sách số trang cho ComboBox nhảy trang nhanh nếu UI có sử dụng
         public ObservableCollection<int> PageNumbers { get; set; } = new();
 
         #endregion
 
-        #region 4. QUẢN LÝ ƯU ĐÃI (Promotions)
-
-        private List<PromotionDTO> _availablePromotions = new(); // Cache mớ ưu đãi đầu sách/tặng quà từ API
-
+        #region Ưu đãi
         private bool _isUuDaiReadOnly = true; // Mặc định khóa chặn lại khi chưa có giỏ hàng
         public bool IsUuDaiReadOnly
         {
@@ -213,9 +196,8 @@ namespace Bookstore.WPF.ViewModels
             get => _uuDaiHelperText;
             set { _uuDaiHelperText = value; OnPropertyChanged(); }
         }
-
-        public ObservableCollection<PromotionDTO> PromotionList { get; set; } = new(); // Danh sách mã hiển thị ở ComboBox chọn voucher bill
-        public ObservableCollection<PromotionDTO> AppliedPromotionList { get; set; } = new(); // CHỨA NHIỀU ƯU ĐÃI ĐÃ CHỌN CÙNG LÚC
+        public ObservableCollection<PromotionDTO> PromotionList { get; set; } = new();
+        public ObservableCollection<PromotionDTO> AppliedPromotionList { get; set; } = new();
 
         private PromotionDTO _selectedUuDai;
         public PromotionDTO SelectedUuDai
@@ -226,13 +208,10 @@ namespace Bookstore.WPF.ViewModels
                 _selectedUuDai = value;
                 OnPropertyChanged();
 
-                // Nếu người dùng chọn mã từ ComboBox và mã đó chưa có trong list đã áp dụng
                 if (value != null && !AppliedPromotionList.Any(p => p.Code == value.Code))
                 {
                     AppliedPromotionList.Add(value);
                     TinhToanHoaDon();
-
-                    // Ép luồng chạy tống SelectedUuDai về null ngay lập tức để làm sạch chữ hiển thị trên ComboBox
                     Application.Current.Dispatcher.InvokeAsync(() => { SelectedUuDai = null; });
                 }
             }
@@ -240,7 +219,7 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
-        #region 5. THANH TOÁN VÀ TIỀN BẠC (Billing)
+        #region Phần thanh toán
         public decimal TamTinh => CartItems.Where(x => !x.IsGift).Sum(x => x.OriginalGiaBan * x.SoLuongMua);
 
         private decimal _giamTien;
@@ -259,31 +238,21 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
-        protected override void ApplyFilterAndPagination()
+        #region Phương thức thanh toán
+        private bool _isThanhToanTienMat = true;
+        public bool IsThanhToanTienMat
         {
-            var filtered = _allBooks.AsEnumerable();
-            string query = SearchKeyword.ToLower().Trim();
-            string kieuTimKiem = KieuTimKiemSach?.ToString() ?? "Tên sách";
-
-            if (kieuTimKiem == "Mã ISBN")
-                filtered = filtered.Where(b => b.BookData.ISBN != null && b.BookData.ISBN.ToLower().Contains(query));
-            else
-                filtered = filtered.Where(b => b.BookData.TenSach != null && b.BookData.TenSach.ToLower().Contains(query));
-
-            var filteredList = filtered.ToList();
-            TongBanGhi = filteredList.Count;
-            TongSoTrang = (int)Math.Ceiling((double)TongBanGhi / PageSize);
-
-            var pageItems = filteredList.Skip((TrangHienTai - 1) * PageSize).Take(PageSize).ToList();
-
-            DisplayBooks.Clear();
-            foreach (var item in pageItems)
-            {
-                // Tự động đồng bộ trạng thái dấu Tick xanh dựa trên những món đang nằm trong giỏ
-                item.IsSelected = CartItems.Any(g => g.ISBN == item.BookData.ISBN && !g.IsGift);
-                DisplayBooks.Add(item);
-            }
+            get => _isThanhToanTienMat;
+            set { _isThanhToanTienMat = value; OnPropertyChanged(); }
         }
+
+        private bool _isThanhToanChuyenKhoan;
+        public bool IsThanhToanChuyenKhoan
+        {
+            get => _isThanhToanChuyenKhoan;
+            set { _isThanhToanChuyenKhoan = value; OnPropertyChanged(); }
+        }
+        #endregion
 
         #region COMMANDS & CONSTRUCTOR
         public ICommand MoPopupThanhToanCommand { get; set; }
@@ -339,7 +308,6 @@ namespace Bookstore.WPF.ViewModels
             #endregion
 
             #region GIỎ HÀNG
-            // Lắng nghe sự thay đổi bên trong giỏ hàng (Tăng/giảm số lượng)
             CartItems.CollectionChanged += (s, e) =>
             {
                 if (e.NewItems != null)
@@ -348,9 +316,9 @@ namespace Bookstore.WPF.ViewModels
                     {
                         item.PropertyChanged += (sender, args) =>
                         {
-                            if (args.PropertyName == nameof(CartItemModel.SoLuongMua) || args.PropertyName == nameof(CartItemModel.ThanhTien))
+                            if (args.PropertyName == nameof(CartItemModel.SoLuongMua))
                             {
-                                Application.Current.Dispatcher.InvokeAsync(() => TinhToanHoaDon());
+                                TinhToanHoaDon();
                             }
                         };
                     }
@@ -449,8 +417,34 @@ namespace Bookstore.WPF.ViewModels
             #endregion
         }
         #endregion
+        protected override void ApplyFilterAndPagination()
+        {
+            var filtered = _allBooks.AsEnumerable();
+            string query = SearchKeyword.ToLower().Trim();
+            string kieuTimKiem = KieuTimKiemSach?.ToString() ?? "Tên sách";
 
-        #region HELPER METHODS (Dành để code chi tiết sau)
+            if (kieuTimKiem == "Mã ISBN")
+                filtered = filtered.Where(b => b.BookData.ISBN != null && b.BookData.ISBN.ToLower().Contains(query));
+            else
+                filtered = filtered.Where(b => b.BookData.TenSach != null && b.BookData.TenSach.ToLower().Contains(query));
+
+            var filteredList = filtered.ToList();
+            TongBanGhi = filteredList.Count;
+            TongSoTrang = (int)Math.Ceiling((double)TongBanGhi / PageSize);
+
+            var pageItems = filteredList.Skip((TrangHienTai - 1) * PageSize).Take(PageSize).ToList();
+
+            DisplayBooks.Clear();
+            foreach (var item in pageItems)
+            {
+                // Tự động đồng bộ trạng thái dấu Tick xanh dựa trên những món đang nằm trong giỏ
+                item.IsSelected = CartItems.Any(g => g.ISBN == item.BookData.ISBN && !g.IsGift);
+                DisplayBooks.Add(item);
+            }
+        }
+
+
+        #region HELPER METHODS
 
         private async Task InitializeAsync()
         {
@@ -768,8 +762,8 @@ namespace Bookstore.WPF.ViewModels
                 // ====================================================================
                 // BƯỚC 4: CHỐT SỐ LIỆU VÀ GỌI API CẬP NHẬT
                 // ====================================================================
-                OnPropertyChanged(nameof(TamTinh)); 
-                GiamTien = tongTienGiamBill;      
+                OnPropertyChanged(nameof(TamTinh));
+                GiamTien = tongTienGiamBill;
                 OnPropertyChanged(nameof(TongTienThanhToan)); // = TamTinh - GiamTien
 
                 // Cập nhật lại trạng thái Enable của nút Thanh Toán
