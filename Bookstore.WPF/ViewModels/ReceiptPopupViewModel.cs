@@ -1,6 +1,7 @@
 ﻿using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
+using Bookstore.WPF.Views.Components;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -76,6 +77,12 @@ namespace Bookstore.WPF.ViewModels
         }
         public decimal TienThuaTraKhach => Math.Abs(ConNoSauKhiThu < 0 ? ConNoSauKhiThu : 0);
 
+        private FieldState _soTienState = FieldState.Normal;
+        public FieldState SoTienState { get => _soTienState; set { _soTienState = value; OnPropertyChanged(); } }
+
+        private string _soTienHelperText;
+        public string SoTienHelperText { get => _soTienHelperText; set { _soTienHelperText = value; OnPropertyChanged(); } }
+
         private decimal _formSoTienThu;
         public decimal FormSoTienThu
         {
@@ -89,6 +96,17 @@ namespace Bookstore.WPF.ViewModels
                 decimal noHienTai = SelectedKhachHangForm?.CongNo ?? 0;
                 ConNoSauKhiThu = noHienTai - value;
                 IsConLaiVisible = (SelectedKhachHangForm != null && !_dangSua);
+
+                if (value <= 0)
+                {
+                    SoTienState = FieldState.Error;
+                    SoTienHelperText = "Số tiền thu phải lớn hơn 0đ!";
+                }
+                else
+                {
+                    SoTienState = FieldState.Success;
+                    SoTienHelperText = "";
+                }
             }
         }
         #endregion

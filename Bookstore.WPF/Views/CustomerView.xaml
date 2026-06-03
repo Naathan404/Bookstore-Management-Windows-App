@@ -7,7 +7,8 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
 			 xmlns:vm="clr-namespace:Bookstore.WPF.ViewModels"
-			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components">
+			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 xmlns:popup="clr-namespace:Bookstore.WPF.Views.Popup">
 	<Grid>
 		<Grid x:Name="MainCustomerView"
 			  Margin="{StaticResource MainViewMargin}">
@@ -178,7 +179,7 @@
 		</Grid>
 
 		<!-- ==================== POPUP THU TIỀN ==================== -->
-		<components:ReceiptPopup DataContext="{Binding PopupThuTienVM}" />
+		<popup:ReceiptPopup DataContext="{Binding PopupThuTienVM}" />
 
 		<!-- ==================== POPUP THÊM/SỬA KHÁCH HÀNG ==================== -->
 		<Grid x:Name="popupThemSua"

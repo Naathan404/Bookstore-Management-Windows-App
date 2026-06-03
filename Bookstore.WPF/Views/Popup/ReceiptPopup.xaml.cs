@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Bookstore.WPF.Views.Components
+namespace Bookstore.WPF.Views.Popup
 {
     /// <summary>
     /// Interaction logic for ReceiptPopup.xaml
