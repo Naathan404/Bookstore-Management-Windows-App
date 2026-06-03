@@ -608,10 +608,10 @@
 		</Grid>
 		
 		<popup:PaymentConfirmPopup DataContext="{Binding PaymentConfirmPopupViewModel}" />
-		
 
+		<popup:BookDetailPopup DataContext="{Binding BookDetailPopupVM}" />
 
-		<Grid x:Name="PopupThongTinSach"
+		<!--<Grid x:Name="PopupThongTinSach"
 			  Background="#80000000"
 			  Visibility="{Binding IsBookDetailOpen, Converter={StaticResource BoolToVis}}"
 			  VerticalAlignment="Stretch"
@@ -690,6 +690,6 @@
 							CommandParameter="{Binding SachDuocChonXemChiTiet}" />
 				</StackPanel>
 			</Border>
-		</Grid>
+		</Grid>-->
 	</Grid>
 </UserControl>

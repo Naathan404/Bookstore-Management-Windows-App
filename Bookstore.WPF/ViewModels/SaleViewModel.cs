@@ -27,7 +27,7 @@ namespace Bookstore.WPF.ViewModels
 
         #region QUẢN LÝ POPUP ĐỘC LẬP
         public PaymentConfirmPopupViewModel PaymentConfirmPopupViewModel { get; set; } = new PaymentConfirmPopupViewModel();
-        //public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();
+        public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();       
         #endregion
 
         #region Trạng thái popup
@@ -44,13 +44,6 @@ namespace Bookstore.WPF.ViewModels
         {
             get => _isSelectCustomerOpen;
             set { _isSelectCustomerOpen = value; OnPropertyChanged(); }
-        }
-
-        private bool _isBookDetailOpen;
-        public bool IsBookDetailOpen
-        {
-            get => _isBookDetailOpen;
-            set { _isBookDetailOpen = value; OnPropertyChanged(); }
         }
         #endregion
 
@@ -150,13 +143,6 @@ namespace Bookstore.WPF.ViewModels
 
         private List<BookSaleModel> _allBooks = new(); // Bộ nhớ đệm lưu trữ toàn bộ sách tải về từ API
         public ObservableCollection<BookSaleModel> DisplayBooks { get; set; } = new(); // Đổ ra WrapPanel hiển thị sách (Chỉ hiện khi có kết quả tìm kiếm)
-
-        private BookSaleModel _sachDuocChonXemChiTiet;
-        public BookSaleModel SachDuocChonXemChiTiet
-        {
-            get => _sachDuocChonXemChiTiet;
-            set { _sachDuocChonXemChiTiet = value; OnPropertyChanged(); }
-        }
 
         public ObservableCollection<string> ListKieuTimKiem { get; set; } = new ObservableCollection<string> { "Tên sách", "Mã ISBN" };
 
@@ -267,12 +253,9 @@ namespace Bookstore.WPF.ViewModels
         public ICommand XemChiTietSachCommand { get; set; }
         public ICommand ChonSachCommand { get; set; }
         public ICommand ThemVaoGioHangCommand { get; set; }
-        public ICommand ThemVaoGioHangTuPopupCommand { get; set; }
         public ICommand TangSoLuongCommand { get; set; }
         public ICommand GiamSoLuongCommand { get; set; }
         public ICommand XoaKhoiGioHangCommand { get; set; }
-        //public ICommand XacNhanTaoDonCommand { get; set; }
-        //public ICommand HuyBoGiaoDichCommand { get; set; }
         public ICommand XoaBoLocCommand { get; set; }
         public ICommand XoaUuDaiCommand { get; set; } // THÊM: Xóa ưu đãi khỏi bill
         public ICommand TimKhachHangTheoSdtCommand { get; set; }
@@ -286,8 +269,11 @@ namespace Bookstore.WPF.ViewModels
             {
                 if (selectedBook != null)
                 {
-                    SachDuocChonXemChiTiet = selectedBook;
-                    IsBookDetailOpen = true;
+                    // GỌI CÁCH MỚI: Truyền sách vào, và dặn nó "Khi nào bấm nút thì gọi lệnh Thêm Vào Giỏ cho tao"
+                    BookDetailPopupVM.ShowPopup(selectedBook, onAddToCart: (bookToBuy) =>
+                    {
+                        ThemVaoGioHangCommand.Execute(bookToBuy);
+                    });
                 }
             });
 
@@ -348,15 +334,6 @@ namespace Bookstore.WPF.ViewModels
                     ThucHienThemVaoGioCore(book, 1);
                 }
                 TinhToanHoaDon();
-            });
-
-            ThemVaoGioHangTuPopupCommand = new RelayCommand<BookSaleModel>((book) =>
-            {
-                if (book != null)
-                {
-                    ThemVaoGioHangCommand.Execute(book);
-                    IsBookDetailOpen = false;
-                }
             });
 
             TangSoLuongCommand = new RelayCommand<CartItemModel>((item) =>
