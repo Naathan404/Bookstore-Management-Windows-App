@@ -70,6 +70,10 @@
 			<Popup:PaymentConfirmPopup />
 		</DataTemplate>
 
+		<DataTemplate DataType="{x:Type viewmodels:BookDetailPopupViewModel}">
+			<Popup:BookDetailPopup />
+		</DataTemplate>
+
 	</Window.Resources>
 
 	<Grid>
