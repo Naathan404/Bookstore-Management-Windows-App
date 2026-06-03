@@ -5,7 +5,10 @@ using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Utils;
 using Bookstore.WPF.ViewModels.Base;
+using Microsoft.Win32;
+using OfficeOpenXml;
 using OfficeOpenXml.Export.HtmlExport;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -156,6 +160,8 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ClearFilterCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
 
+        // Command export Excel
+        public ICommand ExportExcelCommand { get; set; }
         public PromotionViewModel()
         {
             InitCommands();
@@ -310,6 +316,8 @@ namespace Bookstore.WPF.ViewModels
                 SearchDenNgay = null;
             });
             RefreshCommand = new RelayCommand<object>(async p => await LoadDataAsync());
+
+            
         }
 
         protected override void ApplyFilterAndPagination()

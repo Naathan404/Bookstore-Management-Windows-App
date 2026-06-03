@@ -20,7 +20,8 @@
 			<components:PageHeaderControl Title="NHÀ CUNG CẤP"
 										  HeaderIcon="TruckDelivery"
 										  AddCommand="{Binding OpenAddPopupCommand}"
-										  AddCommandParameter="{Binding}" />
+										  AddCommandParameter="{Binding}" 
+                                          />
 
 			<Border Grid.Row="1"
 					Style="{StaticResource FilterCardStyle}">

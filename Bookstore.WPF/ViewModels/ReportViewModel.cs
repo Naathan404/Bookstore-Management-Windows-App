@@ -1,8 +1,12 @@
 ﻿using Bookstore.Share.DTOs;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.ViewModels.Base;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using Microsoft.Win32;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -10,7 +14,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Windows;
 using System.Windows.Input;
-using Bookstore.WPF.ViewModels.Base;
+using System.IO;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -464,7 +468,242 @@ namespace Bookstore.WPF.ViewModels
 
         private void ExportToExcel()
         {
-            MessageBox.Show("Chức năng xuất Excel đang được phát triển.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            var FilterType = _selectedReportTypeIndex;
+            switch (FilterType)
+            {
+                case 0: // Revenue
+                    {
+                        try
+                        {
+                            SaveFileDialog sfd = new SaveFileDialog()
+                            {
+                                Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                                FileName = $"ChiTietDoanhThu_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
+                            };
+
+                            if (sfd.ShowDialog() == true)
+                            {
+                                ExcelPackage.License.SetNonCommercialPersonal("Quan");
+
+                                using (var package = new ExcelPackage())
+                                {
+                                    var sheet = package.Workbook.Worksheets.Add("Chi tiết Doanh Thu");
+
+                                    string[] headers = { "Ngày", "Số Hoá Đơn", "Số Sách Bán", "Doanh thu gộp", "Giảm Giá", "Doanh Thu Thuần", "Tổng Vốn", "Lợi Nhuận Gộp" };
+                                    for (int i = 0; i < headers.Length; i++)
+                                    {
+                                        var cell = sheet.Cells[1, i + 1];
+                                        cell.Value = headers[i];
+                                        cell.Style.Font.Bold = true;
+                                        cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                        cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                                    }
+
+                                    var dataToExport = _allRevenueRows.ToList();
+                                    for (int i = 0; i < dataToExport.Count; i++)
+                                    {
+                                        var revenue = dataToExport[i];
+                                        sheet.Cells[i + 2, 1].Value = $"{revenue.Date:dd/MM/yyyy}";
+                                        sheet.Cells[i + 2, 2].Value = revenue.InvoiceCount;
+                                        sheet.Cells[i + 2, 3].Value = revenue.BooksSold;
+                                        sheet.Cells[i + 2, 4].Value = revenue.GrossProfit;
+                                        sheet.Cells[i + 2, 5].Value = revenue.Discount;
+                                        sheet.Cells[i + 2, 6].Value = revenue.NetRevenue;
+                                        sheet.Cells[i + 2, 7].Value = revenue.TotalCost;
+                                        sheet.Cells[i + 2, 8].Value = revenue.TotalAmount;
+
+                                        sheet.Cells[i + 2, 2].Style.Numberformat.Format = "#,##0";
+                                        sheet.Cells[i + 2, 3].Style.Numberformat.Format = "#,##0";
+                                        sheet.Cells[i + 2, 4].Style.Numberformat.Format = "#,##0\" đ\"";
+                                        sheet.Cells[i + 2, 5].Style.Numberformat.Format = "#,##0\" đ\"";
+                                        sheet.Cells[i + 2, 6].Style.Numberformat.Format = "#,##0\" đ\"";
+                                        sheet.Cells[i + 2, 7].Style.Numberformat.Format = "#,##0\" đ\"";
+                                        sheet.Cells[i + 2, 8].Style.Numberformat.Format = "#,##0\" đ\"";
+
+                                        sheet.Cells[i + 2, 6].Style.Font.Color.SetColor(System.Drawing.Color.Green);
+                                        sheet.Cells[i + 2, 6].Style.Font.Bold = true;
+
+                                        sheet.Cells[i + 2, 7].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                                        sheet.Cells[i + 2, 7].Style.Font.Bold = true;
+
+                                        sheet.Cells[i + 2, 8].Style.Font.Color.SetColor(revenue.TotalAmount >= 0 ? System.Drawing.Color.Green : System.Drawing.Color.Red);
+                                        sheet.Cells[i + 2, 8].Style.Font.Bold = true;
+                                    }
+
+                                    sheet.Cells.AutoFitColumns();
+
+                                    File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
+
+                                    MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        break;
+                    }
+                case 1: // Inventory
+                    {
+                        try
+                        {
+                            SaveFileDialog sfd = new SaveFileDialog()
+                            {
+                                Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                                FileName = $"ChiTietTonKho_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
+                            };
+
+                            if (sfd.ShowDialog() == true)
+                            {
+                                ExcelPackage.License.SetNonCommercialPersonal("Quan");
+
+                                using (var package = new ExcelPackage())
+                                {
+                                    var sheet = package.Workbook.Worksheets.Add("Chi tiết Tồn Kho");
+
+                                    string[] headers = { "Mã ISBN", "Tựa Sách", "Thể Loại", "Tồn đầu", "Nhập", "Xuất", "Tồn Cuối", "Giá Trị Tồn" };
+                                    for (int i = 0; i < headers.Length; i++)
+                                    {
+                                        var cell = sheet.Cells[1, i + 1];
+                                        cell.Value = headers[i];
+                                        cell.Style.Font.Bold = true;
+                                        cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                        cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                                    }
+
+                                    var dataToExport = _allInventoryRows.ToList();
+                                    for (int i = 0; i < dataToExport.Count; i++)
+                                    {
+                                        var inventory = dataToExport[i];
+                                        sheet.Cells[i + 2, 1].Value = i + 1;
+                                        sheet.Cells[i + 2, 2].Value = inventory.BookId;
+                                        sheet.Cells[i + 2, 3].Value = inventory.BookName;
+                                        sheet.Cells[i + 2, 4].Value = inventory.CategoryName;
+                                        sheet.Cells[i + 2, 5].Value = inventory.OpeningQty;
+                                        sheet.Cells[i + 2, 6].Value = inventory.ImportedQty;
+                                        sheet.Cells[i + 2, 7].Value = inventory.SoldQty;
+                                        sheet.Cells[i + 2, 8].Value = inventory.ClosingQty;
+                                        sheet.Cells[i + 2, 9].Value = inventory.StockValue;
+
+                                        sheet.Cells[i + 2, 5].Style.Numberformat.Format = "#,##0";
+                                        sheet.Cells[i + 2, 6].Style.Numberformat.Format = "#,##0";
+                                        sheet.Cells[i + 2, 7].Style.Numberformat.Format = "#,##0";
+                                        sheet.Cells[i + 2, 8].Style.Numberformat.Format = "#,##0";
+                                        sheet.Cells[i + 2, 9].Style.Numberformat.Format = "#,##0\" đ\"";
+
+                                        sheet.Cells[i + 2, 6].Style.Font.Color.SetColor(System.Drawing.Color.Green);
+                                        sheet.Cells[i + 2, 6].Style.Font.Bold = true;
+
+                                        sheet.Cells[i + 2, 7].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                                        sheet.Cells[i + 2, 7].Style.Font.Bold = true;
+
+                                        sheet.Cells[i + 2, 9].Style.Font.Color.SetColor(inventory.StockValue >= 0 ? System.Drawing.Color.Green : System.Drawing.Color.Red);
+                                        sheet.Cells[i + 2, 9].Style.Font.Bold = true;
+                                    }
+
+                                    if (dataToExport.Count > 0)
+                                    {
+                                        sheet.Cells[2, 1, dataToExport.Count + 1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                                    }
+
+                                    sheet.Cells.AutoFitColumns();
+
+                                    File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
+
+                                    MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        break;
+                    }
+
+                case 2: // Debt
+                    {
+                        try
+                        {
+                            SaveFileDialog sfd = new SaveFileDialog()
+                            {
+                                Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                                FileName = $"ChiTietCongNo_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
+                            };
+
+                            if (sfd.ShowDialog() == true)
+                            {
+                                ExcelPackage.License.SetNonCommercialPersonal("Quan");
+
+                                using (var package = new ExcelPackage())
+                                {
+                                    var sheet = package.Workbook.Worksheets.Add("Chi tiết Công Nợ");
+
+                                    string[] headers = { "STT", "Tên Khách Hàng", "Nợ Đầu", "Phát Sinh", "Thu Hồi", "Nợ Cuối" };
+                                    for (int i = 0; i < headers.Length; i++)
+                                    {
+                                        var cell = sheet.Cells[1, i + 1];
+                                        cell.Value = headers[i];
+                                        cell.Style.Font.Bold = true;
+                                        cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                        cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                        cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                                    }
+
+                                    var dataToExport = _allDebtRows.ToList();
+                                    for (int i = 0; i < dataToExport.Count; i++)
+                                    {
+                                        var debt = dataToExport[i];
+                                        sheet.Cells[i + 2, 1].Value = i + 1;
+                                        sheet.Cells[i + 2, 2].Value = debt.CustomerName;
+                                        sheet.Cells[i + 2, 3].Value = debt.OpeningDebt;
+                                        sheet.Cells[i + 2, 4].Value = debt.NewDebt;
+                                        sheet.Cells[i + 2, 5].Value = debt.PaidDebt;
+                                        sheet.Cells[i + 2, 6].Value = debt.ClosingDebt;
+
+                                        sheet.Cells[i + 2, 3].Style.Numberformat.Format = "#,##0\" đ\"";
+                                        sheet.Cells[i + 2, 4].Style.Numberformat.Format = "#,##0\" đ\"";
+                                        sheet.Cells[i + 2, 5].Style.Numberformat.Format = "#,##0\" đ\"";
+                                        sheet.Cells[i + 2, 6].Style.Numberformat.Format = "#,##0\" đ\"";
+
+                                        sheet.Cells[i + 2, 3].Style.Font.Bold = true;
+                                        sheet.Cells[i + 2, 4].Style.Font.Bold = true;
+                                        sheet.Cells[i + 2, 5].Style.Font.Bold = true;
+                                        sheet.Cells[i + 2, 6].Style.Font.Bold = true;
+
+                                        sheet.Cells[i + 2, 5].Style.Font.Color.SetColor(System.Drawing.Color.Green);
+                                        sheet.Cells[i + 2, 4].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                                        sheet.Cells[i + 2, 6].Style.Font.Color.SetColor(System.Drawing.Color.Green);
+                                    }
+
+                                    sheet.Cells.AutoFitColumns();
+
+                                    if (dataToExport.Count > 0)
+                                    {
+                                        sheet.Cells[2, 1, dataToExport.Count + 1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                                    }
+
+                                    File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
+
+                                    MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        MessageBox.Show("Vui lòng chọn danh mục báo cáo hiển thị để xuất file Excel!", "Nhắc nhở", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        break;
+                    }
+            }
         }
 
         private void ExportToPdf()

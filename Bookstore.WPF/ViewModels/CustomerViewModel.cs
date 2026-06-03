@@ -2,6 +2,9 @@
 using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.ViewModels.Base;
+using Microsoft.Win32;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
 
 namespace Bookstore.WPF.ViewModels
 {
@@ -109,6 +113,8 @@ namespace Bookstore.WPF.ViewModels
         public ICommand MoPopupThuTienCommand { get; }
         public ICommand XoaLocCommand { get; }
 
+        public ICommand ExportExcelCommand { get; set; }
+
         #endregion
 
         public CustomerViewModel()
@@ -126,6 +132,86 @@ namespace Bookstore.WPF.ViewModels
 
             _ = LoadDanhSachLoaiKhachAsync();
             _ = KhoiTaoDuLieuAsync();
+
+            // xuất excel
+            ExportExcelCommand = new RelayCommand<object>((p) =>
+            {
+                try
+                {
+                    //  Cấu hình hộp thoại lưu file
+                    SaveFileDialog sfd = new SaveFileDialog()
+                    {
+                        Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                        FileName = $"DanhSachKhachHang_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
+                    };
+
+                    if (sfd.ShowDialog() == true)
+                    {
+                        // Cấu hình EPPlus (Cần thiết cho bản miễn phí)
+                        ExcelPackage.License.SetNonCommercialPersonal("Quan");
+
+                        using (var package = new ExcelPackage())
+                        {
+                            // Tạo một Sheet mới
+                            var sheet = package.Workbook.Worksheets.Add("Danh Sách Khách Hàng");
+                            
+
+                            // Tạo sheet cho Khách Hàng
+                            // Tạo Header
+                            string[] headers = { "STT","Mã Khách Hàng", "Tên Khách Hàng", "Số Điện Thoại", "Email", "Giới Tính", "Ngày sinh/Ngày thành lập", "Địa chỉ", "Loại Khách Hàng", "Mã Số Thuế", "Số Tiền Công Nợ" };
+                            for (int i = 0; i < headers.Length; i++)
+                            {
+                                var cell = sheet.Cells[1, i + 1];
+                                cell.Value = headers[i];
+                                cell.Style.Font.Bold = true;
+                                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                            }
+
+                            //  Đổ dữ liệu từ _DanhSachKhachHang vào Excel
+                            var dataToExport = _danhSachKhachHang.ToList();
+                            for (int i = 0; i < dataToExport.Count; i++)
+                            {
+                                var khachHang = dataToExport[i];
+                                sheet.Cells[i + 2, 1].Value = i + 1;
+                                sheet.Cells[i + 2, 2].Value = $"KH{khachHang.NgayTao:ddMMyy}{khachHang.MaKhachHang:D3}";
+                                sheet.Cells[i + 2, 3].Value = khachHang.TenKhachHang;
+                                sheet.Cells[i + 2, 4].Value = khachHang.SoDienThoai;
+                                sheet.Cells[i + 2, 5].Value = khachHang.Email;
+                                sheet.Cells[i + 2, 6].Value = khachHang.GioiTinh;
+                                sheet.Cells[i + 2, 7].Value = $"{khachHang.NgaySinh:dd/MM/yyyy}";
+                                sheet.Cells[i + 2, 8].Value = khachHang.DiaChi;
+                                sheet.Cells[i + 2, 9].Value = khachHang.LoaiKhach;
+                                sheet.Cells[i + 2, 10].Value = khachHang.MaSoThue;
+                                sheet.Cells[i + 2, 11].Value = khachHang.CongNo;
+
+                                // Format số cho đẹp
+                                sheet.Cells[i + 2, 4].Style.Numberformat.Format = "#,##0";
+                                sheet.Cells[i + 2, 11].Style.Numberformat.Format = "#,##0";
+
+                            }
+
+                            // Tự động chỉnh độ rộng cột
+                            sheet.Cells.AutoFitColumns();
+                           
+
+                            // Căn giữa cột số thứ tự
+                            sheet.Cells[2, 1, dataToExport.Count() + 4, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            
+
+                            //  Lưu file
+                            File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
+
+                            MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
         }
 
         #region LOGIC LỌC VÀ TẢI DỮ LIỆU
