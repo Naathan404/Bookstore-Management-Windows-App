@@ -78,5 +78,118 @@ namespace Bookstore.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoiceRequest request)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // ==============================================================
+                // BƯỚC 1: TẠO HÓA ĐƠN CHÍNH
+                // ==============================================================
+                var hoaDon = new HoaDon
+                {
+                    NgayTao = DateTime.Now,
+                    NguoiTao = request.NguoiTao,
+                    MaKhachHang = request.MaKhachHang,
+                    TongTienTamTinh = request.TongTienTamTinh,
+                    GiamGia = request.GiamGia,
+                    Thue = request.Thue,
+                    TongTien = request.TongTien,
+                    SoTienTra = request.SoTienTra
+                };
+
+                _context.HoaDon.Add(hoaDon);
+                await _context.SaveChangesAsync(); // Gọi SaveChanges để EF Core sinh ra MaHoaDon
+
+                // ==============================================================
+                // BƯỚC 2: THÊM CHI TIẾT HÓA ĐƠN & CẬP NHẬT TỒN KHO SÁCH
+                // ==============================================================
+                foreach (var item in request.ChiTiet)
+                {
+                    // Kiểm tra tồn kho
+                    var sach = await _context.PhienBanSach.FirstOrDefaultAsync(s => s.ISBN == item.ISBN);
+                    if (sach == null)
+                        throw new Exception($"Không tìm thấy sách có mã ISBN: {item.ISBN}");
+
+                    if (sach.TonKho < item.SoLuong)
+                        throw new Exception($"Sách '{sach.ISBN}' không đủ tồn kho (Chỉ còn {sach.TonKho}).");
+
+                    // Trừ tồn kho và cộng doanh số
+                    sach.TonKho -= item.SoLuong;
+                    sach.TongSoDaBan += item.SoLuong;
+
+                    // Tạo record chi tiết
+                    var ct = new CT_HoaDon
+                    {
+                        MaHoaDon = hoaDon.MaHoaDon,
+                        ISBN = item.ISBN,
+                        SoLuong = item.SoLuong,
+                        DonGia = item.DonGia,
+                        GiaVon = item.GiaVon
+                    };
+                    _context.CT_HoaDon.Add(ct);
+                }
+
+                // ==============================================================
+                // BƯỚC 3: LƯU LỊCH SỬ ƯU ĐÃI (NẾU CÓ)
+                // ==============================================================
+                if (request.UuDai != null && request.UuDai.Any())
+                {
+                    foreach (var ud in request.UuDai)
+                    {
+                        _context.HoaDon_Uudai.Add(new HoaDon_UuDai
+                        {
+                            MaHoaDon = hoaDon.MaHoaDon,
+                            MaUuDai = ud.MaUuDai,
+                            ISBN = ud.ISBN, // Cho phép null nếu là voucher giảm trên tổng bill
+                            SoTienGiam = ud.SoTienGiam
+                        });
+                    }
+                }
+
+                // ==============================================================
+                // BƯỚC 4: XỬ LÝ CÔNG NỢ (KHÁCH TRẢ THIẾU)
+                // ==============================================================
+                if (request.SoTienTra < request.TongTien)
+                {
+                    // Nếu không phải khách vãng lai (Giả sử ID khách vãng lai là 1)
+                    if (request.MaKhachHang != 1)
+                    {
+                        var khachHang = await _context.KhachHang.FindAsync(request.MaKhachHang);
+                        if (khachHang != null)
+                        {
+                            decimal tienNo = request.TongTien - request.SoTienTra;
+                            // TODO: Đảm bảo model KhachHang của bạn có thuộc tính CongNo
+                            // khachHang.CongNo += tienNo; 
+                        }
+                    }
+                    else
+                    {
+                        // Tùy nghiệp vụ: Khách vãng lai có được nợ không? Thường là không.
+                        throw new Exception("Khách vãng lai không được phép ghi nợ.");
+                    }
+                }
+
+                // Lưu tất cả thay đổi từ Bước 2, 3, 4
+                await _context.SaveChangesAsync();
+
+                // Xác nhận Commit Transaction (Chính thức ghi vào DB)
+                await transaction.CommitAsync();
+
+                return Ok(new
+                {
+                    Message = "Tạo hóa đơn thành công",
+                    MaHoaDon = hoaDon.MaHoaDon
+                });
+            }
+            catch (Exception ex)
+            {
+                // Nếu có bất kỳ lỗi nào xảy ra ở các bước trên, Rollback toàn bộ
+                await transaction.RollbackAsync();
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }

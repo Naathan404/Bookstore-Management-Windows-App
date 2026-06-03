@@ -20,7 +20,7 @@ namespace Bookstore.API.Models
         public virtual ICollection<CT_HoaDon> ChiTietHoaDons { get; set; } = new List<CT_HoaDon>();
 
         [ForeignKey("MaKhachHang")]
-        public virtual KhachHang KhachHang { get; set; }
+        public virtual KhachHang? KhachHang { get; set; }
         [ForeignKey("NguoiTao")]
         public virtual NguoiDung? NguoiDung { get; set; }
     }

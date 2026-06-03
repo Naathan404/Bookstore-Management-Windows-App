@@ -27,7 +27,7 @@ namespace Bookstore.WPF.ViewModels
 
         #region QUẢN LÝ POPUP ĐỘC LẬP
         public PaymentConfirmPopupViewModel PaymentConfirmPopupViewModel { get; set; } = new PaymentConfirmPopupViewModel();
-        public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();       
+        public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();
         #endregion
 
         #region Trạng thái popup
@@ -360,33 +360,31 @@ namespace Bookstore.WPF.ViewModels
             });
 
             MoPopupThanhToanCommand = new RelayCommand(
-                () =>
-                {
-                    PaymentConfirmPopupViewModel.ShowPopup(
-                        tenKH: TenKhachHang,
-                        sdtKH: SdtKhachHang,
-                        items: CartItems,
-                        giamGia: GiamTien,
-                        tongTien: TongTienThanhToan,
-                        onConfirm: () =>
-                        {
-                            ThucHienTaoDonHang();
-                        }
-                    );
-                },
-    () => IsThanhToanEnabled
-            );
-            #endregion
+    () =>
+    {
+        // Kiểm tra lấy ID khách (nếu không chọn thì truyền 0, lát Popup tự đổi thành 1)
+        int idKhach = KhachHangDuocChon?.MaKhachHang ?? 0;
 
-            #region CHỨC NĂNG LỌC KHỞI TẠO
-
-            XoaBoLocCommand = new RelayCommand<object>((p) =>
+        PaymentConfirmPopupViewModel.ShowPopup(
+            maKH: idKhach,
+            tenKH: TenKhachHang,
+            sdtKH: SdtKhachHang,
+            items: CartItems,
+            tamTinh: TamTinh, // Truyền thêm Tạm tính
+            giamGia: GiamTien,
+            tongTien: TongTienThanhToan,
+            uuDaiDaApDung: AppliedPromotionList.ToList(), // Truyền thêm List ưu đãi
+            onConfirm: () =>
             {
-                SearchKeyword = string.Empty;
-                KieuTimKiemSach = "Tên sách";
-                TrangHienTai = 1;
-                ApplyFilterAndPagination();
-            });
+                // CALLBACK: Khi Popup báo API đã tạo đơn thành công, mình dọn dẹp SaleView
+                CartService.Instance.CartItems.Clear(); // Làm sạch giỏ
+                AppliedPromotionList.Clear(); // Gỡ các ưu đãi cũ
+                IsKhachVangLai = true; // Reset thông tin khách
+            }
+        );
+    },
+    () => IsThanhToanEnabled
+);
 
             #endregion
         }
