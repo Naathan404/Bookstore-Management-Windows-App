@@ -9,6 +9,7 @@ using Bookstore.WPF.Utils;
 using Bookstore.WPF.ViewModels.Base;
 using Bookstore.WPF.Views.Components;
 using Bookstore.WPF.Views.Popup;
+using MailKit.Search;
 using MaterialDesignThemes.Wpf;
 using OfficeOpenXml.Sorting;
 using System;
@@ -228,6 +229,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand GiamSoLuongCommand { get; set; }
         public ICommand XoaKhoiGioHangCommand { get; set; }
         public ICommand XoaBoLocCommand { get; set; }
+        public ICommand RefreshCommand { get; }
         public ICommand XoaUuDaiCommand { get; set; } // THÊM: Xóa ưu đãi khỏi bill
         public ICommand TimKhachHangTheoSdtCommand { get; set; }
 
@@ -335,6 +337,7 @@ namespace Bookstore.WPF.ViewModels
             #endregion
 
             #region THÔNG TIN THANH TOÁN & POPUPS
+
             XoaUuDaiCommand = new RelayCommand<PromotionDTO>((promo) =>
             {
                 if (promo != null)
@@ -408,6 +411,18 @@ namespace Bookstore.WPF.ViewModels
                 },
                 () => IsThanhToanEnabled
             );
+            #endregion
+
+
+            #region Filter
+
+            XoaBoLocCommand = new RelayCommand<object>(p =>
+            {
+                SearchKeyword = string.Empty;
+                KieuTimKiemSach = "Tên sách";
+            });
+            RefreshCommand = new RelayCommand<object>(async p => await InitializeAsync());
+
             #endregion
         }
         #endregion
