@@ -37,10 +37,11 @@ namespace Bookstore.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LoaiKhachHang>> GetDetailById(int id)
+        public async Task<ActionResult<CustomerTierResponse>> GetDetailById(int id)
         {
             var customerTier = await _context.LoaiKhachHang
                 .Where(l => l.MaLoaiKhachHang == id)
+                .Select(MapToDTOResponse())
                 .FirstOrDefaultAsync();
             return Ok(customerTier);
         }

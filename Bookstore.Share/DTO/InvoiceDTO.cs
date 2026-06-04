@@ -20,6 +20,12 @@ namespace Bookstore.Share.DTO
         public required List<InvoicePromoRequest> UuDai { get; set; } = new();
     }
 
+    public class CreateInvoiceResponse
+    {
+        public string Message { get; set; } = string.Empty;
+        public int MaHoaDon { get; set; }
+    }
+
     public class InvoiceResponse
     {
         public int MaHoaDon { get; set; }

@@ -21,5 +21,6 @@ namespace Bookstore.Share.DTO
         public string TenUuDai { get; set; } = string.Empty; // Tên chương trình ưu đãi
         public string Code { get; set; } = string.Empty;
         public decimal SoTienGiam { get; set; }
+        public string SoTienGiamHienThi { get; set; } = string.Empty;
     }
 }
