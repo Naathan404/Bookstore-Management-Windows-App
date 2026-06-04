@@ -34,7 +34,7 @@ namespace Bookstore.API.Controllers
                 ///tính lợi nhuận
                 var expense = await _context.CT_HoaDon
                     .Where(x => x.HoaDon.NgayTao.Date == today)
-                    .SumAsync(x => (decimal?)(x.SoLuong * x.GiaVon)) ?? 0;
+                    .SumAsync(x => (decimal?)(x.SoLuong * x.GiaNiemYet)) ?? 0;
                 var profit = sale - expense;
 
                 /// tính số lượt khách mới
@@ -104,7 +104,7 @@ namespace Bookstore.API.Controllers
                     .GroupBy(x => x.tl.TenTheLoai)
                     .Select(g => new {
                         CategoryName = g.Key ?? "Chưa phân loại",
-                        Revenue = (double?)g.Sum(x => x.ct.SoLuong * x.ct.DonGia) ?? 0
+                        Revenue = (double?)g.Sum(x => x.ct.SoLuong * x.ct.GiaBan) ?? 0
                     })
                     .OrderByDescending(x => x.Revenue) 
                     .ToListAsync();
@@ -152,7 +152,7 @@ namespace Bookstore.API.Controllers
                 var dailyCogs = await _context.CT_HoaDon
                             .Where(x => x.HoaDon.NgayTao.Date >= sevenDaysAgo && x.HoaDon.NgayTao.Date <= today)
                             .GroupBy(x => x.HoaDon.NgayTao.Date)
-                            .Select(g => new { Date = g.Key, Total = (double?)g.Sum(x => x.SoLuong * x.GiaVon) ?? 0 })
+                            .Select(g => new { Date = g.Key, Total = (double?)g.Sum(x => x.SoLuong * x.GiaNiemYet) ?? 0 })
                             .ToListAsync();
 
                 var comparisonSeries = new List<ComparisonDataDto>();

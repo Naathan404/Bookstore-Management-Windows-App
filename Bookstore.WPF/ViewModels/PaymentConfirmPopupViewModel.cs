@@ -122,7 +122,7 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         private Action _onConfirmCallback;
-        private Action _onCancelCallback;
+        private Action? _onCancelCallback;
 
         public ICommand XacNhanTaoDonCommand { get; set; }
         public ICommand HuyBoGiaoDichCommand { get; set; }
@@ -131,7 +131,6 @@ namespace Bookstore.WPF.ViewModels
         {
             XacNhanTaoDonCommand = new RelayCommand(async () =>
             {
-                // Chặn không cho tạo đơn nếu tiền đưa chưa đủ định mức
                 if (TienKhachDuaState == FieldState.Error)
                 {
                     System.Windows.MessageBox.Show("Khách hàng chưa thanh toán đủ số tiền tối thiểu!", "Lỗi thanh toán", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
@@ -140,66 +139,53 @@ namespace Bookstore.WPF.ViewModels
 
                 try
                 {
-                    // 1. Map dữ liệu Chi tiết hóa đơn
+                    // 1. Map Chi tiết hóa đơn
                     var chiTietList = CartItems.Where(c => c.SoLuongMua > 0).Select(c => new InvoiceDetailRequest
                     {
                         ISBN = c.ISBN,
                         SoLuong = c.SoLuongMua,
-                        DonGia = c.GiaBan, // Giá bán đã trừ khuyến mãi (nếu có) hoặc = 0 nếu là hàng tặng
-                        GiaVon = 0 // Có thể để Backend tự truy xuất GiaVon từ bảng PhienBanSach
+                        GiaBan = c.GiaBan
                     }).ToList();
 
-                    // 2. Map dữ liệu Ưu đãi (ĐÃ SỬA LẠI ĐỂ HỖ TRỢ COMBO 1:N)
+                    // 2. Map dữ liệu Ưu đãi 
                     var uuDaiList = new List<InvoicePromoRequest>();
                     if (_uuDaiDaApDung != null && _uuDaiDaApDung.Any())
                     {
                         foreach (var u in _uuDaiDaApDung)
                         {
-                            string targetIsbn = null;
-
-                            // Nếu là ưu đãi trên sách, lấy ISBN đầu tiên trong danh sách điều kiện làm đại diện để lưu log
-                            if (u.MaLoaiUuDai == PromotionType.SachGiam || u.MaLoaiUuDai == PromotionType.SachQua)
-                            {
-                                targetIsbn = u.DanhSachSachDieuKien?.FirstOrDefault()?.ISBN;
-                            }
-
-                            // TODO Mở rộng: Nếu muốn Kế toán thống kê chi tiết mỗi voucher giảm bao nhiêu tiền, 
-                            // bạn có thể Regex chuỗi u.MucGiamDisplay (ví dụ "- 15,000 đ") để bóc tách con số ra.
-                            // Hiện tại gán tạm = 0 để API không bị lỗi.
-                            decimal soTienGiamThucTe = 0;
+                            //string targetIsbn = string.Empty;
+                            //if (u.MaLoaiUuDai == PromotionType.SachGiam || u.MaLoaiUuDai == PromotionType.SachQua)
+                            //{
+                            //    targetIsbn = u.DanhSachSachDieuKien?.FirstOrDefault()?.ISBN;
+                            //}
 
                             uuDaiList.Add(new InvoicePromoRequest
                             {
                                 MaUuDai = u.MaUuDai,
-                                ISBN = targetIsbn,
-                                SoTienGiam = soTienGiamThucTe
+                                SoTienGiam = u.SoTienGiamThucTe,
+                                //ISBN = targetIsbn,
+                                //IsGift = u.MaLoaiUuDai == PromotionType.SachQua || u.MaLoaiUuDai == PromotionType.HoaDonQua
                             });
                         }
                     }
 
                     // 3. Đóng gói Request gốc
-                    var request = new CreateInvoiceRequest
+                    var request = new InvoiceRequest
                     {
-                        // Lấy tên User đang đăng nhập từ Session tĩnh
                         NguoiTao = AppState.CurrentUser?.Username ?? "admin",
-
-                        MaKhachHang = _maKhachHang > 0 ? _maKhachHang : 1, // ID 1 = Khách vãng lai
+                        MaKhachHang = _maKhachHang > 0 ? _maKhachHang : (int?)null,
                         TongTienTamTinh = _tamTinh,
                         GiamGia = GiamTien,
-                        Thue = 0, // Hiện tại chưa có thuế
+                        Thue = 0,
                         TongTien = TongTienThanhToan,
-
-                        // Xử lý tiền khách trả (nếu nợ thì lấy tiền khách đưa, nếu trả dư thì chỉ ghi nhận bằng Tổng tiền)
                         SoTienTra = TienKhachDua > TongTienThanhToan ? TongTienThanhToan : TienKhachDua,
-
                         ChiTiet = chiTietList,
                         UuDai = uuDaiList
                     };
 
                     // 4. Gọi API
-                    var result = await ApiClient.PostAsync<CreateInvoiceRequest, object>("api/HoaDon", request);
+                    var result = await ApiClient.PostAsync<InvoiceRequest, object>("api/HoaDon", request);
 
-                    // 5. Nếu thành công -> Kích hoạt Callback về SaleViewModel để Clear giỏ hàng & Đóng popup
                     System.Windows.MessageBox.Show("Tạo hóa đơn thành công!", "Thông báo", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
 
                     _onConfirmCallback?.Invoke();
@@ -210,15 +196,16 @@ namespace Bookstore.WPF.ViewModels
                     System.Windows.MessageBox.Show($"Lỗi tạo hóa đơn: {ex.Message}", "Lỗi", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
             });
+
+            HuyBoGiaoDichCommand = new RelayCommand<object>((p) => IsOpen = false);
         }
 
-        // HÀM CHUẨN ĐỂ TRANG BÁN HÀNG HOẶC TRANG KHÁC GỌI KÍCH HOẠT POPUP
         public void ShowPopup(
-    int maKH, string tenKH, string sdtKH, // Thêm ID khách hàng
-    ObservableCollection<CartItemModel> items,
-    decimal tamTinh, decimal giamGia, decimal tongTien, // Thêm TamTinh
-    List<PromotionDTO> uuDaiDaApDung, // Thêm danh sách ưu đãi
-    Action onConfirm, Action onCancel = null)
+            int maKH, string tenKH, string sdtKH, // Thông tin khách hàng
+            ObservableCollection<CartItemModel> items, // Thông tin giỏ hàng
+            decimal tamTinh, decimal giamGia, decimal tongTien, // Thông tin thanh toán
+            List<PromotionDTO> uuDaiDaApDung, // Thông tin ưu đãi
+            Action onConfirm, Action? onCancel = null)
         {
             _maKhachHang = maKH;
             TenKhachHang = tenKH;
@@ -240,6 +227,7 @@ namespace Bookstore.WPF.ViewModels
             IsOpen = true;
         }
 
+        // TODO: Loại khách hàng và tỉ lệ trả tổi thiểu
         private void TinhToanTienThuaVaNo()
         {
             if (TongTienThanhToan <= 0) return;
@@ -276,7 +264,5 @@ namespace Bookstore.WPF.ViewModels
                 }
             }
         }
-
-
     }
 }

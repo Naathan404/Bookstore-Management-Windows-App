@@ -109,10 +109,10 @@ namespace Bookstore.API.Controllers
                         {
                             var distinctOrders = g.Select(x => x.ct.HoaDon).DistinctBy(x => x.MaHoaDon).ToList();
 
-                            decimal totalAmount = g.Sum(x => x.ct.SoLuong * x.ct.DonGia);
+                            decimal totalAmount = g.Sum(x => x.ct.SoLuong * x.ct.GiaBan);
                             decimal discount = distinctOrders.Sum(x => x.GiamGia);
                             decimal netRevenue = totalAmount - discount;
-                            decimal totalCost = g.Sum(x => x.ct.SoLuong * x.ct.GiaVon);
+                            decimal totalCost = g.Sum(x => x.ct.SoLuong * x.ct.GiaNiemYet);
                             decimal grossProfit = netRevenue - totalCost;
 
                             return new RevenueReportRowDto
@@ -409,7 +409,7 @@ namespace Bookstore.API.Controllers
 
                     if (!string.IsNullOrEmpty(filter.CustomerType))
                     {
-                        customerQuery = customerQuery.Where(x => x.LoaiKhachHang.TenLoaiKhachHang == filter.CustomerType);
+                        customerQuery = customerQuery.Where(x => x.LoaiKhachHang!.TenLoaiKhachHang == filter.CustomerType);
                     }
 
                     //var customers = await customerQuery.ToListAsync();
@@ -466,7 +466,7 @@ namespace Bookstore.API.Controllers
                         .Where(x => x.NgayTao >= fromDate
                                  && x.NgayTao <= toDate
                                  && x.MaKhachHang != 0
-                                 && validCustomerIds.Contains(x.MaKhachHang)) 
+                                 && validCustomerIds.Contains(x.MaKhachHang ?? 0)) 
                         .ToListAsync();
 
                     var receipts = await _context.PhieuThuTien

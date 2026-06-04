@@ -366,6 +366,21 @@ namespace Bookstore.WPF.ViewModels
 
                 if (response != null)
                 {
+                    foreach (var item in response)
+                    {
+                        if (item.MaLoaiKhachHang == null || item.MaLoaiKhachHang == 0)
+                        {
+                            item.LoaiKhachHangApDung = "Tất cả khách hàng";
+                        }
+                        else
+                        {
+                            var loaiKH = ListLoaiKhachHang.FirstOrDefault(k => k.MaLoaiKhachHang == item.MaLoaiKhachHang);
+                            if (loaiKH != null)
+                            {
+                                item.LoaiKhachHangApDung = loaiKH.TenLoaiKhachHang;
+                            }
+                        }
+                    }
                     _allPromotions = response;
                 }
                 else

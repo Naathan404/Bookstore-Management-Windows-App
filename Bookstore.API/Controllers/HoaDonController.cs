@@ -26,9 +26,9 @@ namespace Bookstore.API.Controllers
                 MaHoaDon = h.MaHoaDon,
                 NgayTao = h.NgayTao,
                 NguoiTao = h.NguoiTao,
-                TenNguoiTao = h.NguoiDung!.HoTen,
-                MaKhachHang = h.MaKhachHang,
-                TenKhachHang = h.KhachHang!.TenKhachHang,
+                TenNguoiTao = h.NguoiDung != null ? h.NguoiDung.HoTen : string.Empty,
+                MaKhachHang = h.MaKhachHang ?? 0,
+                TenKhachHang = h.KhachHang != null ? h.KhachHang.TenKhachHang : "Khách vãng lai",
                 TongTienTamTinh = h.TongTienTamTinh,
                 TongTien = h.TongTien,
                 GiamGia = h.GiamGia,
@@ -81,14 +81,17 @@ namespace Bookstore.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoiceRequest request)
+        public async Task<IActionResult> CreateInvoice([FromBody] InvoiceRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // ==============================================================
-                // BƯỚC 1: TẠO HÓA ĐƠN CHÍNH
-                // ==============================================================
+                // 1. Tạo hóa đơn chính
                 var hoaDon = new HoaDon
                 {
                     NgayTao = DateTime.Now,
@@ -102,40 +105,34 @@ namespace Bookstore.API.Controllers
                 };
 
                 _context.HoaDon.Add(hoaDon);
-                await _context.SaveChangesAsync(); // Gọi SaveChanges để EF Core sinh ra MaHoaDon
-
-                // ==============================================================
-                // BƯỚC 2: THÊM CHI TIẾT HÓA ĐƠN & CẬP NHẬT TỒN KHO SÁCH
-                // ==============================================================
+                await _context.SaveChangesAsync(); // Sinh mã MaHoaDon tự động từ DB
+                
+                // 2. Chi tiết hóa đơn
                 foreach (var item in request.ChiTiet)
                 {
-                    // Kiểm tra tồn kho
                     var sach = await _context.PhienBanSach.FirstOrDefaultAsync(s => s.ISBN == item.ISBN);
                     if (sach == null)
-                        throw new Exception($"Không tìm thấy sách có mã ISBN: {item.ISBN}");
+                        throw new Exception($"Không tìm thấy sách có mã ISBN: {item.ISBN} trong kho.");
 
                     if (sach.TonKho < item.SoLuong)
-                        throw new Exception($"Sách '{sach.ISBN}' không đủ tồn kho (Chỉ còn {sach.TonKho}).");
+                        throw new Exception($"Sách '{sach.ISBN}' không đủ số lượng tồn kho (Hiện còn: {sach.TonKho}, yêu cầu: {item.SoLuong}).");
 
-                    // Trừ tồn kho và cộng doanh số
+                    // Trừ kho hệ thống và tăng số lượng bán
                     sach.TonKho -= item.SoLuong;
                     sach.TongSoDaBan += item.SoLuong;
 
-                    // Tạo record chi tiết
                     var ct = new CT_HoaDon
                     {
                         MaHoaDon = hoaDon.MaHoaDon,
                         ISBN = item.ISBN,
                         SoLuong = item.SoLuong,
-                        DonGia = item.DonGia,
-                        GiaVon = item.GiaVon
+                        GiaBan = item.GiaBan,
+                        GiaNiemYet = sach.GiaNiemYet,
                     };
                     _context.CT_HoaDon.Add(ct);
                 }
 
-                // ==============================================================
-                // BƯỚC 3: LƯU LỊCH SỬ ƯU ĐÃI (NẾU CÓ)
-                // ==============================================================
+                // 3. Lịch sử ưu đãi áp dụng cho hóa đơn (nếu có)
                 if (request.UuDai != null && request.UuDai.Any())
                 {
                     foreach (var ud in request.UuDai)
@@ -144,38 +141,41 @@ namespace Bookstore.API.Controllers
                         {
                             MaHoaDon = hoaDon.MaHoaDon,
                             MaUuDai = ud.MaUuDai,
-                            ISBN = ud.ISBN, // Cho phép null nếu là voucher giảm trên tổng bill
                             SoTienGiam = ud.SoTienGiam
                         });
+
+                        var uuDai = await _context.UuDai.FindAsync(ud.MaUuDai);
+                        if (uuDai != null)
+                        {
+                            uuDai.SoLuongDaDung++;
+                        }
                     }
                 }
 
-                // ==============================================================
-                // BƯỚC 4: XỬ LÝ CÔNG NỢ (KHÁCH TRẢ THIẾU)
-                // ==============================================================
+                // 4. Xử lý công nợ nếu khách hàng thanh toán chưa đủ
                 if (request.SoTienTra < request.TongTien)
                 {
-                    // Nếu không phải khách vãng lai (Giả sử ID khách vãng lai là 1)
-                    if (request.MaKhachHang != 1)
+                    if (request.MaKhachHang != 0) // 0 = Khách vãng lai
                     {
                         var khachHang = await _context.KhachHang.FindAsync(request.MaKhachHang);
                         if (khachHang != null)
                         {
                             decimal tienNo = request.TongTien - request.SoTienTra;
-                            khachHang.TienNo += tienNo; 
+                            khachHang.TienNo += tienNo;
+                        }
+                        else
+                        {
+                            throw new Exception("Không tìm thấy thông tin thành viên để ghi nhận công nợ.");
                         }
                     }
                     else
                     {
-                        // Tùy nghiệp vụ: Khách vãng lai có được nợ không? Thường là không.
-                        throw new Exception("Khách vãng lai không được phép ghi nợ.");
+                        throw new Exception("Hệ thống từ chối lệnh: Khách vãng lai bắt buộc thanh toán đủ, không được phép ghi nợ!");
                     }
                 }
 
-                // Lưu tất cả thay đổi từ Bước 2, 3, 4
+                // Đẩy toàn bộ dữ liệu sạch xuống SQL Server
                 await _context.SaveChangesAsync();
-
-                // Xác nhận Commit Transaction (Chính thức ghi vào DB)
                 await transaction.CommitAsync();
 
                 return Ok(new
@@ -186,7 +186,7 @@ namespace Bookstore.API.Controllers
             }
             catch (Exception ex)
             {
-                // Nếu có bất kỳ lỗi nào xảy ra ở các bước trên, Rollback toàn bộ
+                // Khi có bất kỳ lỗi logic nào vi phạm ở trên, hủy bỏ toàn bộ phiên làm việc
                 await transaction.RollbackAsync();
                 return BadRequest(new { Message = ex.Message });
             }

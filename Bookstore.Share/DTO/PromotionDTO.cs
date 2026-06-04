@@ -37,6 +37,8 @@ namespace Bookstore.Share.DTO
             public double TiLeGiam { get; set; }
             public decimal GiamToiDa { get; set; }
 
+            public decimal SoTienGiamThucTe { get; set; }
+
             // ========================================================================
             // UI BÁN HÀNG
             // ========================================================================
@@ -61,12 +63,7 @@ namespace Bookstore.Share.DTO
             public DateTime ThoiGianBatDau => NgayBatDau;
             public DateTime ThoiGianKetThuc => NgayKetThuc;
             public string SoLuongToiDaDisplay => SoLuongToiDa == 0 ? "Vô hạn" : SoLuongToiDa.ToString();
-
-
-            // Đã đồng bộ lại khớp với logic Code
-            // TODO: Dơ
-            
-
+          
             public string TrangThai
             {
                 get

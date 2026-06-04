@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Share.DTO
 {
-    public class CreateInvoiceRequest
+    public class InvoiceRequest
     {
-        public string NguoiTao { get; set; } = string.Empty;
-        public int MaKhachHang { get; set; }
-        public decimal TongTienTamTinh { get; set; }
+        public required string NguoiTao { get; set; } = string.Empty;
+        public required int? MaKhachHang { get; set; } // Khách vãng lai null / 0
+        public required decimal TongTienTamTinh { get; set; }
         public decimal GiamGia { get; set; }
         public decimal Thue { get; set; }
-        public decimal TongTien { get; set; }
-        public decimal SoTienTra { get; set; }
+        public required decimal TongTien { get; set; }
+        public required decimal SoTienTra { get; set; }
 
-        public List<InvoiceDetailRequest> ChiTiet { get; set; } = new();
-        public List<InvoicePromoRequest> UuDai { get; set; } = new();
+        public required List<InvoiceDetailRequest> ChiTiet { get; set; } = new();
+        public required List<InvoicePromoRequest> UuDai { get; set; } = new();
     }
 
     public class InvoiceResponse

@@ -30,23 +30,6 @@ namespace Bookstore.WPF.ViewModels
         public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();
         #endregion
 
-        #region Trạng thái popup
-
-        //private bool _isConfirmPaymentOpen;
-        //public bool IsConfirmPaymentOpen
-        //{
-        //    get => _isConfirmPaymentOpen;
-        //    set { _isConfirmPaymentOpen = value; OnPropertyChanged(); }
-        //}
-
-        private bool _isSelectCustomerOpen;
-        public bool IsSelectCustomerOpen
-        {
-            get => _isSelectCustomerOpen;
-            set { _isSelectCustomerOpen = value; OnPropertyChanged(); }
-        }
-        #endregion
-
         #region Thẻ khách hàng (màn hình chính)
 
         private bool _isKhachVangLai = true; // Mặc định ban đầu luôn là khách vãng lai
@@ -230,26 +213,8 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
-        //#region Phương thức thanh toán
-        //private bool _isThanhToanTienMat = true;
-        //public bool IsThanhToanTienMat
-        //{
-        //    get => _isThanhToanTienMat;
-        //    set { _isThanhToanTienMat = value; OnPropertyChanged(); }
-        //}
-
-        //private bool _isThanhToanChuyenKhoan;
-        //public bool IsThanhToanChuyenKhoan
-        //{
-        //    get => _isThanhToanChuyenKhoan;
-        //    set { _isThanhToanChuyenKhoan = value; OnPropertyChanged(); }
-        //}
-        //#endregion
-
         #region COMMANDS & CONSTRUCTOR
         public ICommand MoPopupThanhToanCommand { get; set; }
-        public ICommand MoPopupChonKhachHangCommand { get; set; }
-        public ICommand CloseDialogCommand { get; set; }
         public ICommand XemChiTietSachCommand { get; set; }
         public ICommand ChonSachCommand { get; set; }
         public ICommand ThemVaoGioHangCommand { get; set; }
@@ -403,6 +368,9 @@ namespace Bookstore.WPF.ViewModels
             #endregion
         }
         #endregion
+
+
+        #region HELPER METHODS
         protected override void ApplyFilterAndPagination()
         {
             var filtered = _allBooks.AsEnumerable();
@@ -428,9 +396,6 @@ namespace Bookstore.WPF.ViewModels
                 DisplayBooks.Add(item);
             }
         }
-
-
-        #region HELPER METHODS
 
         private async Task InitializeAsync()
         {
@@ -673,67 +638,85 @@ namespace Bookstore.WPF.ViewModels
                 // BƯỚC 2: PHA 1 - ÁP DỤNG ƯU ĐÃI ĐẦU SÁCH (COMBO LOẠI 2 & 3)
                 // ====================================================================
                 var promosToRemove = new List<PromotionDTO>();
+                decimal tongTienGiamBill = 0; // Biến gom tổng tiền giảm
 
                 foreach (var promo in AppliedPromotionList.Where(p => p.MaLoaiUuDai == PromotionType.SachGiam || p.MaLoaiUuDai == PromotionType.SachQua))
                 {
+                    promo.SoTienGiamThucTe = 0; // Reset vết cũ
+
                     if (promo.DanhSachSachDieuKien == null || !promo.DanhSachSachDieuKien.Any())
                     {
                         promosToRemove.Add(promo);
                         continue;
                     }
 
-                    // 1. Tính toán xem khách hàng thỏa mãn được BAO NHIÊU BỘ COMBO
                     int soBoComboDatDuoc = int.MaxValue;
-
                     foreach (var dieuKien in promo.DanhSachSachDieuKien)
                     {
                         var itemTrongGio = hangMua.FirstOrDefault(x => x.ISBN == dieuKien.ISBN);
                         if (itemTrongGio == null || itemTrongGio.SoLuongMua < dieuKien.SoLuongMua)
                         {
-                            soBoComboDatDuoc = 0; // Đứt gánh, không đủ điều kiện
+                            soBoComboDatDuoc = 0;
                             break;
                         }
-
-                        // Số bộ combo được quyết định bởi cuốn sách có số lượng đáp ứng ít nhất
                         int boCuaSachNay = itemTrongGio.SoLuongMua / (dieuKien.SoLuongMua > 0 ? dieuKien.SoLuongMua : 1);
                         soBoComboDatDuoc = Math.Min(soBoComboDatDuoc, boCuaSachNay);
                     }
 
-                    // 2. NẾU ĐẠT ĐIỀU KIỆN -> ÁP DỤNG ƯU ĐÃI
                     if (soBoComboDatDuoc > 0)
                     {
                         if (promo.MaLoaiUuDai == PromotionType.SachGiam)
                         {
-                            // Lặp qua tất cả sách nằm trong điều kiện để giảm giá chúng
+                            decimal tienGiamSachNay = 0;
                             foreach (var dieuKien in promo.DanhSachSachDieuKien)
                             {
                                 var matchItem = hangMua.FirstOrDefault(x => x.ISBN == dieuKien.ISBN);
                                 if (matchItem != null)
                                 {
                                     matchItem.IsPromotionApplied = true;
-                                    matchItem.GiaBan = promo.TiLeGiam > 0
-                                        ? Math.Round(matchItem.OriginalGiaBan * (decimal)(100 - promo.TiLeGiam) / 100)
-                                        : Math.Max(0, matchItem.OriginalGiaBan - promo.SoTienGiam);
+                                    decimal tienGiamLyThuyet = 0;
+
+                                    if (promo.TiLeGiam > 0)
+                                    {
+                                        tienGiamLyThuyet = matchItem.OriginalGiaBan * (decimal)(promo.TiLeGiam / 100);
+                                        if (promo.GiamToiDa > 0 && tienGiamLyThuyet > promo.GiamToiDa)
+                                        {
+                                            tienGiamLyThuyet = promo.GiamToiDa;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tienGiamLyThuyet = promo.SoTienGiam;
+                                    }
+
+                                    decimal giaMoi = Math.Max(0, matchItem.OriginalGiaBan - tienGiamLyThuyet);
+
+                                    // Cộng dồn tiền giảm (Giá cũ - Giá mới) * Số lượng
+                                    tienGiamSachNay += (matchItem.OriginalGiaBan - giaMoi) * matchItem.SoLuongMua;
+                                    matchItem.GiaBan = giaMoi;
                                 }
                             }
-                            promo.MucGiamDisplay = "Giảm sách";
+                            promo.SoTienGiamThucTe = tienGiamSachNay;
+                            tongTienGiamBill += tienGiamSachNay; // Ép vào tổng bill
+                            promo.MucGiamDisplay = $"- {tienGiamSachNay:N0} đ";
                         }
                         else if (promo.MaLoaiUuDai == PromotionType.SachQua && promo.DanhSachSachTang != null)
                         {
-                            // Lặp qua danh sách quà tặng để thêm vào giỏ (Nhân với số bộ Combo)
+                            decimal giaTriQuaTang = 0;
                             foreach (var tang in promo.DanhSachSachTang)
                             {
                                 int tongGifts = soBoComboDatDuoc * (tang.SoLuongTang > 0 ? tang.SoLuongTang : 1);
                                 ThemQuaTangVaoGio(tang.ISBN, tongGifts);
+
+                                // Tính nhẩm giá trị quà tặng cho UI xem (Không cộng vào tổng Bill vì hàng tặng giá vốn dĩ = 0)
+                                var sachGoc = _allBooks.FirstOrDefault(b => b.BookData.ISBN == tang.ISBN);
+                                if (sachGoc != null) giaTriQuaTang += sachGoc.BookData.DonGiaBan * tongGifts;
                             }
-                            promo.MucGiamDisplay = "Tặng sách";
+                            promo.SoTienGiamThucTe = giaTriQuaTang;
+                            promo.MucGiamDisplay = $"- {giaTriQuaTang:N0} đ (Quà)";
                         }
                     }
-                    else
-                    {
-                        // Không đạt điều kiện nữa (do khách vừa xóa sách khỏi giỏ) -> Đưa vào danh sách chờ gỡ
-                        promosToRemove.Add(promo);
-                    }
+                    else promosToRemove.Add(promo);
                 }
 
                 // Gỡ các ưu đãi không còn hợp lệ
@@ -742,11 +725,11 @@ namespace Bookstore.WPF.ViewModels
                 // ====================================================================
                 // BƯỚC 3: PHA 2 - ÁP DỤNG ƯU ĐÃI TRÊN TỔNG HÓA ĐƠN (LOẠI 0 & 1)
                 // ====================================================================
-                decimal tongTienGiamBill = 0;
                 var billPromosToRemove = new List<PromotionDTO>();
 
                 foreach (var promo in AppliedPromotionList.Where(p => p.MaLoaiUuDai == PromotionType.HoaDonGiam || p.MaLoaiUuDai == PromotionType.HoaDonQua))
                 {
+                    promo.SoTienGiamThucTe = 0; // Reset
                     if (TamTinh < promo.SoTienToiThieu)
                     {
                         billPromosToRemove.Add(promo);
@@ -755,27 +738,45 @@ namespace Bookstore.WPF.ViewModels
 
                     if (promo.MaLoaiUuDai == PromotionType.HoaDonGiam)
                     {
-                        decimal valueGiam = promo.TiLeGiam > 0
-                            ? TamTinh * (decimal)(promo.TiLeGiam / 100)
-                            : promo.SoTienGiam;
+                        decimal valueGiam = 0;
 
-                        if (promo.GiamToiDa > 0 && valueGiam > promo.GiamToiDa) valueGiam = promo.GiamToiDa;
-                        tongTienGiamBill += valueGiam;
+                        if (promo.TiLeGiam > 0)
+                        {
+                            valueGiam = TamTinh * (decimal)(promo.TiLeGiam / 100);
+                            if (promo.GiamToiDa > 0 && valueGiam > promo.GiamToiDa)
+                            {
+                                valueGiam = promo.GiamToiDa;
+                            }
+                        }
+                        else
+                        {
+                            valueGiam = promo.SoTienGiam;
+                        }
+
+                        promo.SoTienGiamThucTe = valueGiam;
+                        tongTienGiamBill += valueGiam; // Ép vào tổng bill
                         promo.MucGiamDisplay = $"- {valueGiam:N0} đ";
                     }
                     else if (promo.MaLoaiUuDai == PromotionType.HoaDonQua && promo.DanhSachSachTang != null)
                     {
-                        // Lặp qua danh sách sách tặng để đẩy vào giỏ
+                        decimal giaTriQuaTang = 0;
                         foreach (var tang in promo.DanhSachSachTang)
                         {
-                            ThemQuaTangVaoGio(tang.ISBN, tang.SoLuongTang > 0 ? tang.SoLuongTang : 1);
+                            int qty = tang.SoLuongTang > 0 ? tang.SoLuongTang : 1;
+                            ThemQuaTangVaoGio(tang.ISBN, qty);
+
+                            var sachGoc = _allBooks.FirstOrDefault(b => b.BookData.ISBN == tang.ISBN);
+                            if (sachGoc != null) giaTriQuaTang += sachGoc.BookData.DonGiaBan * qty;
                         }
-                        promo.MucGiamDisplay = "Tặng quà";
+                        promo.SoTienGiamThucTe = giaTriQuaTang;
+                        promo.MucGiamDisplay = $"- {giaTriQuaTang:N0} đ (Quà)";
                     }
                 }
 
-                // Gỡ các ưu đãi bill không hợp lệ
                 foreach (var p in billPromosToRemove) AppliedPromotionList.Remove(p);
+
+                // Cuối cùng gán biến GiamTien
+                GiamTien = tongTienGiamBill;
 
                 // ====================================================================
                 // BƯỚC 4: CHỐT SỐ LIỆU VÀ KÍCH HOẠT UI

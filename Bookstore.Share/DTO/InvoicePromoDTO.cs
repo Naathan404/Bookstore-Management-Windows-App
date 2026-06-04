@@ -8,9 +8,9 @@ namespace Bookstore.Share.DTO
 {
     public class InvoicePromoRequest
     {
-        public int MaUuDai { get; set; }
-        public string? ISBN { get; set; } // Nếu áp dụng trên hóa đơn thì để null, trên sách thì có ISBN
-        public decimal SoTienGiam { get; set; }
+        required public int MaUuDai { get; set; }
+        required public decimal SoTienGiam { get; set; }
+        //required public bool IsGift { get; set; }
     }
 
     public class InvoicePromoResponse
@@ -18,9 +18,8 @@ namespace Bookstore.Share.DTO
         public int MaCT_HoaDon_UuDai { get; set; }
         public int MaHoaDon { get; set; }
         public int MaUuDai { get; set; }
-        public string Code { get; set; } = string.Empty;
         public string TenUuDai { get; set; } = string.Empty; // Tên chương trình ưu đãi
-        public string? ISBN { get; set; } // Null nếu giảm tổng bill, có trị nếu giảm riêng đầu sách
+        public string Code { get; set; } = string.Empty;
         public decimal SoTienGiam { get; set; }
     }
 }
