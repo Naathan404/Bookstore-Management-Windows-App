@@ -98,8 +98,12 @@ namespace Bookstore.WPF.ViewModels
                 SearchKeyword = "";
                 FilterFromDate = null;
                 FilterToDate = null;
-                SelectedSupplier = null;
+                //SelectedSupplier = null;
+                SelectedSupplier = SupplierList.FirstOrDefault(x => x.MaNhaCungCap == 0);
             });
+
+            FilterFromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            FilterToDate = DateTime.Today;
             RefreshCommand = new RelayCommand<object>(async (p) => await LoadDataAsync());
             ViewDetailCommand = new RelayCommand<ImportOrderResponse>(async (p) => await LoadDetailAsync(p));
             DeleteImportOrderCommand = new RelayCommand<ImportOrderResponse>(ExecuteDelete);
@@ -129,8 +133,11 @@ namespace Bookstore.WPF.ViewModels
             if (data != null)
             {
                 SupplierList.Clear();
+                SupplierList.Add(new NhaCungCapDto { MaNhaCungCap = 0, TenNhaCungCap = "Tất cả Nhà cung cấp" });
                 foreach (var item in data) SupplierList.Add(item);
+                SelectedSupplier = SupplierList[0];
             }
+
 
             var minImportThamSo = await ApiClient.GetAsync<ThamSoDTO>($"api/ThamSo/SoLuongNhapToiThieu");
             if(minImportThamSo != null)
@@ -187,7 +194,7 @@ namespace Bookstore.WPF.ViewModels
                     x.TenNguoiTao.ToLower().Contains(kw));
             }
 
-            if (SelectedSupplier != null)
+            if (SelectedSupplier != null && SelectedSupplier.MaNhaCungCap > 0)
                 filtered = filtered.Where(x => x.MaNhaCungCap == SelectedSupplier.MaNhaCungCap);
 
             if (FilterFromDate.HasValue)

@@ -354,7 +354,7 @@ namespace Bookstore.WPF.ViewModels
                 _promotionViewModel = new PromotionViewModel();
                 ShowUuDaiCommand = new RelayCommand<object>((p) =>
                 {
-                    _promotionViewModel.LoadMasterData();
+                    _ = _promotionViewModel.LoadMasterData();
                     _handleChangeView(_promotionViewModel);
                 });
             }
