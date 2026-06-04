@@ -98,7 +98,8 @@
 											 IconKind="Cash"
 											 IsRequired="True"
 											 State="{Binding SoTienState}"
-											 HelperText="{Binding SoTienHelperText}" />
+											 HelperText="{Binding SoTienHelperText}"
+                                             IsEnabled="{Binding IsKhachHangEnable}"/>
 
 				<components:FormInputControl Title="Lý do thu"
 											 Grid.Row="5"

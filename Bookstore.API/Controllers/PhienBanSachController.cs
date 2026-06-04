@@ -257,7 +257,7 @@ namespace Bookstore.API.Controllers
                                         _context.TacGia.Add(newTg);
                                         await _context.SaveChangesAsync();
                                         maTacGiaThucTe = newTg.MaTacGia;
-                                    }
+                                    } 
                                 }
 
                                 if (maTacGiaThucTe > 0)
