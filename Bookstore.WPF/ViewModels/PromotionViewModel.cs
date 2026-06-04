@@ -179,15 +179,21 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ClosePopupCommand { get; set; }
         public ICommand ExportExcelCommand { get; set; }
 
-        public async void LoadMasterData()
+        public async Task LoadMasterData()
         {
-            _ = InitDropdownData();
-            _ = LoadDataAsync();
+            await InitDropdownData();
+            await LoadDataAsync();
+        }
+
+        private async Task InitializeViewModelAsync()
+        {
+            await LoadMasterData();
         }
 
         public PromotionViewModel()
         {
             InitCommands();
+            _ =  InitializeViewModelAsync();
             //_ = InitDropdownData();
             //_ = LoadDataAsync();
         }
@@ -357,6 +363,7 @@ namespace Bookstore.WPF.ViewModels
             ListTrangThai.Add("Tạm dừng");
             ListTrangThai.Add("Hết hạn");
             SelectedTrangThai = "Tất cả trạng thái";
+            SelectedLoaiUuDaiFilter = "Tất cả loại ưu đãi";
         }
         private async Task LoadDataAsync()
         {

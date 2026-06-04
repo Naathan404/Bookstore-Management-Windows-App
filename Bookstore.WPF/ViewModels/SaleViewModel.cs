@@ -231,6 +231,11 @@ namespace Bookstore.WPF.ViewModels
         public ICommand XoaUuDaiCommand { get; set; } // THÊM: Xóa ưu đãi khỏi bill
         public ICommand TimKhachHangTheoSdtCommand { get; set; }
 
+        public async Task LoadMasterData()
+        {
+            await InitializeAsync();
+        }
+
         public SaleViewModel()
         {
             _ = InitializeAsync();
@@ -331,6 +336,12 @@ namespace Bookstore.WPF.ViewModels
                     CartItems.Remove(item);
                     TinhToanHoaDon();
                 }
+            });
+
+            XoaBoLocCommand = new RelayCommand<object>((p) =>
+            {
+                SearchKeyword = "";
+                KieuTimKiemSach = ListKieuTimKiem[0];
             });
             #endregion
 

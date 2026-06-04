@@ -485,6 +485,11 @@ namespace Bookstore.WPF.ViewModels
                     IsAddPopupVisible = Visibility.Hidden;
                     _ = LoadDataAsync(); // refresh trang
                 }
+                else
+                {
+                    MessageBox.Show("Luu that bai");
+                }
+
             });
 
             // Lưu thông tin khui điều hcinhr sách
@@ -877,7 +882,7 @@ namespace Bookstore.WPF.ViewModels
                 var thamSo = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/TiLeDonGiaBan");
                 if (thamSo != null && thamSo.GiaTri > 0)
                 {
-                    _tiLeGiaBan = thamSo.GiaTri;
+                    _tiLeGiaBan = thamSo.GiaTri / 100.0m;
                 }
             }
             catch
