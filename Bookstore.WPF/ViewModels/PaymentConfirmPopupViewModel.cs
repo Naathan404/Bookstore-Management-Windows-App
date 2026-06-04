@@ -1,4 +1,5 @@
-﻿using Bookstore.Share.DTO.Bookstore.Share.DTO;
+﻿using Bookstore.Share.DTO;
+using Bookstore.Share.DTO.Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Bookstore.Share.Enums;
 using Bookstore.WPF.Models;
@@ -144,33 +145,53 @@ namespace Bookstore.WPF.ViewModels
                     {
                         ISBN = c.ISBN,
                         SoLuong = c.SoLuongMua,
-                        DonGia = c.GiaBan,
-                        GiaVon = 0 // Tùy nghiệp vụ, nếu backend tự tính thì gửi 0
+                        DonGia = c.GiaBan, // Giá bán đã trừ khuyến mãi (nếu có) hoặc = 0 nếu là hàng tặng
+                        GiaVon = 0 // Có thể để Backend tự truy xuất GiaVon từ bảng PhienBanSach
                     }).ToList();
 
-                    // 2. Map dữ liệu Ưu đãi (Nếu có)
+                    // 2. Map dữ liệu Ưu đãi (ĐÃ SỬA LẠI ĐỂ HỖ TRỢ COMBO 1:N)
                     var uuDaiList = new List<InvoicePromoRequest>();
                     if (_uuDaiDaApDung != null && _uuDaiDaApDung.Any())
                     {
-                        uuDaiList = _uuDaiDaApDung.Select(u => new InvoicePromoRequest
+                        foreach (var u in _uuDaiDaApDung)
                         {
-                            MaUuDai = u.MaUuDai,
-                            // Nếu là ưu đãi sách thì gửi kèm ISBN điều kiện, nếu giảm hóa đơn thì để null
-                            ISBN = (u.MaLoaiUuDai == PromotionType.SachGiam || u.MaLoaiUuDai == PromotionType.SachQua) ? u.ISBNDieuKien : null,
-                            SoTienGiam = 0 // TODO: Cần tính toán số tiền thực giảm của từng ưu đãi (nếu cần thiết cho kế toán)
-                        }).ToList();
+                            string targetIsbn = null;
+
+                            // Nếu là ưu đãi trên sách, lấy ISBN đầu tiên trong danh sách điều kiện làm đại diện để lưu log
+                            if (u.MaLoaiUuDai == PromotionType.SachGiam || u.MaLoaiUuDai == PromotionType.SachQua)
+                            {
+                                targetIsbn = u.DanhSachSachDieuKien?.FirstOrDefault()?.ISBN;
+                            }
+
+                            // TODO Mở rộng: Nếu muốn Kế toán thống kê chi tiết mỗi voucher giảm bao nhiêu tiền, 
+                            // bạn có thể Regex chuỗi u.MucGiamDisplay (ví dụ "- 15,000 đ") để bóc tách con số ra.
+                            // Hiện tại gán tạm = 0 để API không bị lỗi.
+                            decimal soTienGiamThucTe = 0;
+
+                            uuDaiList.Add(new InvoicePromoRequest
+                            {
+                                MaUuDai = u.MaUuDai,
+                                ISBN = targetIsbn,
+                                SoTienGiam = soTienGiamThucTe
+                            });
+                        }
                     }
 
                     // 3. Đóng gói Request gốc
                     var request = new CreateInvoiceRequest
                     {
-                        NguoiTao = AppState.CurrentUser.Username,
+                        // Lấy tên User đang đăng nhập từ Session tĩnh
+                        NguoiTao = AppState.CurrentUser?.Username ?? "admin",
+
                         MaKhachHang = _maKhachHang > 0 ? _maKhachHang : 1, // ID 1 = Khách vãng lai
                         TongTienTamTinh = _tamTinh,
                         GiamGia = GiamTien,
                         Thue = 0, // Hiện tại chưa có thuế
                         TongTien = TongTienThanhToan,
-                        SoTienTra = TienKhachDua > TongTienThanhToan ? TongTienThanhToan : TienKhachDua, // Trả dư thì cũng chỉ lấy vừa đủ
+
+                        // Xử lý tiền khách trả (nếu nợ thì lấy tiền khách đưa, nếu trả dư thì chỉ ghi nhận bằng Tổng tiền)
+                        SoTienTra = TienKhachDua > TongTienThanhToan ? TongTienThanhToan : TienKhachDua,
+
                         ChiTiet = chiTietList,
                         UuDai = uuDaiList
                     };
@@ -188,12 +209,6 @@ namespace Bookstore.WPF.ViewModels
                 {
                     System.Windows.MessageBox.Show($"Lỗi tạo hóa đơn: {ex.Message}", "Lỗi", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
-            });
-
-            HuyBoGiaoDichCommand = new RelayCommand(() =>
-            {
-                _onCancelCallback?.Invoke();
-                IsOpen = false;
             });
         }
 

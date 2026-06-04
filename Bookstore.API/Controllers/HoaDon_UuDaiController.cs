@@ -1,6 +1,7 @@
 ﻿using Bookstore.API.Data;
 // using Bookstore.API.Data; // Chú ý kiểm tra lại namespace DbContext
 using Bookstore.API.Models;
+using Bookstore.Share.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,11 +34,23 @@ namespace Bookstore.API.Controllers
         // LẤY DANH SÁCH KHUYẾN MÃI CỦA 1 HÓA ĐƠN
         // GET: api/HoaDon_UuDai/HoaDon/5
         [HttpGet("HoaDon/{maHoaDon}")]
-        public async Task<ActionResult<IEnumerable<HoaDon_UuDai>>> GetByMaHoaDon(int maHoaDon)
+        public async Task<ActionResult<IEnumerable<InvoicePromoResponse>>> GetByMaHoaDon(int maHoaDon)
         {
-            return await _context.HoaDon_Uudai
-                                 .Where(x => x.MaHoaDon == maHoaDon)
-                                 .ToListAsync();
+            var query = from hu in _context.HoaDon_Uudai
+                        join u in _context.UuDai on hu.MaUuDai equals u.MaUuDai // Thực hiện JOIN thủ công
+                        where hu.MaHoaDon == maHoaDon
+                        select new InvoicePromoResponse
+                        {
+                            MaCT_HoaDon_UuDai = hu.MaCT_HoaDon_UuDai,
+                            MaHoaDon = hu.MaHoaDon,
+                            MaUuDai = hu.MaUuDai,
+                            Code = u.Code,
+                            TenUuDai = u.TenChuongTrinh,
+                            ISBN = hu.ISBN,
+                            SoTienGiam = hu.SoTienGiam
+                        };
+
+            return Ok(await query.ToListAsync());
         }
 
         // LẤY CHI TIẾT ĐÚNG 1 DÒNG DỰA VÀO ID

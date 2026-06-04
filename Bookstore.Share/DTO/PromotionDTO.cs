@@ -24,7 +24,11 @@ namespace Bookstore.Share.DTO
             public int SoLuongToiDa { get; set; } = 1;
             public int SoLuongDaDung { get; set; }
             public int? MaLoaiKhachHang { get; set; }
+            public string LoaiKhachHangApDung { get; set; } = string.Empty;
             public bool CoTheSuDung { get; set; } = true;
+
+            public List<SachDieuKienDTO> DanhSachSachDieuKien { get; set; } = new();
+            public List<SachTangDTO> DanhSachSachTang { get; set; } = new();
 
             public decimal SoTienToiThieu { get; set; } = 0;
             public decimal SoTienToiDa { get; set; } = 10000000;
@@ -32,13 +36,6 @@ namespace Bookstore.Share.DTO
             public decimal SoTienGiam { get; set; }
             public double TiLeGiam { get; set; }
             public decimal GiamToiDa { get; set; }
-
-            public string? ISBNDieuKien { get; set; }
-            public int SoLuongMua { get; set; }
-
-            public string? ISBNTang { get; set; }
-            public int SoLuongTang { get; set; }
-            public int STT { get; set; }
 
             // ========================================================================
             // UI BÁN HÀNG
@@ -60,6 +57,7 @@ namespace Bookstore.Share.DTO
             // ========================================================================
             // CÁC THUỘC TÍNH READ-ONLY CHO GIAO DIỆN QUẢN LÝ
             // ========================================================================
+            public int STT { get; set; }
             public DateTime ThoiGianBatDau => NgayBatDau;
             public DateTime ThoiGianKetThuc => NgayKetThuc;
             public string SoLuongToiDaDisplay => SoLuongToiDa == 0 ? "Vô hạn" : SoLuongToiDa.ToString();
@@ -67,13 +65,7 @@ namespace Bookstore.Share.DTO
 
             // Đã đồng bộ lại khớp với logic Code
             // TODO: Dơ
-            public string LoaiKhachHangApDung => MaLoaiKhachHang switch
-            {
-                0 => "Tất cả khách hàng",
-                1 => "Khách vãng lai",
-                2 => "Thành viên",
-                _ => "Không xác định"
-            };
+            
 
             public string TrangThai
             {
@@ -141,5 +133,19 @@ namespace Bookstore.Share.DTO
         public PromotionType MaLoaiUuDai { get; set; }
         public string TenLoaiUuDai { get; set; } = string.Empty;
         public int ApDungToiDa { get; set; }
+    }
+
+    public class SachDieuKienDTO
+    {
+        public string ISBN { get; set; } = string.Empty;
+        public string TenSach { get; set; } = string.Empty;
+        public int SoLuongMua { get; set; }
+    }
+
+    public class SachTangDTO
+    {
+        public string ISBN { get; set; } = string.Empty;
+        public string TenSach { get; set; } = string.Empty;
+        public int SoLuongTang { get; set; }
     }
 }

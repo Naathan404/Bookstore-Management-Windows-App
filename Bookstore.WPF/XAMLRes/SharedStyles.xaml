@@ -41,6 +41,17 @@
 				Value="1.5" />
 	</Style>
 
+	<Style x:Key="GreenCardStyle"
+		   BasedOn="{StaticResource CardStyle}"
+		   TargetType="Border">
+		<Setter Property="Background"
+				Value="{StaticResource SuccessBgLightColor}" />
+		<Setter Property="BorderBrush"
+				Value="#A7F3D0" />
+		<Setter Property="BorderThickness"
+				Value="1.5" />
+	</Style>
+
 	<Style x:Key="MaterialDesignFloatingHintTextBox"
 		   TargetType="TextBox">
 		<Setter Property="Height"
@@ -78,6 +89,25 @@
 				</BeginStoryboard>
 			</EventTrigger>
 		</Style.Triggers>
+	</Style>
+
+	<Style TargetType="RadioButton"
+		   BasedOn="{StaticResource MaterialDesignRadioButton}">
+		<Setter Property="materialDesign:RadioButtonAssist.RadioButtonSize"
+				Value="20" />
+
+		<Setter Property="Foreground"
+				Value="{StaticResource PrimaryDarkColor}" />
+
+		<Style.Resources>
+			<SolidColorBrush x:Key="PrimaryHueMidBrush"
+							 Color="#4318FF" />
+			<SolidColorBrush x:Key="MaterialDesign.Brush.Primary"
+							 Color="#4318FF" />
+			<SolidColorBrush x:Key="MaterialDesignCheckBoxOff"
+							 Color="#A3AED0" />
+		</Style.Resources>
+		
 	</Style>
 
 	<Style x:Key="TabItemStyle"

@@ -1,4 +1,5 @@
-﻿using Bookstore.Share.DTOResponses;
+﻿using Bookstore.Share.DTO;
+using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.ViewModels.Base;
 using System;
@@ -13,6 +14,8 @@ namespace Bookstore.WPF.ViewModels
 {
     public class InvoiceViewModel : BaseListViewModel
     {
+        public InvoiceDetailPopupViewModel InvoiceDetailPopupVM { get; set; } = new InvoiceDetailPopupViewModel();
+
         #region DATA
         private ObservableCollection<InvoiceResponse> _danhSachHoaDonGoc = new();
 
@@ -146,11 +149,30 @@ namespace Bookstore.WPF.ViewModels
             }
         }
 
-        private void ExecuteXemChiTiet(InvoiceResponse hd)
+        private async void ExecuteXemChiTiet(InvoiceResponse hd)
         {
             if (hd == null) return;
-            string maHdFormat = $"HD{hd.NgayTao:ddMMyy}{hd.MaHoaDon:D3}";
-            MessageBox.Show($"Xem chi tiết hóa đơn: {maHdFormat}", "Thông báo");
+
+            try
+            {
+                // 1. Gọi API lấy Chi tiết hóa đơn (CT_HoaDon)
+                var details = await ApiClient.GetAsync<List<InvoiceDetailResponse>>($"api/CT_HoaDon/HoaDon/{hd.MaHoaDon}");
+
+                // Đảm bảo không bị văng lỗi nếu API trả về null (dù hiếm khi xảy ra)
+                if (details == null) details = new List<InvoiceDetailResponse>();
+
+                // 2. Gọi API lấy Ưu đãi đã áp dụng (HoaDon_UuDai)
+                var promos = await ApiClient.GetAsync<List<InvoicePromoResponse>>($"api/HoaDon_UuDai/HoaDon/{hd.MaHoaDon}");
+
+                if (promos == null) promos = new List<InvoicePromoResponse>();
+
+                // 3. Bật Popup lên và truyền dữ liệu thật vào
+                InvoiceDetailPopupVM.ShowPopup(hd, details, promos);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Lỗi tải chi tiết hóa đơn: {ex.Message}", "Lỗi kết nối", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
         }
     }
 }

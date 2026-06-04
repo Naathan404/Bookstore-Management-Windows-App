@@ -1,5 +1,6 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Models;
+using Bookstore.Share.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,11 +28,23 @@ namespace Bookstore.API.Controllers
         //  LẤY TOÀN BỘ SÁCH CỦA 1 HÓA ĐƠN CỤ THỂ
         // GET: api/CT_HoaDon/HoaDon/5
         [HttpGet("HoaDon/{maHoaDon}")]
-        public async Task<ActionResult<IEnumerable<CT_HoaDon>>> GetByMaHoaDon(int maHoaDon)
+        public async Task<ActionResult<IEnumerable<InvoiceDetailResponse>>> GetByMaHoaDon(int maHoaDon)
         {
-            return await _context.CT_HoaDon
-                                 .Where(x => x.MaHoaDon == maHoaDon)
-                                 .ToListAsync();
+            var chiTietHoaDon = await _context.CT_HoaDon
+                .Where(x => x.MaHoaDon == maHoaDon)
+                .Select(ct => new InvoiceDetailResponse
+                {
+                    ISBN = ct.ISBN,
+                    // Đi xuyên qua Khóa ngoại PhienBanSach sang bảng Sach để lấy tên và ảnh
+                    TenSach = ct.PhienBanSach.Sach != null ? ct.PhienBanSach.Sach.TenSach : "Sách đã bị xóa khỏi hệ thống",
+                    HinhAnh = ct.PhienBanSach.Sach != null ? ct.PhienBanSach.Sach.ImageUrl : "/Resources/Images/Books/default_book_cover.jpg",
+                    SoLuong = ct.SoLuong,
+                    DonGia = ct.DonGia,
+                    GiaNiemYet = ct.PhienBanSach.GiaNiemYet
+                })
+                .ToListAsync();
+
+            return Ok(chiTietHoaDon);
         }
 
         // LẤY ĐÚNG 1 DÒNG CHI TIẾT DỰA VÀO 2 KHÓA

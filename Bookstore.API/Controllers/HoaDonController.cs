@@ -1,6 +1,7 @@
 ﻿using Bookstore.API.Data;
 using Bookstore.API.Interfaces;
 using Bookstore.API.Models;
+using Bookstore.Share.DTO;
 using Bookstore.Share.DTOResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

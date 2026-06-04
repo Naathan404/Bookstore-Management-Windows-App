@@ -5,6 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 xmlns:popup="clr-namespace:Bookstore.WPF.Views.Popup"
 			 mc:Ignorable="d">
 
 	<Grid>
@@ -137,5 +138,7 @@
 										  PaginationCommand="{Binding PhanTrangCommand}" />
 
 		</Grid>
+		
+		<popup:InvoiceDetailPopup DataContext="{Binding InvoiceDetailPopupVM}" />
 	</Grid>
 </UserControl>
