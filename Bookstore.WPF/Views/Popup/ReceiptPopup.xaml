@@ -22,123 +22,119 @@
 		<Border Background="Transparent">
 			<Border.InputBindings>
 				<MouseBinding MouseAction="LeftClick"
+							  CommandParameter="{Binding}"
 							  Command="{Binding DongPopupCommand}" />
 			</Border.InputBindings>
 		</Border>
 
-		<Border Width="500"
+		<Border Width="600"
+				Height="600"
 				Style="{StaticResource PopupCardStyle}">
-
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<!--header-->
 				<components:PopupHeaderControl Grid.Row="0"
 											   Title="{Binding PopupTitle, TargetNullValue='PHIẾU THU TIỀN'}"
-											   IconKind="Cash" />
+											   IconKind="Cash"
+											   Margin="0,0,0,12" />
 
-				<!-- Mã phiếu thu -->
-				<components:FormInputControl Title="Mã phiếu thu"
-											 Grid.Row="1"
-											 Visibility="{Binding IsMaPhieuVisible, Converter={StaticResource BoolToVis}}"
-											 IsEnabled="False"
-											 IconKind="Barcode">
-					<components:FormInputControl.TextValue>
-						<MultiBinding StringFormat="PT{0:ddMMyy}{1:D3}">
-							<Binding Path="PhieuThuForm.NgayTao" />
-							<Binding Path="PhieuThuForm.MaPhieuThuTien" />
-						</MultiBinding>
-					</components:FormInputControl.TextValue>
-				</components:FormInputControl>
+				<ScrollViewer Grid.Row="1"
+							  Margin="0,0,0,12"
+							  VerticalScrollBarVisibility="Auto">
+					<StackPanel>
+						<components:FormInputControl Title="Mã phiếu thu"
+													 IconKind="Barcode"
+													 Margin="0,0,0,14"
+													 Visibility="{Binding IsMaPhieuVisible, Converter={StaticResource BoolToVis}}"
+													 IsEnabled="False">
+							<components:FormInputControl.TextValue>
+								<MultiBinding StringFormat="PT{0:ddMMyy}{1:D3}">
+									<Binding Path="PhieuThuForm.NgayTao" />
+									<Binding Path="PhieuThuForm.MaPhieuThuTien" />
+								</MultiBinding>
+							</components:FormInputControl.TextValue>
+						</components:FormInputControl>
 
+						<Grid Margin="0,0,0,14">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="12" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
 
-				<!--Ngày tạo, người tạo-->
-				<Grid Grid.Row="2">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="12" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
+							<components:FormDatePickerControl Grid.Column="0"
+															  Title="Ngày tạo"
+															  SelectedDate="{Binding PhieuThuForm.NgayTao, UpdateSourceTrigger=PropertyChanged}"
+															  IconKind="Calendar"
+															  IsEnabled="{Binding IsMaPhieuVisible, Converter={StaticResource InverseBoolConverter}}" />
 
-					<components:FormDatePickerControl Title="Ngày tạo"
-													  SelectedDate="{Binding PhieuThuForm.NgayTao, UpdateSourceTrigger=PropertyChanged}"
-													  IconKind="Calendar"
-													  IsEnabled="False" />
-					<components:FormInputControl Title="Người tạo"
-												 Grid.Column="2"
-												 IconKind="Person"
-												 IsReadOnly="True"
-												 IsEnabled="False"
-												 TextValue="{Binding PhieuThuForm.TenNguoiTao, UpdateSourceTrigger=PropertyChanged}" />
-				</Grid>
+							<components:FormInputControl Grid.Column="2"
+														 Title="Người tạo"
+														 IconKind="Person"
+														 IsEnabled="False"
+														 TextValue="{Binding PhieuThuForm.TenNguoiTao, UpdateSourceTrigger=PropertyChanged}" />
+						</Grid>
 
-				<!--Thông tin khách hàng-->
-				<components:FormComboBoxControl Title="Tên khách hàng"
-												Grid.Row="3"
-												ItemsSource="{Binding DanhSachKhachHangCombobox}"
-												SelectedItem="{Binding SelectedKhachHangForm, UpdateSourceTrigger=PropertyChanged}"
-												DisplayMemberPath="TenKhachHang"
-												IconKind="Person"
-												IsRequired="True"
-												IsEnabled="{Binding IsKhachHangEnable}" />
+						<components:FormComboBoxControl Title="Tên khách hàng"
+														ItemsSource="{Binding DanhSachKhachHangCombobox}"
+														SelectedItem="{Binding SelectedKhachHangForm, UpdateSourceTrigger=PropertyChanged}"
+														DisplayMemberPath="TenKhachHang"
+														IconKind="Person"
+														IsRequired="True"
+														IsEnabled="{Binding IsMaPhieuVisible, Converter={StaticResource InverseBoolConverter}}" />
 
-				<components:FormInputControl Title="Số tiền thu"
-											 Grid.Row="4"
-											 TextValue="{Binding FormSoTienThu, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}"
-											 UnitText="đ"
-											 IconKind="Cash"
-											 IsRequired="True"
-											 State="{Binding SoTienState}"
-											 HelperText="{Binding SoTienHelperText}"
-                                             IsEnabled="{Binding IsKhachHangEnable}"/>
+						<components:FormInputControl Title="Số tiền thu"
+													 TextValue="{Binding FormSoTienThu, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}"
+													 UnitText="đ"
+													 IconKind="Cash"
+													 IsRequired="True"
+													 State="{Binding SoTienState}"
+													 HelperText="{Binding SoTienHelperText}"
+													 IsEnabled="{Binding IsMaPhieuVisible, Converter={StaticResource InverseBoolConverter}}" />
 
-				<components:FormInputControl Title="Lý do thu"
-											 Grid.Row="5"
-											 InputHeight="80"
-											 ShowIcon="False"
-											 IsMultiLine="True"
-											 TextValue="{Binding PhieuThuForm.LyDoThu, UpdateSourceTrigger=PropertyChanged}" />
+						<components:FormInputControl Title="Công nợ sau khi thu"
+													 TextValue="{Binding ConNoSauKhiThu, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}"
+													 Visibility="{Binding IsConLaiVisible, Converter={StaticResource BoolToVis}}"
+													 UnitText="đ"
+													 IconKind="Cash"
+													 IsEnabled="False" />
 
-
-
-				<!--Nợ sau thu-->
-				<Grid Grid.Row="6"
-					  Margin="0,0,0,16"
-					  Visibility="{Binding IsConLaiVisible, Converter={StaticResource BoolToVis}}">
-					<TextBlock Text="Công nợ sau khi thu:"
-							   FontWeight="SemiBold" />
-					<TextBlock Text="{Binding ConNoSauKhiThu, StringFormat={}{0:N0} VNĐ}"
-							   HorizontalAlignment="Right"
-							   Foreground="{StaticResource DangerColor}"
-							   FontWeight="Bold"
-							   FontSize="16" />
-				</Grid>
+						<components:FormInputControl Title="Lý do thu"
+													 Margin="0,0,0,14"
+													 InputHeight="80"
+													 ShowIcon="False"
+													 IsMultiLine="True"
+													 TextValue="{Binding PhieuThuForm.LyDoThu, UpdateSourceTrigger=PropertyChanged}"
+													 IsEnabled="{Binding IsMaPhieuVisible, Converter={StaticResource InverseBoolConverter}}" />
 
 
-				<StackPanel Grid.Row="7"
-							Orientation="Horizontal"
-							HorizontalAlignment="Right">
-					<Button Content="HỦY"
-							Width="60"
-							Margin="0,0,10,0"
-							Style="{StaticResource OutlineButtonStyle}"
-							Command="{Binding DongPopupCommand}"
-							CommandParameter="{Binding}" />
-					<Button Content="LƯU PHIẾU"
-							Width="100"
-							Style="{StaticResource MainGradientButton}"
-							Command="{Binding LuuPhieuThuCommand}"
-							CommandParameter="{Binding}" />
-				</StackPanel>
+
+
+					</StackPanel>
+				</ScrollViewer>
+
+				<Border Grid.Row="2">
+					<StackPanel Orientation="Horizontal"
+								HorizontalAlignment="Right">
+						<Button Content="ĐÓNG"
+								Width="100"
+								Margin="0,0,12,0"
+								Style="{StaticResource OutlineButtonStyle}"
+								CommandParameter="{Binding}"
+								Command="{Binding DongPopupCommand}" />
+
+						<Button Content="LƯU PHIẾU"
+								Width="140"
+								Style="{StaticResource MainGradientButton}"
+								Visibility="{Binding IsConLaiVisible, Converter={StaticResource BoolToVis}}"
+								CommandParameter="{Binding}"
+								Command="{Binding LuuPhieuThuCommand}" />
+					</StackPanel>
+				</Border>
 			</Grid>
 		</Border>
 	</Grid>

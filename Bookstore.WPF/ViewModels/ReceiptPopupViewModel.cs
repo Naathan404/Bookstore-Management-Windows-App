@@ -181,7 +181,7 @@ namespace Bookstore.WPF.ViewModels
         public async void MoPopupSua(ReceiptResponse pt)
         {
             _dangSua = true;
-            PopupTitle = "CHỈNH SỬA PHIẾU THU";
+            PopupTitle = "XEM PHIẾU THU";
             IsMaPhieuVisible = true;
 
             await LoadCustomersAsync(pt.MaKhachHang);

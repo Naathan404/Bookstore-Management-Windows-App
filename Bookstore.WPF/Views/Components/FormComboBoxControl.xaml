@@ -132,6 +132,8 @@
 									 Value="{x:Static local:FieldState.Warning}">
 							<Setter Property="BorderBrush"
 									Value="{StaticResource WarningColor}" />
+							<!--<Setter Property="Background"
+									Value="{StaticResource WarningBgLightColor}" />-->
 						</DataTrigger>
 
 						<DataTrigger Binding="{Binding IsKeyboardFocusWithin, ElementName=InputBox}"

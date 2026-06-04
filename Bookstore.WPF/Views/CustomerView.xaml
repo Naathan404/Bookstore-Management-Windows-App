@@ -24,11 +24,10 @@
 										  HeaderIcon="AccountGroup"
 										  ShowAddButton="True"
 										  AddCommand="{Binding MoPopupThemCommand}"
-										  AddCommandParameter="{Binding}" 
-                                          
-                                          ShowExportExcel="True"
-                                          ExportExcelCommand="{Binding ExportExcelCommand}"
-                                          ExportExcelCommandParameter="{Binding}"/>
+										  AddCommandParameter="{Binding}"
+										  ShowExportExcel="True"
+										  ExportExcelCommand="{Binding ExportExcelCommand}"
+										  ExportExcelCommandParameter="{Binding}" />
 
 			<!-- FILTER -->
 			<Border Grid.Row="1"
@@ -165,7 +164,8 @@
 												</Style.Triggers>
 											</Style>
 										</components:DataGridActionPanel.Style>
-\									</components:DataGridActionPanel>
+										\
+									</components:DataGridActionPanel>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -187,11 +187,8 @@
 
 		<!-- ==================== POPUP THÊM/SỬA KHÁCH HÀNG ==================== -->
 		<Grid x:Name="popupThemSua"
-			  Background="#80000000"
 			  Visibility="{Binding IsKhachHangPopupOpen, Converter={StaticResource BoolToVis}}"
-			  VerticalAlignment="Stretch"
-			  HorizontalAlignment="Stretch"
-			  Panel.ZIndex="1000">
+			  Style="{StaticResource PopupOverlayStyle}">
 
 			<Border Background="Transparent">
 				<Border.InputBindings>
@@ -200,386 +197,182 @@
 				</Border.InputBindings>
 			</Border>
 
-			<Border Width="620"
-					Background="White"
-					CornerRadius="16"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center">
-				<ScrollViewer VerticalScrollBarVisibility="Auto"
-							  MaxHeight="700">
-					<Grid Margin="30">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
+			<Border Style="{StaticResource PopupCardStyle}"
+					Height="600"
+					Width="600">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 
-						<!-- Header -->
-						<Grid Grid.Row="0"
-							  Margin="0,0,0,20">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="40" />
-							</Grid.ColumnDefinitions>
+					<components:PopupHeaderControl Grid.Row="0"
+												   Title="{Binding PopupTitle}"
+												   Margin="0,0,0,16">
+						<components:PopupHeaderControl.Style>
+							<Style TargetType="components:PopupHeaderControl">
+								<Setter Property="IconKind"
+										Value="AccountPlus" />
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding PopupTitle}"
+												 Value="CHỈNH SỬA KHÁCH HÀNG">
+										<Setter Property="IconKind"
+												Value="AccountEdit" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</components:PopupHeaderControl.Style>
+					</components:PopupHeaderControl>
 
-							<StackPanel Orientation="Horizontal"
-										VerticalAlignment="Center">
-								<materialDesign:PackIcon Width="22"
-														 Height="22"
-														 Foreground="#4318FF"
-														 Margin="0,0,8,0">
-									<materialDesign:PackIcon.Style>
-										<Style TargetType="materialDesign:PackIcon">
-											<Setter Property="Kind"
-													Value="AccountPlus" />
+					<ScrollViewer Grid.Row="1"
+								  VerticalScrollBarVisibility="Auto"
+								  Margin="0,0,0,16"
+								  Padding="24,0,24,0">
+						<StackPanel>
+
+							<components:FormInputControl Title="Mã khách hàng"
+														 IconKind="Barcode"
+														 Visibility="{Binding MaKhachHangVisibility}"
+														 IsEnabled="False">
+								<components:FormInputControl.TextValue>
+									<MultiBinding StringFormat="KH{0:ddMMyy}{1:D3}">
+										<Binding Path="KhachHangForm.NgayTao" />
+										<Binding Path="KhachHangForm.MaKhachHang" />
+									</MultiBinding>
+								</components:FormInputControl.TextValue>
+							</components:FormInputControl>
+
+							<components:FormInputControl Title="Tên khách hàng"
+														 IsRequired="True"
+														 IconKind="Text"
+														 TextValue="{Binding KhachHangForm.TenKhachHang, UpdateSourceTrigger=PropertyChanged}" />
+
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="16" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+
+								<components:FormComboBoxControl Title="Loại khách hàng"
+																Grid.Column="0"
+																IconKind="Tag"
+																ItemsSource="{Binding DanhSachLoaiKhachForm}"
+																SelectedItem="{Binding KhachHangForm.LoaiKhach, UpdateSourceTrigger=PropertyChanged}">
+									<components:FormComboBoxControl.Style>
+										<Style TargetType="components:FormComboBoxControl">
+											<Setter Property="IsEnabled"
+													Value="True" />
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding PopupTitle}"
-															 Value="CHỈNH SỬA KHÁCH HÀNG">
-													<Setter Property="Kind"
-															Value="AccountEdit" />
+												<DataTrigger Binding="{Binding MaKhachHangVisibility}"
+															 Value="Visible">
+													<Setter Property="IsEnabled"
+															Value="False" />
 												</DataTrigger>
 											</Style.Triggers>
 										</Style>
-									</materialDesign:PackIcon.Style>
-								</materialDesign:PackIcon>
-								<TextBlock Text="{Binding PopupTitle}"
-										   FontSize="18"
-										   FontWeight="Bold"
-										   Foreground="#2B3674"
-										   VerticalAlignment="Center" />
-							</StackPanel>
-							<Button Grid.Column="1"
-									Content="✕"
-									Width="30"
-									Height="30"
-									HorizontalAlignment="Right"
-									VerticalAlignment="Top"
-									Margin="12,0,0,0"
-									Background="Transparent"
-									BorderThickness="0"
-									Foreground="#A3AED0"
-									Command="{Binding DongPopupKhachHangCommand}" />
-						</Grid>
+									</components:FormComboBoxControl.Style>
+								</components:FormComboBoxControl>
 
-						<!-- Mã KH -->
-						<Border Grid.Row="1"
-								Style="{StaticResource FilterBorderStyle}"
-								Visibility="{Binding MaKhachHangVisibility}"
-								Margin="0,0,0,14"
-								Background="#F8FAFC">
+								<components:FormInputControl Title="Số điện thoại"
+															 Grid.Column="2"
+															 IsRequired="True"
+															 IconKind="Phone"
+															 TextValue="{Binding KhachHangForm.SoDienThoai, UpdateSourceTrigger=PropertyChanged}">
+									<components:FormInputControl.Style>
+										<Style TargetType="components:FormInputControl">
+											<Setter Property="IsEnabled"
+													Value="True" />
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding MaKhachHangVisibility}"
+															 Value="Visible">
+													<Setter Property="IsEnabled"
+															Value="False" />
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</components:FormInputControl.Style>
+								</components:FormInputControl>
+							</Grid>
+
 							<Grid>
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="36" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="16" />
 									<ColumnDefinition Width="*" />
 								</Grid.ColumnDefinitions>
-								<materialDesign:PackIcon Kind="Barcode"
-														 Width="18"
-														 Height="18"
-														 Foreground="#A3AED0"
-														 VerticalAlignment="Center"
-														 HorizontalAlignment="Center" />
-								<TextBlock Grid.Column="1"
-										   Margin="0 0 5 0"
-										   Background="Transparent"
-										   VerticalAlignment="Center"
-										   HorizontalAlignment="Stretch"
-										   FontSize="13"
-										   Foreground="#9CA3AF">
-									<TextBlock.Text>
-										<MultiBinding StringFormat="KH{0:ddMMyy}{1:D3}">
-											<Binding Path="KhachHangForm.NgayTao" />
-											<Binding Path="KhachHangForm.MaKhachHang" />
-										</MultiBinding>
-									</TextBlock.Text>
-								</TextBlock>
+
+								<components:FormInputControl Title="Email"
+															 Grid.Column="0"
+															 IconKind="Email"
+															 TextValue="{Binding KhachHangForm.Email, UpdateSourceTrigger=PropertyChanged}" />
+
+								<components:FormComboBoxControl Title="Giới tính"
+																Grid.Column="2"
+																IconKind="GenderMaleFemale"
+																ItemsSource="{Binding DanhSachGioiTinh}"
+																SelectedValue="{Binding KhachHangForm.GioiTinh, UpdateSourceTrigger=PropertyChanged}" />
 							</Grid>
-						</Border>
 
-						<!-- Tên + Loại -->
-						<Grid Grid.Row="2"
-							  Margin="0,0,0,14">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="12" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="16" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
 
-							<Border Grid.Column="0"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Account"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding KhachHangForm.TenKhachHang, UpdateSourceTrigger=PropertyChanged}"
-											 Margin="0 0 5 0"
-											 Background="Transparent"
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 HorizontalAlignment="Stretch"
-											 FontSize="13"
-											 Foreground="#2B3674"
-											 materialDesign:HintAssist.Hint="Tên khách hàng *" />
-								</Grid>
-							</Border>
+								<components:FormDatePickerControl Title="Ngày sinh"
+																  Grid.Column="0"
+																  SelectedDate="{Binding KhachHangForm.NgaySinh, UpdateSourceTrigger=PropertyChanged}"
+																  IconKind="Calendar" />
 
-							<Border Grid.Column="2"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Tag"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<ComboBox Grid.Column="1"
-											  ItemsSource="{Binding DanhSachLoaiKhachForm}"
-											  SelectedItem="{Binding KhachHangForm.LoaiKhach, UpdateSourceTrigger=PropertyChanged}"
-											  Margin="0 0 5 0"
-											  Background="Transparent"
-											  BorderThickness="0"
-											  VerticalAlignment="Center"
-											  HorizontalAlignment="Stretch"
-											  FontSize="13"
-											  Foreground="#2B3674"
-											  materialDesign:HintAssist.Hint="Loại khách hàng" />
-								</Grid>
-							</Border>
-						</Grid>
+								<components:FormInputControl Title="Mã số thuế"
+															 Grid.Column="2"
+															 IconKind="CardAccountDetails"
+															 TextValue="{Binding KhachHangForm.MaSoThue, UpdateSourceTrigger=PropertyChanged}" />
+							</Grid>
 
-						<!-- SĐT + Email -->
-						<Grid Grid.Row="3"
-							  Margin="0,0,0,14">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="12" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+							<components:FormInputControl Title="Địa chỉ"
+														 IconKind="MapMarker"
+														 TextValue="{Binding KhachHangForm.DiaChi, UpdateSourceTrigger=PropertyChanged}" />
 
-							<Border Grid.Column="0"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Phone"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding KhachHangForm.SoDienThoai, UpdateSourceTrigger=PropertyChanged}"
-											 Margin="0 0 5 0"
-											 Background="Transparent"
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 HorizontalAlignment="Stretch"
-											 FontSize="13"
-											 Foreground="#2B3674"
-											 materialDesign:HintAssist.Hint="Số điện thoại *" />
-								</Grid>
-							</Border>
 
-							<Border Grid.Column="2"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Email"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding KhachHangForm.Email, UpdateSourceTrigger=PropertyChanged}"
-											 Margin="0 0 5 0"
-											 Background="Transparent"
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 HorizontalAlignment="Stretch"
-											 FontSize="13"
-											 Foreground="#2B3674"
-											 materialDesign:HintAssist.Hint="Email" />
-								</Grid>
-							</Border>
-						</Grid>
+							<components:FormInputControl Title="Công nợ hiện tại"
+														 IconKind="CashMultiple"
+														 IsCurrencyMode="True"
+														 IsEnabled="False"
+														 Visibility="{Binding IsCongNoVisible, Converter={StaticResource BoolToVis}}"
+														 UnitText="đ"
+														 FontWeight="Bold"
+														 TextValue="{Binding KhachHangForm.CongNo, UpdateSourceTrigger=PropertyChanged}">
+								<components:FormInputControl.Style>
+									<Style TargetType="components:FormInputControl">
+										<Setter Property="State"
+												Value="Warning" />
 
-						<!-- Giới tính + Ngày sinh -->
-						<Grid Grid.Row="4"
-							  Margin="0,0,0,14">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="12" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding KhachHangForm.CongNo, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US}"
+														 Value="0">
+												<Setter Property="State"
+														Value="Normal" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</components:FormInputControl.Style>
+							</components:FormInputControl>
+						</StackPanel>
+					</ScrollViewer>
 
-							<Border Grid.Column="0"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="GenderMaleFemale"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<ComboBox Grid.Column="1"
-											  SelectedValue="{Binding KhachHangForm.GioiTinh, UpdateSourceTrigger=PropertyChanged}"
-											  SelectedValuePath="Content"
-											  Margin="0 0 5 0"
-											  Background="Transparent"
-											  BorderThickness="0"
-											  VerticalAlignment="Center"
-											  HorizontalAlignment="Stretch"
-											  FontSize="13"
-											  Foreground="#2B3674"
-											  materialDesign:HintAssist.Hint="Giới tính">
-										<ComboBoxItem Content="Nam"
-													  IsSelected="True" />
-										<ComboBoxItem Content="Nữ" />
-										<ComboBoxItem Content="Khác" />
-									</ComboBox>
-								</Grid>
-							</Border>
-
-							<Border Grid.Column="2"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="Calendar"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<DatePicker Grid.Column="1"
-												SelectedDate="{Binding KhachHangForm.NgaySinh, UpdateSourceTrigger=PropertyChanged}"
-												Margin="0 0 5 0"
-												Background="Transparent"
-												BorderThickness="0"
-												VerticalAlignment="Center"
-												HorizontalAlignment="Stretch"
-												FontSize="13"
-												Foreground="#2B3674"
-												materialDesign:HintAssist.Hint="Ngày sinh" />
-								</Grid>
-							</Border>
-						</Grid>
-
-						<!-- Địa chỉ + MST -->
-						<Grid Grid.Row="5"
-							  Margin="0,0,0,14">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="12" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-
-							<Border Grid.Column="0"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="MapMarker"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding KhachHangForm.DiaChi, UpdateSourceTrigger=PropertyChanged}"
-											 Margin="0 0 5 0"
-											 Background="Transparent"
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 HorizontalAlignment="Stretch"
-											 FontSize="13"
-											 Foreground="#2B3674"
-											 materialDesign:HintAssist.Hint="Địa chỉ" />
-								</Grid>
-							</Border>
-
-							<Border Grid.Column="2"
-									Style="{StaticResource FilterBorderStyle}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="36" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<materialDesign:PackIcon Kind="CardAccountDetails"
-															 Width="18"
-															 Height="18"
-															 Foreground="#A3AED0"
-															 VerticalAlignment="Center"
-															 HorizontalAlignment="Center" />
-									<TextBox Grid.Column="1"
-											 Text="{Binding KhachHangForm.MaSoThue, UpdateSourceTrigger=PropertyChanged}"
-											 Margin="0 0 5 0"
-											 Background="Transparent"
-											 BorderThickness="0"
-											 VerticalAlignment="Center"
-											 HorizontalAlignment="Stretch"
-											 FontSize="13"
-											 Foreground="#2B3674"
-											 materialDesign:HintAssist.Hint="Mã số thuế" />
-								</Grid>
-							</Border>
-						</Grid>
-
-						<!-- Công nợ -->
-						<Border Grid.Row="6"
-								Visibility="{Binding IsCongNoVisible, Converter={StaticResource BoolToVis}}"
-								Background="#FEF3C7"
-								Padding="12"
-								CornerRadius="8"
-								Margin="0,0,0,20">
-							<TextBlock Text="{Binding KhachHangForm.CongNo, StringFormat={}{0:N0} VNĐ, UpdateSourceTrigger=PropertyChanged}"
-									   FontSize="14"
-									   FontWeight="Bold"
-									   Foreground="#EF4444" />
-						</Border>
-
-						<!-- Buttons -->
-						<StackPanel Grid.Row="7"
-									Orientation="Horizontal"
-									Margin="0,20,0,0"
+					<Border Grid.Row="2">
+						<StackPanel Orientation="Horizontal"
 									HorizontalAlignment="Right">
-
 							<Button Content="HỦY BỎ"
 									Command="{Binding DongPopupKhachHangCommand}"
 									CommandParameter="Close"
-									Width="120"
+									Width="100"
 									Height="40"
-									Margin="0,0,10,0"
+									Margin="0,0,12,0"
 									Cursor="Hand"
 									Style="{StaticResource OutlineButtonStyle}" />
 
@@ -591,8 +384,9 @@
 									Style="{StaticResource MainGradientButton}"
 									Cursor="Hand" />
 						</StackPanel>
-					</Grid>
-				</ScrollViewer>
+					</Border>
+
+				</Grid>
 			</Border>
 		</Grid>
 	</Grid>

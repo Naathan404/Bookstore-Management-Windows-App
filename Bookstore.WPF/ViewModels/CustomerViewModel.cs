@@ -91,6 +91,12 @@ namespace Bookstore.WPF.ViewModels
         private CustomerResponse _khachHangForm = new();
         public CustomerResponse KhachHangForm { get => _khachHangForm; set { _khachHangForm = value; OnPropertyChanged(); } }
 
+        public List<string> DanhSachGioiTinh { get; set; } = new List<string>
+        {
+            "Nam",
+            "Nữ",
+            "Khác"
+        };
         // --- Điều khiển UI cho Popup ---
         private bool _dangSua = false;
 

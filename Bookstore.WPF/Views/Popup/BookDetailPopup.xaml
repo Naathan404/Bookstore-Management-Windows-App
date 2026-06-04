@@ -15,10 +15,8 @@
 		</Border>
 
 		<Border Width="700"
-				
 				Style="{StaticResource PopupCardStyle}">
-			<StackPanel Width="250"
-				>
+			<StackPanel Width="250">
 				<components:PopupHeaderControl Grid.Row="0"
 											   Title="CHI TIẾT SẢN PHẨM"
 											   IconKind="BookSearch" />
@@ -35,7 +33,7 @@
 						<ImageBrush ImageSource="{Binding BookDetails.BookData.HinhAnh}"
 									RenderOptions.BitmapScalingMode="HighQuality"
 									Stretch="UniformToFill" />
-						
+
 					</Border.Background>
 				</Border>
 

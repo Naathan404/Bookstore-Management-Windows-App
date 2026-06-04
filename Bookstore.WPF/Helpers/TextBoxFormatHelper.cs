@@ -58,33 +58,44 @@ namespace Bookstore.WPF.Helpers
             e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
         }
 
+        private static bool _isUpdating = false; // Biến cờ chặn đệ quy
+
         private static void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!(sender is TextBox textBox)) return;
+            if (_isUpdating || !(sender is TextBox textBox)) return;
 
-            int cursorPosition = textBox.SelectionStart;
-            string rawText = Regex.Replace(textBox.Text, "[^0-9]", "");
+            _isUpdating = true; // Bật cờ chặn
 
-            if (string.IsNullOrEmpty(rawText))
+            try
             {
-                if (textBox.Text != "0")
+                int oldCursor = textBox.SelectionStart;
+                string rawText = Regex.Replace(textBox.Text, "[^0-9]", "");
+
+                if (string.IsNullOrEmpty(rawText))
                 {
                     textBox.Text = "0";
                     textBox.SelectionStart = 1;
                 }
-                return;
-            }
-
-            if (decimal.TryParse(rawText, out decimal value))
-            {
-                string formattedText = value.ToString("N0", new CultureInfo("en-US"));
-
-                if (textBox.Text != formattedText)
+                else if (decimal.TryParse(rawText, out decimal value))
                 {
-                    int oldLength = textBox.Text.Length;
-                    textBox.Text = formattedText;
-                    textBox.SelectionStart = cursorPosition + (formattedText.Length - oldLength);
+                    string formattedText = value.ToString("N0", new CultureInfo("en-US"));
+
+                    if (textBox.Text != formattedText)
+                    {
+                        int oldLength = textBox.Text.Length;
+                        textBox.Text = formattedText;
+
+                        // TÍNH TOÁN VỊ TRÍ CON TRỎ MỚI ĐẢM BẢO KHÔNG ÂM
+                        int newCursor = oldCursor + (formattedText.Length - oldLength);
+
+                        // ÉP VỊ TRÍ CON TRỎ NẰM TRONG KHOẢNG [0, Độ dài chuỗi]
+                        textBox.SelectionStart = Math.Max(0, Math.Min(newCursor, formattedText.Length));
+                    }
                 }
+            }
+            finally
+            {
+                _isUpdating = false; // Tắt cờ chặn
             }
         }
     }

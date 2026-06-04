@@ -119,8 +119,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<components:DataGridActionPanel RowItem="{Binding}"
-																	ShowEdit="True"
-																	EditCommand="{Binding DataContext.MoPopupSuaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowView="True"
+																	ViewCommand="{Binding DataContext.MoPopupSuaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowDelete="True"
 																	DeleteCommand="{Binding DataContext.XoaPhieuThuCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
