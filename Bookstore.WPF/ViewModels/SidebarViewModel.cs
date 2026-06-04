@@ -301,7 +301,11 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("SaleView"))
             {
                 _saleViewModel = new SaleViewModel();
-                ShowBanHangCommand = new RelayCommand<object>((p) => _handleChangeView(_saleViewModel));
+                ShowBanHangCommand = new RelayCommand<object>((p) =>
+                {
+                    _ = _saleViewModel.LoadMasterData();
+                    _handleChangeView(_saleViewModel);
+                });
             }
 
             if (listQuyen.Contains("InvoiceView"))

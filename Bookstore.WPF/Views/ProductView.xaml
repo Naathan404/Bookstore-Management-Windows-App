@@ -721,16 +721,9 @@
 															   VerticalAlignment="Top">
 														<TextBlock.Style>
 															<Style TargetType="TextBlock">
-																<Setter Property="Foreground"
+                                                                <Setter Property="Foreground"
 																		Value="#A3AED0" />
-																<Style.Triggers>
-																	<DataTrigger Binding="{Binding EditingBook.ISBN, TargetNullValue=''}"
-																				 Value="">
-																		<Setter Property="Foreground"
-																				Value="#EF4444" />
-																	</DataTrigger>
-																</Style.Triggers>
-															</Style>
+                                                            </Style>
 														</TextBlock.Style>
 													</TextBlock>
 													<TextBox Text="{Binding EditingBook.ISBN}"
@@ -824,16 +817,9 @@
 															   VerticalAlignment="Top">
 														<TextBlock.Style>
 															<Style TargetType="TextBlock">
-																<Setter Property="Foreground"
+                                                                <Setter Property="Foreground"
 																		Value="#A3AED0" />
-																<Style.Triggers>
-																	<DataTrigger Binding="{Binding EditingBook.NhaXuatBan, TargetNullValue=''}"
-																				 Value="">
-																		<Setter Property="Foreground"
-																				Value="#EF4444" />
-																	</DataTrigger>
-																</Style.Triggers>
-															</Style>
+                                                            </Style>
 														</TextBlock.Style>
 													</TextBlock>
 

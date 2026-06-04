@@ -78,6 +78,60 @@ namespace Bookstore.API.Controllers
         
 
 
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateSach(string id, [FromBody] SachDTO request)
+        //{
+        //    try
+        //    {
+        //        // Cập nhật bảng Phiên bản
+        //        var pb = await _context.PhienBanSach.Include(nxb => nxb.NhaXuatBan).FirstOrDefaultAsync(p => p.ISBN == id);
+        //        if (pb == null) return NotFound();
+
+        //        pb.ISBN = request.ISBN;
+        //        pb.GiaNiemYet = request.GiaNiemYet;
+        //        pb.DonGiaBan = request.DonGiaBan;
+        //        pb.NamXuatBan = request.NamXuatBan;
+        //        pb.HinhThucBia = request.HinhThucBia;
+        //        pb.LanTaiBan = request.LanTaiBan;
+        //        pb.NhaXuatBan = await _context.NhaXuatBan.FirstOrDefaultAsync(nxb => nxb.TenNhaXuatBan == request.NhaXuatBan);
+
+        //        // Cập nhật bảng Sách
+        //        var sach = await _context.Sach.FindAsync(pb.MaSach);
+        //        if (sach != null)
+        //        {
+        //            sach.TenSach = request.TenSach;
+        //            sach.MoTa = request.MoTa;
+        //            sach.ImageUrl = request.HinhAnh;
+
+        //            var oldTacGias = _context.TacGia_Sach.Where(t => t.MaSach == sach.MaSach);
+        //            _context.TacGia_Sach.RemoveRange(oldTacGias);
+
+        //            // Thêm lại danh sách tác giả mới
+        //            if (request.DanhSachTacGia != null && request.DanhSachTacGia.Any())
+        //            {
+        //                foreach (var tg in request.DanhSachTacGia)
+        //                {
+        //                    _context.TacGia_Sach.Add(new TacGia_Sach
+        //                    {
+        //                        MaSach = sach.MaSach,
+        //                        MaTacGia = tg.Id
+        //                    });
+        //                }
+        //            }
+
+        //            var theLoai = await _context.TheLoai.FirstOrDefaultAsync(tl => tl.TenTheLoai == request.TheLoai);
+        //            if (theLoai != null) sach.MaTheLoai = theLoai.MaTheLoai;
+        //        }
+
+        //        await _context.SaveChangesAsync();
+        //        return Ok(new { message = "Cập nhật thành công!" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSach(string id, [FromBody] SachDTO request)
         {
@@ -85,7 +139,7 @@ namespace Bookstore.API.Controllers
             {
                 // Cập nhật bảng Phiên bản
                 var pb = await _context.PhienBanSach.Include(nxb => nxb.NhaXuatBan).FirstOrDefaultAsync(p => p.ISBN == id);
-                if (pb == null) return NotFound();
+                if (pb == null) return NotFound("Không tìm thấy phiên bản sách cần cập nhật.");
 
                 pb.ISBN = request.ISBN;
                 pb.GiaNiemYet = request.GiaNiemYet;
@@ -93,9 +147,15 @@ namespace Bookstore.API.Controllers
                 pb.NamXuatBan = request.NamXuatBan;
                 pb.HinhThucBia = request.HinhThucBia;
                 pb.LanTaiBan = request.LanTaiBan;
-                pb.NhaXuatBan = await _context.NhaXuatBan.FirstOrDefaultAsync(nxb => nxb.TenNhaXuatBan == request.NhaXuatBan);
 
-                // Cập nhật bảng Sách
+                var nxb = await _context.NhaXuatBan.FirstOrDefaultAsync(n => n.TenNhaXuatBan == request.NhaXuatBan);
+                if (nxb == null)
+                {
+                    nxb = new NhaXuatBan { TenNhaXuatBan = request.NhaXuatBan };
+                    _context.NhaXuatBan.Add(nxb);
+                    await _context.SaveChangesAsync();
+                }
+                pb.MaNhaXuatBan = nxb.MaNhaXuatBan; 
                 var sach = await _context.Sach.FindAsync(pb.MaSach);
                 if (sach != null)
                 {
@@ -106,7 +166,6 @@ namespace Bookstore.API.Controllers
                     var oldTacGias = _context.TacGia_Sach.Where(t => t.MaSach == sach.MaSach);
                     _context.TacGia_Sach.RemoveRange(oldTacGias);
 
-                    // Thêm lại danh sách tác giả mới
                     if (request.DanhSachTacGia != null && request.DanhSachTacGia.Any())
                     {
                         foreach (var tg in request.DanhSachTacGia)
@@ -128,7 +187,7 @@ namespace Bookstore.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"Lỗi xử lý lưu dữ liệu: {ex.Message}");
             }
         }
 
@@ -168,15 +227,45 @@ namespace Bookstore.API.Controllers
                         };
                         _context.Sach.Add(sachMoi);
                         await _context.SaveChangesAsync(); 
-                        maSachThucTe = sachMoi.MaSach;     
+                        maSachThucTe = sachMoi.MaSach;
 
                         // Lưu Tác giả cho đầu sách mới
-                        if (request.DanhSachTacGia != null)
+                        //if (request.DanhSachTacGia != null)
+                        //{
+                        //    foreach (var tg in request.DanhSachTacGia)
+                        //    {
+                        //        _context.TacGia_Sach.Add(new TacGia_Sach { MaSach = maSachThucTe, MaTacGia = tg.Id });
+                        //    }
+                        //}
+                        // Lưu Tác giả cho đầu sách mới (Đã bọc lót tự tạo mới)
+                        if (request.DanhSachTacGia != null && request.DanhSachTacGia.Any())
                         {
                             foreach (var tg in request.DanhSachTacGia)
                             {
-                                _context.TacGia_Sach.Add(new TacGia_Sach { MaSach = maSachThucTe, MaTacGia = tg.Id });
+                                int maTacGiaThucTe = tg.Id;
+
+                                if (maTacGiaThucTe <= 0 && !string.IsNullOrWhiteSpace(tg.TenTacGia))
+                                {
+                                    var existTg = await _context.TacGia.FirstOrDefaultAsync(t => t.TenTacGia.ToLower() == tg.TenTacGia.ToLower());
+                                    if (existTg != null)
+                                    {
+                                        maTacGiaThucTe = existTg.MaTacGia;
+                                    }
+                                    else
+                                    {
+                                        var newTg = new TacGia { TenTacGia = tg.TenTacGia };
+                                        _context.TacGia.Add(newTg);
+                                        await _context.SaveChangesAsync();
+                                        maTacGiaThucTe = newTg.MaTacGia;
+                                    }
+                                }
+
+                                if (maTacGiaThucTe > 0)
+                                {
+                                    _context.TacGia_Sach.Add(new TacGia_Sach { MaSach = maSachThucTe, MaTacGia = maTacGiaThucTe });
+                                }
                             }
+                            await _context.SaveChangesAsync();
                         }
                     }
                 }

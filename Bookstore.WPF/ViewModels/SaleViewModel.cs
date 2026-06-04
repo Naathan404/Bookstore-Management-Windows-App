@@ -225,6 +225,11 @@ namespace Bookstore.WPF.ViewModels
         public ICommand XoaUuDaiCommand { get; set; } // THÊM: Xóa ưu đãi khỏi bill
         public ICommand TimKhachHangTheoSdtCommand { get; set; }
 
+        public async Task LoadMasterData()
+        {
+            await InitializeAsync();
+        }
+
         public SaleViewModel()
         {
             _ = InitializeAsync();
