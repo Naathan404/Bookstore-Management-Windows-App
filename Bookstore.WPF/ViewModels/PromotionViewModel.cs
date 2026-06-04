@@ -288,9 +288,19 @@ namespace Bookstore.WPF.ViewModels
                     GiamToiDa = promo.GiamToiDa,
 
                     // Xài bộ danh sách mới 1:N
-                    DanhSachSachDieuKien = promo.DanhSachSachDieuKien?.Select(d => new SachDieuKienDTO { ISBN = d.ISBN, SoLuongMua = d.SoLuongMua }).ToList() ?? new List<SachDieuKienDTO>(),
-                    DanhSachSachTang = promo.DanhSachSachTang?.Select(t => new SachTangDTO { ISBN = t.ISBN, SoLuongTang = t.SoLuongTang }).ToList() ?? new List<SachTangDTO>(),
+                    DanhSachSachDieuKien = promo.DanhSachSachDieuKien?.Select(d => new SachDieuKienDTO
+                    {
+                        ISBN = d.ISBN,
+                        TenSach = d.TenSach,  
+                        SoLuongMua = d.SoLuongMua
+                    }).ToList() ?? new List<SachDieuKienDTO>(),
 
+                    DanhSachSachTang = promo.DanhSachSachTang?.Select(t => new SachTangDTO
+                    {
+                        ISBN = t.ISBN,
+                        TenSach = t.TenSach,
+                        SoLuongTang = t.SoLuongTang
+                    }).ToList() ?? new List<SachTangDTO>(),
                     CoTheSuDung = promo.CoTheSuDung
                 };
 
