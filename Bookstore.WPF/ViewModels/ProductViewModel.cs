@@ -70,6 +70,28 @@ namespace Bookstore.WPF.ViewModels
         };
         #endregion
 
+        private string _inputTheLoaiText;
+        public string InputTheLoaiText
+        {
+            get => _inputTheLoaiText;
+            set
+            {
+                _inputTheLoaiText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _inputNXBText;
+        public string InputNXBText
+        {
+            get => _inputNXBText;
+            set
+            {
+                _inputNXBText = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region Properties - Tìm Kiếm
         private string _searchTenSach = string.Empty;
         public string SearchTenSach

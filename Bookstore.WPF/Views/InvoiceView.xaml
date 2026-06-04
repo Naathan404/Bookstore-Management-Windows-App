@@ -20,9 +20,7 @@
 
 			<components:PageHeaderControl Title="HÓA ĐƠN"
 										  HeaderIcon="Invoice"
-										  ShowAddButton="True"
-										  AddTitle="THÊM"
-										  AddIcon="Plus" />
+										  ShowAddButton="False" />
 
 			<Border x:Name="Filter"
 					Grid.Row="1"
@@ -42,14 +40,14 @@
 												   HintText="Tìm kiếm tên khách hàng..."
 												   TextValue="{Binding SearchKeyword}" />
 
-                    <components:FilterComboBoxControl Grid.Column="1"
+					<components:FilterComboBoxControl Grid.Column="1"
 													  Margin="0,0,8,0"
 													  IconKind="Tag"
 													  HintText="Tình trạng hóa đơn"
 													  ItemsSource="{Binding ListTrangThaiNo}"
 													  SelectedItem="{Binding SelectedTrangThaiNo}" />
 
-                    <components:FilterDatePickerControl Grid.Column="2"
+					<components:FilterDatePickerControl Grid.Column="2"
 														Margin="0,0,8,0"
 														IconKind="CalendarStart"
 														HintText="Từ ngày"
@@ -146,7 +144,7 @@
 										  PaginationCommand="{Binding PhanTrangCommand}" />
 
 		</Grid>
-		
+
 		<popup:InvoiceDetailPopup DataContext="{Binding InvoiceDetailPopupVM}" />
 	</Grid>
 </UserControl>

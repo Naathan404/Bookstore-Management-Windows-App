@@ -82,6 +82,9 @@
 						  SelectedValue="{Binding SelectedValue, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
 						  SelectedValuePath="{Binding SelectedValuePath, ElementName=Root}"
 						  IsEditable="{Binding IsEditable, ElementName=Root}"
+						  Text="{Binding TextValue, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+						  IsTextSearchEnabled="{Binding IsTextSearchEnabled, ElementName=Root}"
+						  StaysOpenOnEdit="{Binding StaysOpenOnEdit, ElementName=Root}"
 						  IsReadOnly="{Binding IsReadOnly, ElementName=Root}"
 						  IsEnabled="{Binding IsReadOnly, ElementName=Root, Converter={StaticResource InverseBoolConverter}}"
 						  Background="Transparent"
@@ -118,25 +121,19 @@
 									 Value="{x:Static local:FieldState.Error}">
 							<Setter Property="BorderBrush"
 									Value="{StaticResource DangerColor}" />
-							<!--<Setter Property="Background"
-									Value="{StaticResource DangerBgLightColor}" />-->
 						</DataTrigger>
 
 						<DataTrigger Binding="{Binding State, ElementName=Root}"
 									 Value="{x:Static local:FieldState.Success}">
-							<!--<Setter Property="BorderBrush"
-									Value="{StaticResource SuccessColor}" />-->
 						</DataTrigger>
 
 						<DataTrigger Binding="{Binding State, ElementName=Root}"
 									 Value="{x:Static local:FieldState.Warning}">
 							<Setter Property="BorderBrush"
 									Value="{StaticResource WarningColor}" />
-							<!--<Setter Property="Background"
-									Value="{StaticResource WarningBgLightColor}" />-->
 						</DataTrigger>
 
-						<DataTrigger Binding="{Binding IsKeyboardFocusWithin, ElementName=InputBox}"
+						<DataTrigger Binding="{Binding IsKeyboardFocusWithin, ElementName=ComboElement}"
 									 Value="True">
 							<Setter Property="BorderBrush"
 									Value="#E2E8F0" />
@@ -194,6 +191,7 @@
 			</TextBlock.Style>
 		</TextBlock>
 	</StackPanel>
+
 	<UserControl.Triggers>
 		<EventTrigger RoutedEvent="GotKeyboardFocus">
 			<BeginStoryboard>

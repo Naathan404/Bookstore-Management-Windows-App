@@ -107,7 +107,16 @@
 			<SolidColorBrush x:Key="MaterialDesignCheckBoxOff"
 							 Color="#A3AED0" />
 		</Style.Resources>
-		
+
+	</Style>
+
+	<Style TargetType="ToggleButton"
+		   BasedOn="{StaticResource MaterialDesignSwitchToggleButton}">
+		<Setter Property="Background"
+				Value="{StaticResource BackgroundColor}" />
+
+		<Setter Property="materialDesign:ToggleButtonAssist.SwitchTrackOnBackground"
+				Value="{StaticResource PrimaryColor}" />
 	</Style>
 
 	<Style x:Key="TabItemStyle"

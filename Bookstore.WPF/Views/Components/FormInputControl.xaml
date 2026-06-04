@@ -114,7 +114,7 @@
 								<DataTrigger Binding="{Binding IsMultiLine, ElementName=Root}"
 											 Value="True">
 									<Setter Property="VerticalContentAlignment"
-											Value="Center" />
+											Value="Top" />
 									<Setter Property="TextWrapping"
 											Value="Wrap" />
 									<Setter Property="AcceptsReturn"
