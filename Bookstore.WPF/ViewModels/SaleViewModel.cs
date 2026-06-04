@@ -120,6 +120,9 @@ namespace Bookstore.WPF.ViewModels
 
         #region Giỏ hàng
         public ObservableCollection<CartItemModel> CartItems => CartService.Instance.CartItems;
+        public int SoSanPham => CartItems.Sum(x => x.SoLuongMua);
+
+
         #endregion
 
         #region Xem sách
@@ -713,7 +716,7 @@ namespace Bookstore.WPF.ViewModels
                                 if (sachGoc != null) giaTriQuaTang += sachGoc.BookData.DonGiaBan * tongGifts;
                             }
                             promo.SoTienGiamThucTe = giaTriQuaTang;
-                            promo.MucGiamDisplay = $"- {giaTriQuaTang:N0} đ (Quà)";
+                            promo.MucGiamDisplay = "(Quà tặng) 0 đ";
                         }
                     }
                     else promosToRemove.Add(promo);
@@ -743,6 +746,7 @@ namespace Bookstore.WPF.ViewModels
                         if (promo.TiLeGiam > 0)
                         {
                             valueGiam = TamTinh * (decimal)(promo.TiLeGiam / 100);
+
                             if (promo.GiamToiDa > 0 && valueGiam > promo.GiamToiDa)
                             {
                                 valueGiam = promo.GiamToiDa;
@@ -769,7 +773,7 @@ namespace Bookstore.WPF.ViewModels
                             if (sachGoc != null) giaTriQuaTang += sachGoc.BookData.DonGiaBan * qty;
                         }
                         promo.SoTienGiamThucTe = giaTriQuaTang;
-                        promo.MucGiamDisplay = $"- {giaTriQuaTang:N0} đ (Quà)";
+                        promo.MucGiamDisplay = "(Quà tặng) 0 đ";
                     }
                 }
 
@@ -781,6 +785,7 @@ namespace Bookstore.WPF.ViewModels
                 // ====================================================================
                 // BƯỚC 4: CHỐT SỐ LIỆU VÀ KÍCH HOẠT UI
                 // ====================================================================
+                OnPropertyChanged(nameof(SoSanPham));
                 OnPropertyChanged(nameof(TamTinh));
                 GiamTien = tongTienGiamBill;
                 OnPropertyChanged(nameof(TongTienThanhToan));

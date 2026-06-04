@@ -147,8 +147,6 @@ namespace Bookstore.API.Controllers
         /// <summary>
         /// Danh sách ưu đãi khả dụng khi lập hóa đơn
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         [HttpPost("khadung")]
         public async Task<ActionResult<IEnumerable<PromotionDTO>>> GetUuDaiKhaDung([FromBody] CheckPromotionRequest request)
         {
@@ -177,8 +175,6 @@ namespace Bookstore.API.Controllers
 
             // LỚP LỌC 2 (TRÊN RAM)
             var eligiblePromos = new List<PromotionDTO>();
-
-            // SỬA TẠI ĐÂY: Ép Trim() cho toàn bộ ISBN từ giỏ hàng gửi lên
             var cartDict = request.CartItems.ToDictionary(c => c.ISBN.Trim(), c => c.SoLuong);
 
             foreach (var promo in activePromos)
@@ -211,7 +207,13 @@ namespace Bookstore.API.Controllers
                     if (ct != null && request.TamTinh >= ct.SoTienToiThieu)
                     {
                         isEligible = true;
-                        dto.SoTienToiThieu = ct.SoTienToiThieu; dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; //... map phần còn lại
+                        dto.SoTienToiThieu = ct.SoTienToiThieu;
+                        dto.SoTienToiDa = ct.SoTienToiDa;
+                        dto.SoTienGiam = ct.SoTienGiam;
+                        dto.TiLeGiam = ct.TiLeGiam;
+
+                        // ĐÃ FIX: Điền nốt mảnh ghép công thức chặn trần bị thiếu ở đây
+                        dto.GiamToiDa = ct.GiamToiDa;
                     }
                 }
                 else if (promo.MaLoaiUuDai == PromotionType.HoaDonQua)
@@ -223,6 +225,7 @@ namespace Bookstore.API.Controllers
                     {
                         isEligible = true;
                         dto.SoTienToiThieu = ct.SoTienToiThieu;
+                        dto.SoTienToiDa = ct.SoTienToiDa;
                         dto.DanhSachSachTang = tangs.Select(t => new SachTangDTO { ISBN = t.ISBN.Trim(), SoLuongTang = t.SoLuongTang }).ToList();
                     }
                 }
@@ -233,13 +236,13 @@ namespace Bookstore.API.Controllers
 
                     if (ct != null && dks.Any())
                     {
-                        // KIỂM TRA ĐIỀU KIỆN COMBO: Phải thỏa mãn TẤT CẢ các sách yêu cầu
                         bool isMatchAllConditions = dks.All(dk => cartDict.TryGetValue(dk.ISBN.Trim(), out int qty) && qty >= dk.SoLuongMua);
-
                         if (isMatchAllConditions)
                         {
                             isEligible = true;
-                            dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; dto.GiamToiDa = ct.GiamToiDa;
+                            dto.SoTienGiam = ct.SoTienGiam;
+                            dto.TiLeGiam = ct.TiLeGiam;
+                            dto.GiamToiDa = ct.GiamToiDa;
                             dto.DanhSachSachDieuKien = dks.Select(d => new SachDieuKienDTO { ISBN = d.ISBN.Trim(), SoLuongMua = d.SoLuongMua }).ToList();
                         }
                     }
@@ -252,9 +255,7 @@ namespace Bookstore.API.Controllers
 
                     if (ct != null && dks.Any() && tangs.Any())
                     {
-                        // KIỂM TRA ĐIỀU KIỆN COMBO TẶNG
                         bool isMatchAllConditions = dks.All(dk => cartDict.TryGetValue(dk.ISBN.Trim(), out int qty) && qty >= dk.SoLuongMua);
-
                         if (isMatchAllConditions)
                         {
                             isEligible = true;
@@ -269,7 +270,6 @@ namespace Bookstore.API.Controllers
 
             return Ok(eligiblePromos);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CreateUuDai([FromBody] PromotionDTO dto)

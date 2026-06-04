@@ -18,7 +18,6 @@ namespace Bookstore.WPF.ViewModels
         public InvoiceResponse InvoiceInfo { get => _invoiceInfo; set { _invoiceInfo = value; OnPropertyChanged(); } }
 
         // 2. Danh sách sản phẩm mua (Dùng dynamic hoặc DTO chi tiết từ API)
-        // TODO: Đổi chuỗi object thành DTO tương ứng của bạn khi có API (VD: InvoiceDetailResponse)
         private List<InvoiceDetailResponse> _danhSachSanPham;
         public List<InvoiceDetailResponse> DanhSachSanPham
         {

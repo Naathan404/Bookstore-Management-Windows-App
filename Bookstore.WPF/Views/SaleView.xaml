@@ -22,7 +22,7 @@
 	</UserControl.Resources>
 
 	<Grid>
-		
+
 		<Grid Margin="{StaticResource MainViewMargin}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -346,7 +346,7 @@
 												   Foreground="{StaticResource TextLightColor}"
 												   HorizontalAlignment="Left"
 												   VerticalAlignment="Center" />
-										<TextBlock Text="{Binding CartItems.Count}"
+										<TextBlock Text="{Binding SoSanPham}"
 												   FontSize="14"
 												   FontWeight="Bold"
 												   Foreground="{StaticResource PrimaryColor}"
@@ -452,7 +452,7 @@
 																SelectedItem="{Binding KhachHangDuocChon, Mode=TwoWay}"
 																DisplayMemberPath="TenKhachHang"
 																IsEditable="False"
-																Margin="0,0,0,-20"/>
+																Margin="0,0,0,-20" />
 							</StackPanel>
 						</StackPanel>
 					</Border>
@@ -484,7 +484,7 @@
 										   Style="{StaticResource CardHeader}" />
 							</StackPanel>
 
-							<Grid Margin="0,0,0,12">
+							<Grid Margin="0,0,0,0">
 								<components:FormComboBoxControl x:Name="ChonUuDai"
 																Title="Chọn ưu đãi áp dụng"
 																IconKind="TagApprove"
@@ -495,7 +495,7 @@
 																IsEditable="False"
 																State="{Binding UuDaiState}"
 																HelperText="{Binding UuDaiHelperText}"
-																IsReadOnly="{Binding IsUuDaiReadOnly}"/>
+																IsReadOnly="{Binding IsUuDaiReadOnly}" />
 							</Grid>
 						</StackPanel>
 
@@ -506,46 +506,58 @@
 							<ItemsControl ItemsSource="{Binding AppliedPromotionList}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Border Margin="0,0,0,8"
-												Padding="10,8"
-												Background="#F8FAFC"
-												CornerRadius="8"
-												BorderBrush="#E2E8F0"
-												BorderThickness="1">
+										<Border Margin="0,8,0,0"
+												Padding="12"
+												Style="{StaticResource CardStyle}">
 											<Grid>
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="Auto" />
-													<ColumnDefinition Width="Auto" />
-												</Grid.ColumnDefinitions>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="*" />
+													<RowDefinition Height="24" />
+												</Grid.RowDefinitions>
 
-												<TextBlock Grid.Column="0"
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="*" />
+														<ColumnDefinition Width="Auto" />
+														<ColumnDefinition Width="Auto" />
+													</Grid.ColumnDefinitions>
+
+													<TextBlock Grid.Column="0"
+															   Text="{Binding Code}"
+															   FontSize="13"
+															   FontWeight="Bold"
+															   Foreground="{StaticResource PrimaryColor}"
+															   VerticalAlignment="Center"
+															   TextWrapping="Wrap"
+															   Margin="0,0,8,0" />
+
+													<TextBlock Grid.Column="1"
+															   Text="{Binding MucGiamDisplay}"
+															   FontSize="13"
+															   FontWeight="Bold"
+															   Foreground="#10B981"
+															   VerticalAlignment="Center"
+															   Margin="0,0,12,0" />
+
+													<Button Grid.Column="2"
+															Style="{StaticResource MiniDeleteButtonStyle}"
+															Width="20"
+															Height="20"
+															ToolTip="Gỡ bỏ ưu đãi này"
+															Command="{Binding DataContext.XoaUuDaiCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+															CommandParameter="{Binding}">
+														<materialDesign:PackIcon Kind="Close"
+																				 Width="12"
+																				 Height="12" />
+													</Button>
+												</Grid>
+												<TextBlock Grid.Row="1"
 														   Text="{Binding TenChuongTrinh}"
 														   FontSize="13"
-														   FontWeight="SemiBold"
-														   Foreground="#2B3674"
 														   VerticalAlignment="Center"
-														   TextWrapping="Wrap"
-														   Margin="0,0,8,0" />
-
-												<TextBlock Grid.Column="1"
-														   Text="{Binding MucGiamDisplay}"
-														   FontSize="13"
-														   FontWeight="Bold"
-														   Foreground="#10B981"
-														   VerticalAlignment="Center"
-														   Margin="0,0,12,0" />
-
-												<Button Grid.Column="2"
-														Style="{StaticResource MiniDeleteButtonStyle}"
-														ToolTip="Gỡ bỏ ưu đãi này"
-														Command="{Binding DataContext.XoaUuDaiCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-														CommandParameter="{Binding}">
-													<materialDesign:PackIcon Kind="Close"
-																			 Width="16"
-																			 Height="16" />
-												</Button>
+														   Margin="0,8,12,0" />
 											</Grid>
+
 										</Border>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
@@ -606,7 +618,7 @@
 				</Border>
 			</Grid>
 		</Grid>
-		
+
 		<popup:PaymentConfirmPopup DataContext="{Binding PaymentConfirmPopupViewModel}" />
 
 		<popup:BookDetailPopup DataContext="{Binding BookDetailPopupVM}" />

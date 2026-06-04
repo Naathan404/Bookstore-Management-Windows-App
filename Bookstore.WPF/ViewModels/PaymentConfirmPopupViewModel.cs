@@ -18,36 +18,71 @@ namespace Bookstore.WPF.ViewModels
 {
     public class PaymentConfirmPopupViewModel : BaseViewModel
     {
-        private int _maKhachHang;
-        private decimal _tamTinh;
-        private List<PromotionDTO> _uuDaiDaApDung;
+        #region Thông tin chung
         private bool _isOpen;
         public bool IsOpen { get => _isOpen; set { _isOpen = value; OnPropertyChanged(); } }
+        private Action _onConfirmCallback;
+        private Action? _onCancelCallback;
+        #endregion
 
-        #region Khách hàng
-
+        #region Thông tin hóa đơn
+        private int _maKhachHang;
         private string _tenKhachHang;
         public string TenKhachHang { get => _tenKhachHang; set { _tenKhachHang = value; OnPropertyChanged(); } }
 
         private string _sdtKhachHang;
         public string SdtKhachHang { get => _sdtKhachHang; set { _sdtKhachHang = value; OnPropertyChanged(); } }
+
+        public string NguoiLap => AppState.CurrentUser.Name;
         #endregion
 
         #region Hóa đơn
         private ObservableCollection<CartItemModel> _cartItems;
         public ObservableCollection<CartItemModel> CartItems { get => _cartItems; set { _cartItems = value; OnPropertyChanged(); } }
+        private ObservableCollection<PromotionDTO> _uuDaiDaApDung;
+        public ObservableCollection<PromotionDTO> UuDaiDaApDung { get => _uuDaiDaApDung; set { _uuDaiDaApDung = value; OnPropertyChanged(); } }
+        #endregion
+
+        #region Thanh toán & Công nợ
+        private decimal _tamTinh;
+        public decimal TamTinh
+        {
+            get => _tamTinh;
+            set
+            {
+                _tamTinh = value;
+                OnPropertyChanged();
+            }
+        }
 
         private decimal _giamTien;
         public decimal GiamTien { get => _giamTien; set { _giamTien = value; OnPropertyChanged(); } }
 
+        private bool _tinhThueVAT;
+        public bool TinhThueVAT
+        {
+            get => _tinhThueVAT;
+            set
+            {
+                if (_tinhThueVAT != value)
+                {
+                    _tinhThueVAT = value;
+                    OnPropertyChanged();
+
+                    _ = TinhThanhTienSauThue();
+                }
+            }
+        }
+        private decimal _phanTramVAT;
+        public decimal PhanTramVAT { get => _phanTramVAT; set { _phanTramVAT = value; OnPropertyChanged(); } }
+
+        private decimal _thueVAT;
+        public decimal ThueVAT { get => _thueVAT; set { _thueVAT = value; OnPropertyChanged(); } }
+
         private decimal _tongTienThanhToan;
         public decimal TongTienThanhToan { get => _tongTienThanhToan; set { _tongTienThanhToan = value; OnPropertyChanged(); } }
-        #endregion
 
-        #region Thanh toán & Công nợ
-
-        // TODO: Tỉ lệ này sau này sẽ được gán từ API dựa vào Loại Khách Hàng (Khách VIP, Khách sỉ...)
-        private decimal _phanTramTraToiThieu = 50;
+        private decimal? _tienToiThieuCanTra;
 
         private bool _isThanhToanTienMat = true;
         public bool IsThanhToanTienMat
@@ -72,8 +107,7 @@ namespace Bookstore.WPF.ViewModels
                 OnPropertyChanged();
                 if (_isThanhToanChuyenKhoan)
                 {
-                    // UX tốt: Đổi sang chuyển khoản thì mặc định gán luôn số tiền khách đưa = Tổng tiền (vì quét QR thường trả đủ)
-                    TienKhachDua = TongTienThanhToan;
+                    TinhToanTienThuaVaNo();
                 }
             }
         }
@@ -104,7 +138,6 @@ namespace Bookstore.WPF.ViewModels
             set { _tienConNo = value; OnPropertyChanged(); }
         }
 
-        // --- BIẾN TRẠNG THÁI HIỂN THỊ CẢNH BÁO CHO FORM INPUT ---
         private FieldState _tienKhachDuaState = FieldState.Normal;
         public FieldState TienKhachDuaState
         {
@@ -121,14 +154,16 @@ namespace Bookstore.WPF.ViewModels
 
         #endregion
 
-        private Action _onConfirmCallback;
-        private Action? _onCancelCallback;
+
 
         public ICommand XacNhanTaoDonCommand { get; set; }
         public ICommand HuyBoGiaoDichCommand { get; set; }
 
         public PaymentConfirmPopupViewModel()
         {
+            _ = LayThamSoVAT();
+            OnPropertyChanged(NguoiLap);
+
             XacNhanTaoDonCommand = new RelayCommand(async () =>
             {
                 if (TienKhachDuaState == FieldState.Error)
@@ -153,18 +188,10 @@ namespace Bookstore.WPF.ViewModels
                     {
                         foreach (var u in _uuDaiDaApDung)
                         {
-                            //string targetIsbn = string.Empty;
-                            //if (u.MaLoaiUuDai == PromotionType.SachGiam || u.MaLoaiUuDai == PromotionType.SachQua)
-                            //{
-                            //    targetIsbn = u.DanhSachSachDieuKien?.FirstOrDefault()?.ISBN;
-                            //}
-
                             uuDaiList.Add(new InvoicePromoRequest
                             {
                                 MaUuDai = u.MaUuDai,
                                 SoTienGiam = u.SoTienGiamThucTe,
-                                //ISBN = targetIsbn,
-                                //IsGift = u.MaLoaiUuDai == PromotionType.SachQua || u.MaLoaiUuDai == PromotionType.HoaDonQua
                             });
                         }
                     }
@@ -211,12 +238,13 @@ namespace Bookstore.WPF.ViewModels
             TenKhachHang = tenKH;
             SdtKhachHang = string.IsNullOrEmpty(sdtKH) ? "" : sdtKH;
             CartItems = items;
+            _ = TinhTienToiThieuCanTra();
 
-            _tamTinh = tamTinh;
+            TamTinh = tamTinh;
             GiamTien = giamGia;
             TongTienThanhToan = tongTien;
 
-            _uuDaiDaApDung = uuDaiDaApDung;
+            UuDaiDaApDung = new ObservableCollection<PromotionDTO>(uuDaiDaApDung);
 
             IsThanhToanTienMat = true;
             IsThanhToanChuyenKhoan = false;
@@ -224,13 +252,78 @@ namespace Bookstore.WPF.ViewModels
 
             _onConfirmCallback = onConfirm;
             _onCancelCallback = onCancel;
+
+            TinhThueVAT = false;
             IsOpen = true;
         }
 
-        // TODO: Loại khách hàng và tỉ lệ trả tổi thiểu
+        private async Task LayThamSoVAT()
+        {
+            var tsThueVAT = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/ThueVAT");
+            if (tsThueVAT != null)
+            {
+                PhanTramVAT = tsThueVAT.GiaTri;
+            }
+            else
+            {
+                PhanTramVAT = 0;
+            }
+        }
+
+        private async Task TinhTienToiThieuCanTra()
+        {
+            if (_maKhachHang <= 0)
+            {
+                _tienToiThieuCanTra = null;
+                return;
+            }
+
+            var khachHang = await ApiClient.GetAsync<CustomerResponse>($"api/KhachHang/{_maKhachHang}");
+            if (khachHang == null)
+            {
+                _tienToiThieuCanTra = null;
+                return;
+            }
+
+            var loaiKhachHang = await ApiClient.GetAsync<CustomerTierResponse>($"api/LoaiKhachHang/{khachHang.MaLoaiKhachHang}");
+            if (loaiKhachHang == null)
+            {
+                _tienToiThieuCanTra = null;
+            }
+            else
+            {
+                decimal tiLeTraToiThieu = (decimal)loaiKhachHang.TiLeTraToiThieu / 100m;
+                decimal noToiDa = loaiKhachHang.NoToiDa;
+                decimal tienNoHienTai = khachHang.CongNo;
+
+                decimal tienTraTheoTiLe = TongTienThanhToan * tiLeTraToiThieu;
+                decimal tienTraDeKhongVuotHanMuc = (tienNoHienTai + TongTienThanhToan) - noToiDa;
+
+                decimal tienToiThieu = Math.Max(tienTraTheoTiLe, tienTraDeKhongVuotHanMuc);
+
+                _tienToiThieuCanTra = Math.Max(0, tienToiThieu);
+            }
+        }
+
+
+
         private void TinhToanTienThuaVaNo()
         {
             if (TongTienThanhToan <= 0) return;
+
+            if (IsThanhToanChuyenKhoan)
+            {
+                _tienKhachDua = TongTienThanhToan;
+                OnPropertyChanged(nameof(TienKhachDua)); 
+
+                TienTraKhach = 0;
+                TienConNo = 0;
+
+                TienKhachDuaState = FieldState.Success;
+                TienKhachDuaHelperText = "Thanh toán chuyển khoản (Quét QR).";
+
+                return; 
+            }
 
             if (TienKhachDua >= TongTienThanhToan)
             {
@@ -239,7 +332,7 @@ namespace Bookstore.WPF.ViewModels
                 TienConNo = 0;
 
                 TienKhachDuaState = FieldState.Success;
-                TienKhachDuaHelperText = "Khách thanh toán đủ.";
+                TienKhachDuaHelperText = "Thanh toán đủ.";
             }
             else
             {
@@ -248,21 +341,38 @@ namespace Bookstore.WPF.ViewModels
                 TienConNo = TongTienThanhToan - TienKhachDua;
 
                 // Tính số tiền bắt buộc phải trả
-                decimal tienToiThieuCanTra = TongTienThanhToan * (_phanTramTraToiThieu / 100m);
+                decimal tienToiThieuCanTra = _tienToiThieuCanTra ?? TongTienThanhToan;
 
                 if (TienKhachDua >= tienToiThieuCanTra)
                 {
                     // Trả thiếu nhưng vẫn ĐẠT mức tối thiểu cho phép
                     TienKhachDuaState = FieldState.Warning;
-                    TienKhachDuaHelperText = $"Khách được phép nợ. Ghi nợ: {TienConNo:N0} đ.";
+                    TienKhachDuaHelperText = $"Được phép nợ. Ghi nợ: {TienConNo:N0} đ.";
                 }
                 else
                 {
                     // Trả DƯỚI mức cho phép
                     TienKhachDuaState = FieldState.Error;
-                    TienKhachDuaHelperText = $"LỖI: Khách hàng này phải thanh toán tối thiểu {tienToiThieuCanTra:N0} đ ({_phanTramTraToiThieu}%).";
+                    TienKhachDuaHelperText = $"LỖI: Phải thanh toán tối thiểu {tienToiThieuCanTra:N0} đ";
                 }
             }
+        }
+
+        private async Task TinhThanhTienSauThue()
+        {
+            if (TinhThueVAT)
+            {
+
+                ThueVAT = Math.Round((TamTinh - GiamTien) * PhanTramVAT / 100m, 0);
+
+            }
+            else
+            {
+                ThueVAT = 0;
+            }
+            TongTienThanhToan = TamTinh - GiamTien + ThueVAT;
+            await TinhTienToiThieuCanTra();
+            TinhToanTienThuaVaNo();
         }
     }
 }

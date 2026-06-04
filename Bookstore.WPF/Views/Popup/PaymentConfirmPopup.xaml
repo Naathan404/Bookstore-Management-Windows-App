@@ -28,15 +28,13 @@
 			</Border.InputBindings>
 		</Border>
 
-		<Border Width="650"
-				MaxHeight="800"
+		<Border Width="1000"
+				Height="600"
 				Style="{StaticResource PopupCardStyle}">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
-					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
@@ -45,357 +43,430 @@
 											   IconKind="PlaylistCheck" />
 
 				<Grid Grid.Row="1"
-					  Margin="0,0,0,16">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Grid Grid.Row="0"
-						  Margin="0,0,0,6">
-						<TextBlock Text="Khách hàng:"
-								   Style="{StaticResource Content}" />
-						<TextBlock Text="{Binding TenKhachHang}"
-								   HorizontalAlignment="Right"
-								   FontWeight="Bold"
-								   Foreground="{StaticResource PrimaryDarkColor}"
-								   FontSize="13" />
-					</Grid>
-					<Grid Grid.Row="1">
-						<TextBlock Text="Số điện thoại:"
-								   Style="{StaticResource Content}" />
-						<TextBlock Text="{Binding SdtKhachHang}"
-								   HorizontalAlignment="Right"
-								   Foreground="{StaticResource PrimaryDarkColor}"
-								   FontSize="13" />
-					</Grid>
-				</Grid>
+					  Margin="0,16,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="24" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
 
-				<ScrollViewer Grid.Row="2"
-							  VerticalScrollBarVisibility="Auto"
-							  PanningMode="VerticalOnly"
+					<Grid Grid.Column="0">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<Grid Grid.Row="0"
 							  Margin="0,0,0,16">
-					<StackPanel Margin="0,0,8,0">
-
-						<TextBlock Text="DANH SÁCH SẢN PHẨM"
-								   Foreground="{StaticResource PrimaryDarkColor}"
-								   FontWeight="Bold"
-								   Margin="0,0,0,8"
-								   FontSize="14" />
-						<Border Style="{StaticResource DarkCardStyle}"
-								Padding="12"
-								Margin="0,0,0,16">
-							<ItemsControl ItemsSource="{Binding CartItems}">
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<Border BorderBrush="#E2E8F0"
-												BorderThickness="0,0,0,1"
-												Padding="0,8">
-											<Grid>
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="40" />
-													<ColumnDefinition Width="100" />
-												</Grid.ColumnDefinitions>
-
-												<StackPanel Grid.Column="0"
-															VerticalAlignment="Center"
-															Margin="0,0,12,0">
-													<TextBlock Text="{Binding TenSach}"
-															   Foreground="{StaticResource PrimaryDarkColor}"
-															   FontWeight="Bold"
-															   TextTrimming="CharacterEllipsis"
-															   FontSize="13" />
-													<TextBlock Text="{Binding ISBN, StringFormat='ISBN: {0}'}"
-															   Foreground="{StaticResource TextLightColor}"
-															   FontSize="11"
-															   Margin="0,2,0,0" />
-													<TextBlock Text="🎁 Quà tặng"
-															   Foreground="{StaticResource SuccessColor}"
-															   FontSize="11"
-															   FontWeight="Bold"
-															   Margin="0,2,0,0"
-															   Visibility="{Binding IsGift, Converter={StaticResource BoolToVis}}" />
-												</StackPanel>
-
-												<TextBlock Grid.Column="1"
-														   Text="{Binding SoLuongMua, StringFormat='x{0}'}"
-														   Foreground="{StaticResource TextLightColor}"
-														   TextAlignment="Center"
-														   VerticalAlignment="Center" />
-
-												<Grid Grid.Column="2"
-													  VerticalAlignment="Center"
-													  HorizontalAlignment="Right">
-
-													<TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}"
-															   Foreground="{StaticResource PrimaryColor}"
-															   FontWeight="Bold"
-															   HorizontalAlignment="Right">
-														<TextBlock.Style>
-															<Style TargetType="TextBlock">
-																<Setter Property="Visibility"
-																		Value="Collapsed" />
-																<Style.Triggers>
-																	<MultiDataTrigger>
-																		<MultiDataTrigger.Conditions>
-																			<Condition Binding="{Binding IsGift}"
-																					   Value="False" />
-																			<Condition Binding="{Binding IsPromotionApplied}"
-																					   Value="False" />
-																		</MultiDataTrigger.Conditions>
-																		<Setter Property="Visibility"
-																				Value="Visible" />
-																	</MultiDataTrigger>
-																</Style.Triggers>
-															</Style>
-														</TextBlock.Style>
-													</TextBlock>
-
-													<StackPanel>
-														<StackPanel.Style>
-															<Style TargetType="StackPanel">
-																<Setter Property="Visibility"
-																		Value="Collapsed" />
-																<Style.Triggers>
-																	<DataTrigger Binding="{Binding IsPromotionApplied}"
-																				 Value="True">
-																		<Setter Property="Visibility"
-																				Value="Visible" />
-																	</DataTrigger>
-																</Style.Triggers>
-															</Style>
-														</StackPanel.Style>
-														<TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}"
-																   Foreground="{StaticResource DangerColor}"
-																   FontWeight="Bold"
-																   HorizontalAlignment="Right" />
-														<TextBlock Text="{Binding OriginalGiaBan, StringFormat='{}{0:N0} đ'}"
-																   Foreground="{StaticResource TextLightColor}"
-																   FontSize="11"
-																   TextDecorations="Strikethrough"
-																   HorizontalAlignment="Right"
-																   Margin="0,2,0,0" />
-													</StackPanel>
-
-													<TextBlock Text="0 đ"
-															   Foreground="{StaticResource SuccessColor}"
-															   FontWeight="Bold"
-															   HorizontalAlignment="Right"
-															   Visibility="{Binding IsGift, Converter={StaticResource BoolToVis}}" />
-												</Grid>
-											</Grid>
-										</Border>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</Border>
-
-						<StackPanel Visibility="{Binding UuDaiDaApDung.Count, Converter={StaticResource InvertZeroToVis}, FallbackValue=Collapsed}">
-							<TextBlock Text="ƯU ĐÃI ĐÃ ÁP DỤNG"
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<TextBlock Grid.Row="0"
+									   Text="THÔNG TIN HÓA ĐƠN"
 									   Foreground="{StaticResource PrimaryDarkColor}"
 									   FontWeight="Bold"
 									   Margin="0,0,0,8"
 									   FontSize="14" />
-							<ItemsControl ItemsSource="{Binding UuDaiDaApDung}"
-										  Margin="0,0,0,16">
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<Border Background="#FFF9DB"
-												CornerRadius="6"
-												Padding="12,8"
-												Margin="0,0,0,6">
+							<Grid Grid.Row="1"
+								  Margin="12,0,12,8">
+								<TextBlock Text="Khách hàng:"
+										   Style="{StaticResource Content}" />
+								<TextBlock Text="{Binding TenKhachHang}"
+										   HorizontalAlignment="Right"
+										   FontWeight="Bold"
+										   Foreground="{StaticResource PrimaryDarkColor}"
+										   FontSize="13" />
+							</Grid>
+							<Grid Grid.Row="2"
+								  Margin="12,0,12,8">
+								<TextBlock Text="Số điện thoại:"
+										   Style="{StaticResource Content}" />
+								<TextBlock Text="{Binding SdtKhachHang}"
+										   HorizontalAlignment="Right"
+										   Foreground="{StaticResource PrimaryDarkColor}"
+										   FontSize="13" />
+							</Grid>
+							<Grid Grid.Row="3"
+								  Margin="12,0,12,0">
+								<TextBlock Text="Người thu:"
+										   Style="{StaticResource Content}" />
+								<TextBlock Text="{Binding NguoiLap}"
+										   HorizontalAlignment="Right"
+										   Foreground="{StaticResource PrimaryDarkColor}"
+										   FontSize="13" />
+							</Grid>
+						</Grid>
+
+						<Grid Grid.Row="1">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<TextBlock Grid.Row="0"
+									   Text="DANH SÁCH SẢN PHẨM"
+									   Foreground="{StaticResource PrimaryDarkColor}"
+									   FontWeight="Bold"
+									   Margin="0,0,0,8"
+									   FontSize="14" />
+
+							<Border Grid.Row="1"
+									Style="{StaticResource DarkCardStyle}"
+									Padding="12"
+									Margin="0,0,0,16">
+								<ScrollViewer VerticalScrollBarVisibility="Auto"
+											  PanningMode="VerticalOnly">
+									<ItemsControl ItemsSource="{Binding CartItems}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Border Padding="0,0,0,8">
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*" />
+															<ColumnDefinition Width="40" />
+															<ColumnDefinition Width="90" />
+														</Grid.ColumnDefinitions>
+
+														<StackPanel Grid.Column="0"
+																	VerticalAlignment="Center"
+																	Margin="0,0,12,0">
+															<TextBlock Text="{Binding TenSach}"
+																	   Foreground="{StaticResource PrimaryDarkColor}"
+																	   FontWeight="Bold"
+																	   TextTrimming="CharacterEllipsis"
+																	   FontSize="13" />
+															<TextBlock Text="{Binding ISBN, StringFormat='ISBN: {0}'}"
+																	   Foreground="{StaticResource TextLightColor}"
+																	   FontSize="11"
+																	   Margin="0,2,0,0" />
+															<TextBlock Text="🎁 Quà tặng"
+																	   Foreground="{StaticResource SuccessColor}"
+																	   FontSize="11"
+																	   FontWeight="Bold"
+																	   Margin="0,2,0,0"
+																	   Visibility="{Binding IsGift, Converter={StaticResource BoolToVis}}" />
+														</StackPanel>
+
+														<TextBlock Grid.Column="1"
+																   Text="{Binding SoLuongMua, StringFormat='×{0}'}"
+																   Foreground="{StaticResource TextLightColor}"
+																   TextAlignment="Center"
+																   VerticalAlignment="Center" />
+
+														<Grid Grid.Column="2"
+															  VerticalAlignment="Center"
+															  HorizontalAlignment="Right">
+															<TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}"
+																	   Foreground="{StaticResource PrimaryColor}"
+																	   FontWeight="Bold"
+																	   HorizontalAlignment="Right">
+																<TextBlock.Style>
+																	<Style TargetType="TextBlock">
+																		<Setter Property="Visibility"
+																				Value="Collapsed" />
+																		<Style.Triggers>
+																			<MultiDataTrigger>
+																				<MultiDataTrigger.Conditions>
+																					<Condition Binding="{Binding IsGift}"
+																							   Value="False" />
+																					<Condition Binding="{Binding IsPromotionApplied}"
+																							   Value="False" />
+																				</MultiDataTrigger.Conditions>
+																				<Setter Property="Visibility"
+																						Value="Visible" />
+																			</MultiDataTrigger>
+																		</Style.Triggers>
+																	</Style>
+																</TextBlock.Style>
+															</TextBlock>
+
+															<StackPanel>
+																<StackPanel.Style>
+																	<Style TargetType="StackPanel">
+																		<Setter Property="Visibility"
+																				Value="Collapsed" />
+																		<Style.Triggers>
+																			<DataTrigger Binding="{Binding IsPromotionApplied}"
+																						 Value="True">
+																				<Setter Property="Visibility"
+																						Value="Visible" />
+																			</DataTrigger>
+																		</Style.Triggers>
+																	</Style>
+																</StackPanel.Style>
+																<TextBlock Text="{Binding GiaBan, StringFormat='{}{0:N0} đ'}"
+																		   Foreground="{StaticResource DangerColor}"
+																		   FontWeight="Bold"
+																		   HorizontalAlignment="Right" />
+																<TextBlock Text="{Binding OriginalGiaBan, StringFormat='{}{0:N0} đ'}"
+																		   Foreground="{StaticResource TextLightColor}"
+																		   FontSize="11"
+																		   TextDecorations="Strikethrough"
+																		   HorizontalAlignment="Right"
+																		   Margin="0,2,0,0" />
+															</StackPanel>
+
+															<TextBlock Text="0 đ"
+																	   Foreground="{StaticResource SuccessColor}"
+																	   FontWeight="Bold"
+																	   HorizontalAlignment="Right"
+																	   Visibility="{Binding IsGift, Converter={StaticResource BoolToVis}}" />
+														</Grid>
+													</Grid>
+												</Border>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</ScrollViewer>
+							</Border>
+						</Grid>
+					</Grid>
+
+					<Border Grid.Column="1"
+							BorderBrush="#E2E8F0"
+							BorderThickness="1,0,0,0"
+							Width="1"
+							HorizontalAlignment="Center"
+							Margin="0,0,0,16" />
+
+					<Grid Grid.Column="2">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<TextBlock Text="THÔNG TIN THANH TOÁN"
+								   Grid.Row="0"
+								   Foreground="{StaticResource PrimaryDarkColor}"
+								   FontWeight="Bold"
+								   Margin="0,0,0,8"
+								   FontSize="14" />
+						<ScrollViewer Grid.Row="1"
+									  VerticalScrollBarVisibility="Auto"
+									  PanningMode="VerticalOnly"
+									  Margin="0,0,0,16">
+							<StackPanel Margin="0,0,8,0">
+
+								<StackPanel Visibility="{Binding UuDaiDaApDung.Count, Converter={StaticResource InvertZeroToVis}, FallbackValue=Collapsed}">
+									<ItemsControl ItemsSource="{Binding UuDaiDaApDung}"
+												  Margin="0,0,0,16">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Border Padding="16,0"
+														Margin="0,0,0,8">
+													<Grid>
+														<Grid.RowDefinitions>
+															<RowDefinition Height="Auto" />
+															<RowDefinition Height="Auto" />
+														</Grid.RowDefinitions>
+														<Grid Grid.Row="0">
+															<TextBlock Text="{Binding Code}"
+																	   Foreground="{StaticResource PrimaryColor}"
+																	   FontWeight="Bold"
+																	   FontSize="13" />
+															<TextBlock Text="{Binding MucGiamDisplay}"
+																	   Foreground="{StaticResource TextLightColor}"
+																	   FontWeight="Bold"
+																	   HorizontalAlignment="Right"
+																	   FontSize="13" />
+														</Grid>
+														<TextBlock Text="{Binding TenChuongTrinh}"
+																   Grid.Row="1"
+																   Foreground="{StaticResource TextLightColor}"
+																   FontSize="13" />
+													</Grid>
+												</Border>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</StackPanel>
+
+								<Border Style="{StaticResource DarkCardStyle}"
+										Padding="16"
+										Margin="0,0,0,16">
+									<StackPanel>
+										<Grid Margin="0,0,0,8">
+											<TextBlock Text="Tạm tính:"
+													   Foreground="{StaticResource PrimaryDarkColor}"
+													   FontSize="14" />
+											<TextBlock Text="{Binding TamTinh, StringFormat='{}{0:N0} đ'}"
+													   HorizontalAlignment="Right"
+													   FontWeight="Bold"
+													   Foreground="{StaticResource PrimaryDarkColor}"
+													   FontSize="14" />
+										</Grid>
+
+										<Grid Margin="0,0,0,12"
+											  Visibility="{Binding GiamTien, Converter={StaticResource InvertZeroToVis}}">
+											<TextBlock Text="Tổng khuyến mãi:"
+													   Foreground="{StaticResource PrimaryDarkColor}"
+													   FontSize="14" />
+											<TextBlock Text="{Binding GiamTien, StringFormat='-{0:N0} đ'}"
+													   HorizontalAlignment="Right"
+													   FontWeight="Bold"
+													   Foreground="{StaticResource SuccessColor}"
+													   FontSize="14" />
+										</Grid>
+
+										<Grid Margin="0,0,0,12">
+											<components:TickComponent Text="{Binding PhanTramVAT, StringFormat='Xuất hóa đơn VAT (+{0}%)'}"
+																	  IsChecked="{Binding TinhThueVAT, Mode=TwoWay}"
+																	  Foreground="{StaticResource PrimaryDarkColor}" />
+											<TextBlock Text="{Binding ThueVAT, StringFormat='+ {0:N0} đ'}"
+													   HorizontalAlignment="Right"
+													   FontWeight="Bold"
+													   Foreground="{StaticResource WarningColor}"
+													   FontSize="14"
+													   VerticalAlignment="Center"
+													   Visibility="{Binding TinhThueVAT, Converter={StaticResource BoolToVis}}" />
+										</Grid>
+
+										<Border BorderBrush="#E2E8F0"
+												BorderThickness="0,1,0,0"
+												Padding="0,12,0,0">
 											<Grid>
-												<TextBlock Text="{Binding TenChuongTrinh}"
-														   Foreground="#F59E0B"
-														   FontWeight="SemiBold"
-														   FontSize="13" />
-												<TextBlock Text="{Binding SoTienGiamThucTe, StringFormat='-{0:N0} đ'}"
-														   Foreground="{StaticResource SuccessColor}"
+												<TextBlock Text="Thành tiền:"
+														   Foreground="{StaticResource PrimaryDarkColor}"
 														   FontWeight="Bold"
+														   FontSize="14"
+														   VerticalAlignment="Center" />
+												<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} đ'}"
 														   HorizontalAlignment="Right"
-														   FontSize="13" />
+														   FontWeight="Black"
+														   Foreground="{StaticResource DangerColor}"
+														   FontSize="20" />
 											</Grid>
 										</Border>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</StackPanel>
-
-						<Border Background="#F8FAFC"
-								CornerRadius="8"
-								BorderBrush="#E2E8F0"
-								BorderThickness="1"
-								Padding="16">
-							<StackPanel>
-								<Grid Margin="0,0,0,8">
-									<TextBlock Text="Tạm tính:"
-											   Foreground="{StaticResource TextLightColor}"
-											   FontSize="14" />
-									<TextBlock Text="{Binding TamTinh, StringFormat='{}{0:N0} đ'}"
-											   HorizontalAlignment="Right"
-											   FontWeight="SemiBold"
-											   Foreground="{StaticResource PrimaryDarkColor}"
-											   FontSize="14" />
-								</Grid>
-
-								<Grid Margin="0,0,0,12"
-									  Visibility="{Binding GiamTien, Converter={StaticResource InvertZeroToVis}}">
-									<TextBlock Text="Tổng khuyến mãi:"
-											   Foreground="{StaticResource TextLightColor}"
-											   FontSize="14" />
-									<TextBlock Text="{Binding GiamTien, StringFormat='-{0:N0} đ'}"
-											   HorizontalAlignment="Right"
-											   FontWeight="Bold"
-											   Foreground="{StaticResource SuccessColor}"
-											   FontSize="14" />
-								</Grid>
-
-								<Border BorderBrush="#E2E8F0"
-										BorderThickness="0,1,0,0"
-										Padding="0,12,0,0">
-									<Grid>
-										<TextBlock Text="TỔNG PHẢI THU:"
-												   Foreground="{StaticResource PrimaryDarkColor}"
-												   FontWeight="Bold"
-												   FontSize="14"
-												   VerticalAlignment="Center" />
-										<TextBlock Text="{Binding TongTienThanhToan, StringFormat='{}{0:N0} đ'}"
-												   HorizontalAlignment="Right"
-												   FontWeight="Black"
-												   Foreground="{StaticResource DangerColor}"
-												   FontSize="18" />
-									</Grid>
+									</StackPanel>
 								</Border>
+
+								<TabControl Style="{StaticResource TabControlStyle}">
+									<TabItem Header="TIỀN MẶT"
+											 IsSelected="{Binding IsThanhToanTienMat}">
+										<Border Style="{StaticResource CardStyle}"
+												Height="180"
+												Padding="24,16,24,0">
+											<Grid>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="Auto" />
+													<RowDefinition Height="Auto" />
+												</Grid.RowDefinitions>
+
+												<components:FormInputControl Title="Số tiền khách đưa"
+																			 Grid.Row="0"
+																			 IsRequired="True"
+																			 IconKind="CashPlus"
+																			 UnitText="đ"
+																			 IsCurrencyMode="True"
+																			 State="{Binding TienKhachDuaState}"
+																			 HelperText="{Binding TienKhachDuaHelperText}"
+																			 FontWeight="Bold"
+																			 Foreground="{StaticResource PrimaryColor}"
+																			 TextValue="{Binding TienKhachDua, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+
+												<Grid Grid.Row="1">
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="*" />
+														<ColumnDefinition Width="20" />
+														<ColumnDefinition Width="*" />
+													</Grid.ColumnDefinitions>
+
+													<components:FormInputControl Title="Số tiền trả khách"
+																				 Grid.Column="0"
+																				 IconKind="CashMinus"
+																				 UnitText="đ"
+																				 IsCurrencyMode="True"
+																				 IsEnabled="False"
+																				 TextValue="{Binding TienTraKhach, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+													<components:FormInputControl Title="Số tiền còn nợ"
+																				 Grid.Column="2"
+																				 IconKind="CashReturn"
+																				 UnitText="đ"
+																				 IsCurrencyMode="True"
+																				 IsEnabled="False"
+																				 TextValue="{Binding TienConNo, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+												</Grid>
+											</Grid>
+										</Border>
+									</TabItem>
+
+									<TabItem Header="CHUYỂN KHOẢN"
+											 IsSelected="{Binding IsThanhToanChuyenKhoan}">
+										<Border Style="{StaticResource CardStyle}"
+												Padding="12"
+												Height="180">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto" />
+													<ColumnDefinition Width="*" />
+												</Grid.ColumnDefinitions>
+
+												<Border Grid.Column="0"
+														Width="140"
+														Height="140"
+														Margin="0,0,12,0"
+														Style="{StaticResource CardStyle}"
+														Padding="8">
+													<Image Source="/Resources/Images/QrPay.png"
+														   Stretch="Uniform"
+														   RenderOptions.BitmapScalingMode="HighQuality" />
+												</Border>
+
+												<StackPanel Grid.Column="1"
+															VerticalAlignment="Center">
+													<TextBlock Text="QUÉT MÃ ĐỂ THANH TOÁN"
+															   FontWeight="Bold"
+															   FontSize="16"
+															   Foreground="{StaticResource PrimaryColor}"
+															   Margin="0,0,0,16" />
+													<Grid Margin="0,0,0,8">
+														<TextBlock Text="Ngân hàng:"
+																   Style="{StaticResource Content}" />
+														<TextBlock Text="Vietcombank (VCB)"
+																   HorizontalAlignment="Right"
+																   FontWeight="SemiBold"
+																   Foreground="{StaticResource PrimaryDarkColor}"
+																   FontSize="13" />
+													</Grid>
+													<Grid Margin="0,0,0,8">
+														<TextBlock Text="Chủ tài khoản:"
+																   Style="{StaticResource Content}" />
+														<TextBlock Text="NGUYEN GIA HUNG"
+																   HorizontalAlignment="Right"
+																   FontWeight="SemiBold"
+																   Foreground="{StaticResource PrimaryDarkColor}"
+																   FontSize="13" />
+													</Grid>
+													<Grid Margin="0,0,0,12">
+														<TextBlock Text="Số tài khoản:"
+																   Style="{StaticResource Content}"
+																   VerticalAlignment="Center" />
+														<TextBlock Text="1035283213"
+																   HorizontalAlignment="Right"
+																   FontWeight="Black"
+																   Foreground="{StaticResource DangerColor}"
+																   FontSize="16" />
+													</Grid>
+													<TextBlock Text="* Vui lòng kiểm tra kỹ tên người nhận trước khi chuyển."
+															   FontStyle="Italic"
+															   Foreground="{StaticResource TextLightColor}"
+															   FontSize="11" />
+												</StackPanel>
+											</Grid>
+										</Border>
+									</TabItem>
+								</TabControl>
 							</StackPanel>
-						</Border>
+						</ScrollViewer>
 
-					</StackPanel>
-				</ScrollViewer>
-
-				<TabControl Style="{StaticResource TabControlStyle}"
-							Grid.Row="3"
-							Margin="0,0,0,16">
-					<TabItem Header="TIỀN MẶT">
-						<Border Style="{StaticResource CardStyle}"
-								Height="180"
-								Padding="24,16,24,0">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto" />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-
-								<components:FormInputControl Title="Số tiền khách đưa"
-															 Grid.Row="0"
-															 IsRequired="True"
-															 IconKind="CashPlus"
-															 UnitText="đ"
-															 IsCurrencyMode="True"
-															 State="{Binding TienKhachDuaState}"
-															 HelperText="{Binding TienKhachDuaHelperText}"
-															 FontWeight="Bold"
-															 Foreground="{StaticResource PrimaryColor}"
-															 TextValue="{Binding TienKhachDua, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
-
-								<Grid Grid.Row="1">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="20" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-
-									<components:FormInputControl Title="Số tiền trả khách"
-																 Grid.Column="0"
-																 IconKind="CashMinus"
-																 UnitText="đ"
-																 IsCurrencyMode="True"
-																 IsEnabled="False"
-																 TextValue="{Binding TienTraKhach, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
-									<components:FormInputControl Title="Số tiền còn nợ"
-																 Grid.Column="2"
-																 IconKind="CashReturn"
-																 UnitText="đ"
-																 IsCurrencyMode="True"
-																 IsEnabled="False"
-																 TextValue="{Binding TienConNo, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
-								</Grid>
-							</Grid>
-						</Border>
-					</TabItem>
-
-					<TabItem Header="CHUYỂN KHOẢN">
-						<Border Style="{StaticResource CardStyle}"
-								Padding="12"
-								Height="180">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-
-								<Border Grid.Column="0"
-										Width="140"
-										Height="140"
-										Margin="0,0,12,0"
-										Style="{StaticResource CardStyle}"
-										Padding="8">
-									<Image Source="/Resources/Images/QrPay.png"
-										   Stretch="Uniform"
-										   RenderOptions.BitmapScalingMode="HighQuality" />
-								</Border>
-
-								<StackPanel Grid.Column="1"
-											VerticalAlignment="Center">
-									<TextBlock Text="QUÉT MÃ ĐỂ THANH TOÁN"
-											   FontWeight="Bold"
-											   FontSize="16"
-											   Foreground="{StaticResource PrimaryColor}"
-											   Margin="0,0,0,16" />
-
-									<Grid Margin="0,0,0,8">
-										<TextBlock Text="Ngân hàng:"
-												   Style="{StaticResource Content}" />
-										<TextBlock Text="Vietcombank (VCB)"
-												   HorizontalAlignment="Right"
-												   FontWeight="SemiBold"
-												   Foreground="{StaticResource PrimaryDarkColor}"
-												   FontSize="13" />
-									</Grid>
-
-									<Grid Margin="0,0,0,8">
-										<TextBlock Text="Chủ tài khoản:"
-												   Style="{StaticResource Content}" />
-										<TextBlock Text="NGUYEN GIA HUNG"
-												   HorizontalAlignment="Right"
-												   FontWeight="SemiBold"
-												   Foreground="{StaticResource PrimaryDarkColor}"
-												   FontSize="13" />
-									</Grid>
-
-									<Grid Margin="0,0,0,12">
-										<TextBlock Text="Số tài khoản:"
-												   Style="{StaticResource Content}"
-												   VerticalAlignment="Center" />
-										<TextBlock Text="1035283213"
-												   HorizontalAlignment="Right"
-												   FontWeight="Black"
-												   Foreground="{StaticResource DangerColor}"
-												   FontSize="16" />
-									</Grid>
-
-									<TextBlock Text="* Vui lòng kiểm tra kỹ tên người nhận trước khi chuyển."
-											   FontStyle="Italic"
-											   Foreground="{StaticResource TextLightColor}"
-											   FontSize="11" />
-								</StackPanel>
-							</Grid>
-						</Border>
-					</TabItem>
-				</TabControl>
-
-				<StackPanel Grid.Row="4"
+					</Grid>
+				</Grid>
+				<StackPanel Grid.Row="2"
 							Orientation="Horizontal"
-							HorizontalAlignment="Right">
+							HorizontalAlignment="Right"
+							Margin="0,8,0,0">
 					<Button Content="HỦY"
 							Style="{StaticResource OutlineButtonStyle}"
 							Width="80"
