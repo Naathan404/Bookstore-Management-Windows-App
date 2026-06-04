@@ -32,28 +32,36 @@
 						<ColumnDefinition Width="2*" />
 						<ColumnDefinition Width="1*" />
 						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<components:FilterInputControl Grid.Column="0"
 												   Margin="0,0,8,0"
 												   IconKind="Magnify"
-												   HintText="Tìm kiếm khách hàng hoặc người tạo..."
-												   TextValue="{Binding SearchText}" />
+												   HintText="Tìm kiếm tên khách hàng..."
+												   TextValue="{Binding SearchKeyword}" />
 
-					<components:FilterDatePickerControl Grid.Column="1"
+                    <components:FilterComboBoxControl Grid.Column="1"
+													  Margin="0,0,8,0"
+													  IconKind="Tag"
+													  HintText="Tình trạng hóa đơn"
+													  ItemsSource="{Binding ListTrangThaiNo}"
+													  SelectedItem="{Binding SelectedTrangThaiNo}" />
+
+                    <components:FilterDatePickerControl Grid.Column="2"
 														Margin="0,0,8,0"
 														IconKind="CalendarStart"
 														HintText="Từ ngày"
 														SelectedDate="{Binding FromDate}" />
 
-					<components:FilterDatePickerControl Grid.Column="2"
+					<components:FilterDatePickerControl Grid.Column="3"
 														Margin="0,0,8,0"
 														IconKind="CalendarEnd"
 														HintText="Đến ngày"
 														SelectedDate="{Binding ToDate}" />
 
-					<components:FilterActionPanel Grid.Column="3"
+					<components:FilterActionPanel Grid.Column="4"
 												  ClearCommand="{Binding XoaLocCommand}"
 												  RefreshCommand="{Binding RefreshCommand}"
 												  ShowRefreshButton="True" />

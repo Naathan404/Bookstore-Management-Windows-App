@@ -402,7 +402,7 @@
 							Margin="0,0,12,0"
 							CommandParameter="{Binding}"
 							Command="{Binding HuyBoGiaoDichCommand}" />
-					<Button Content="ĐÃ THU"
+					<Button Content="XÁC NHẬN"
 							Style="{StaticResource MainGradientButton}"
 							Width="100"
 							CommandParameter="{Binding}"
