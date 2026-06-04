@@ -39,7 +39,7 @@
 					<components:FilterInputControl Grid.Column="0"
 												   Margin="0,0,8,0"
 												   IconKind="Magnify"
-												   HintText="Tìm khách hàng hoặc người thu..."
+												   HintText="Tìm khách hàng..."
 												   TextValue="{Binding SearchText}" />
 
 					<components:FilterDatePickerControl Grid.Column="1"
