@@ -147,9 +147,11 @@ namespace Bookstore.WPF.ViewModels
             // 1. Lọc theo chữ (Tên KH hoặc Tên người thu)
             if (!string.IsNullOrEmpty(text))
             {
+                //filtered = filtered.Where(pt =>
+                //    (pt.TenKhachHang != null && pt.TenKhachHang.ToLower().Contains(text)) ||
+                //    (pt.TenNguoiTao != null && pt.TenNguoiTao.ToLower().Contains(text)));
                 filtered = filtered.Where(pt =>
-                    (pt.TenKhachHang != null && pt.TenKhachHang.ToLower().Contains(text)) ||
-                    (pt.TenNguoiTao != null && pt.TenNguoiTao.ToLower().Contains(text)));
+                    (pt.TenKhachHang != null && pt.TenKhachHang.ToLower().Contains(text)));
             }
 
             // 2. Lọc Từ ngày
