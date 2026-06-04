@@ -33,6 +33,17 @@
 		</Button>
 
 		<Button Style="{StaticResource MiniPrimaryButton}"
+				Visibility="{Binding ShowView, ElementName=Root, Converter={StaticResource BoolToVis}}"
+				Command="{Binding ViewCommand, ElementName=Root}"
+				CommandParameter="{Binding RowItem, ElementName=Root}"
+				ToolTip="Xem chi tiết"
+				Margin="0,0,8,0">
+			<materialDesign:PackIcon Kind="Eye"
+									 Width="15"
+									 Height="15" />
+		</Button>
+
+		<Button Style="{StaticResource MiniPrimaryButton}"
 				Visibility="{Binding ShowEdit, ElementName=Root, Converter={StaticResource BoolToVis}}"
 				Command="{Binding EditCommand, ElementName=Root}"
 				CommandParameter="{Binding RowItem, ElementName=Root}"

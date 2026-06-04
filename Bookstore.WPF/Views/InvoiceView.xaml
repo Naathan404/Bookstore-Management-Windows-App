@@ -130,8 +130,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<components:DataGridActionPanel RowItem="{Binding}"
-																	ShowEdit="True"
-																	EditCommand="{Binding DataContext.XemChiTietCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+																	ShowView="True"
+																	ViewCommand="{Binding DataContext.XemChiTietCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

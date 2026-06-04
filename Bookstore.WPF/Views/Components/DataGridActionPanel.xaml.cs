@@ -49,5 +49,24 @@ namespace Bookstore.WPF.Views.Components
 
         public string ActionToolTip { get => (string)GetValue(ActionToolTipProperty); set => SetValue(ActionToolTipProperty, value); }
         public static readonly DependencyProperty ActionToolTipProperty = DependencyProperty.Register("ActionToolTip", typeof(string), typeof(DataGridActionPanel), new PropertyMetadata(""));
+
+
+        public static readonly DependencyProperty ShowViewProperty =
+                DependencyProperty.Register("ShowView", typeof(bool), typeof(DataGridActionPanel), new PropertyMetadata(false));
+
+        public bool ShowView
+        {
+            get { return (bool)GetValue(ShowViewProperty); }
+            set { SetValue(ShowViewProperty, value); }
+        }
+
+        public static readonly DependencyProperty ViewCommandProperty =
+            DependencyProperty.Register("ViewCommand", typeof(ICommand), typeof(DataGridActionPanel), new PropertyMetadata(null));
+
+        public ICommand ViewCommand
+        {
+            get { return (ICommand)GetValue(ViewCommandProperty); }
+            set { SetValue(ViewCommandProperty, value); }
+        }
     }
 }
