@@ -24,6 +24,7 @@
 		<Border Background="Transparent">
 			<Border.InputBindings>
 				<MouseBinding MouseAction="LeftClick"
+							  CommandParameter="{Binding}"
 							  Command="{Binding HuyBoGiaoDichCommand}" />
 			</Border.InputBindings>
 		</Border>

@@ -31,11 +31,72 @@ namespace Bookstore.WPF.ViewModels
             get => _danhSachUuDai;
             set { _danhSachUuDai = value; OnPropertyChanged(); }
         }
+
         public ICommand CloseCommand { get; }
+        public ICommand TaiHoaDonCommand { get; }
 
         public InvoiceDetailPopupViewModel()
         {
             CloseCommand = new RelayCommand<object>((p) => IsOpen = false);
+
+            TaiHoaDonCommand = new RelayCommand<System.Windows.FrameworkElement>(printArea =>
+            {
+                if (printArea == null) return;
+
+                // 1. LƯU LẠI MARGIN GỐC CỦA GIAO DIỆN TRÊN MÀN HÌNH
+                var originalMargin = printArea.Margin;
+
+                try
+                {
+                    System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
+
+                    var pdfPrinter = new System.Printing.LocalPrintServer()
+                                        .GetPrintQueues()
+                                        .FirstOrDefault(q => q.Name == "Microsoft Print to PDF");
+
+                    if (pdfPrinter != null)
+                    {
+                        printDialog.PrintQueue = pdfPrinter;
+                    }
+                    else
+                    {
+                        if (printDialog.ShowDialog() != true) return;
+                    }
+
+                    // =======================================================
+                    // 2. THÊM "PADDING" (LỀ GIẤY) TRƯỚC KHI IN
+                    // 40 pixel tương đương khoảng 1cm lề giấy rất đẹp
+                    // =======================================================
+                    printArea.Margin = new System.Windows.Thickness(40);
+
+                    double width = printDialog.PrintableAreaWidth > 0 ? printDialog.PrintableAreaWidth : 793.7;
+
+                    printArea.Measure(new System.Windows.Size(width, double.PositiveInfinity));
+                    printArea.Arrange(new System.Windows.Rect(new System.Windows.Point(0, 0), printArea.DesiredSize));
+                    printArea.UpdateLayout();
+
+                    string tenFile = $"Hoa_don_HD{InvoiceInfo.NgayTao:ddMMyy}{InvoiceInfo.MaHoaDon:D3}";
+
+                    System.Windows.Clipboard.SetText(tenFile);
+
+                    printDialog.PrintVisual(printArea, tenFile);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Lỗi xuất hóa đơn: {ex.Message}", "Lỗi hệ thống", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
+                finally
+                {
+                    // =======================================================
+                    // 3. TRẢ LẠI MARGIN GỐC CHO GIAO DIỆN ĐỂ KHÔNG BỊ LỆCH UI
+                    // =======================================================
+                    printArea.Margin = originalMargin;
+
+                    printArea.InvalidateMeasure();
+                    printArea.InvalidateArrange();
+                    printArea.UpdateLayout();
+                }
+            });
         }
 
         // HÀM ĐỂ BẬT POPUP LÊN (Được gọi từ InvoiceViewModel)

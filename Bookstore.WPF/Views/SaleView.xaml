@@ -622,5 +622,7 @@
 		<popup:PaymentConfirmPopup DataContext="{Binding PaymentConfirmPopupViewModel}" />
 
 		<popup:BookDetailPopup DataContext="{Binding BookDetailPopupVM}" />
+
+		<popup:InvoiceDetailPopup DataContext="{Binding InvoiceDetailPopupVM}" />
 	</Grid>
 </UserControl>

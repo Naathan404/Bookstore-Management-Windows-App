@@ -2,6 +2,7 @@
 // using Bookstore.API.Data; // Chú ý kiểm tra lại namespace DbContext
 using Bookstore.API.Models;
 using Bookstore.Share.DTO;
+using Bookstore.Share.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,9 @@ namespace Bookstore.API.Controllers
                 SoTienGiam = hu.SoTienGiam,
                 Code = hu.UuDai != null ? hu.UuDai.Code : string.Empty,
                 TenUuDai = hu.UuDai != null ? hu.UuDai.TenChuongTrinh : string.Empty,
+                SoTienGiamHienThi = hu.SoTienGiam > 0
+                    ? "-" + hu.SoTienGiam.ToString("N0") + " đ"
+                    : "(Quà tặng) 0 đ"
             };
 
         // LẤY TOÀN BỘ DANH SÁCH 
@@ -43,30 +47,42 @@ namespace Bookstore.API.Controllers
             return await _context.HoaDon_Uudai.Select(MapToResponse).ToListAsync();
         }
 
-        // LẤY DANH SÁCH KHUYẾN MÃI CỦA 1 HÓA ĐƠN
-        // GET: api/HoaDon_UuDai/HoaDon/5
         [HttpGet("HoaDon/{maHoaDon}")]
         public async Task<ActionResult<IEnumerable<InvoicePromoResponse>>> GetByMaHoaDon(int maHoaDon)
         {
-            var promos = await _context.HoaDon_Uudai
+            // BƯỚC 1: Kéo dữ liệu thô và THÊM MaLoaiUuDai từ bảng master
+            var rawData = await _context.HoaDon_Uudai
                 .Where(hu => hu.MaHoaDon == maHoaDon)
                 .OrderBy(hu => hu.MaCT_HoaDon_UuDai)
-                .Select(MapToResponse)
+                .Select(hu => new
+                {
+                    hu.MaCT_HoaDon_UuDai,
+                    hu.MaHoaDon,
+                    hu.MaUuDai,
+                    hu.SoTienGiam,
+                    Code = hu.UuDai != null ? hu.UuDai.Code : string.Empty,
+                    TenUuDai = hu.UuDai != null ? hu.UuDai.TenChuongTrinh : string.Empty,
+
+                    // THÊM DÒNG NÀY ĐỂ BẮT LOGIC
+                    MaLoaiUuDai = hu.UuDai != null ? hu.UuDai.MaLoaiUuDai : PromotionType.HoaDonGiam
+                })
                 .ToListAsync();
 
-            //var query = from hu in _context.HoaDon_Uudai
-            //            join u in _context.UuDai on hu.MaUuDai equals u.MaUuDai // Thực hiện JOIN thủ công
-            //            where hu.MaHoaDon == maHoaDon
-            //            select new InvoicePromoResponse
-            //            {
-            //                MaCT_HoaDon_UuDai = hu.MaCT_HoaDon_UuDai,
-            //                MaHoaDon = hu.MaHoaDon,
-            //                MaUuDai = hu.MaUuDai,
-            //                Code = u.Code,
-            //                TenUuDai = u.TenChuongTrinh,
-            //                //ISBN = hu.ISBN,
-            //                SoTienGiam = hu.SoTienGiam
-            //            };
+            // BƯỚC 2: Check định dạng hiển thị dựa trên Loại ưu đãi
+            var promos = rawData.Select(x => new InvoicePromoResponse
+            {
+                MaCT_HoaDon_UuDai = x.MaCT_HoaDon_UuDai,
+                MaHoaDon = x.MaHoaDon,
+                MaUuDai = x.MaUuDai,
+                Code = x.Code,
+                TenUuDai = x.TenUuDai,
+                SoTienGiam = x.SoTienGiam,
+
+                // CHỈ KIỂM TRA LOẠI ƯU ĐÃI: Nếu là HoaDonQua hoặc SachQua -> Ghi chữ (Quà tặng)
+                SoTienGiamHienThi = (x.MaLoaiUuDai == PromotionType.HoaDonQua || x.MaLoaiUuDai == PromotionType.SachQua)
+                    ? "(Quà tặng)"
+                    : $"- {x.SoTienGiam:N0} đ"
+            }).ToList();
 
             return Ok(promos);
         }

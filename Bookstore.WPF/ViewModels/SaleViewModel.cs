@@ -5,6 +5,7 @@ using Bookstore.Share.DTOs;
 using Bookstore.Share.Enums;
 using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using Bookstore.WPF.ViewModels.Base;
 using Bookstore.WPF.Views.Components;
 using Bookstore.WPF.Views.Popup;
@@ -28,6 +29,8 @@ namespace Bookstore.WPF.ViewModels
         #region QUẢN LÝ POPUP ĐỘC LẬP
         public PaymentConfirmPopupViewModel PaymentConfirmPopupViewModel { get; set; } = new PaymentConfirmPopupViewModel();
         public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();
+
+        public InvoiceDetailPopupViewModel InvoiceDetailPopupVM { get; set; } = new InvoiceDetailPopupViewModel();
         #endregion
 
         #region Thẻ khách hàng (màn hình chính)
@@ -342,32 +345,69 @@ namespace Bookstore.WPF.ViewModels
             });
 
             MoPopupThanhToanCommand = new RelayCommand(
-    () =>
-    {
-        // Kiểm tra lấy ID khách (nếu không chọn thì truyền 0, lát Popup tự đổi thành 1)
-        int idKhach = KhachHangDuocChon?.MaKhachHang ?? 0;
+                () =>
+                {
+                    int idKhach = KhachHangDuocChon?.MaKhachHang ?? 0;
 
-        PaymentConfirmPopupViewModel.ShowPopup(
-            maKH: idKhach,
-            tenKH: TenKhachHang,
-            sdtKH: SdtKhachHang,
-            items: CartItems,
-            tamTinh: TamTinh, // Truyền thêm Tạm tính
-            giamGia: GiamTien,
-            tongTien: TongTienThanhToan,
-            uuDaiDaApDung: AppliedPromotionList.ToList(), // Truyền thêm List ưu đãi
-            onConfirm: () =>
-            {
-                // CALLBACK: Khi Popup báo API đã tạo đơn thành công, mình dọn dẹp SaleView
-                CartService.Instance.CartItems.Clear(); // Làm sạch giỏ
-                AppliedPromotionList.Clear(); // Gỡ các ưu đãi cũ
-                IsKhachVangLai = true; // Reset thông tin khách
-            }
-        );
-    },
-    () => IsThanhToanEnabled
-);
+                    PaymentConfirmPopupViewModel.ShowPopup(
+                        maKH: idKhach,
+                        tenKH: TenKhachHang,
+                        sdtKH: SdtKhachHang,
+                        items: CartItems,
+                        tamTinh: TamTinh,
+                        giamGia: GiamTien,
+                        tongTien: TongTienThanhToan,
+                        uuDaiDaApDung: AppliedPromotionList.ToList(),
 
+                        // CẬP NHẬT CALLBACK TẠI ĐÂY
+                        onConfirm: (maHoaDonMoiTao) =>
+                        {
+                            // 1. DÙNG DỮ LIỆU TRÊN RAM ĐỂ TẠO DTO (Tránh phải gọi API lại gây chậm máy)
+                            var invoiceRes = new InvoiceResponse
+                            {
+                                MaHoaDon = maHoaDonMoiTao,
+                                NgayTao = DateTime.Now,
+                                NguoiTao = AppState.CurrentUser?.Username ?? "admin",
+                                TenNguoiTao = AppState.CurrentUser?.Name ?? "Không xác định",
+                                TenKhachHang = TenKhachHang,
+                                TongTienTamTinh = TamTinh,
+                                GiamGia = GiamTien,
+                                Thue = PaymentConfirmPopupViewModel.ThueVAT, // Lấy thuế từ Popup thanh toán
+                                TongTien = TongTienThanhToan,
+                                SoTienTra = PaymentConfirmPopupViewModel.TienKhachDua > TongTienThanhToan
+                                            ? TongTienThanhToan
+                                            : PaymentConfirmPopupViewModel.TienKhachDua
+                            };
+
+                            var detailRes = CartItems.Select(c => new InvoiceDetailResponse
+                            {
+                                ISBN = c.ISBN,
+                                TenSach = c.TenSach,
+                                SoLuong = c.SoLuongMua,
+                                GiaBan = c.GiaBan,
+                                GiaNiemYet = c.OriginalGiaBan,
+                            }).ToList();
+
+                            var promoRes = AppliedPromotionList.Select(u => new InvoicePromoResponse
+                            {
+                                Code = u.Code,
+                                TenUuDai = u.TenChuongTrinh,
+                                SoTienGiam = u.SoTienGiamThucTe,
+                                SoTienGiamHienThi = u.MucGiamDisplay // Lấy luôn chuỗi hiển thị đã tính
+                            }).ToList();
+
+                            // 2. MỞ POPUP CHI TIẾT LÊN TRƯỚC
+                            InvoiceDetailPopupVM.ShowPopup(invoiceRes, detailRes, promoRes);
+
+                            // 3. DỌN DẸP GIỎ HÀNG SAU KHI ĐÃ BÓC TÁCH XONG DỮ LIỆU
+                            CartService.Instance.CartItems.Clear();
+                            AppliedPromotionList.Clear();
+                            IsKhachVangLai = true;
+                        }
+                    );
+                },
+                () => IsThanhToanEnabled
+            );
             #endregion
         }
         #endregion

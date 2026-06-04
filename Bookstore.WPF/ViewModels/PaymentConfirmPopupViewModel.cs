@@ -21,7 +21,7 @@ namespace Bookstore.WPF.ViewModels
         #region Thông tin chung
         private bool _isOpen;
         public bool IsOpen { get => _isOpen; set { _isOpen = value; OnPropertyChanged(); } }
-        private Action _onConfirmCallback;
+        private Action<int> _onConfirmCallback;
         private Action? _onCancelCallback;
         #endregion
 
@@ -203,7 +203,7 @@ namespace Bookstore.WPF.ViewModels
                         MaKhachHang = _maKhachHang > 0 ? _maKhachHang : (int?)null,
                         TongTienTamTinh = _tamTinh,
                         GiamGia = GiamTien,
-                        Thue = 0,
+                        Thue = _thueVAT,
                         TongTien = TongTienThanhToan,
                         SoTienTra = TienKhachDua > TongTienThanhToan ? TongTienThanhToan : TienKhachDua,
                         ChiTiet = chiTietList,
@@ -211,12 +211,12 @@ namespace Bookstore.WPF.ViewModels
                     };
 
                     // 4. Gọi API
-                    var result = await ApiClient.PostAsync<InvoiceRequest, object>("api/HoaDon", request);
+                    var result = await ApiClient.PostAsync<InvoiceRequest, CreateInvoiceResponse>("api/HoaDon", request);
 
-                    System.Windows.MessageBox.Show("Tạo hóa đơn thành công!", "Thông báo", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                    //System.Windows.MessageBox.Show("Tạo hóa đơn thành công!", "Thông báo", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
 
-                    _onConfirmCallback?.Invoke();
                     IsOpen = false;
+                    _onConfirmCallback?.Invoke(result.MaHoaDon);
                 }
                 catch (Exception ex)
                 {
@@ -232,7 +232,7 @@ namespace Bookstore.WPF.ViewModels
             ObservableCollection<CartItemModel> items, // Thông tin giỏ hàng
             decimal tamTinh, decimal giamGia, decimal tongTien, // Thông tin thanh toán
             List<PromotionDTO> uuDaiDaApDung, // Thông tin ưu đãi
-            Action onConfirm, Action? onCancel = null)
+            Action<int> onConfirm, Action? onCancel = null)
         {
             _maKhachHang = maKH;
             TenKhachHang = tenKH;
@@ -314,7 +314,7 @@ namespace Bookstore.WPF.ViewModels
             if (IsThanhToanChuyenKhoan)
             {
                 _tienKhachDua = TongTienThanhToan;
-                OnPropertyChanged(nameof(TienKhachDua)); 
+                OnPropertyChanged(nameof(TienKhachDua));
 
                 TienTraKhach = 0;
                 TienConNo = 0;
@@ -322,7 +322,7 @@ namespace Bookstore.WPF.ViewModels
                 TienKhachDuaState = FieldState.Success;
                 TienKhachDuaHelperText = "Thanh toán chuyển khoản (Quét QR).";
 
-                return; 
+                return;
             }
 
             if (TienKhachDua >= TongTienThanhToan)
