@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Bookstore.API.Data.Migrations
+namespace Bookstore.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDB : Migration
+    public partial class Init_NewDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -78,8 +78,7 @@ namespace Bookstore.API.Data.Migrations
                 name: "LoaiUuDai",
                 columns: table => new
                 {
-                    MaLoaiUuDai = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MaLoaiUuDai = table.Column<int>(type: "int", nullable: false),
                     TenLoaiUuDai = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ApDungToiDa = table.Column<int>(type: "int", nullable: false)
                 },
@@ -100,7 +99,9 @@ namespace Bookstore.API.Data.Migrations
                     SoDienThoai = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NganHang = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SoTaiKhoan = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    SoTaiKhoan = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NguoiDaiDien = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConGiaoGich = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,15 +178,15 @@ namespace Bookstore.API.Data.Migrations
                 {
                     MaKhachHang = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MaLoaiKhachHang = table.Column<int>(type: "int", nullable: false),
+                    MaLoaiKhachHang = table.Column<int>(type: "int", nullable: true),
                     NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TenKhachHang = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GioiTinh = table.Column<int>(type: "int", nullable: false),
-                    NgaySinh = table.Column<DateOnly>(type: "date", nullable: false),
-                    MaSoThue = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiaChi = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NgaySinh = table.Column<DateOnly>(type: "date", nullable: true),
+                    MaSoThue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DiaChi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SoDienThoai = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TongTienDaMua = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TongDonDaMua = table.Column<int>(type: "int", nullable: false),
                     TienNo = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
@@ -210,13 +211,14 @@ namespace Bookstore.API.Data.Migrations
                     NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NguoiTao = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaLoaiUuDai = table.Column<int>(type: "int", nullable: false),
-                    TenUuDai = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TenChuongTrinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MoTa = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgayBatDau = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NgayKetThuc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SoLuongToiDa = table.Column<int>(type: "int", nullable: false),
                     SoLuongDaDung = table.Column<int>(type: "int", nullable: false),
-                    MaLoaiKhachHang = table.Column<int>(type: "int", nullable: false),
+                    MaLoaiKhachHang = table.Column<int>(type: "int", nullable: true),
                     CoTheSuDung = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -237,28 +239,6 @@ namespace Bookstore.API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PhieuNhapSach",
-                columns: table => new
-                {
-                    MaPhieuNhapSach = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NguoiTao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaNhaCungCap = table.Column<int>(type: "int", nullable: false),
-                    TongTien = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PhieuNhapSach", x => x.MaPhieuNhapSach);
-                    table.ForeignKey(
-                        name: "FK_PhieuNhapSach_NhaCungCap_MaNhaCungCap",
-                        column: x => x.MaNhaCungCap,
-                        principalTable: "NhaCungCap",
-                        principalColumn: "MaNhaCungCap",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "NguoiDung",
                 columns: table => new
                 {
@@ -271,6 +251,8 @@ namespace Bookstore.API.Data.Migrations
                     NgayVaoLam = table.Column<DateOnly>(type: "date", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ChucVu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaOTP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HanOTP = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DangLamViec = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -355,54 +337,6 @@ namespace Bookstore.API.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CT_BC_KhachHang_KhachHang_MaKhachHang",
-                        column: x => x.MaKhachHang,
-                        principalTable: "KhachHang",
-                        principalColumn: "MaKhachHang",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HoaDon",
-                columns: table => new
-                {
-                    MaHoaDon = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NguoiTao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaKhachHang = table.Column<int>(type: "int", nullable: false),
-                    TongTienTamTinh = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    GiamGia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Thue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TongTien = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SoTienTra = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HoaDon", x => x.MaHoaDon);
-                    table.ForeignKey(
-                        name: "FK_HoaDon_KhachHang_MaKhachHang",
-                        column: x => x.MaKhachHang,
-                        principalTable: "KhachHang",
-                        principalColumn: "MaKhachHang",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PhieuThuTien",
-                columns: table => new
-                {
-                    MaPhieuThuTien = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NguoiTao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaKhachHang = table.Column<int>(type: "int", nullable: false),
-                    SoTienThu = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PhieuThuTien", x => x.MaPhieuThuTien);
-                    table.ForeignKey(
-                        name: "FK_PhieuThuTien_KhachHang_MaKhachHang",
                         column: x => x.MaKhachHang,
                         principalTable: "KhachHang",
                         principalColumn: "MaKhachHang",
@@ -496,6 +430,96 @@ namespace Bookstore.API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HoaDon",
+                columns: table => new
+                {
+                    MaHoaDon = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NguoiTao = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MaKhachHang = table.Column<int>(type: "int", nullable: true),
+                    TongTienTamTinh = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GiamGia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Thue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TongTien = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SoTienTra = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HoaDon", x => x.MaHoaDon);
+                    table.ForeignKey(
+                        name: "FK_HoaDon_KhachHang_MaKhachHang",
+                        column: x => x.MaKhachHang,
+                        principalTable: "KhachHang",
+                        principalColumn: "MaKhachHang",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_HoaDon_NguoiDung_NguoiTao",
+                        column: x => x.NguoiTao,
+                        principalTable: "NguoiDung",
+                        principalColumn: "TenDangNhap",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PhieuNhapSach",
+                columns: table => new
+                {
+                    MaPhieuNhapSach = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NguoiTao = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MaNhaCungCap = table.Column<int>(type: "int", nullable: false),
+                    GhiChu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TongTien = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PhieuNhapSach", x => x.MaPhieuNhapSach);
+                    table.ForeignKey(
+                        name: "FK_PhieuNhapSach_NguoiDung_NguoiTao",
+                        column: x => x.NguoiTao,
+                        principalTable: "NguoiDung",
+                        principalColumn: "TenDangNhap",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PhieuNhapSach_NhaCungCap_MaNhaCungCap",
+                        column: x => x.MaNhaCungCap,
+                        principalTable: "NhaCungCap",
+                        principalColumn: "MaNhaCungCap",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PhieuThuTien",
+                columns: table => new
+                {
+                    MaPhieuThuTien = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NguoiTao = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MaKhachHang = table.Column<int>(type: "int", nullable: false),
+                    SoTienThu = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    LyDoThu = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PhieuThuTien", x => x.MaPhieuThuTien);
+                    table.ForeignKey(
+                        name: "FK_PhieuThuTien_KhachHang_MaKhachHang",
+                        column: x => x.MaKhachHang,
+                        principalTable: "KhachHang",
+                        principalColumn: "MaKhachHang",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PhieuThuTien_NguoiDung_NguoiTao",
+                        column: x => x.NguoiTao,
+                        principalTable: "NguoiDung",
+                        principalColumn: "TenDangNhap",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PhienBanSach",
                 columns: table => new
                 {
@@ -552,6 +576,33 @@ namespace Bookstore.API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HoaDon_Uudai",
+                columns: table => new
+                {
+                    MaCT_HoaDon_UuDai = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MaHoaDon = table.Column<int>(type: "int", nullable: false),
+                    MaUuDai = table.Column<int>(type: "int", nullable: false),
+                    SoTienGiam = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HoaDon_Uudai", x => x.MaCT_HoaDon_UuDai);
+                    table.ForeignKey(
+                        name: "FK_HoaDon_Uudai_HoaDon_MaHoaDon",
+                        column: x => x.MaHoaDon,
+                        principalTable: "HoaDon",
+                        principalColumn: "MaHoaDon",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_HoaDon_Uudai_UuDai_MaUuDai",
+                        column: x => x.MaUuDai,
+                        principalTable: "UuDai",
+                        principalColumn: "MaUuDai",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CT_BC_Sach",
                 columns: table => new
                 {
@@ -585,20 +636,23 @@ namespace Bookstore.API.Data.Migrations
                 name: "CT_HoaDon",
                 columns: table => new
                 {
+                    MaCT_HoaDon = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     MaHoaDon = table.Column<int>(type: "int", nullable: false),
                     ISBN = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SoLuong = table.Column<int>(type: "int", nullable: false),
-                    DonGia = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    GiaBan = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GiaNiemYet = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CT_HoaDon", x => new { x.MaHoaDon, x.ISBN });
+                    table.PrimaryKey("PK_CT_HoaDon", x => x.MaCT_HoaDon);
                     table.ForeignKey(
                         name: "FK_CT_HoaDon_HoaDon_MaHoaDon",
                         column: x => x.MaHoaDon,
                         principalTable: "HoaDon",
                         principalColumn: "MaHoaDon",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CT_HoaDon_PhienBanSach_ISBN",
                         column: x => x.ISBN,
@@ -630,40 +684,6 @@ namespace Bookstore.API.Data.Migrations
                         column: x => x.MaPhieuNhapSach,
                         principalTable: "PhieuNhapSach",
                         principalColumn: "MaPhieuNhapSach",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HoaDon_Uudai",
-                columns: table => new
-                {
-                    MaCT_HoaDon_UuDai = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MaHoaDon = table.Column<int>(type: "int", nullable: false),
-                    MaUuDai = table.Column<int>(type: "int", nullable: false),
-                    ISBN = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    SoTienGiam = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HoaDon_Uudai", x => x.MaCT_HoaDon_UuDai);
-                    table.ForeignKey(
-                        name: "FK_HoaDon_Uudai_HoaDon_MaHoaDon",
-                        column: x => x.MaHoaDon,
-                        principalTable: "HoaDon",
-                        principalColumn: "MaHoaDon",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_HoaDon_Uudai_PhienBanSach_ISBN",
-                        column: x => x.ISBN,
-                        principalTable: "PhienBanSach",
-                        principalColumn: "ISBN",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_HoaDon_Uudai_UuDai_MaUuDai",
-                        column: x => x.MaUuDai,
-                        principalTable: "UuDai",
-                        principalColumn: "MaUuDai",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -744,14 +764,17 @@ namespace Bookstore.API.Data.Migrations
                 {
                     { 1, "Trang chủ", "DashboardView" },
                     { 2, "Bán hàng", "SaleView" },
-                    { 3, "Tra cứu sách", "ProductView" },
-                    { 4, "Khách hàng", "CustomerView" },
-                    { 5, "Nhập kho", "ImportView" },
-                    { 6, "Nhà cung cấp", "SupplierView" },
-                    { 7, "Ưu đãi", "PromotionView" },
-                    { 8, "Báo cáo", "ReportView" },
-                    { 9, "Tài khoản", "AccountView" },
-                    { 10, "Cài đặt", "SettingView" }
+                    { 3, "Hóa đơn", "InvoiceView" },
+                    { 4, "Tra cứu sách", "ProductView" },
+                    { 5, "Khách hàng", "CustomerView" },
+                    { 6, "Phiếu nhập", "ReceiptView" },
+                    { 7, "Nhập kho", "ImportView" },
+                    { 8, "Nhà cung cấp", "SupplierView" },
+                    { 9, "Ưu đãi", "PromotionView" },
+                    { 10, "Danh mục", "CategoryView" },
+                    { 11, "Báo cáo", "ReportView" },
+                    { 12, "Tài khoản", "AccountView" },
+                    { 13, "Cài đặt", "SettingView" }
                 });
 
             migrationBuilder.InsertData(
@@ -759,8 +782,8 @@ namespace Bookstore.API.Data.Migrations
                 columns: new[] { "MaLoaiKhachHang", "NoToiDa", "TenLoaiKhachHang", "TiLeTraToiThieu" },
                 values: new object[,]
                 {
-                    { 1, 1000000m, "Cá nhân", 0.5 },
-                    { 2, 5000000m, "Doanh nghiệp", 0.25 }
+                    { 1, 1000000m, "Cá nhân", 50.0 },
+                    { 2, 5000000m, "Doanh nghiệp", 25.0 }
                 });
 
             migrationBuilder.InsertData(
@@ -776,11 +799,12 @@ namespace Bookstore.API.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "NhaCungCap",
-                columns: new[] { "MaNhaCungCap", "DiaChi", "Email", "MaSoThue", "NganHang", "SoDienThoai", "SoTaiKhoan", "TenNhaCungCap" },
+                columns: new[] { "MaNhaCungCap", "ConGiaoGich", "DiaChi", "Email", "MaSoThue", "NganHang", "NguoiDaiDien", "SoDienThoai", "SoTaiKhoan", "TenNhaCungCap" },
                 values: new object[,]
                 {
-                    { 1, "387-389 Hai Bà Trưng, Quận 3, TP.HCM", "info@fahasa.com", "0300435133", "Vietcombank", "1900636467", "0071000123456", "Công ty CP Phát hành sách FAHASA" },
-                    { 2, "212 Nguyễn Trãi, Quận 1, TP.HCM", "contact@phuongnam.com", "0302221113", "Techcombank", "1900555555", "1901234567890", "Nhà sách Phương Nam" }
+                    { 1, true, "387-389 Hai Bà Trưng, Quận 3, TP.HCM", "info@fahasa.com", "0300435133", "Vietcombank", "Lê Thành Nghĩa", "1900636467", "0071000123456", "Công ty CP Phát hành sách FAHASA" },
+                    { 2, true, "212 Nguyễn Trãi, Quận 1, TP.HCM", "contact@phuongnam.com", "0302221113", "Techcombank", "Tô Công Hữu Nhân", "1900555555", "1901234567890", "Nhà sách Phương Nam" },
+                    { 3, true, "36A Alexander, Quận 3, TP.HCM", "contact@justbooks.com", "0302221115", "Techcombank", "Nguyễn Khả An", "19005551234", "1901234567777", "Nhà sách JustBooks" }
                 });
 
             migrationBuilder.InsertData(
@@ -840,7 +864,8 @@ namespace Bookstore.API.Data.Migrations
                 values: new object[,]
                 {
                     { "ChoPhepKetThucUuDai", 1 },
-                    { "CoKhoangachCacKhoangGia", 1 },
+                    { "CoKhoangCachCacKhoangGia", 1 },
+                    { "MatKhauMacDinh", 123456 },
                     { "SoLuongNhapToiThieu", 150 },
                     { "SoLuongTonToiDaCoTheNhap", 300 },
                     { "SoLuongTonToiThieu", 20 },
@@ -848,7 +873,7 @@ namespace Bookstore.API.Data.Migrations
                     { "SoLuongUuDaiToiThieu", 1 },
                     { "ThueVAT", 8 },
                     { "TienThuLonHonNo", 1 },
-                    { "TiLeTinhdonGiaBan", 110 }
+                    { "TiLeDonGiaBan", 110 }
                 });
 
             migrationBuilder.InsertData(
@@ -881,14 +906,14 @@ namespace Bookstore.API.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "NguoiDung",
-                columns: new[] { "TenDangNhap", "ChucVu", "DangLamViec", "Email", "GioiTinh", "HoTen", "MaNhomNguoiDung", "MatKhau", "NgaySinh", "NgayVaoLam" },
+                columns: new[] { "TenDangNhap", "ChucVu", "DangLamViec", "Email", "GioiTinh", "HanOTP", "HoTen", "MaNhomNguoiDung", "MaOTP", "MatKhau", "NgaySinh", "NgayVaoLam" },
                 values: new object[,]
                 {
-                    { "admin", "Giám đốc", true, "admin@sahara.com", "Nam", "Nguyễn Chí Nguyên", 1, "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 3, 10), new DateOnly(2025, 1, 1) },
-                    { "hungng", "Quản lý Cửa hàng", true, "hungng@sahara.com", "Nam", "Nguyễn Gia Hưng", 3, "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 1, 11), new DateOnly(2025, 2, 1) },
-                    { "phunlv", "Nhân viên Bán hàng", true, "phunlv@sahara.com", "Nam", "Nguyễn Lưu Văn Phú", 2, "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2000, 10, 20), new DateOnly(2025, 6, 1) },
-                    { "quanlh", "Quản lý Cửa hàng", true, "quanlh@sahara.com", "Nam", "Lê Hoàng Quân", 3, "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 1, 11), new DateOnly(2025, 2, 1) },
-                    { "sonph", "Quản lý Cửa hàng", true, "sonph@sahara.com", "Nam", "Phạm Hoàng Sơn", 3, "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 1, 11), new DateOnly(2025, 2, 1) }
+                    { "admin", "Quản trị viên", true, "24521186@gm.uit.edu.vn", "Nam", new DateTime(2026, 6, 4, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(33), "Nguyễn Chí Nguyên", 1, "", "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 3, 10), new DateOnly(2025, 1, 1) },
+                    { "hungng", "Quản lý Cửa hàng", true, "24520604@gm.uit.edu.vn", "Nam", new DateTime(2026, 6, 4, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(48), "Nguyễn Gia Hưng", 3, "", "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 1, 11), new DateOnly(2025, 2, 1) },
+                    { "phunlv", "Nhân viên Bán hàng", true, "24521360@g.uit.edu.vn", "Nam", new DateTime(2026, 6, 4, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(59), "Nguyễn Lưu Văn Phú", 2, "", "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2000, 10, 20), new DateOnly(2025, 6, 1) },
+                    { "quanlh", "Quản lý Cửa hàng", true, "24521432@gm.uit.edu.vn", "Nam", new DateTime(2026, 6, 4, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(53), "Lê Hoàng Quân", 3, "", "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 1, 11), new DateOnly(2025, 2, 1) },
+                    { "sonph", "Quản lý Cửa hàng", true, "24521536@gm.uit.edu.vn", "Nam", new DateTime(2026, 6, 4, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(56), "Phạm Hoàng Sơn", 3, "", "f0e65975ed9a43805b030b5e0d4af83239a652b1ddd7fa26b108424e19f48676", new DateOnly(2006, 1, 11), new DateOnly(2025, 2, 1) }
                 });
 
             migrationBuilder.InsertData(
@@ -901,12 +926,12 @@ namespace Bookstore.API.Data.Migrations
                     { 2, 1 },
                     { 2, 2 },
                     { 3, 1 },
-                    { 3, 2 },
                     { 3, 3 },
                     { 4, 1 },
                     { 4, 2 },
                     { 4, 3 },
                     { 5, 1 },
+                    { 5, 2 },
                     { 5, 3 },
                     { 6, 1 },
                     { 6, 3 },
@@ -915,16 +940,14 @@ namespace Bookstore.API.Data.Migrations
                     { 8, 1 },
                     { 8, 3 },
                     { 9, 1 },
-                    { 10, 1 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "PhieuNhapSach",
-                columns: new[] { "MaPhieuNhapSach", "MaNhaCungCap", "NgayTao", "NguoiTao", "TongTien" },
-                values: new object[,]
-                {
-                    { 1, 1, new DateTime(2024, 3, 1, 9, 0, 0, 0, DateTimeKind.Unspecified), "admin", 22000000m },
-                    { 2, 2, new DateTime(2024, 4, 15, 14, 30, 0, 0, DateTimeKind.Unspecified), "hungng", 3000000m }
+                    { 9, 3 },
+                    { 10, 1 },
+                    { 10, 2 },
+                    { 10, 3 },
+                    { 11, 1 },
+                    { 11, 3 },
+                    { 12, 1 },
+                    { 13, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -932,48 +955,48 @@ namespace Bookstore.API.Data.Migrations
                 columns: new[] { "MaSach", "ImageUrl", "MaTheLoai", "MoTa", "TenSach" },
                 values: new object[,]
                 {
-                    { 1, "/Assets/Images/cleancode.jpg", 1, "Sách gối đầu giường của mọi Dev", "Clean Code" },
-                    { 2, "/Assets/Images/refactoring.jpg", 1, "Cải thiện thiết kế code cũ", "Refactoring" },
-                    { 3, "/Assets/Images/designpatterns.jpg", 1, "Các mẫu thiết kế chuẩn GOF", "Design Patterns" },
-                    { 4, "/Assets/Images/cleancoder.jpg", 1, "Quy tắc hành nghề coder chuyên nghiệp", "The Clean Coder" },
-                    { 5, "/Assets/Images/300baicode.jpg", 1, "Học xong code bao lương 3 ngàn đô", "300 Bài Code Thiếu Nhi" },
-                    { 6, "/Assets/Images/matbiec.jpg", 2, "Truyện dài cực hay, tình yêu đau đớn của Ngạn", "Mắt Biếc" },
-                    { 7, "/Assets/Images/vetuoitho.jpg", 2, "Ký ức tuổi thơ dữ dội", "Cho Tôi Xin Một Vé Đi Tuổi Thơ" },
-                    { 8, "/Assets/Images/sodo.jpg", 2, "Hành trình thăng tiến của Xuân Tóc Đỏ", "Số Đỏ" },
-                    { 9, "/Assets/Images/chipheo.jpg", 2, "Tuyển tập truyện ngắn Nam Cao", "Chí Phèo" },
-                    { 10, "/Assets/Images/canhdongbattan.jpg", 2, "Nỗi đau trên miền sông nước", "Cánh Đồng Bất Tận" },
-                    { 11, "/Assets/Images/rungnauy.jpg", 2, "Tiểu thuyết nổi tiếng của Haruki Murakami", "Rừng Na Uy" },
-                    { 12, "/Assets/Images/kafka.jpg", 2, "Chuyến phiêu lưu kỳ bí", "Kafka Bên Bờ Biển" },
-                    { 13, "/Assets/Images/nhagiakim.jpg", 2, "Hành trình đi tìm kho báu của Santiago", "Nhà Giả Kim" },
-                    { 14, "/Assets/Images/harrypotter1.jpg", 2, "Khởi đầu thế giới phép thuật", "Harry Potter và Hòn Đá Phù Thủy" },
-                    { 15, "/Assets/Images/harrypotter2.jpg", 2, "Năm học thứ hai tại Hogwarts", "Harry Potter và Phòng Chứa Bí Mật" },
-                    { 16, "/Assets/Images/doraemon1.jpg", 6, "Mèo máy đến từ tương lai", "Doraemon Tập 1" },
-                    { 17, "/Assets/Images/doraemon2.jpg", 6, "Những bảo bối thần kỳ", "Doraemon Tập 2" },
-                    { 18, "/Assets/Images/conan1.jpg", 6, "Sự khởi đầu của thám tử teo nhỏ", "Conan Tập 1" },
-                    { 19, "/Assets/Images/conan2.jpg", 6, "Vụ án mới", "Conan Tập 2" },
-                    { 20, "/Assets/Images/dacnhantam.jpg", 4, "Sách kỹ năng giao tiếp hay nhất", "Đắc Nhân Tâm" },
-                    { 21, "/Assets/Images/quangganhlo.jpg", 4, "Nghệ thuật sống hạnh phúc", "Quẳng Gánh Lo Đi Và Vui Sống" },
-                    { 22, "/Assets/Images/gian.jpg", 4, "Làm chủ cảm xúc", "Giận" },
-                    { 23, "/Assets/Images/thienac.jpg", 4, "Tâm lý học trên mạng xã hội", "Thiện, Ác và Smartphone" },
-                    { 24, "/Assets/Images/trenduongbang.jpg", 3, "Khởi nghiệp và kinh doanh", "Trên Đường Băng" },
-                    { 25, "/Assets/Images/caphecungtony.jpg", 3, "Chuyện đời chuyện nghề", "Cà Phê Cùng Tony" }
+                    { 1, "/Resources/Images/Books/cleancode.jpg", 1, "Sách gối đầu giường của mọi Dev", "Clean Code" },
+                    { 2, "/Resources/Images/Books/refactoring.jpg", 1, "Cải thiện thiết kế code cũ", "Refactoring" },
+                    { 3, "/Resources/Images/Books/designpatterns.jpg", 1, "Các mẫu thiết kế chuẩn GOF", "Design Patterns" },
+                    { 4, "/Resources/Images/Books/cleancoder.jpg", 1, "Quy tắc hành nghề coder chuyên nghiệp", "The Clean Coder" },
+                    { 5, "/Resources/Images/Books/300baicode.png", 1, "Học xong code bao lương 3 ngàn đô", "300 Bài Code Thiếu Nhi" },
+                    { 6, "/Resources/Images/Books/matbiec.jpg", 2, "Truyện dài cực hay, tình yêu đau đớn của Ngạn", "Mắt Biếc" },
+                    { 7, "/Resources/Images/Books/vetuoitho.jpg", 2, "Ký ức tuổi thơ dữ dội", "Cho Tôi Xin Một Vé Đi Tuổi Thơ" },
+                    { 8, "/Resources/Images/Books/sodo.jpg", 2, "Hành trình thăng tiến của Xuân Tóc Đỏ", "Số Đỏ" },
+                    { 9, "/Resources/Images/Books/chipheo.jpg", 2, "Tuyển tập truyện ngắn Nam Cao", "Chí Phèo" },
+                    { 10, "/Resources/Images/Books/canhdongbattan.jpg", 2, "Nỗi đau trên miền sông nước", "Cánh Đồng Bất Tận" },
+                    { 11, "/Resources/Images/Books/rungnauy.jpg", 2, "Tiểu thuyết nổi tiếng của Haruki Murakami", "Rừng Na Uy" },
+                    { 12, "/Resources/Images/Books/kafka.jpg", 2, "Chuyến phiêu lưu kỳ bí", "Kafka Bên Bờ Biển" },
+                    { 13, "/Resources/Images/Books/nhagiakim.jpg", 2, "Hành trình đi tìm kho báu của Santiago", "Nhà Giả Kim" },
+                    { 14, "/Resources/Images/Books/harrypotter1.jpg", 2, "Khởi đầu thế giới phép thuật", "Harry Potter và Hòn Đá Phù Thủy" },
+                    { 15, "/Resources/Images/Books/harrypotter2.jpg", 2, "Năm học thứ hai tại Hogwarts", "Harry Potter và Phòng Chứa Bí Mật" },
+                    { 16, "/Resources/Images/Books/doraemon1.jpg", 6, "Mèo máy đến từ tương lai", "Doraemon Tập 1" },
+                    { 17, "/Resources/Images/Books/doraemon2.jpg", 6, "Những bảo bối thần kỳ", "Doraemon Tập 2" },
+                    { 18, "/Resources/Images/Books/conan1.jpg", 6, "Sự khởi đầu của thám tử teo nhỏ", "Conan Tập 1" },
+                    { 19, "/Resources/Images/Books/conan2.png", 6, "Vụ án mới", "Conan Tập 2" },
+                    { 20, "/Resources/Images/Books/dacnhantam.jpg", 4, "Sách kỹ năng giao tiếp hay nhất", "Đắc Nhân Tâm" },
+                    { 21, "/Resources/Images/Books/quangganhlo.jpg", 4, "Nghệ thuật sống hạnh phúc", "Quẳng Gánh Lo Đi Và Vui Sống" },
+                    { 22, "/Resources/Images/Books/gian.jpg", 4, "Làm chủ cảm xúc", "Giận" },
+                    { 23, "/Resources/Images/Books/thienac.jpg", 4, "Tâm lý học trên mạng xã hội", "Thiện, Ác và Smartphone" },
+                    { 24, "/Resources/Images/Books/trenduongbang.jpg", 3, "Khởi nghiệp và kinh doanh", "Trên Đường Băng" },
+                    { 25, "/Resources/Images/Books/caphecungtony.jpg", 3, "Chuyện đời chuyện nghề", "Cà Phê Cùng Tony" }
                 });
 
             migrationBuilder.InsertData(
                 table: "UuDai",
-                columns: new[] { "MaUuDai", "CoTheSuDung", "MaLoaiKhachHang", "MaLoaiUuDai", "MoTa", "NgayBatDau", "NgayKetThuc", "NgayTao", "NguoiTao", "SoLuongDaDung", "SoLuongToiDa", "TenUuDai" },
+                columns: new[] { "MaUuDai", "CoTheSuDung", "Code", "MaLoaiKhachHang", "MaLoaiUuDai", "MoTa", "NgayBatDau", "NgayKetThuc", "NgayTao", "NguoiTao", "SoLuongDaDung", "SoLuongToiDa", "TenChuongTrinh" },
                 values: new object[,]
                 {
-                    { 1, true, 1, 1, "Chương trình kích cầu", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin", 0, 1000, "Giảm 10% Hóa đơn > 500k" },
-                    { 2, true, 2, 2, "Tri ân khách VIP", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "quanlh", 0, 50, "Hóa đơn 1Tr tặng Đắc Nhân Tâm" },
-                    { 3, true, 1, 3, "Sale sách Hot", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "hungng", 0, 200, "Giảm 20k Mắt Biếc" },
-                    { 4, true, 1, 4, "Đồng hành cùng IT", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sonph", 0, 100, "Combo Dev: Mua 2 tặng 1" }
+                    { 1, true, "PROMO10", 1, 1, "Chương trình kích cầu", new DateTime(2026, 5, 30, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(992), new DateTime(2026, 7, 4, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(993), new DateTime(2026, 5, 25, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(984), "admin", 136, 1000, "Giảm 10% Hóa đơn > 500k" },
+                    { 2, true, "DTN1M", 2, 2, "Tri ân khách VIP", new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "quanlh", 50, 50, "Hóa đơn 1Tr tặng Đắc Nhân Tâm" },
+                    { 3, false, "MATBIEC20K", 1, 3, "Sale sách Hot", new DateTime(2026, 6, 3, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(1025), new DateTime(2026, 8, 3, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(1026), new DateTime(2026, 6, 2, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(1023), "hungng", 20, 200, "Giảm 20k Mắt Biếc" },
+                    { 4, true, "CODESTACK300", 1, 4, "Đồng hành cùng IT", new DateTime(2026, 6, 19, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(1029), new DateTime(2026, 7, 19, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(1030), new DateTime(2026, 6, 4, 16, 46, 29, 294, DateTimeKind.Local).AddTicks(1028), "sonph", 0, 100, "Combo Dev: Mua 2 tặng 1" }
                 });
 
             migrationBuilder.InsertData(
                 table: "CTUD_HoaDon_Giam",
                 columns: new[] { "MaCT", "GiamToiDa", "MaUuDai", "SoTienGiam", "SoTienToiDa", "SoTienToiThieu", "TiLeGiam" },
-                values: new object[] { 1, 100m, 1, 0m, 999999999m, 500000m, 0.10000000149011612 });
+                values: new object[] { 1, 100000m, 1, 0m, 999999999m, 500000m, 10.0 });
 
             migrationBuilder.InsertData(
                 table: "CTUD_HoaDon_Qua",
@@ -983,7 +1006,7 @@ namespace Bookstore.API.Data.Migrations
             migrationBuilder.InsertData(
                 table: "CTUD_Sach_Giam",
                 columns: new[] { "MaCT", "GiamToiDa", "MaUuDai", "SoTienGiam", "TiLeGiam" },
-                values: new object[] { 1, 20000m, 3, 20000m, 0.0 });
+                values: new object[] { 1, 0m, 3, 20000m, 0.0 });
 
             migrationBuilder.InsertData(
                 table: "CTUD_Sach_Qua",
@@ -1044,9 +1067,18 @@ namespace Bookstore.API.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "PhieuNhapSach",
+                columns: new[] { "MaPhieuNhapSach", "GhiChu", "MaNhaCungCap", "NgayTao", "NguoiTao", "TongTien" },
+                values: new object[,]
+                {
+                    { 1, "", 1, new DateTime(2024, 3, 1, 9, 0, 0, 0, DateTimeKind.Unspecified), "admin", 22000000m },
+                    { 2, "", 2, new DateTime(2024, 4, 15, 14, 30, 0, 0, DateTimeKind.Unspecified), "hungng", 3000000m }
+                });
+
+            migrationBuilder.InsertData(
                 table: "PhieuThuTien",
-                columns: new[] { "MaPhieuThuTien", "MaKhachHang", "NgayTao", "NguoiTao", "SoTienThu" },
-                values: new object[] { 1, 2, new DateTime(2024, 5, 5, 17, 0, 0, 0, DateTimeKind.Unspecified), "phunlv", 100000m });
+                columns: new[] { "MaPhieuThuTien", "LyDoThu", "MaKhachHang", "NgayTao", "NguoiTao", "SoTienThu" },
+                values: new object[] { 1, "Thu tiền cho hóa đơn còn thiếu", 2, new DateTime(2024, 5, 5, 17, 0, 0, 0, DateTimeKind.Unspecified), "phunlv", 100000m });
 
             migrationBuilder.InsertData(
                 table: "TacGia_Sach",
@@ -1097,13 +1129,13 @@ namespace Bookstore.API.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "CT_HoaDon",
-                columns: new[] { "ISBN", "MaHoaDon", "DonGia", "SoLuong" },
+                columns: new[] { "MaCT_HoaDon", "GiaBan", "GiaNiemYet", "ISBN", "MaHoaDon", "SoLuong" },
                 values: new object[,]
                 {
-                    { "978-604-1-09887-1", 1, 110000m, 1 },
-                    { "978-0132350884", 2, 450000m, 2 },
-                    { "978-604-2-11111-1", 3, 20000m, 5 },
-                    { "978-604-56-7890-1", 3, 150000m, 6 }
+                    { 1, 110000m, 100000m, "978-604-1-09887-1", 1, 1 },
+                    { 2, 450000m, 440000m, "978-0132350884", 2, 2 },
+                    { 3, 20000m, 18000m, "978-604-2-11111-1", 3, 5 },
+                    { 4, 150000m, 140000m, "978-604-56-7890-1", 3, 6 }
                 });
 
             migrationBuilder.InsertData(
@@ -1118,12 +1150,12 @@ namespace Bookstore.API.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "HoaDon_Uudai",
-                columns: new[] { "MaCT_HoaDon_UuDai", "ISBN", "MaHoaDon", "MaUuDai", "SoTienGiam" },
+                columns: new[] { "MaCT_HoaDon_UuDai", "MaHoaDon", "MaUuDai", "SoTienGiam" },
                 values: new object[,]
                 {
-                    { 1, "978-604-1-09887-1", 1, 3, 20000m },
-                    { 2, "978-604-MEME-01", 2, 4, 0m },
-                    { 3, null, 3, 1, 100000m }
+                    { 1, 1, 3, 20000m },
+                    { 2, 2, 4, 0m },
+                    { 3, 3, 1, 100000m }
                 });
 
             migrationBuilder.InsertData(
@@ -1160,6 +1192,11 @@ namespace Bookstore.API.Data.Migrations
                 column: "ISBN");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CT_HoaDon_MaHoaDon",
+                table: "CT_HoaDon",
+                column: "MaHoaDon");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CT_PhieuNhapSach_ISBN",
                 table: "CT_PhieuNhapSach",
                 column: "ISBN");
@@ -1190,9 +1227,9 @@ namespace Bookstore.API.Data.Migrations
                 column: "MaKhachHang");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HoaDon_Uudai_ISBN",
-                table: "HoaDon_Uudai",
-                column: "ISBN");
+                name: "IX_HoaDon_NguoiTao",
+                table: "HoaDon",
+                column: "NguoiTao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HoaDon_Uudai_MaHoaDon",
@@ -1203,12 +1240,6 @@ namespace Bookstore.API.Data.Migrations
                 name: "IX_HoaDon_Uudai_MaUuDai",
                 table: "HoaDon_Uudai",
                 column: "MaUuDai");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_KhachHang_Email",
-                table: "KhachHang",
-                column: "Email",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_KhachHang_MaLoaiKhachHang",
@@ -1271,9 +1302,19 @@ namespace Bookstore.API.Data.Migrations
                 column: "MaNhaCungCap");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PhieuNhapSach_NguoiTao",
+                table: "PhieuNhapSach",
+                column: "NguoiTao");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PhieuThuTien_MaKhachHang",
                 table: "PhieuThuTien",
                 column: "MaKhachHang");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PhieuThuTien_NguoiTao",
+                table: "PhieuThuTien",
+                column: "NguoiTao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sach_MaTheLoai",
@@ -1337,9 +1378,6 @@ namespace Bookstore.API.Data.Migrations
                 name: "HoaDon_Uudai");
 
             migrationBuilder.DropTable(
-                name: "NguoiDung");
-
-            migrationBuilder.DropTable(
                 name: "PhanQuyen");
 
             migrationBuilder.DropTable(
@@ -1373,9 +1411,6 @@ namespace Bookstore.API.Data.Migrations
                 name: "ChucNang");
 
             migrationBuilder.DropTable(
-                name: "NhomNguoiDung");
-
-            migrationBuilder.DropTable(
                 name: "TacGia");
 
             migrationBuilder.DropTable(
@@ -1391,6 +1426,9 @@ namespace Bookstore.API.Data.Migrations
                 name: "KhachHang");
 
             migrationBuilder.DropTable(
+                name: "NguoiDung");
+
+            migrationBuilder.DropTable(
                 name: "NhaXuatBan");
 
             migrationBuilder.DropTable(
@@ -1401,6 +1439,9 @@ namespace Bookstore.API.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "LoaiKhachHang");
+
+            migrationBuilder.DropTable(
+                name: "NhomNguoiDung");
 
             migrationBuilder.DropTable(
                 name: "TheLoai");

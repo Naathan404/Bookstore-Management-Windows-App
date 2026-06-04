@@ -74,6 +74,14 @@
 			<Popup:BookDetailPopup />
 		</DataTemplate>
 
+		<DataTemplate DataType="{x:Type viewmodels:InvoiceDetailPopupViewModel}">
+			<Popup:InvoiceDetailPopup />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type viewmodels:PromotionEditPopupViewModel}">
+			<Popup:PromotionEditPopup />
+		</DataTemplate>
+
 	</Window.Resources>
 
 	<Grid>

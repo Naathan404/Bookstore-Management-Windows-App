@@ -60,7 +60,7 @@ namespace Bookstore.API.Data
             modelBuilder.Entity<CT_PhieuNhapSach>().HasKey(k => new { k.MaPhieuNhapSach, k.ISBN });
             modelBuilder.Entity<UuDai_SachDieuKien>().HasKey(k => new { k.MaUuDai, k.ISBN });
             modelBuilder.Entity<UuDai_SachTang>().HasKey(k => new { k.MaUuDai, k.ISBN });
-            modelBuilder.Entity<CT_HoaDon>().HasKey(k => new { k.MaHoaDon, k.ISBN });
+            //modelBuilder.Entity<CT_HoaDon>().HasKey(k => new { k.MaHoaDon, k.ISBN });
             modelBuilder.Entity<CT_BC_Sach>().HasKey(k => new { k.MaBaoCaoSach, k.ISBN });
             modelBuilder.Entity<CT_BC_KhachHang>().HasKey(k => new { k.MaBaoCaoKhachHang, k.MaKhachHang });
             modelBuilder.Entity<PhanQuyen>().HasKey(k => new { k.MaChucNang, k.MaNhomNguoiDung });
@@ -74,9 +74,9 @@ namespace Bookstore.API.Data
 
 
             // FOREIGNKEY
-            modelBuilder.Entity<Sach>()
-                .HasOne<TheLoai>().WithMany().HasForeignKey(s => s.MaTheLoai)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Sach>()
+            //    .HasOne<TheLoai>().WithMany().HasForeignKey(s => s.MaTheLoai)
+            //    .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Sach>()
                 .HasOne(p => p.TheLoai)
                 .WithMany()
@@ -164,7 +164,9 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<HoaDon>()
-                .HasOne(p => p.KhachHang).WithMany().HasForeignKey(p => p.MaKhachHang)
+                .HasOne(p => p.KhachHang)
+                .WithMany()
+                .HasForeignKey(p => p.MaKhachHang)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<HoaDon>()
                 .HasOne(p => p.NguoiDung).WithMany().HasForeignKey(p => p.NguoiTao)
@@ -183,14 +185,18 @@ namespace Bookstore.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<HoaDon_UuDai>()
-                .HasOne<HoaDon>().WithMany().HasForeignKey(h => h.MaHoaDon)
+                .HasOne<HoaDon>(h => h.HoaDon)
+                .WithMany()
+                .HasForeignKey(h => h.MaHoaDon)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<HoaDon_UuDai>()
-                .HasOne<UuDai>().WithMany().HasForeignKey(h => h.MaUuDai)
+                .HasOne<UuDai>(u => u.UuDai)
+                .WithMany()
+                .HasForeignKey(h => h.MaUuDai)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<HoaDon_UuDai>()
-                .HasOne<PhienBanSach>().WithMany().HasForeignKey(h => h.ISBN)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<HoaDon_UuDai>()
+            //    .HasOne<PhienBanSach>().WithMany().HasForeignKey(h => h.ISBN)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhieuThuTien>()
                 .HasOne(p => p.KhachHang).WithMany().HasForeignKey(p => p.MaKhachHang)
@@ -800,26 +806,26 @@ namespace Bookstore.API.Data
             // CHI TIẾT HÓA ĐƠN
             modelBuilder.Entity<CT_HoaDon>().HasData(
                 // Chi tiết HD 1: 1 Mắt biếc (Giá bán 110k)
-                new CT_HoaDon { MaHoaDon = 1, ISBN = "978-604-1-09887-1", SoLuong = 1, DonGia = 110000m, GiaVon = 100000m },
+                new CT_HoaDon { MaCT_HoaDon = 1, MaHoaDon = 1, ISBN = "978-604-1-09887-1", SoLuong = 1, GiaBan = 110000m, GiaNiemYet = 100000m },
 
                 // Chi tiết HD 2: 2 Clean Code (Giá bán 450k/cuốn)
-                new CT_HoaDon { MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, DonGia = 450000m, GiaVon = 440000m },
+                new CT_HoaDon { MaCT_HoaDon = 2, MaHoaDon = 2, ISBN = "978-0132350884", SoLuong = 2, GiaBan = 450000m, GiaNiemYet = 440000m },
 
                 // Chi tiết HD 3: 5 Doraemon tập 1 (20k/cuốn) + 1 Rừng Na Uy (145k)
-                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-2-11111-1", SoLuong = 5, DonGia = 20000m, GiaVon = 18000m },
-                new CT_HoaDon { MaHoaDon = 3, ISBN = "978-604-56-7890-1", SoLuong = 6, DonGia = 150000m, GiaVon = 140000m }
+                new CT_HoaDon { MaCT_HoaDon = 3, MaHoaDon = 3, ISBN = "978-604-2-11111-1", SoLuong = 5, GiaBan = 20000m, GiaNiemYet = 18000m },
+                new CT_HoaDon { MaCT_HoaDon = 4, MaHoaDon = 3, ISBN = "978-604-56-7890-1", SoLuong = 6, GiaBan = 150000m, GiaNiemYet = 140000m }
             );
 
             // HÓA ĐƠN - ƯU ĐÃI
             modelBuilder.Entity<HoaDon_UuDai>().HasData(
                 // HD 1 được áp dụng UuDai 3: Giảm 20k trực tiếp cho cuốn Mắt Biếc
-                new HoaDon_UuDai { MaCT_HoaDon_UuDai = 1, MaHoaDon = 1, MaUuDai = 3, ISBN = "978-604-1-09887-1", SoTienGiam = 20000m },
+                new HoaDon_UuDai { MaCT_HoaDon_UuDai = 1, MaHoaDon = 1, MaUuDai = 3, SoTienGiam = 20000m },
 
                 // HD 2 được áp dụng UuDai 4: Tặng 1 cuốn "300 Bài Code" (Giảm giá = 0 vì là quà tặng)
-                new HoaDon_UuDai { MaCT_HoaDon_UuDai = 2, MaHoaDon = 2, MaUuDai = 4, ISBN = "978-604-MEME-01", SoTienGiam = 0m },
+                new HoaDon_UuDai { MaCT_HoaDon_UuDai = 2, MaHoaDon = 2, MaUuDai = 4, SoTienGiam = 0m },
 
                 // HD 3 được áp dụng UuDai 1: Giảm 10% tổng hóa đơn (Tối đa 100k)
-                new HoaDon_UuDai { MaCT_HoaDon_UuDai = 3, MaHoaDon = 3, MaUuDai = 1, ISBN = null, SoTienGiam = 100000m }
+                new HoaDon_UuDai { MaCT_HoaDon_UuDai = 3, MaHoaDon = 3, MaUuDai = 1, SoTienGiam = 100000m }
             );
 
             // PHIẾU THU TIỀN 

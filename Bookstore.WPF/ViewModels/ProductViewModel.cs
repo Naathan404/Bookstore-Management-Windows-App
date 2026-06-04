@@ -2,6 +2,7 @@
 using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.Views.Components;
+using Bookstore.WPF.Views.Popup;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using OfficeOpenXml;
@@ -15,6 +16,8 @@ namespace Bookstore.WPF.ViewModels
 {
     public class ProductViewModel : BaseViewModel
     {
+        public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();
+
         #region Collections
         private ObservableCollection<Models.BookItem> _allBooks;
         private ObservableCollection<Models.BookItem> _filteredBooks;
@@ -38,7 +41,8 @@ namespace Bookstore.WPF.ViewModels
                         EditingBook.DanhSachTacGia.Add(value);
                     }
 
-                    Application.Current.Dispatcher.InvokeAsync(() => {
+                    Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
                         SelectedTacGiaToAdd = null;
                         InputTacGiaText = string.Empty;
                     });
@@ -68,47 +72,48 @@ namespace Bookstore.WPF.ViewModels
 
         #region Properties - Tìm Kiếm
         private string _searchTenSach = string.Empty;
-        public string SearchTenSach 
-        { 
-            get => _searchTenSach; 
-            set 
-            { 
-                _searchTenSach = value; 
-                OnPropertyChanged(); 
-                PerformSearch(); 
-            } 
+        public string SearchTenSach
+        {
+            get => _searchTenSach;
+            set
+            {
+                _searchTenSach = value;
+                OnPropertyChanged();
+                PerformSearch();
+            }
         }
 
         private string _searchTacGia = string.Empty;
-        public string SearchTacGia 
-        { 
-            get => _searchTacGia; 
-            set 
-            { _searchTacGia = value; 
-                OnPropertyChanged(); 
-                PerformSearch(); 
-            } 
+        public string SearchTacGia
+        {
+            get => _searchTacGia;
+            set
+            {
+                _searchTacGia = value;
+                OnPropertyChanged();
+                PerformSearch();
+            }
         }
 
         private string _selectedTheLoai = string.Empty;
-        public string SelectedTheLoai 
-        { 
-            get => _selectedTheLoai; 
-            set 
-            { 
-                _selectedTheLoai = value; 
+        public string SelectedTheLoai
+        {
+            get => _selectedTheLoai;
+            set
+            {
+                _selectedTheLoai = value;
                 OnPropertyChanged();
-                PerformSearch(); 
-            } 
+                PerformSearch();
+            }
         }
 
         private string _searchTonKho;
         public string SearchTonKho
         {
             get => _searchTonKho;
-            set 
-            { 
-                _searchTonKho = value; 
+            set
+            {
+                _searchTonKho = value;
                 OnPropertyChanged();
                 PerformSearch();
             }
@@ -295,6 +300,7 @@ namespace Bookstore.WPF.ViewModels
         #region Commands
         // mở đóng pop up
         public ICommand OpenAddPopupCommand { get; set; }
+        public ICommand OpenViewPopupCommand { get; set; }
         public ICommand OpenEditPopupCommand { get; set; }
         public ICommand ClosePopupCommand { get; set; }
 
@@ -364,7 +370,8 @@ namespace Bookstore.WPF.ViewModels
 
         private void InitCommands()
         {
-            OpenAddPopupCommand = new RelayCommand<object>((p) => {
+            OpenAddPopupCommand = new RelayCommand<object>((p) =>
+            {
                 IsNewProduct = true; // Mặc định là đầu sách mới
                 EditingBook = new Models.BookItem
                 {
@@ -377,8 +384,20 @@ namespace Bookstore.WPF.ViewModels
                 PopupTitle = "THÊM SÁCH MỚI";
             });
 
+            // COMMAND MỞ POPUP XEM CHI TIẾT SÁCH
+            OpenViewPopupCommand = new RelayCommand<Models.BookItem>((book) =>
+            {
+                if (book == null) return;
+                var wrappedBook = new BookSaleModel(book);
+
+                BookDetailPopupVM.ShowPopup(wrappedBook, onAddToCart: (bookToBuy) =>
+                {
+                    CartService.Instance.AddToCart(bookToBuy, 1);
+                });
+            });
+
             // COMMAND MỞ POPUP SỬA
-            OpenEditPopupCommand = new RelayCommand<Models.BookItem>((book) => 
+            OpenEditPopupCommand = new RelayCommand<Models.BookItem>((book) =>
             {
                 if (book == null) return;
                 EditingBook = new Models.BookItem
@@ -407,9 +426,9 @@ namespace Bookstore.WPF.ViewModels
                 {
                     var tg = book.DanhSachTacGia[i];
                     EditingBook.DanhSachTacGia.Add(new TacGiaDTO
-                    { 
-                        Id = tg.Id, 
-                        TenTacGia = tg.TenTacGia 
+                    {
+                        Id = tg.Id,
+                        TenTacGia = tg.TenTacGia
                     });
                 }
 
@@ -426,7 +445,8 @@ namespace Bookstore.WPF.ViewModels
             });
 
             /// Lưu sách mới
-            SaveNewBookCommand = new RelayCommand<object>(async (p) => {
+            SaveNewBookCommand = new RelayCommand<object>(async (p) =>
+            {
                 if (!ValidateInput(isAdding: true)) return;
 
                 if (IsOldProduct && SelectedTacPhamGoc == null)
@@ -468,13 +488,14 @@ namespace Bookstore.WPF.ViewModels
             });
 
             // Lưu thông tin khui điều hcinhr sách
-            SaveEditBookCommand = new RelayCommand<object>(async (p) => {
+            SaveEditBookCommand = new RelayCommand<object>(async (p) =>
+            {
 
                 if (!ValidateInput(isAdding: false)) return;
 
                 var dto = new SachDTO
                 {
-                    Id = EditingBook.Id, 
+                    Id = EditingBook.Id,
                     ISBN = EditingBook.ISBN,
                     TenSach = EditingBook.TenSach,
                     TheLoai = EditingBook.TheLoai,
@@ -519,7 +540,8 @@ namespace Bookstore.WPF.ViewModels
                     if (isSuccess)
                     {
                         // xóa ở db ok thì xóa trên ui
-                        Application.Current.Dispatcher.Invoke(() => {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
                             var itemInList = _allBooks.FirstOrDefault(b => b.ISBN == book.ISBN);
                             if (itemInList != null) _allBooks.Remove(itemInList);
 
@@ -576,7 +598,7 @@ namespace Bookstore.WPF.ViewModels
                             var sheet = package.Workbook.Worksheets.Add("Danh Sách Sách");
 
                             // Tạo Header
-                            string[] headers = { "STT", "Mã ISBN", "Tên Sách","Lần Tái Bản", "Tác Giả", "Thể Loại", "Giá Niêm Yết", "Giá Bán", "Số Lượng" };
+                            string[] headers = { "STT", "Mã ISBN", "Tên Sách", "Lần Tái Bản", "Tác Giả", "Thể Loại", "Giá Niêm Yết", "Giá Bán", "Số Lượng" };
                             for (int i = 0; i < headers.Length; i++)
                             {
                                 var cell = sheet.Cells[1, i + 1];
@@ -634,19 +656,19 @@ namespace Bookstore.WPF.ViewModels
                 {
                     MessageBox.Show("Vui lòng nhập tên tác giả!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
-                }    
+                }
 
                 MessageBox.Show($"Bạn có muốn thêm tác giả '{tenTacGiaMoi}' không?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 var tacGiaMoiTao = new TacGiaDTO { TenTacGia = tenTacGiaMoi };
-                    bool isSuccess = await ApiClient.PostAndCheckSuccessAsync("api/TacGia", tacGiaMoiTao);
+                bool isSuccess = await ApiClient.PostAndCheckSuccessAsync("api/TacGia", tacGiaMoiTao);
 
                 if (isSuccess)
                 {
                     await LoadTacGiaAsync();
 
                     var tacGiaTuDB = ListTatCaTacGia.FirstOrDefault(t => t.TenTacGia.ToLower() == tenTacGiaMoi.ToLower());
-        
+
                     if (tacGiaTuDB != null && EditingBook != null)
                     {
                         EditingBook.DanhSachTacGia.Add(tacGiaTuDB);
@@ -696,7 +718,7 @@ namespace Bookstore.WPF.ViewModels
                     bool isSuccess = await ApiClient.PostAndCheckSuccessAsync("api/NhaXuatBan", new { TenNhaXuatBan = tenNXB });
                     if (isSuccess)
                     {
-                        await LoadNhaXuatBanAsync(); 
+                        await LoadNhaXuatBanAsync();
                         EditingBook.NhaXuatBan = tenNXB;
                         MessageBox.Show("Thêm thành công!");
                     }
@@ -704,7 +726,8 @@ namespace Bookstore.WPF.ViewModels
                 }
             });
 
-            ClearFilterCommand = new RelayCommand<object>((p) => {
+            ClearFilterCommand = new RelayCommand<object>((p) =>
+            {
                 SearchTenSach = string.Empty;
                 SearchTacGia = string.Empty;
                 SelectedTheLoai = null;
@@ -918,16 +941,16 @@ namespace Bookstore.WPF.ViewModels
                                 MoTa = b.MoTa
                             };
 
-                            if(b.DanhSachTacGia != null)
+                            if (b.DanhSachTacGia != null)
                             {
-                                foreach(var tg in b.DanhSachTacGia)
+                                foreach (var tg in b.DanhSachTacGia)
                                 {
-                                    newBook.DanhSachTacGia.Add(tg);                                    
-                                }    
+                                    newBook.DanhSachTacGia.Add(tg);
+                                }
                             }
 
                             ListTacPhamGoc.Add(newBook);
-                        }    
+                        }
                     });
                 }
             }
@@ -973,7 +996,8 @@ namespace Bookstore.WPF.ViewModels
                 var data = await ApiClient.GetAsync<List<TacGiaDTO>>("api/TacGia");
                 if (data != null)
                 {
-                    Application.Current.Dispatcher.Invoke(() => {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
                         ListTatCaTacGia.Clear();
                         foreach (var item in data) ListTatCaTacGia.Add(item);
                     });
@@ -990,7 +1014,8 @@ namespace Bookstore.WPF.ViewModels
             var data = await ApiClient.GetAsync<List<string>>("api/NhaXuatBan/names");
             if (data != null)
             {
-                Application.Current.Dispatcher.Invoke(() => {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
                     ListNhaXuatBan.Clear();
                     foreach (var item in data) ListNhaXuatBan.Add(item);
                 });
@@ -1050,7 +1075,7 @@ namespace Bookstore.WPF.ViewModels
                 return false;
             }
 
-            if(EditingBook.SoLuongTonKho < 0)
+            if (EditingBook.SoLuongTonKho < 0)
             {
                 MessageBox.Show("Số lượng tồn kho không được để số âm!", "Lỗi logic", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;

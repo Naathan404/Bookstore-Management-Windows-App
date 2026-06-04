@@ -3,6 +3,7 @@ using Bookstore.API.Models;
 using Bookstore.Share.DTO;
 using Bookstore.Share.DTO.Bookstore.Share.DTO;
 using Bookstore.Share.Enums;
+using Bookstore.WPF.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,18 +31,45 @@ namespace Bookstore.API.Controllers
         {
             try
             {
-                var uuDais = await _context.UuDai
-                    .Include(u => u.LoaiUuDai)
-                    .ToListAsync();
+                var uuDais = await _context.UuDai.Include(u => u.LoaiUuDai).ToListAsync();
                 if (!uuDais.Any()) return Ok(new List<PromotionDTO>());
 
                 var uIds = uuDais.Select(u => u.MaUuDai).ToList();
+
                 var hGiamList = await _context.CTUD_HoaDon_Giam.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
                 var hQuaList = await _context.CTUD_HoaDon_Qua.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
                 var sGiamList = await _context.CTUD_Sach_Giam.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
                 var sQuaList = await _context.CTUD_Sach_Qua.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
-                var dkSachList = await _context.UuDai_SachDieuKien.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
-                var tangSachList = await _context.UuDai_SachTang.Where(x => uIds.Contains(x.MaUuDai)).ToListAsync();
+
+                // ==============================================================
+                // MÓC TÊN SÁCH (JOIN VỚI BẢNG PHIENBANSACH VÀ BẢNG SACH GỐC)
+                // ==============================================================
+
+                // 1. Sách Điều Kiện
+                var dkSachList = await (from dk in _context.UuDai_SachDieuKien
+                                        join pb in _context.PhienBanSach on dk.ISBN equals pb.ISBN
+                                        join s in _context.Sach on pb.MaSach equals s.MaSach
+                                        where uIds.Contains(dk.MaUuDai)
+                                        select new
+                                        {
+                                            dk.MaUuDai,
+                                            dk.ISBN,
+                                            dk.SoLuongMua,
+                                            TenSach = s.TenSach // Móc tên sách ra đây
+                                        }).ToListAsync();
+
+                // 2. Sách Tặng
+                var tangSachList = await (from tang in _context.UuDai_SachTang
+                                          join pb in _context.PhienBanSach on tang.ISBN equals pb.ISBN
+                                          join s in _context.Sach on pb.MaSach equals s.MaSach
+                                          where uIds.Contains(tang.MaUuDai)
+                                          select new
+                                          {
+                                              tang.MaUuDai,
+                                              tang.ISBN,
+                                              tang.SoLuongTang,
+                                              TenSach = s.TenSach // Móc tên sách ra đây
+                                          }).ToListAsync();
 
                 var resultList = new List<PromotionDTO>();
 
@@ -60,40 +88,49 @@ namespace Bookstore.API.Controllers
                         SoLuongToiDa = u.SoLuongToiDa,
                         SoLuongDaDung = u.SoLuongDaDung,
                         MaLoaiKhachHang = u.MaLoaiKhachHang,
+                        LoaiKhachHangApDung = u.LoaiKhachHang?.TenLoaiKhachHang ?? "Tất cả khách hàng",
                         CoTheSuDung = u.CoTheSuDung,
                         MaLoaiUuDai = u.MaLoaiUuDai,
-                        LoaiUuDai = u.LoaiUuDai?.TenLoaiUuDai ?? "Chưa xác định"
+                        LoaiUuDai = u.LoaiUuDai?.TenLoaiUuDai ?? "Chưa xác định",
+                        DanhSachSachDieuKien = new List<SachDieuKienDTO>(),
+                        DanhSachSachTang = new List<SachTangDTO>()
                     };
 
-                    if (u.MaLoaiUuDai == PromotionType.HoaDonGiam) // 1. Giảm giá Hóa đơn
+                    // Nạp danh sách Sách Điều Kiện kèm Tên Sách
+                    var dks = dkSachList.Where(x => x.MaUuDai == u.MaUuDai).ToList();
+                    if (dks.Any())
+                        dto.DanhSachSachDieuKien = dks.Select(d => new SachDieuKienDTO
+                        {
+                            ISBN = d.ISBN,
+                            TenSach = d.TenSach, // Map Tên Sách vào DTO
+                            SoLuongMua = d.SoLuongMua
+                        }).ToList();
+
+                    // Nạp danh sách Sách Tặng kèm Tên Sách
+                    var tangs = tangSachList.Where(x => x.MaUuDai == u.MaUuDai).ToList();
+                    if (tangs.Any())
+                        dto.DanhSachSachTang = tangs.Select(t => new SachTangDTO
+                        {
+                            ISBN = t.ISBN,
+                            TenSach = t.TenSach, // Map Tên Sách vào DTO
+                            SoLuongTang = t.SoLuongTang
+                        }).ToList();
+
+                    // Nạp thông tin cấu hình giá (SoTien, TiLe...)
+                    if (u.MaLoaiUuDai == PromotionType.HoaDonGiam)
                     {
                         var ct = hGiamList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
-                        if (ct != null)
-                        {
-                            dto.SoTienToiThieu = ct.SoTienToiThieu; dto.SoTienToiDa = ct.SoTienToiDa;
-                            dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; dto.GiamToiDa = ct.GiamToiDa;
-                        }
+                        if (ct != null) { dto.SoTienToiThieu = ct.SoTienToiThieu; dto.SoTienToiDa = ct.SoTienToiDa; dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; dto.GiamToiDa = ct.GiamToiDa; }
                     }
-                    else if (u.MaLoaiUuDai == PromotionType.HoaDonQua) // 2. Tặng quà theo Hóa đơn
+                    else if (u.MaLoaiUuDai == PromotionType.HoaDonQua)
                     {
                         var ct = hQuaList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (ct != null) { dto.SoTienToiThieu = ct.SoTienToiThieu; dto.SoTienToiDa = ct.SoTienToiDa; }
-                        var q = tangSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
-                        if (q != null) { dto.ISBNTang = q.ISBN; dto.SoLuongTang = q.SoLuongTang; }
                     }
-                    else if (u.MaLoaiUuDai == PromotionType.SachGiam) // 3. Giảm giá trực tiếp trên Sách
+                    else if (u.MaLoaiUuDai == PromotionType.SachGiam)
                     {
                         var ct = sGiamList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
                         if (ct != null) { dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; dto.GiamToiDa = ct.GiamToiDa; }
-                        var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
-                        if (dk != null) { dto.ISBNDieuKien = dk.ISBN; dto.SoLuongMua = dk.SoLuongMua; }
-                    }
-                    else if (u.MaLoaiUuDai == PromotionType.SachQua) // 4. Tặng sách khi mua Sách
-                    {
-                        var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
-                        if (dk != null) { dto.ISBNDieuKien = dk.ISBN; dto.SoLuongMua = dk.SoLuongMua; }
-                        var q = tangSachList.FirstOrDefault(x => x.MaUuDai == u.MaUuDai);
-                        if (q != null) { dto.ISBNTang = q.ISBN; dto.SoLuongTang = q.SoLuongTang; }
                     }
 
                     resultList.Add(dto);
@@ -159,93 +196,81 @@ namespace Bookstore.API.Controllers
                     SoLuongToiDa = promo.SoLuongToiDa,
                     SoLuongDaDung = promo.SoLuongDaDung,
                     MaLoaiKhachHang = promo.MaLoaiKhachHang,
+                    LoaiKhachHangApDung = promo.LoaiKhachHang?.TenLoaiKhachHang ?? "Tất cả khách hàng",
                     CoTheSuDung = promo.CoTheSuDung,
-                    MaLoaiUuDai = promo.MaLoaiUuDai
+                    MaLoaiUuDai = promo.MaLoaiUuDai,
+                    DanhSachSachDieuKien = new List<SachDieuKienDTO>(),
+                    DanhSachSachTang = new List<SachTangDTO>()
                 };
 
                 bool isEligible = false;
 
-                // DB Loại 1: Giảm giá hóa đơn
                 if (promo.MaLoaiUuDai == PromotionType.HoaDonGiam)
                 {
                     var ct = hdGiamList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
                     if (ct != null && request.TamTinh >= ct.SoTienToiThieu)
                     {
                         isEligible = true;
-                        dto.SoTienToiThieu = ct.SoTienToiThieu;
-                        dto.SoTienToiDa = ct.SoTienToiDa;
-                        dto.SoTienGiam = ct.SoTienGiam;
-                        dto.TiLeGiam = ct.TiLeGiam;
-                        dto.GiamToiDa = ct.GiamToiDa;
+                        dto.SoTienToiThieu = ct.SoTienToiThieu; dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; //... map phần còn lại
                     }
                 }
-                // DB Loại 2: Tặng quà hóa đơn
                 else if (promo.MaLoaiUuDai == PromotionType.HoaDonQua)
                 {
                     var ct = hdQuaList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
-                    var tang = tangSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    var tangs = tangSachList.Where(x => x.MaUuDai == promo.MaUuDai).ToList();
 
-                    if (ct != null && tang != null && request.TamTinh >= ct.SoTienToiThieu)
+                    if (ct != null && tangs.Any() && request.TamTinh >= ct.SoTienToiThieu)
                     {
                         isEligible = true;
                         dto.SoTienToiThieu = ct.SoTienToiThieu;
-                        dto.SoTienToiDa = ct.SoTienToiDa;
-                        dto.ISBNTang = tang.ISBN.Trim(); // Thêm Trim
-                        dto.SoLuongTang = tang.SoLuongTang;
+                        dto.DanhSachSachTang = tangs.Select(t => new SachTangDTO { ISBN = t.ISBN.Trim(), SoLuongTang = t.SoLuongTang }).ToList();
                     }
                 }
-                // DB Loại 3: Giảm giá đầu sách
                 else if (promo.MaLoaiUuDai == PromotionType.SachGiam)
                 {
                     var ct = sachGiamList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
-                    var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    var dks = dkSachList.Where(x => x.MaUuDai == promo.MaUuDai).ToList();
 
-                    if (ct != null && dk != null)
+                    if (ct != null && dks.Any())
                     {
-                        // SỬA TẠI ĐÂY: Lấy ISBN ra và Trim() sạch sẽ trước khi so khớp với giỏ hàng
-                        string cleanDbIsbn = dk.ISBN.Trim();
-                        if (cartDict.TryGetValue(cleanDbIsbn, out int soLuongGio) && soLuongGio >= dk.SoLuongMua)
+                        // KIỂM TRA ĐIỀU KIỆN COMBO: Phải thỏa mãn TẤT CẢ các sách yêu cầu
+                        bool isMatchAllConditions = dks.All(dk => cartDict.TryGetValue(dk.ISBN.Trim(), out int qty) && qty >= dk.SoLuongMua);
+
+                        if (isMatchAllConditions)
                         {
                             isEligible = true;
-                            dto.ISBNDieuKien = cleanDbIsbn;
-                            dto.SoLuongMua = dk.SoLuongMua;
-                            dto.SoTienGiam = ct.SoTienGiam;
-                            dto.TiLeGiam = ct.TiLeGiam;
-                            dto.GiamToiDa = ct.GiamToiDa;
+                            dto.SoTienGiam = ct.SoTienGiam; dto.TiLeGiam = ct.TiLeGiam; dto.GiamToiDa = ct.GiamToiDa;
+                            dto.DanhSachSachDieuKien = dks.Select(d => new SachDieuKienDTO { ISBN = d.ISBN.Trim(), SoLuongMua = d.SoLuongMua }).ToList();
                         }
                     }
                 }
-                // DB Loại 4: Tặng quà đầu sách
                 else if (promo.MaLoaiUuDai == PromotionType.SachQua)
                 {
                     var ct = sachQuaList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
-                    var dk = dkSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
-                    var tang = tangSachList.FirstOrDefault(x => x.MaUuDai == promo.MaUuDai);
+                    var dks = dkSachList.Where(x => x.MaUuDai == promo.MaUuDai).ToList();
+                    var tangs = tangSachList.Where(x => x.MaUuDai == promo.MaUuDai).ToList();
 
-                    if (ct != null && dk != null && tang != null)
+                    if (ct != null && dks.Any() && tangs.Any())
                     {
-                        // SỬA TẠI ĐÂY: Tiếp tục tiến hành Trim() cho cả 2 đầu mã sách
-                        string cleanDbIsbn = dk.ISBN.Trim();
-                        if (cartDict.TryGetValue(cleanDbIsbn, out int soLuongGio) && soLuongGio >= dk.SoLuongMua)
+                        // KIỂM TRA ĐIỀU KIỆN COMBO TẶNG
+                        bool isMatchAllConditions = dks.All(dk => cartDict.TryGetValue(dk.ISBN.Trim(), out int qty) && qty >= dk.SoLuongMua);
+
+                        if (isMatchAllConditions)
                         {
                             isEligible = true;
-                            dto.ISBNDieuKien = cleanDbIsbn;
-                            dto.SoLuongMua = dk.SoLuongMua;
-                            dto.ISBNTang = tang.ISBN.Trim();
-                            dto.SoLuongTang = tang.SoLuongTang;
+                            dto.DanhSachSachDieuKien = dks.Select(d => new SachDieuKienDTO { ISBN = d.ISBN.Trim(), SoLuongMua = d.SoLuongMua }).ToList();
+                            dto.DanhSachSachTang = tangs.Select(t => new SachTangDTO { ISBN = t.ISBN.Trim(), SoLuongTang = t.SoLuongTang }).ToList();
                         }
                     }
                 }
 
-                if (isEligible)
-                {
-                    eligiblePromos.Add(dto);
-                }
+                if (isEligible) eligiblePromos.Add(dto);
             }
 
             return Ok(eligiblePromos);
         }
-        // 2. POST: Thêm mới phiếu ưu đãi rẽ nhánh lưu đa bảng
+
+
         [HttpPost]
         public async Task<IActionResult> CreateUuDai([FromBody] PromotionDTO dto)
         {
@@ -255,101 +280,167 @@ namespace Bookstore.API.Controllers
             if (await _context.UuDai.AnyAsync(x => x.Code == dto.Code))
                 return BadRequest("Mã Voucher Code này đã tồn tại.");
 
-            var master = new UuDai
-            {
-                NgayTao = DateTime.Now,
-                NguoiTao = "WPF Client",
-                MaLoaiUuDai = dto.MaLoaiUuDai,
-                Code = dto.Code.ToUpper(),
-                TenChuongTrinh = dto.TenChuongTrinh,
-                MoTa = dto.MoTa,
-                NgayBatDau = dto.NgayBatDau,
-                NgayKetThuc = dto.NgayKetThuc,
-                SoLuongToiDa = dto.SoLuongToiDa,
-                SoLuongDaDung = 0,
-                MaLoaiKhachHang = dto.MaLoaiKhachHang,
-                CoTheSuDung = true
-            };
+            // Bắt đầu Transaction (Khuyên dùng vì insert vào nhiều bảng)
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            _context.UuDai.Add(master);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var master = new UuDai
+                {
+                    NgayTao = DateTime.Now,
+                    NguoiTao = dto.NguoiTao,
+                    MaLoaiUuDai = dto.MaLoaiUuDai,
+                    Code = dto.Code.ToUpper(),
+                    TenChuongTrinh = dto.TenChuongTrinh,
+                    MoTa = dto.MoTa,
+                    NgayBatDau = dto.NgayBatDau,
+                    NgayKetThuc = dto.NgayKetThuc,
+                    SoLuongToiDa = dto.SoLuongToiDa,
+                    SoLuongDaDung = 0,
+                    MaLoaiKhachHang = dto.MaLoaiKhachHang,
+                    CoTheSuDung = true
+                };
 
-            int id = master.MaUuDai;
+                _context.UuDai.Add(master);
+                await _context.SaveChangesAsync();
 
-            if (master.MaLoaiUuDai == PromotionType.HoaDonGiam)
-            {
-                _context.CTUD_HoaDon_Giam.Add(new CTUD_HoaDon_Giam { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
-            }
-            else if (master.MaLoaiUuDai == PromotionType.HoaDonQua)
-            {
-                _context.CTUD_HoaDon_Qua.Add(new CTUD_HoaDon_Qua { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa });
-                if (!string.IsNullOrEmpty(dto.ISBNTang))
-                    _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = dto.ISBNTang, SoLuongTang = dto.SoLuongTang });
-            }
-            else if (master.MaLoaiUuDai == PromotionType.SachGiam)
-            {
-                _context.CTUD_Sach_Giam.Add(new CTUD_Sach_Giam { MaUuDai = id, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
-                if (!string.IsNullOrEmpty(dto.ISBNDieuKien))
-                    _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = dto.ISBNDieuKien, SoLuongMua = dto.SoLuongMua });
-            }
-            else if (master.MaLoaiUuDai == PromotionType.SachQua)
-            {
-                _context.CTUD_Sach_Qua.Add(new CTUD_Sach_Qua { MaUuDai = id });
-                if (!string.IsNullOrEmpty(dto.ISBNDieuKien))
-                    _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = dto.ISBNDieuKien, SoLuongMua = dto.SoLuongMua });
-                if (!string.IsNullOrEmpty(dto.ISBNTang))
-                    _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = dto.ISBNTang, SoLuongTang = dto.SoLuongTang });
-            }
+                int id = master.MaUuDai;
 
-            await _context.SaveChangesAsync();
-            return Ok(true);
+                // XỬ LÝ THEO TỪNG LOẠI ƯU ĐÃI
+                if (master.MaLoaiUuDai == PromotionType.HoaDonGiam)
+                {
+                    _context.CTUD_HoaDon_Giam.Add(new CTUD_HoaDon_Giam { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
+                }
+                else if (master.MaLoaiUuDai == PromotionType.HoaDonQua)
+                {
+                    _context.CTUD_HoaDon_Qua.Add(new CTUD_HoaDon_Qua { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa });
+
+                    // Xử lý List Sách Tặng
+                    if (dto.DanhSachSachTang != null && dto.DanhSachSachTang.Any())
+                    {
+                        foreach (var item in dto.DanhSachSachTang)
+                        {
+                            _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = item.ISBN, SoLuongTang = item.SoLuongTang });
+                        }
+                    }
+                }
+                else if (master.MaLoaiUuDai == PromotionType.SachGiam)
+                {
+                    _context.CTUD_Sach_Giam.Add(new CTUD_Sach_Giam { MaUuDai = id, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
+
+                    // Xử lý List Sách Điều Kiện
+                    if (dto.DanhSachSachDieuKien != null && dto.DanhSachSachDieuKien.Any())
+                    {
+                        foreach (var item in dto.DanhSachSachDieuKien)
+                        {
+                            _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = item.ISBN, SoLuongMua = item.SoLuongMua });
+                        }
+                    }
+                }
+                else if (master.MaLoaiUuDai == PromotionType.SachQua)
+                {
+                    _context.CTUD_Sach_Qua.Add(new CTUD_Sach_Qua { MaUuDai = id });
+
+                    // Xử lý List Sách Điều Kiện
+                    if (dto.DanhSachSachDieuKien != null && dto.DanhSachSachDieuKien.Any())
+                    {
+                        foreach (var item in dto.DanhSachSachDieuKien)
+                        {
+                            _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = item.ISBN, SoLuongMua = item.SoLuongMua });
+                        }
+                    }
+
+                    // Xử lý List Sách Tặng
+                    if (dto.DanhSachSachTang != null && dto.DanhSachSachTang.Any())
+                    {
+                        foreach (var item in dto.DanhSachSachTang)
+                        {
+                            _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = item.ISBN, SoLuongTang = item.SoLuongTang });
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
         }
 
         // 3. PUT: Cập nhật thông tin phiếu và làm sạch bảng chi tiết cũ
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUuDai(int id, [FromBody] PromotionDTO dto)
         {
-            var master = await _context.UuDai.FindAsync(id);
-            if (master == null) return NotFound();
+            // Vì update ảnh hưởng nhiều bảng, ta NÊN bọc trong Transaction để an toàn
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            master.TenChuongTrinh = dto.TenChuongTrinh;
-            master.NgayBatDau = dto.NgayBatDau;
-            master.NgayKetThuc = dto.NgayKetThuc;
-            master.SoLuongToiDa = dto.SoLuongToiDa;
-            master.MoTa = dto.MoTa;
-            master.MaLoaiKhachHang = dto.MaLoaiKhachHang;
-
-            // Clear sạch dữ liệu cũ ở các bảng liên kết
-            var hGiam = await _context.CTUD_HoaDon_Giam.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_HoaDon_Giam.RemoveRange(hGiam);
-            var hQua = await _context.CTUD_HoaDon_Qua.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_HoaDon_Qua.RemoveRange(hQua);
-            var sGiam = await _context.CTUD_Sach_Giam.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_Sach_Giam.RemoveRange(sGiam);
-            var sQua = await _context.CTUD_Sach_Qua.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_Sach_Qua.RemoveRange(sQua);
-            var dk = await _context.UuDai_SachDieuKien.Where(x => x.MaUuDai == id).ToListAsync(); _context.UuDai_SachDieuKien.RemoveRange(dk);
-            var t = await _context.UuDai_SachTang.Where(x => x.MaUuDai == id).ToListAsync(); _context.UuDai_SachTang.RemoveRange(t);
-
-            // Gán lại hệ số MaLoaiUuDai mới (UI + 1)
-            master.MaLoaiUuDai = dto.MaLoaiUuDai;
-
-            if (master.MaLoaiUuDai == PromotionType.HoaDonGiam) _context.CTUD_HoaDon_Giam.Add(new CTUD_HoaDon_Giam { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
-            else if (master.MaLoaiUuDai == PromotionType.HoaDonQua)
+            try
             {
-                _context.CTUD_HoaDon_Qua.Add(new CTUD_HoaDon_Qua { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa });
-                if (!string.IsNullOrEmpty(dto.ISBNTang)) _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = dto.ISBNTang, SoLuongTang = dto.SoLuongTang });
-            }
-            else if (master.MaLoaiUuDai == PromotionType.SachGiam)
-            {
-                _context.CTUD_Sach_Giam.Add(new CTUD_Sach_Giam { MaUuDai = id, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
-                if (!string.IsNullOrEmpty(dto.ISBNDieuKien)) _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = dto.ISBNDieuKien, SoLuongMua = dto.SoLuongMua });
-            }
-            else if (master.MaLoaiUuDai == PromotionType.SachQua)
-            {
-                _context.CTUD_Sach_Qua.Add(new CTUD_Sach_Qua { MaUuDai = id });
-                if (!string.IsNullOrEmpty(dto.ISBNDieuKien)) _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = dto.ISBNDieuKien, SoLuongMua = dto.SoLuongMua });
-                if (!string.IsNullOrEmpty(dto.ISBNTang)) _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = dto.ISBNTang, SoLuongTang = dto.SoLuongTang });
-            }
+                var master = await _context.UuDai.FindAsync(id);
+                if (master == null) return NotFound();
 
-            await _context.SaveChangesAsync();
-            return Ok(true);
+                master.TenChuongTrinh = dto.TenChuongTrinh;
+                master.NgayBatDau = dto.NgayBatDau;
+                master.NgayKetThuc = dto.NgayKetThuc;
+                master.SoLuongToiDa = dto.SoLuongToiDa;
+                master.MoTa = dto.MoTa;
+                master.MaLoaiKhachHang = dto.MaLoaiKhachHang;
+
+                // Clear sạch dữ liệu cũ ở các bảng liên kết
+                var hGiam = await _context.CTUD_HoaDon_Giam.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_HoaDon_Giam.RemoveRange(hGiam);
+                var hQua = await _context.CTUD_HoaDon_Qua.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_HoaDon_Qua.RemoveRange(hQua);
+                var sGiam = await _context.CTUD_Sach_Giam.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_Sach_Giam.RemoveRange(sGiam);
+                var sQua = await _context.CTUD_Sach_Qua.Where(x => x.MaUuDai == id).ToListAsync(); _context.CTUD_Sach_Qua.RemoveRange(sQua);
+                var dk = await _context.UuDai_SachDieuKien.Where(x => x.MaUuDai == id).ToListAsync(); _context.UuDai_SachDieuKien.RemoveRange(dk);
+                var t = await _context.UuDai_SachTang.Where(x => x.MaUuDai == id).ToListAsync(); _context.UuDai_SachTang.RemoveRange(t);
+
+                master.MaLoaiUuDai = dto.MaLoaiUuDai;
+
+                // CHÈN LẠI DỮ LIỆU MỚI BẰNG LIST
+                if (master.MaLoaiUuDai == PromotionType.HoaDonGiam)
+                {
+                    _context.CTUD_HoaDon_Giam.Add(new CTUD_HoaDon_Giam { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
+                }
+                else if (master.MaLoaiUuDai == PromotionType.HoaDonQua)
+                {
+                    _context.CTUD_HoaDon_Qua.Add(new CTUD_HoaDon_Qua { MaUuDai = id, SoTienToiThieu = dto.SoTienToiThieu, SoTienToiDa = dto.SoTienToiDa });
+                    if (dto.DanhSachSachTang != null)
+                        foreach (var item in dto.DanhSachSachTang)
+                            _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = item.ISBN, SoLuongTang = item.SoLuongTang });
+                }
+                else if (master.MaLoaiUuDai == PromotionType.SachGiam)
+                {
+                    _context.CTUD_Sach_Giam.Add(new CTUD_Sach_Giam { MaUuDai = id, SoTienGiam = dto.SoTienGiam, TiLeGiam = dto.TiLeGiam, GiamToiDa = dto.GiamToiDa });
+                    if (dto.DanhSachSachDieuKien != null)
+                        foreach (var item in dto.DanhSachSachDieuKien)
+                            _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = item.ISBN, SoLuongMua = item.SoLuongMua });
+                }
+                else if (master.MaLoaiUuDai == PromotionType.SachQua)
+                {
+                    _context.CTUD_Sach_Qua.Add(new CTUD_Sach_Qua { MaUuDai = id });
+                    if (dto.DanhSachSachDieuKien != null)
+                        foreach (var item in dto.DanhSachSachDieuKien)
+                            _context.UuDai_SachDieuKien.Add(new UuDai_SachDieuKien { MaUuDai = id, ISBN = item.ISBN, SoLuongMua = item.SoLuongMua });
+                    if (dto.DanhSachSachTang != null)
+                        foreach (var item in dto.DanhSachSachTang)
+                            _context.UuDai_SachTang.Add(new UuDai_SachTang { MaUuDai = id, ISBN = item.ISBN, SoLuongTang = item.SoLuongTang });
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, $"Lỗi server khi cập nhật: {ex.Message}");
+            }
         }
 
         [HttpPut("ToggleStatus/{id}")]

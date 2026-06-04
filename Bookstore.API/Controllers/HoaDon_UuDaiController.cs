@@ -1,12 +1,14 @@
 ﻿using Bookstore.API.Data;
 // using Bookstore.API.Data; // Chú ý kiểm tra lại namespace DbContext
 using Bookstore.API.Models;
+using Bookstore.Share.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Bookstore.API.Controllers
@@ -22,28 +24,57 @@ namespace Bookstore.API.Controllers
             _context = context;
         }
 
+        private static Expression<Func<HoaDon_UuDai, InvoicePromoResponse>> MapToResponse =
+            hu => new InvoicePromoResponse
+            {
+                MaCT_HoaDon_UuDai = hu.MaCT_HoaDon_UuDai,
+                MaHoaDon = hu.MaHoaDon,
+                MaUuDai = hu.MaUuDai,
+                SoTienGiam = hu.SoTienGiam,
+                Code = hu.UuDai != null ? hu.UuDai.Code : string.Empty,
+                TenUuDai = hu.UuDai != null ? hu.UuDai.TenChuongTrinh : string.Empty,
+            };
+
         // LẤY TOÀN BỘ DANH SÁCH 
         // GET: api/HoaDon_UuDai
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HoaDon_UuDai>>> GetHoaDon_Uudai()
+        public async Task<ActionResult<IEnumerable<InvoicePromoResponse>>> GetHoaDon_Uudai()
         {
-            return await _context.HoaDon_Uudai.ToListAsync();
+            return await _context.HoaDon_Uudai.Select(MapToResponse).ToListAsync();
         }
 
         // LẤY DANH SÁCH KHUYẾN MÃI CỦA 1 HÓA ĐƠN
         // GET: api/HoaDon_UuDai/HoaDon/5
         [HttpGet("HoaDon/{maHoaDon}")]
-        public async Task<ActionResult<IEnumerable<HoaDon_UuDai>>> GetByMaHoaDon(int maHoaDon)
+        public async Task<ActionResult<IEnumerable<InvoicePromoResponse>>> GetByMaHoaDon(int maHoaDon)
         {
-            return await _context.HoaDon_Uudai
-                                 .Where(x => x.MaHoaDon == maHoaDon)
-                                 .ToListAsync();
+            var promos = await _context.HoaDon_Uudai
+                .Where(hu => hu.MaHoaDon == maHoaDon)
+                .OrderBy(hu => hu.MaCT_HoaDon_UuDai)
+                .Select(MapToResponse)
+                .ToListAsync();
+
+            //var query = from hu in _context.HoaDon_Uudai
+            //            join u in _context.UuDai on hu.MaUuDai equals u.MaUuDai // Thực hiện JOIN thủ công
+            //            where hu.MaHoaDon == maHoaDon
+            //            select new InvoicePromoResponse
+            //            {
+            //                MaCT_HoaDon_UuDai = hu.MaCT_HoaDon_UuDai,
+            //                MaHoaDon = hu.MaHoaDon,
+            //                MaUuDai = hu.MaUuDai,
+            //                Code = u.Code,
+            //                TenUuDai = u.TenChuongTrinh,
+            //                //ISBN = hu.ISBN,
+            //                SoTienGiam = hu.SoTienGiam
+            //            };
+
+            return Ok(promos);
         }
 
         // LẤY CHI TIẾT ĐÚNG 1 DÒNG DỰA VÀO ID
         // GET: api/HoaDon_UuDai/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HoaDon_UuDai>> GetHoaDon_UuDai(int id)
+        public async Task<ActionResult<InvoicePromoResponse>> GetHoaDon_UuDai(int id)
         {
             var hoaDon_UuDai = await _context.HoaDon_Uudai.FindAsync(id);
 
@@ -52,7 +83,7 @@ namespace Bookstore.API.Controllers
                 return NotFound(new { message = "Không tìm thấy lịch sử ưu đãi này!" });
             }
 
-            return hoaDon_UuDai;
+            return MapToResponse.Compile()(hoaDon_UuDai);
         }
 
         // CẬP NHẬT 

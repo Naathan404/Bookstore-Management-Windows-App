@@ -6,6 +6,7 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 xmlns:enums="clr-namespace:Bookstore.Share.Enums;assembly=Bookstore.Share"
+			 xmlns:popup="clr-namespace:Bookstore.WPF.Views.Popup"
 			 mc:Ignorable="d">
 
 	<Grid>
@@ -231,7 +232,8 @@
 		</Grid>
 
 		<!-- Pop up -->
-		<components:FormPopupControl Title="{Binding PopupTitle, FallbackValue='LẬP PHIẾU THÔNG TIN ƯU ĐÃI'}"
+		<popup:PromotionEditPopup DataContext="{Binding PromotionEditPopupVM}" />
+		<!--<components:FormPopupControl Title="{Binding PopupTitle, FallbackValue='LẬP PHIẾU THÔNG TIN ƯU ĐÃI'}"
 									 IconKind="TicketPercent"
 									 IsOpen="{Binding IsPopupVisible}"
 									 CloseCommand="{Binding ClosePopupCommand}">
@@ -573,6 +575,6 @@
 
 			</Grid>
 
-		</components:FormPopupControl>
+		</components:FormPopupControl>-->
 	</Grid>
 </UserControl>

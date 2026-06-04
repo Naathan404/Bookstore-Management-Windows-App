@@ -5,6 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
+			 xmlns:popup="clr-namespace:Bookstore.WPF.Views.Popup"
 			 mc:Ignorable="d">
 
 	<Grid>
@@ -292,11 +293,16 @@
 
 						<!-- Cột Nút Hành Động -->
 						<DataGridTemplateColumn Header="Thao tác"
-												Width="100"
+												Width="180"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<components:DataGridActionPanel RowItem="{Binding}"
+																	ShowAction="True"
+																	ActionIcon="CartAdd"
+																	ActionCommand="{Binding DataContext.OpenViewPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	
+																	ActionText="Xem"
 																	ShowEdit="True"
 																	EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowDelete="True"
@@ -1780,5 +1786,6 @@
 			</Border>
 		</Grid>
 
+		<popup:BookDetailPopup DataContext="{Binding BookDetailPopupVM}" />
 	</Grid>
 </UserControl>

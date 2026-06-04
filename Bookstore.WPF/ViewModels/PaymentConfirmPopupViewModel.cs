@@ -1,5 +1,10 @@
-﻿using Bookstore.WPF.Models;
+﻿using Bookstore.Share.DTO;
+using Bookstore.Share.DTO.Bookstore.Share.DTO;
+using Bookstore.Share.DTOResponses;
+using Bookstore.Share.Enums;
+using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using Bookstore.WPF.Views.Components;
 using System;
 using System.Collections.Generic;
@@ -13,6 +18,9 @@ namespace Bookstore.WPF.ViewModels
 {
     public class PaymentConfirmPopupViewModel : BaseViewModel
     {
+        private int _maKhachHang;
+        private decimal _tamTinh;
+        private List<PromotionDTO> _uuDaiDaApDung;
         private bool _isOpen;
         public bool IsOpen { get => _isOpen; set { _isOpen = value; OnPropertyChanged(); } }
 
@@ -114,43 +122,112 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         private Action _onConfirmCallback;
-        private Action _onCancelCallback;
+        private Action? _onCancelCallback;
 
         public ICommand XacNhanTaoDonCommand { get; set; }
         public ICommand HuyBoGiaoDichCommand { get; set; }
 
         public PaymentConfirmPopupViewModel()
         {
-            XacNhanTaoDonCommand = new RelayCommand(() =>
+            XacNhanTaoDonCommand = new RelayCommand(async () =>
             {
-                _onConfirmCallback?.Invoke();
-                IsOpen = false;
+                if (TienKhachDuaState == FieldState.Error)
+                {
+                    System.Windows.MessageBox.Show("Khách hàng chưa thanh toán đủ số tiền tối thiểu!", "Lỗi thanh toán", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    return;
+                }
+
+                try
+                {
+                    // 1. Map Chi tiết hóa đơn
+                    var chiTietList = CartItems.Where(c => c.SoLuongMua > 0).Select(c => new InvoiceDetailRequest
+                    {
+                        ISBN = c.ISBN,
+                        SoLuong = c.SoLuongMua,
+                        GiaBan = c.GiaBan
+                    }).ToList();
+
+                    // 2. Map dữ liệu Ưu đãi 
+                    var uuDaiList = new List<InvoicePromoRequest>();
+                    if (_uuDaiDaApDung != null && _uuDaiDaApDung.Any())
+                    {
+                        foreach (var u in _uuDaiDaApDung)
+                        {
+                            //string targetIsbn = string.Empty;
+                            //if (u.MaLoaiUuDai == PromotionType.SachGiam || u.MaLoaiUuDai == PromotionType.SachQua)
+                            //{
+                            //    targetIsbn = u.DanhSachSachDieuKien?.FirstOrDefault()?.ISBN;
+                            //}
+
+                            uuDaiList.Add(new InvoicePromoRequest
+                            {
+                                MaUuDai = u.MaUuDai,
+                                SoTienGiam = u.SoTienGiamThucTe,
+                                //ISBN = targetIsbn,
+                                //IsGift = u.MaLoaiUuDai == PromotionType.SachQua || u.MaLoaiUuDai == PromotionType.HoaDonQua
+                            });
+                        }
+                    }
+
+                    // 3. Đóng gói Request gốc
+                    var request = new InvoiceRequest
+                    {
+                        NguoiTao = AppState.CurrentUser?.Username ?? "admin",
+                        MaKhachHang = _maKhachHang > 0 ? _maKhachHang : (int?)null,
+                        TongTienTamTinh = _tamTinh,
+                        GiamGia = GiamTien,
+                        Thue = 0,
+                        TongTien = TongTienThanhToan,
+                        SoTienTra = TienKhachDua > TongTienThanhToan ? TongTienThanhToan : TienKhachDua,
+                        ChiTiet = chiTietList,
+                        UuDai = uuDaiList
+                    };
+
+                    // 4. Gọi API
+                    var result = await ApiClient.PostAsync<InvoiceRequest, object>("api/HoaDon", request);
+
+                    System.Windows.MessageBox.Show("Tạo hóa đơn thành công!", "Thông báo", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+
+                    _onConfirmCallback?.Invoke();
+                    IsOpen = false;
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Lỗi tạo hóa đơn: {ex.Message}", "Lỗi", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
             });
 
-            HuyBoGiaoDichCommand = new RelayCommand(() =>
-            {
-                _onCancelCallback?.Invoke();
-                IsOpen = false;
-            });
+            HuyBoGiaoDichCommand = new RelayCommand<object>((p) => IsOpen = false);
         }
 
-        // HÀM CHUẨN ĐỂ TRANG BÁN HÀNG HOẶC TRANG KHÁC GỌI KÍCH HOẠT POPUP
-        public void ShowPopup(string tenKH, string sdtKH, ObservableCollection<CartItemModel> items, decimal giamGia, decimal tongTien, Action onConfirm, Action onCancel = null)
+        public void ShowPopup(
+            int maKH, string tenKH, string sdtKH, // Thông tin khách hàng
+            ObservableCollection<CartItemModel> items, // Thông tin giỏ hàng
+            decimal tamTinh, decimal giamGia, decimal tongTien, // Thông tin thanh toán
+            List<PromotionDTO> uuDaiDaApDung, // Thông tin ưu đãi
+            Action onConfirm, Action? onCancel = null)
         {
+            _maKhachHang = maKH;
             TenKhachHang = tenKH;
             SdtKhachHang = string.IsNullOrEmpty(sdtKH) ? "" : sdtKH;
             CartItems = items;
+
+            _tamTinh = tamTinh;
             GiamTien = giamGia;
             TongTienThanhToan = tongTien;
 
-            IsThanhToanTienMat = true; // Reset phương thức mặc định
+            _uuDaiDaApDung = uuDaiDaApDung;
+
+            IsThanhToanTienMat = true;
             IsThanhToanChuyenKhoan = false;
+            TienKhachDua = tongTien; // Mặc định khách đưa đủ tiền
 
             _onConfirmCallback = onConfirm;
             _onCancelCallback = onCancel;
             IsOpen = true;
         }
 
+        // TODO: Loại khách hàng và tỉ lệ trả tổi thiểu
         private void TinhToanTienThuaVaNo()
         {
             if (TongTienThanhToan <= 0) return;

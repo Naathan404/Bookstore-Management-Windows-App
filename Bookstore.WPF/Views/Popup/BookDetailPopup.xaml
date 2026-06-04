@@ -14,42 +14,35 @@
 			</Border.InputBindings>
 		</Border>
 
-		<Border Width="550"
-				Padding="24"
+		<Border Width="700"
+				
 				Style="{StaticResource PopupCardStyle}">
-			<StackPanel>
+			<StackPanel Width="250"
+				>
 				<components:PopupHeaderControl Grid.Row="0"
-											   Title="CHI TIẾT SÁCH"
-											   IconKind="Book" />
-				<!--<Grid Margin="0,0,0,16">
-					<TextBlock Text="CHI TIẾT SẢN PHẨM"
-							   FontSize="18"
-							   FontWeight="Bold"
-							   Foreground="#2B3674" />
-					<Button HorizontalAlignment="Right"
-							Style="{StaticResource MaterialDesignFlatButton}"
-							Foreground="Gray"
-							Command="{Binding CloseCommand}">
-						<materialDesign:PackIcon Kind="Close" />
-					</Button>
-				</Grid>-->
+											   Title="CHI TIẾT SẢN PHẨM"
+											   IconKind="BookSearch" />
 
-				<Border CornerRadius="8"
-						ClipToBounds="True"
-						HorizontalAlignment="Center"
-						Margin="0,0,0,16"
-						Background="#F4F7FE"
-						Width="160"
-						Height="200">
-					<Image Source="{Binding BookDetails.HinhAnh}"
-						   Stretch="UniformToFill"
-						   RenderOptions.BitmapScalingMode="HighQuality" />
+
+				<Border Grid.Row="0"
+						CornerRadius="16"
+						Width="250"
+						Height="350"
+						Margin="0,0,0,24"
+						Cursor="Hand">
+
+					<Border.Background>
+						<ImageBrush ImageSource="{Binding BookDetails.BookData.HinhAnh}"
+									RenderOptions.BitmapScalingMode="HighQuality"
+									Stretch="UniformToFill" />
+						
+					</Border.Background>
 				</Border>
 
 				<Grid Margin="0,0,0,8">
 					<TextBlock Text="Tên sách:"
 							   Foreground="#A3AED0" />
-					<TextBlock Text="{Binding BookDetails.TenSach}"
+					<TextBlock Text="{Binding BookDetails.BookData.TenSach}"
 							   HorizontalAlignment="Right"
 							   FontWeight="Bold"
 							   Foreground="#2B3674" />
@@ -57,21 +50,21 @@
 				<Grid Margin="0,0,0,8">
 					<TextBlock Text="Mã ISBN:"
 							   Foreground="#A3AED0" />
-					<TextBlock Text="{Binding BookDetails.ISBN}"
+					<TextBlock Text="{Binding BookDetails.BookData.ISBN}"
 							   HorizontalAlignment="Right"
 							   Foreground="#2B3674" />
 				</Grid>
 				<Grid Margin="0,0,0,8">
 					<TextBlock Text="Thể loại:"
 							   Foreground="#A3AED0" />
-					<TextBlock Text="{Binding BookDetails.TheLoai}"
+					<TextBlock Text="{Binding BookDetails.BookData.TheLoai}"
 							   HorizontalAlignment="Right"
 							   Foreground="#2B3674" />
 				</Grid>
-				<Grid Margin="0,0,0,16">
+				<Grid Margin="0,0,0,24">
 					<TextBlock Text="Giá bán:"
 							   Foreground="#A3AED0" />
-					<TextBlock Text="{Binding BookDetails.DonGiaBan, StringFormat='{}{0:N0} đ'}"
+					<TextBlock Text="{Binding BookDetails.BookData.DonGiaBan, StringFormat='{}{0:N0} đ'}"
 							   HorizontalAlignment="Right"
 							   Foreground="#EF4444"
 							   FontWeight="Bold" />
@@ -79,6 +72,7 @@
 
 				<Button Content="Thêm vào giỏ hàng"
 						Style="{StaticResource MainGradientButton}"
+						Width="200"
 						Command="{Binding AddToCartCommand}" />
 			</StackPanel>
 		</Border>
