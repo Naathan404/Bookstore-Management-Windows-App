@@ -57,8 +57,6 @@
 		<Border x:Name="ContainerBorder"
 				Height="42"
 				CornerRadius="10"
-				Background="{StaticResource BackgroundColor}"
-				BorderBrush="#E2E8F0"
 				BorderThickness="1.5">
 			<Grid>
 				<Grid.ColumnDefinitions>
@@ -99,11 +97,47 @@
 
 			<Border.Style>
 				<Style TargetType="Border">
+					<Setter Property="Background"
+							Value="White" />
+					<Setter Property="BorderBrush"
+							Value="#E2E8F0" />
+
 					<Style.Triggers>
-						<DataTrigger Binding="{Binding IsKeyboardFocusWithin, ElementName=ComboElement}"
+						<DataTrigger Binding="{Binding IsReadOnly, ElementName=Root}"
+									 Value="True">
+							<Setter Property="Background"
+									Value="{StaticResource BackgroundColor}" />
+						</DataTrigger>
+						<DataTrigger Binding="{Binding IsEnabled, ElementName=Root}"
+									 Value="False">
+							<Setter Property="Background"
+									Value="{StaticResource BackgroundColor}" />
+						</DataTrigger>
+
+						<DataTrigger Binding="{Binding State, ElementName=Root}"
+									 Value="{x:Static local:FieldState.Error}">
+							<Setter Property="BorderBrush"
+									Value="{StaticResource DangerColor}" />
+							<!--<Setter Property="Background"
+									Value="{StaticResource DangerBgLightColor}" />-->
+						</DataTrigger>
+
+						<DataTrigger Binding="{Binding State, ElementName=Root}"
+									 Value="{x:Static local:FieldState.Success}">
+							<!--<Setter Property="BorderBrush"
+									Value="{StaticResource SuccessColor}" />-->
+						</DataTrigger>
+
+						<DataTrigger Binding="{Binding State, ElementName=Root}"
+									 Value="{x:Static local:FieldState.Warning}">
+							<Setter Property="BorderBrush"
+									Value="{StaticResource WarningColor}" />
+						</DataTrigger>
+
+						<DataTrigger Binding="{Binding IsKeyboardFocusWithin, ElementName=InputBox}"
 									 Value="True">
 							<Setter Property="BorderBrush"
-									Value="{StaticResource PrimaryColor}" />
+									Value="#E2E8F0" />
 							<Setter Property="Background"
 									Value="White" />
 							<Setter Property="Effect">
@@ -114,34 +148,6 @@
 													  ShadowDepth="0" />
 								</Setter.Value>
 							</Setter>
-						</DataTrigger>
-
-						<DataTrigger Binding="{Binding State, ElementName=Root}"
-									 Value="{x:Static local:FieldState.Error}">
-							<Setter Property="BorderBrush"
-									Value="{StaticResource DangerColor}" />
-							<Setter Property="Background"
-									Value="#FEF2F2" />
-						</DataTrigger>
-
-						<DataTrigger Binding="{Binding State, ElementName=Root}"
-									 Value="{x:Static local:FieldState.Success}">
-							<Setter Property="BorderBrush"
-									Value="{StaticResource SuccessColor}" />
-						</DataTrigger>
-
-						<DataTrigger Binding="{Binding State, ElementName=Root}"
-									 Value="{x:Static local:FieldState.Warning}">
-							<Setter Property="BorderBrush"
-									Value="{StaticResource WarningColor}" />
-						</DataTrigger>
-
-						<DataTrigger Binding="{Binding IsReadOnly, ElementName=Root}"
-									 Value="True">
-							<Setter Property="Background"
-									Value="#F1F5F9" />
-							<Setter Property="BorderBrush"
-									Value="#E2E8F0" />
 						</DataTrigger>
 					</Style.Triggers>
 				</Style>
