@@ -231,11 +231,6 @@ namespace Bookstore.WPF.ViewModels
         public ICommand XoaUuDaiCommand { get; set; } // THÊM: Xóa ưu đãi khỏi bill
         public ICommand TimKhachHangTheoSdtCommand { get; set; }
 
-        public async Task LoadMasterData()
-        {
-            await InitializeAsync();
-        }
-
         public SaleViewModel()
         {
             _ = InitializeAsync();
@@ -337,12 +332,6 @@ namespace Bookstore.WPF.ViewModels
                     TinhToanHoaDon();
                 }
             });
-
-            XoaBoLocCommand = new RelayCommand<object>((p) =>
-            {
-                SearchKeyword = "";
-                KieuTimKiemSach = ListKieuTimKiem[0];
-            });
             #endregion
 
             #region THÔNG TIN THANH TOÁN & POPUPS
@@ -425,6 +414,13 @@ namespace Bookstore.WPF.ViewModels
 
 
         #region HELPER METHODS
+        public async Task LoadMasterData()
+        {
+            IsKhachVangLai = true;
+            AppliedPromotionList.Clear();
+            await InitializeAsync();
+            TinhToanHoaDon();
+        }
         protected override void ApplyFilterAndPagination()
         {
             var filtered = _allBooks.AsEnumerable();
@@ -500,6 +496,8 @@ namespace Bookstore.WPF.ViewModels
                         // Thêm vào bộ nhớ đệm toàn cục của màn hình Sale
                         _allBooks.Add(saleBookItem);
                     }
+                    CartService.Instance.SyncCartWithFreshData(_allBooks);
+                    TinhToanHoaDon();
 
                     // Gọi hàm lọc và phân trang để đồng bộ hiển thị lên giao diện công khai lần đầu
                     ApplyFilterAndPagination();
