@@ -485,6 +485,11 @@ namespace Bookstore.WPF.ViewModels
                     IsAddPopupVisible = Visibility.Hidden;
                     _ = LoadDataAsync(); // refresh trang
                 }
+                else
+                {
+                    MessageBox.Show("Luu that bai");
+                }
+
             });
 
             // Lưu thông tin khui điều hcinhr sách
