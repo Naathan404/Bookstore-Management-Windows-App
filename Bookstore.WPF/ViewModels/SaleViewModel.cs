@@ -326,6 +326,12 @@ namespace Bookstore.WPF.ViewModels
                     TinhToanHoaDon();
                 }
             });
+
+            XoaBoLocCommand = new RelayCommand<object>((p) =>
+            {
+                SearchKeyword = "";
+                KieuTimKiemSach = ListKieuTimKiem[0];
+            });
             #endregion
 
             #region THÔNG TIN THANH TOÁN & POPUPS

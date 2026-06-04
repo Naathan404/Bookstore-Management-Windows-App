@@ -60,7 +60,8 @@
 															  IsRequired="True"
 															  HintText="Chọn ngày..."
 															  IconKind="CalendarStart"
-															  SelectedDate="{Binding EditingPromotion.NgayBatDau, UpdateSourceTrigger=PropertyChanged}" />
+															  SelectedDate="{Binding EditingPromotion.NgayBatDau, UpdateSourceTrigger=PropertyChanged}" 
+                                                              IsEnabled="{Binding IsCoreEditingAllowed}"/>
 							<components:FormDatePickerControl Title="Ngày hết hạn"
 															  IsRequired="True"
 															  IconKind="CalendarEnd"

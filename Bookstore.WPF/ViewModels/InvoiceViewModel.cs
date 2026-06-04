@@ -2,6 +2,7 @@
 using Bookstore.Share.DTOResponses;
 using Bookstore.WPF.Services;
 using Bookstore.WPF.ViewModels.Base;
+using OpenTK.Platform.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,18 +30,32 @@ namespace Bookstore.WPF.ViewModels
 
         #region BỘ LỌC TÙY CHỈNH (Ngoài SearchKeyword đã có ở Base)
 
-        private DateTime? _fromDate;
+        private DateTime? _fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         public DateTime? FromDate
         {
             get => _fromDate;
             set { _fromDate = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
         }
 
-        private DateTime? _toDate;
+        private DateTime? _toDate = DateTime.Today;
         public DateTime? ToDate
         {
             get => _toDate;
             set { _toDate = value; OnPropertyChanged(); ApplyFilterAndPagination(); }
+        }
+
+        public ObservableCollection<string> ListTrangThaiNo { get; set; } = new ObservableCollection<string>() { "Tất cả trạng thái", "Đã thanh toán", "Còn nợ" };
+
+        private string _selectedTrangThaiNo = "Tất cả trạng thái";
+        public string SelectedTrangThaiNo
+        {
+            get => _selectedTrangThaiNo;
+            set
+            {
+                _selectedTrangThaiNo = value;
+                OnPropertyChanged(nameof(SelectedTrangThaiNo));
+                ApplyFilterAndPagination();
+            }
         }
 
         #endregion
@@ -55,7 +70,7 @@ namespace Bookstore.WPF.ViewModels
         {
             // Thiết lập số dòng trên trang mặc định (kế thừa từ BaseListViewModel)
             PageSize = 10;
-
+            SelectedTrangThaiNo = ListTrangThaiNo[0];
             XoaLocCommand = new RelayCommand<object>(ExecuteXoaLoc);
 
             // Gán logic tải lại API vào nút Refresh
@@ -103,9 +118,11 @@ namespace Bookstore.WPF.ViewModels
 
             if (!string.IsNullOrEmpty(text))
             {
+                //filtered = filtered.Where(hd =>
+                //    (hd.TenKhachHang != null && hd.TenKhachHang.ToLower().Contains(text)) ||
+                //    (hd.TenNguoiTao != null && hd.TenNguoiTao.ToLower().Contains(text)));
                 filtered = filtered.Where(hd =>
-                    (hd.TenKhachHang != null && hd.TenKhachHang.ToLower().Contains(text)) ||
-                    (hd.TenNguoiTao != null && hd.TenNguoiTao.ToLower().Contains(text)));
+                    (hd.TenKhachHang != null && hd.TenKhachHang.ToLower().Contains(text)));
             }
 
             if (FromDate.HasValue)
@@ -116,6 +133,18 @@ namespace Bookstore.WPF.ViewModels
             if (ToDate.HasValue)
             {
                 filtered = filtered.Where(hd => hd.NgayTao.Date <= ToDate.Value.Date);
+            }
+
+            if(!string.IsNullOrEmpty(SelectedTrangThaiNo))
+            {
+                if(SelectedTrangThaiNo == ListTrangThaiNo[1])
+                {
+                    filtered = filtered.Where(hd => hd.ConLai <= 0);
+                }
+                else if (SelectedTrangThaiNo == ListTrangThaiNo[2])
+                {
+                    filtered = filtered.Where(hd => hd.ConLai > 0);
+                }
             }
 
             // Chốt danh sách sau khi lọc
@@ -136,6 +165,7 @@ namespace Bookstore.WPF.ViewModels
             // Reset Date (nhưng không gọi Apply ngay lập tức để tránh tính toán nhiều lần)
             _fromDate = null;
             _toDate = null;
+            SelectedTrangThaiNo = ListTrangThaiNo[0];
             OnPropertyChanged(nameof(FromDate));
             OnPropertyChanged(nameof(ToDate));
 
