@@ -877,7 +877,7 @@ namespace Bookstore.WPF.ViewModels
                 var thamSo = await ApiClient.GetAsync<ThamSoDTO>("api/ThamSo/TiLeDonGiaBan");
                 if (thamSo != null && thamSo.GiaTri > 0)
                 {
-                    _tiLeGiaBan = thamSo.GiaTri;
+                    _tiLeGiaBan = thamSo.GiaTri / 100.0m;
                 }
             }
             catch
