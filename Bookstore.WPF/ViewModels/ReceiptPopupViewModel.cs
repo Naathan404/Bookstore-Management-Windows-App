@@ -13,10 +13,20 @@ namespace Bookstore.WPF.ViewModels
 {
     public class ReceiptPopupViewModel : BaseViewModel
     {
+        private bool _isEdit;
+        public bool IsEdit { get => _isEdit; set { _isEdit = value; OnPropertyChanged(); } }
         #region PROPERTIES
         // --- 1. CÁC BIẾN GIAO DIỆN ---
         private bool _isOpen;
-        public bool IsOpen { get => _isOpen; set { _isOpen = value; OnPropertyChanged(); } }
+        public bool IsOpen
+        {
+            get => _isOpen;
+            set
+            {
+                if (value == false) IsEdit = false;
+                _isOpen = value; OnPropertyChanged();
+            }
+        }
 
         private string _popupTitle = "PHIẾU THU TIỀN";
         public string PopupTitle { get => _popupTitle; set { _popupTitle = value; OnPropertyChanged(); } }
@@ -58,7 +68,7 @@ namespace Bookstore.WPF.ViewModels
             set
             {
                 _isKhachHangEnable = value;
-                OnPropertyChanged(); 
+                OnPropertyChanged();
             }
         }
 
@@ -125,7 +135,7 @@ namespace Bookstore.WPF.ViewModels
         {
             DongPopupCommand = new RelayCommand<object>(p => IsOpen = false);
             LuuPhieuThuCommand = new RelayCommand<object>(ExecuteLuuPhieuThu);
-            
+
             //_ = LoadCustomersAsync();
         }
 
@@ -174,14 +184,26 @@ namespace Bookstore.WPF.ViewModels
                 LyDoThu = "Thu tiền"
             };
             FormSoTienThu = 0;
+            IsEdit = true;
             IsOpen = true;
         }
 
         // HÀM MỞ POPUP SỬA
         public async void MoPopupSua(ReceiptResponse pt)
         {
+            MoPopupXemVaSua(pt, isEdit: true);
+        }
+
+        public async void MoPopupXem(ReceiptResponse pt)
+        {
+            MoPopupXemVaSua(pt, isEdit: false);
+        }
+
+        private async void MoPopupXemVaSua(ReceiptResponse pt, bool isEdit)
+        {
+            IsEdit = isEdit;
             _dangSua = true;
-            PopupTitle = "XEM PHIẾU THU";
+            PopupTitle = isEdit ? "SỬA PHIẾU THU" : "XEM PHIẾU THU";
             IsMaPhieuVisible = true;
 
             await LoadCustomersAsync(pt.MaKhachHang);

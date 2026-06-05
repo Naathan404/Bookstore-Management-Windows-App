@@ -134,7 +134,7 @@
 																	ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	
 																	ViewCommand="{Binding DataContext.ViewDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	
+																	EditCommand="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	DeleteCommand="{Binding DataContext.DeleteImportOrderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
@@ -320,6 +320,7 @@
                             Content="LƯU THÔNG TIN"
 								Width="150"
 								Height="40"
+								Visibility="{Binding IsEdit, Converter={StaticResource BoolToVis}}"
 								Style="{StaticResource MainGradientButton}"
 								Command="{Binding UpdateGhiChuCommand}"
 								CommandParameter="{Binding}" />

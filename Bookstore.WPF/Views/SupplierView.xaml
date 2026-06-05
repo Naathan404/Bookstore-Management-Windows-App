@@ -115,8 +115,7 @@
 																	ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	
-																	ViewCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ViewCommand="{Binding DataContext.OpenViewPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	DeleteCommand="{Binding DataContext.DeleteSupplierCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
@@ -180,6 +179,7 @@
 							<components:FormInputControl Title="Tên nhà cung cấp"
 														 IconKind="RenameBoxOutline"
 														 IsRequired="True"
+														 IsEnabled="{Binding IsEdit}"
 														 TextValue="{Binding EditingSupplier.TenNhaCungCap, UpdateSourceTrigger=PropertyChanged}" />
 
 
@@ -193,14 +193,17 @@
 								<StackPanel Grid.Column="0">
 									<components:FormInputControl Title="Số điện thoại"
 																 IconKind="Phone"
+																 IsEnabled="{Binding IsEdit}"
 																 IsRequired="True"
 																 TextValue="{Binding EditingSupplier.SoDienThoai, UpdateSourceTrigger=PropertyChanged}" />
 
 									<components:FormInputControl Title="Tên ngân hàng"
 																 IconKind="Bank"
+																 IsEnabled="{Binding IsEdit}"
 																 TextValue="{Binding EditingSupplier.TenNganHang, UpdateSourceTrigger=PropertyChanged}" />
 									<components:FormInputControl Title="Người đại diện"
 																 IconKind="Person"
+																 IsEnabled="{Binding IsEdit}"
 																 TextValue="{Binding EditingSupplier.NguoiDaiDien, UpdateSourceTrigger=PropertyChanged}" />
 
 								</StackPanel>
@@ -208,19 +211,23 @@
 								<StackPanel Grid.Column="2">
 									<components:FormInputControl Title="Email"
 																 IconKind="Email"
+																 IsEnabled="{Binding IsEdit}"
 																 IsRequired="True"
 																 TextValue="{Binding EditingSupplier.Email, UpdateSourceTrigger=PropertyChanged}" />
 
 									<components:FormInputControl Title="Số tài khoản"
+																 IsEnabled="{Binding IsEdit}"
 																 IconKind="Numeric"
 																 TextValue="{Binding EditingSupplier.SoTaiKhoan, UpdateSourceTrigger=PropertyChanged}" />
 									<components:FormInputControl Title="Mã số thuế"
+																 IsEnabled="{Binding IsEdit}"
 																 IconKind="Tag"
 																 TextValue="{Binding EditingSupplier.MaSoThue, UpdateSourceTrigger=PropertyChanged}" />
 
 								</StackPanel>
 							</Grid>
 							<components:FormInputControl Title="Địa chỉ"
+														 IsEnabled="{Binding IsEdit}"
 														 IconKind="AddressMarker"
 														 Grid.Row="2"
 														 TextValue="{Binding EditingSupplier.DiaChi, UpdateSourceTrigger=PropertyChanged}" />
@@ -256,6 +263,7 @@
 									<TextBlock VerticalAlignment="Center"
 											   Margin="10,0,0,0"
 											   FontSize="13"
+											   IsEnabled="{Binding IsEdit}"
 											   FontWeight="Bold">
 										<TextBlock.Style>
 											<Style TargetType="TextBlock">
@@ -283,9 +291,9 @@
 					<StackPanel Grid.Row="2"
 								Orientation="Horizontal"
 								HorizontalAlignment="Right"
-								Margin="0,0,0,0">
-						<Button Content="HỦY BỎ"
-								Width="120"
+								Margin="0,12,0,0">
+						<Button Content="ĐÓNG"
+								Width="100"
 								Height="40"
 								Margin="0,0,15,0"
 								Style="{StaticResource OutlineButtonStyle}"
@@ -294,6 +302,7 @@
 						<Button Content="LƯU THÔNG TIN"
 								Width="150"
 								Height="40"
+								Visibility="{Binding IsEdit, Converter={StaticResource BoolToVis}}"
 								Style="{StaticResource MainGradientButton}"
 								Command="{Binding SaveSupplierCommand}"
 								CommandParameter="{Binding}" />

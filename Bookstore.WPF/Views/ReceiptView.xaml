@@ -122,7 +122,8 @@
 																	ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	ViewCommand="{Binding DataContext.MoPopupSuaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	EditCommand="{Binding DataContext.MoPopupSuaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ViewCommand="{Binding DataContext.MoPopupXemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	DeleteCommand="{Binding DataContext.XoaPhieuThuCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>

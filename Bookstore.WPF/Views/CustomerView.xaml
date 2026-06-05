@@ -140,8 +140,8 @@
 																	ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	
 																	EditCommand="{Binding DataContext.MoPopupSuaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ViewCommand="{Binding DataContext.MoPopupXemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	DeleteCommand="{Binding DataContext.XoaKhachHangCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowAction="True"
 																	ActionIcon="Cash"
@@ -166,7 +166,7 @@
 												</Style.Triggers>
 											</Style>
 										</components:DataGridActionPanel.Style>
-										\
+
 									</components:DataGridActionPanel>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
@@ -218,7 +218,7 @@
 										Value="AccountPlus" />
 								<Style.Triggers>
 									<DataTrigger Binding="{Binding PopupTitle}"
-												 Value="CHỈNH SỬA KHÁCH HÀNG">
+												 Value="THÔNG TIN KHÁCH HÀNG">
 										<Setter Property="IconKind"
 												Value="AccountEdit" />
 									</DataTrigger>
@@ -248,6 +248,7 @@
 							<components:FormInputControl Title="Tên khách hàng"
 														 IsRequired="True"
 														 IconKind="Text"
+														 IsEnabled="{Binding IsEdit}"
 														 TextValue="{Binding KhachHangForm.TenKhachHang, UpdateSourceTrigger=PropertyChanged}" />
 
 							<Grid>
@@ -308,11 +309,13 @@
 								<components:FormInputControl Title="Email"
 															 Grid.Column="0"
 															 IconKind="Email"
+															 IsEnabled="{Binding IsEdit}"
 															 TextValue="{Binding KhachHangForm.Email, UpdateSourceTrigger=PropertyChanged}" />
 
 								<components:FormComboBoxControl Title="Giới tính"
 																Grid.Column="2"
 																IconKind="GenderMaleFemale"
+																IsEnabled="{Binding IsEdit}"
 																ItemsSource="{Binding DanhSachGioiTinh}"
 																SelectedValue="{Binding KhachHangForm.GioiTinh, UpdateSourceTrigger=PropertyChanged}" />
 							</Grid>
@@ -326,17 +329,20 @@
 
 								<components:FormDatePickerControl Title="Ngày sinh"
 																  Grid.Column="0"
+																  IsEnabled="{Binding IsEdit}"
 																  SelectedDate="{Binding KhachHangForm.NgaySinh, UpdateSourceTrigger=PropertyChanged}"
 																  IconKind="Calendar" />
 
 								<components:FormInputControl Title="Mã số thuế"
 															 Grid.Column="2"
 															 IconKind="CardAccountDetails"
+															 IsEnabled="{Binding IsEdit}"
 															 TextValue="{Binding KhachHangForm.MaSoThue, UpdateSourceTrigger=PropertyChanged}" />
 							</Grid>
 
 							<components:FormInputControl Title="Địa chỉ"
 														 IconKind="MapMarker"
+														 IsEnabled="{Binding IsEdit}"
 														 TextValue="{Binding KhachHangForm.DiaChi, UpdateSourceTrigger=PropertyChanged}" />
 
 
@@ -380,6 +386,7 @@
 
 							<Button Content="LƯU THÔNG TIN"
 									Command="{Binding LuuKhachHangCommand}"
+									Visibility="{Binding IsEdit, Converter={StaticResource BoolToVis}}"
 									CommandParameter="Save"
 									Width="140"
 									Height="40"

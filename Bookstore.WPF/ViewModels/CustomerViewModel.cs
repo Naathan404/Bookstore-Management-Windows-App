@@ -20,6 +20,11 @@ namespace Bookstore.WPF.ViewModels
     public class CustomerViewModel : BaseListViewModel
     {
         public override bool CanEdit => true;
+        private bool _isEdit;
+        public bool IsEdit { get => _isEdit; set { _isEdit = value; OnPropertyChanged(); } }
+
+
+
         #region COMPONENTS (Chứa bộ não Popup Thu Tiền)
         public ReceiptPopupViewModel PopupThuTienVM { get; set; } = new ReceiptPopupViewModel();
         #endregion
@@ -84,7 +89,14 @@ namespace Bookstore.WPF.ViewModels
 
         // --- Trạng thái Popup Khách Hàng ---
         private bool _isKhachHangPopupOpen;
-        public bool IsKhachHangPopupOpen { get => _isKhachHangPopupOpen; set { _isKhachHangPopupOpen = value; OnPropertyChanged(); } }
+        public bool IsKhachHangPopupOpen
+        {
+            get => _isKhachHangPopupOpen; set
+            {
+                if (!value) IsEdit = false;
+                _isKhachHangPopupOpen = value; OnPropertyChanged();
+            }
+        }
 
         private string _popupTitle = "THÊM KHÁCH HÀNG MỚI";
         public string PopupTitle { get => _popupTitle; set { _popupTitle = value; OnPropertyChanged(); } }
@@ -111,7 +123,7 @@ namespace Bookstore.WPF.ViewModels
         #endregion
 
         #region COMMANDS
-
+        public ICommand MoPopupXemCommand { get; set; }
         public ICommand MoPopupThemCommand { get; }
         public ICommand MoPopupSuaCommand { get; }
         public ICommand XoaKhachHangCommand { get; }
@@ -133,7 +145,8 @@ namespace Bookstore.WPF.ViewModels
         public CustomerViewModel()
         {
             MoPopupThemCommand = new RelayCommand<object>(ExecuteMoPopupThem);
-            MoPopupSuaCommand = new RelayCommand<CustomerResponse>(ExecuteMoPopupSua);
+            MoPopupSuaCommand = new RelayCommand<CustomerResponse>(c => MoPopup(c, isEdit: true));
+            MoPopupXemCommand = new RelayCommand<CustomerResponse>(c => MoPopup(c, isEdit: false));
             XoaKhachHangCommand = new RelayCommand<CustomerResponse>(ExecuteXoaKhachHang);
             LuuKhachHangCommand = new RelayCommand<object>(ExecuteLuuKhachHang);
             DongPopupKhachHangCommand = new RelayCommand<object>(p => IsKhachHangPopupOpen = false);
@@ -167,11 +180,11 @@ namespace Bookstore.WPF.ViewModels
                         {
                             // Tạo một Sheet mới
                             var sheet = package.Workbook.Worksheets.Add("Danh Sách Khách Hàng");
-                            
+
 
                             // Tạo sheet cho Khách Hàng
                             // Tạo Header
-                            string[] headers = { "STT","Mã Khách Hàng", "Tên Khách Hàng", "Số Điện Thoại", "Email", "Giới Tính", "Ngày sinh/Ngày thành lập", "Địa chỉ", "Loại Khách Hàng", "Mã Số Thuế", "Số Tiền Công Nợ" };
+                            string[] headers = { "STT", "Mã Khách Hàng", "Tên Khách Hàng", "Số Điện Thoại", "Email", "Giới Tính", "Ngày sinh/Ngày thành lập", "Địa chỉ", "Loại Khách Hàng", "Mã Số Thuế", "Số Tiền Công Nợ" };
                             for (int i = 0; i < headers.Length; i++)
                             {
                                 var cell = sheet.Cells[1, i + 1];
@@ -207,11 +220,11 @@ namespace Bookstore.WPF.ViewModels
 
                             // Tự động chỉnh độ rộng cột
                             sheet.Cells.AutoFitColumns();
-                           
+
 
                             // Căn giữa cột số thứ tự
                             sheet.Cells[2, 1, dataToExport.Count() + 4, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            
+
 
                             //  Lưu file
                             File.WriteAllBytes(sfd.FileName, package.GetAsByteArray());
@@ -378,12 +391,14 @@ namespace Bookstore.WPF.ViewModels
                 GioiTinh = "Nam",
                 CongNo = 0
             };
+            IsEdit = true;
             IsKhachHangPopupOpen = true;
         }
 
-        private void ExecuteMoPopupSua(CustomerResponse kh)
+        private void MoPopup(CustomerResponse kh, bool isEdit)
         {
             if (kh == null) return;
+            IsEdit = isEdit;
             _dangSua = true;
             PopupTitle = "CHỈNH SỬA KHÁCH HÀNG";
             IsCongNoVisible = true;

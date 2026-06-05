@@ -6,6 +6,7 @@ using Bookstore.WPF.Services;
 using Bookstore.WPF.ViewModels.Base;
 using System;
 using System.Collections.ObjectModel;
+using System.DirectoryServices;
 using System.Linq;
 using System.Windows.Input;
 
@@ -13,10 +14,21 @@ namespace Bookstore.WPF.ViewModels
 {
     public class PromotionEditPopupViewModel : BaseViewModel
     {
-        private bool _isPopupVisible;
-        public bool IsPopupVisible { get => _isPopupVisible; set { _isPopupVisible = value; OnPropertyChanged(); } }
+        private bool _isEdit;
+        public bool IsEdit { get => _isEdit; set { _isEdit = value; OnPropertyChanged(); } }
 
-        public string PopupTitle => IsEditMode ? "ĐIỀU CHỈNH ƯU ĐÃI" : "LẬP PHIẾU ƯU ĐÃI MỚI";
+        private bool _isPopupVisible;
+        public bool IsPopupVisible
+        {
+            get => _isPopupVisible; set
+            {
+                if (!value) IsEdit = false;
+                _isPopupVisible = value; OnPropertyChanged();
+
+            }
+        }
+
+        public string PopupTitle => IsEditMode ? "THÔNG TIN ƯU ĐÃI" : "LẬP PHIẾU ƯU ĐÃI MỚI";
         public string SaveButtonText => IsEditMode ? "LƯU THAY ĐỔI" : "TẠO ƯU ĐÃI";
 
         private bool _isEditMode;
@@ -182,8 +194,9 @@ namespace Bookstore.WPF.ViewModels
             });
         }
 
-        public void ShowPopup(PromotionDTO promo, bool isEdit, Action<PromotionDTO> onSave)
+        public void ShowPopup(PromotionDTO promo, bool isEdit, Action<PromotionDTO> onSave, bool isView)
         {
+            IsEdit = !isView;
             IsEditMode = isEdit;
             EditingPromotion = promo;
             _onSaveCallback = onSave;

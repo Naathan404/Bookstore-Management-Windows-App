@@ -15,6 +15,8 @@ namespace Bookstore.WPF.ViewModels
 {
     public class SupplierViewModel : BaseListViewModel
     {
+        private bool _isEdit;
+        public bool IsEdit { get => _isEdit; set { _isEdit = value; OnPropertyChanged(); } }
         private List<SupplierDTO> _allSuppliers = new List<SupplierDTO>();
 
         #region Properties - Trạng thái & Dữ liệu
@@ -55,7 +57,14 @@ namespace Bookstore.WPF.ViewModels
 
         #region Properties - Popup Form
         private bool _isPopupVisible;
-        public bool IsPopupVisible { get => _isPopupVisible; set { _isPopupVisible = value; OnPropertyChanged(); } }
+        public bool IsPopupVisible
+        {
+            get => _isPopupVisible; set
+            {
+                if (!value) IsEdit = false;
+                _isPopupVisible = value; OnPropertyChanged();
+            }
+        }
 
         private string _popupTitle = string.Empty;
         public string PopupTitle { get => _popupTitle; set { _popupTitle = value; OnPropertyChanged(); } }
@@ -74,6 +83,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ClearFilterCommand { get; set; }
         public ICommand OpenAddPopupCommand { get; set; }
         public ICommand OpenEditPopupCommand { get; set; }
+        public ICommand OpenViewPopupCommand { get; set; }
         public ICommand DeleteSupplierCommand { get; set; }
         public ICommand ClosePopupCommand { get; set; }
         public ICommand SaveSupplierCommand { get; set; }
@@ -107,29 +117,13 @@ namespace Bookstore.WPF.ViewModels
                 IsPopupVisible = true;
                 PopUpIcon = PackIconKind.TruckAdd;
                 IsAddMode = true;
+                IsEdit = true;
             });
 
             OpenEditPopupCommand = new RelayCommand<SupplierDTO>(supplier =>
-            {
-                if (supplier == null) return;
-                PopupTitle = "CẬP NHẬT NHÀ CUNG CẤP";
-                _isAddMode = false;
-                EditingSupplier = new SupplierDTO
-                {
-                    MaNhaCungCap = supplier.MaNhaCungCap,
-                    TenNhaCungCap = supplier.TenNhaCungCap,
-                    SoDienThoai = supplier.SoDienThoai,
-                    Email = supplier.Email,
-                    MaSoThue = supplier.MaSoThue,
-                    SoTaiKhoan = supplier.SoTaiKhoan,
-                    TenNganHang = supplier.TenNganHang,
-                    DiaChi = supplier.DiaChi,
-                    NguoiDaiDien = supplier.NguoiDaiDien,
-                    ConHoatDong = supplier.ConHoatDong
-                };
-                IsPopupVisible = true;
-                IsAddMode = false;
-            });
+            OpenPopup(supplier, true));
+            OpenViewPopupCommand = new RelayCommand<SupplierDTO>(supplier =>
+            OpenPopup(supplier, false));
 
             ClosePopupCommand = new RelayCommand<object>(p => IsPopupVisible = false);
             RefreshCommand = new RelayCommand<object>(async p => await LoadSuppliersAsync());
@@ -137,6 +131,29 @@ namespace Bookstore.WPF.ViewModels
             // Nghiệp vụ Cập nhật DB
             SaveSupplierCommand = new RelayCommand<object>(async p => await SaveSupplierAsync());
             DeleteSupplierCommand = new RelayCommand<SupplierDTO>(async supplier => await DeleteSupplierAsync(supplier));
+        }
+
+        private void OpenPopup(SupplierDTO supplier, bool isEdit)
+        {
+            if (supplier == null) return;
+            PopupTitle = isEdit ? "CẬP NHẬT NHÀ CUNG CẤP" : "THÔNG TINH NHÀ CUNG CẤP";
+            _isAddMode = false;
+            EditingSupplier = new SupplierDTO
+            {
+                MaNhaCungCap = supplier.MaNhaCungCap,
+                TenNhaCungCap = supplier.TenNhaCungCap,
+                SoDienThoai = supplier.SoDienThoai,
+                Email = supplier.Email,
+                MaSoThue = supplier.MaSoThue,
+                SoTaiKhoan = supplier.SoTaiKhoan,
+                TenNganHang = supplier.TenNganHang,
+                DiaChi = supplier.DiaChi,
+                NguoiDaiDien = supplier.NguoiDaiDien,
+                ConHoatDong = supplier.ConHoatDong
+            };
+            IsPopupVisible = true;
+            IsAddMode = false;
+            IsEdit = isEdit;
         }
 
         protected override void ApplyFilterAndPagination()

@@ -25,6 +25,9 @@ namespace Bookstore.WPF.ViewModels
     public class PromotionViewModel : BaseListViewModel
     {
         public override bool CanEdit => true;
+        private bool _isEdit;
+        public bool IsEdit { get => _isEdit; set { _isEdit = value; OnPropertyChanged(); } }
+
         #region Dữ liệu và tìm kiếm
         private List<PromotionDTO> _allPromotions = new List<PromotionDTO>();
         public ObservableCollection<string> ListLoaiUuDai { get; set; } = new ObservableCollection<string>();
@@ -176,6 +179,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand DeletePromotionCommand { get; set; }
         public ICommand OpenAddPopupCommand { get; set; }
         public ICommand OpenEditPopupCommand { get; set; }
+        public ICommand OpenViewPopupCommand { get; set; }
         public ICommand SavePromotionCommand { get; set; }
         public ICommand ClosePopupCommand { get; set; }
         public ICommand ExportExcelCommand { get; set; }
@@ -261,63 +265,71 @@ namespace Bookstore.WPF.ViewModels
                 PromotionEditPopupVM.ShowPopup(newPromo, isEdit: false, async (promoToSave) =>
                 {
                     await SavePromotionAsync(promoToSave, isAddMode: true);
-                });
+                }, isView: false);
             });
 
             OpenEditPopupCommand = new RelayCommand<PromotionDTO>(promo =>
             {
-                if (promo == null) return;
-
-                // Phải Deep Copy để tránh lỡ sửa mà bấm Hủy thì List ngoài giao diện bị dính theo
-                var editingPromo = new PromotionDTO
-                {
-                    MaUuDai = promo.MaUuDai,
-                    NgayTao = promo.NgayTao,
-                    Code = promo.Code,
-                    TenChuongTrinh = promo.TenChuongTrinh,
-                    MoTa = promo.MoTa,
-                    NgayBatDau = promo.NgayBatDau,
-                    NgayKetThuc = promo.NgayKetThuc,
-                    SoLuongToiDa = promo.SoLuongToiDa,
-                    SoLuongDaDung = promo.SoLuongDaDung,
-                    MaLoaiKhachHang = promo.MaLoaiKhachHang ?? 0,
-                    MaLoaiUuDai = promo.MaLoaiUuDai,
-                    SoTienToiThieu = promo.SoTienToiThieu,
-                    SoTienToiDa = promo.SoTienToiDa,
-                    SoTienGiam = promo.SoTienGiam,
-                    TiLeGiam = promo.TiLeGiam,
-                    GiamToiDa = promo.GiamToiDa,
-
-                    // Xài bộ danh sách mới 1:N
-                    DanhSachSachDieuKien = promo.DanhSachSachDieuKien?.Select(d => new SachDieuKienDTO
-                    {
-                        ISBN = d.ISBN,
-                        TenSach = d.TenSach,  
-                        SoLuongMua = d.SoLuongMua
-                    }).ToList() ?? new List<SachDieuKienDTO>(),
-
-                    DanhSachSachTang = promo.DanhSachSachTang?.Select(t => new SachTangDTO
-                    {
-                        ISBN = t.ISBN,
-                        TenSach = t.TenSach,
-                        SoLuongTang = t.SoLuongTang
-                    }).ToList() ?? new List<SachTangDTO>(),
-                    CoTheSuDung = promo.CoTheSuDung
-                };
-
-                PromotionEditPopupVM.ListLoaiKhachHang = ListLoaiKhachHang;
-                PromotionEditPopupVM.ListSach = ListSach;
-                PromotionEditPopupVM.AvailablePromotionTypes = AvailablePromotionTypes;
-
-                PromotionEditPopupVM.ShowPopup(editingPromo, isEdit: true, async (promoToSave) =>
-                {
-                    await SavePromotionAsync(promoToSave, isAddMode: false);
-                });
+                OpenPopup(promo, true);
             });
 
-            //ClosePopupCommand = new RelayCommand<object>(p => IsPopupVisible = false);
+            OpenViewPopupCommand = new RelayCommand<PromotionDTO>(promo =>
+            {
+                OpenPopup(promo, false);
+            });
 
-            //SavePromotionCommand = new RelayCommand<object>(async p => await SavePromotionAsync());
+        }
+
+        private void OpenPopup(PromotionDTO promo, bool isEdit)
+        {
+            if (promo == null) return;
+            IsEdit = isEdit;
+
+            // Phải Deep Copy để tránh lỡ sửa mà bấm Hủy thì List ngoài giao diện bị dính theo
+            var editingPromo = new PromotionDTO
+            {
+                MaUuDai = promo.MaUuDai,
+                NgayTao = promo.NgayTao,
+                Code = promo.Code,
+                TenChuongTrinh = promo.TenChuongTrinh,
+                MoTa = promo.MoTa,
+                NgayBatDau = promo.NgayBatDau,
+                NgayKetThuc = promo.NgayKetThuc,
+                SoLuongToiDa = promo.SoLuongToiDa,
+                SoLuongDaDung = promo.SoLuongDaDung,
+                MaLoaiKhachHang = promo.MaLoaiKhachHang ?? 0,
+                MaLoaiUuDai = promo.MaLoaiUuDai,
+                SoTienToiThieu = promo.SoTienToiThieu,
+                SoTienToiDa = promo.SoTienToiDa,
+                SoTienGiam = promo.SoTienGiam,
+                TiLeGiam = promo.TiLeGiam,
+                GiamToiDa = promo.GiamToiDa,
+
+                // Xài bộ danh sách mới 1:N
+                DanhSachSachDieuKien = promo.DanhSachSachDieuKien?.Select(d => new SachDieuKienDTO
+                {
+                    ISBN = d.ISBN,
+                    TenSach = d.TenSach,
+                    SoLuongMua = d.SoLuongMua
+                }).ToList() ?? new List<SachDieuKienDTO>(),
+
+                DanhSachSachTang = promo.DanhSachSachTang?.Select(t => new SachTangDTO
+                {
+                    ISBN = t.ISBN,
+                    TenSach = t.TenSach,
+                    SoLuongTang = t.SoLuongTang
+                }).ToList() ?? new List<SachTangDTO>(),
+                CoTheSuDung = promo.CoTheSuDung
+            };
+
+            PromotionEditPopupVM.ListLoaiKhachHang = ListLoaiKhachHang;
+            PromotionEditPopupVM.ListSach = ListSach;
+            PromotionEditPopupVM.AvailablePromotionTypes = AvailablePromotionTypes;
+
+            PromotionEditPopupVM.ShowPopup(editingPromo, isEdit: true, async (promoToSave) =>
+            {
+                await SavePromotionAsync(promoToSave, isAddMode: false);
+            }, isView: !isEdit);
         }
         private async Task InitDropdownData()
         {

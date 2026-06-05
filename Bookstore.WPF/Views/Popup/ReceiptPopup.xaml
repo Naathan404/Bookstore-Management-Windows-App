@@ -85,7 +85,7 @@
 														DisplayMemberPath="TenKhachHang"
 														IconKind="Person"
 														IsRequired="True"
-														IsEnabled="{Binding IsMaPhieuVisible, Converter={StaticResource InverseBoolConverter}}" />
+														IsEnabled="{Binding IsEdit}" />
 
 						<components:FormInputControl Title="Số tiền thu"
 													 TextValue="{Binding FormSoTienThu, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}"
@@ -94,7 +94,7 @@
 													 IsRequired="True"
 													 State="{Binding SoTienState}"
 													 HelperText="{Binding SoTienHelperText}"
-													 IsEnabled="{Binding IsMaPhieuVisible, Converter={StaticResource InverseBoolConverter}}" />
+													 IsEnabled="{Binding IsEdit}" />
 
 						<components:FormInputControl Title="Công nợ sau khi thu"
 													 TextValue="{Binding ConNoSauKhiThu, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}"
@@ -109,7 +109,7 @@
 													 ShowIcon="False"
 													 IsMultiLine="True"
 													 TextValue="{Binding PhieuThuForm.LyDoThu, UpdateSourceTrigger=PropertyChanged}"
-													 IsEnabled="{Binding IsMaPhieuVisible, Converter={StaticResource InverseBoolConverter}}" />
+													 IsEnabled="{Binding IsEdit}" />
 
 
 
@@ -130,7 +130,7 @@
 						<Button Content="LƯU PHIẾU"
 								Width="140"
 								Style="{StaticResource MainGradientButton}"
-								Visibility="{Binding IsConLaiVisible, Converter={StaticResource BoolToVis}}"
+								Visibility="{Binding IsEdit, Converter={StaticResource BoolToVis}}"
 								CommandParameter="{Binding}"
 								Command="{Binding LuuPhieuThuCommand}" />
 					</StackPanel>

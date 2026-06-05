@@ -34,6 +34,7 @@
 
 						<StackPanel Grid.Column="0">
 							<components:FormInputControl Title="Tên chương trình"
+														 IsEnabled="{Binding IsEdit}"
 														 TextValue="{Binding EditingPromotion.TenChuongTrinh, UpdateSourceTrigger=PropertyChanged}"
 														 IsRequired="True" />
 
@@ -64,6 +65,7 @@
                                                               IsEnabled="{Binding IsCoreEditingAllowed}"/>
 							<components:FormDatePickerControl Title="Ngày hết hạn"
 															  IsRequired="True"
+															  IsEnabled="{Binding IsEdit}"
 															  IconKind="CalendarEnd"
 															  HintText="Chọn ngày..."
 															  SelectedDate="{Binding EditingPromotion.NgayKetThuc, UpdateSourceTrigger=PropertyChanged}" />
@@ -71,6 +73,7 @@
 														 TextValue="{Binding EditingPromotion.SoLuongToiDa, UpdateSourceTrigger=PropertyChanged}"
 														 IsRequired="True"
 														 UnitText="lượt"
+														 IsEnabled="{Binding IsEdit}"
 														 IconKind="Counter" />
 						</StackPanel>
 					</Grid>
@@ -78,6 +81,7 @@
 					<components:FormInputControl Title="Mô tả chương trình"
 												 TextValue="{Binding EditingPromotion.MoTa, UpdateSourceTrigger=PropertyChanged}"
 												 InputHeight="84"
+												 IsEnabled="{Binding IsEdit}"
 												 IsMultiLine="True"
 												 ShowIcon="False" />
 
@@ -507,7 +511,7 @@
 			<Grid Grid.Row="1">
 				<StackPanel Orientation="Horizontal"
 							HorizontalAlignment="Right">
-					<Button Content="HỦY BỎ"
+					<Button Content="ĐÓNG"
 							Command="{Binding ClosePopupCommand}"
 							CommandParameter="{Binding}"
 							Width="80"
@@ -516,6 +520,7 @@
 					<Button Content="{Binding SaveButtonText}"
 							Command="{Binding SavePromotionCommand}"
 							Style="{StaticResource MainGradientButton}"
+							Visibility="{Binding IsEdit, Converter={StaticResource BoolToVis}}"
 							CommandParameter="{Binding}"
 							Width="150"
 							FontSize="13"

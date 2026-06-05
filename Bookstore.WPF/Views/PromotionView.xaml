@@ -212,7 +212,7 @@
 																		ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																		ViewCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																		ViewCommand="{Binding DataContext.OpenViewPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		DeleteCommand="{Binding DataContext.DeletePromotionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
