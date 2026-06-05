@@ -20,8 +20,7 @@
 			<components:PageHeaderControl Title="NHÀ CUNG CẤP"
 										  HeaderIcon="TruckDelivery"
 										  AddCommand="{Binding OpenAddPopupCommand}"
-										  AddCommandParameter="{Binding}" 
-                                          />
+										  AddCommandParameter="{Binding}" />
 
 			<Border Grid.Row="1"
 					Style="{StaticResource FilterCardStyle}">
@@ -32,7 +31,7 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-					
+
 					<components:FilterInputControl Grid.Column="0"
 												   Margin="0,0,8,0"
 												   IconKind="Magnify"
@@ -93,7 +92,7 @@
 											Binding="{Binding SoDienThoai}"
 											Width="120"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
-											ElementStyle="{StaticResource CellLeft}"/>
+											ElementStyle="{StaticResource CellLeft}" />
 
 						<DataGridTextColumn Header="Email"
 											Binding="{Binding Email}"
@@ -132,8 +131,7 @@
 		</Grid>
 
 		<!-- POP UP -->
-		<Grid Background="#80000000"
-			  Panel.ZIndex="1000"
+		<Grid Style="{StaticResource PopupOverlayStyle}"
 			  Visibility="{Binding IsPopupVisible, Converter={StaticResource BoolToVis}}">
 
 			<Border Background="Transparent">
@@ -143,301 +141,112 @@
 				</Border.InputBindings>
 			</Border>
 
-			<Border Width="680"
-					Background="White"
-					CornerRadius="20"
-					Padding="30"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center">
-				<StackPanel>
-					<StackPanel Orientation="Horizontal"
-								HorizontalAlignment="Center"
-								Margin="0,0,0,25">
-						<materialDesign:PackIcon Kind="{Binding PopUpIcon}"
-												 d:Kind="TruckPlus"
-												 Width="26"
-												 Height="26"
-												 Foreground="#4318FF"
-												 Margin="0,0,10,0"
-												 VerticalAlignment="Center" />
-						<TextBlock Text="{Binding PopupTitle}"
-								   FontSize="20"
-								   FontWeight="Bold"
-								   Foreground="#2B3674"
-								   VerticalAlignment="Center" />
-					</StackPanel>
+			<Border Style="{StaticResource PopupCardStyle}"
+					Height="600"
+					Width="600">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<components:PopupHeaderControl Title="{Binding PopupTitle}"
+												   IconKind="TruckPlus" />
+					<ScrollViewer Grid.Row="1">
 
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"></RowDefinition>
-							<RowDefinition Height="Auto"></RowDefinition>
-							<RowDefinition Height="Auto"></RowDefinition>
-							<RowDefinition Height="Auto"></RowDefinition>
-							<RowDefinition Height="Auto"></RowDefinition>
-						</Grid.RowDefinitions>
+						<StackPanel>
+							<components:FormInputControl Title="Mã nhà cung cấp"
+														 IsEnabled="False"
+														 IconKind="Barcode"
+														 TextValue="{Binding EditingSupplier.MaNhaCungCap, UpdateSourceTrigger=PropertyChanged, StringFormat='NCC{0:d3}'}">
+								<components:FormInputControl.Style>
+									<Style TargetType="components:FormInputControl">
+										<Setter Property="Visibility"
+												Value="Visible" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding IsAddMode}"
+														 Value="True">
+												<Setter Property="Visibility"
+														Value="Collapsed" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</components:FormInputControl.Style>
+							</components:FormInputControl>
 
-						<StackPanel Grid.Row="0">
-							<Border CornerRadius="10"
-									Background="White"
-									BorderBrush="#E2E8F0"
-									BorderThickness="1.5"
-									Height="50"
-									Margin="0,0,0,15">
-								<Grid>
-									<TextBlock Text="Tên nhà cung cấp *"
-											   FontSize="10"
-											   Margin="12,4,0,0"
-											   VerticalAlignment="Top">
-										<TextBlock.Style>
-											<Style TargetType="TextBlock">
-												<Setter Property="Foreground"
-														Value="#A3AED0" />
-												<Style.Triggers>
-													<DataTrigger Binding="{Binding EditingSupplier.TenNhaCungCap, TargetNullValue=''}"
-																 Value="">
-														<Setter Property="Foreground"
-																Value="#EF4444" />
-													</DataTrigger>
-												</Style.Triggers>
-											</Style>
-										</TextBlock.Style>
-									</TextBlock>
-									<TextBox Text="{Binding EditingSupplier.TenNhaCungCap, UpdateSourceTrigger=PropertyChanged}"
-											 FontSize="13"
-											 FontWeight="SemiBold"
-											 Foreground="#2B3674"
-											 BorderThickness="0"
-											 Background="Transparent"
-											 VerticalAlignment="Bottom"
-											 Margin="10,0,10,6"
-											 Padding="0" />
-								</Grid>
-							</Border>
-						</StackPanel>
+							<components:FormInputControl Title="Tên nhà cung cấp"
+														 IconKind="RenameBoxOutline"
+														 IsRequired="True"
+														 TextValue="{Binding EditingSupplier.TenNhaCungCap, UpdateSourceTrigger=PropertyChanged}" />
 
-						<Grid Grid.Row="1">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition></ColumnDefinition>
-								<ColumnDefinition Width="10"></ColumnDefinition>
-								<ColumnDefinition></ColumnDefinition>
-							</Grid.ColumnDefinitions>
 
-							<StackPanel Grid.Column="0">
-								<Border CornerRadius="10"
-										Background="White"
-										BorderBrush="#E2E8F0"
-										BorderThickness="1.5"
-										Height="50"
-										Margin="0,0,0,15">
-									<Grid>
-										<TextBlock Text="Số điện thoại *"
-												   FontSize="10"
-												   Margin="12,4,0,0"
-												   VerticalAlignment="Top">
-											<TextBlock.Style>
-												<Style TargetType="TextBlock">
-													<Setter Property="Foreground"
-															Value="#A3AED0" />
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding EditingSupplier.SoDienThoai, TargetNullValue=''}"
-																	 Value="">
-															<Setter Property="Foreground"
-																	Value="#EF4444" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</TextBlock.Style>
-										</TextBlock>
-										<TextBox Text="{Binding EditingSupplier.SoDienThoai, UpdateSourceTrigger=PropertyChanged}"
-												 FontSize="13"
-												 FontWeight="SemiBold"
-												 Foreground="#2B3674"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 VerticalAlignment="Bottom"
-												 Margin="10,0,10,6"
-												 Padding="0" />
-									</Grid>
-								</Border>
-								<Border CornerRadius="10"
-										Background="White"
-										BorderBrush="#E2E8F0"
-										BorderThickness="1.5"
-										Height="50"
-										Margin="0,0,0,15">
-									<Grid>
-										<TextBlock Text="Tên ngân hàng"
-												   FontSize="10"
-												   Foreground="#A3AED0"
-												   Margin="12,4,0,0"
-												   VerticalAlignment="Top" />
-										<TextBox Text="{Binding EditingSupplier.TenNganHang}"
-												 FontSize="13"
-												 FontWeight="SemiBold"
-												 Foreground="#2B3674"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 VerticalAlignment="Bottom"
-												 Margin="10,0,10,6"
-												 Padding="0" />
-									</Grid>
-								</Border>
-								<Border CornerRadius="10"
-										Background="White"
-										BorderBrush="#E2E8F0"
-										BorderThickness="1.5"
-										Height="50"
-										Margin="0,0,0,15">
-									<Grid>
-										<TextBlock Text="Người đại diện"
-												   FontSize="10"
-												   Foreground="#A3AED0"
-												   Margin="12,4,0,0"
-												   VerticalAlignment="Top" />
-										<TextBox Text="{Binding EditingSupplier.NguoiDaiDien}"
-												 FontSize="13"
-												 FontWeight="SemiBold"
-												 Foreground="#2B3674"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 VerticalAlignment="Bottom"
-												 Margin="10,0,10,6"
-												 Padding="0" />
-									</Grid>
-								</Border>
-							</StackPanel>
+							<Grid Grid.Row="1">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition></ColumnDefinition>
+									<ColumnDefinition Width="10"></ColumnDefinition>
+									<ColumnDefinition></ColumnDefinition>
+								</Grid.ColumnDefinitions>
 
-							<StackPanel Grid.Column="2">
-								<Border CornerRadius="10"
-										Background="White"
-										BorderBrush="#E2E8F0"
-										BorderThickness="1.5"
-										Height="50"
-										Margin="0,0,0,15">
-									<Grid>
-										<TextBlock Text="Email"
-												   FontSize="10"
-												   Foreground="#A3AED0"
-												   Margin="12,4,0,0"
-												   VerticalAlignment="Top" />
-										<TextBox Text="{Binding EditingSupplier.Email}"
-												 FontSize="13"
-												 FontWeight="SemiBold"
-												 Foreground="#2B3674"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 VerticalAlignment="Bottom"
-												 Margin="10,0,10,6"
-												 Padding="0" />
-									</Grid>
-								</Border>
+								<StackPanel Grid.Column="0">
+									<components:FormInputControl Title="Số điện thoại"
+																 IconKind="Phone"
+																 IsRequired="True"
+																 TextValue="{Binding EditingSupplier.SoDienThoai, UpdateSourceTrigger=PropertyChanged}" />
 
-								<Border CornerRadius="10"
-										Background="White"
-										BorderBrush="#E2E8F0"
-										BorderThickness="1.5"
-										Height="50"
-										Margin="0,0,0,15">
-									<Grid>
-										<TextBlock Text="Số tài khoản"
-												   FontSize="10"
-												   Foreground="#A3AED0"
-												   Margin="12,4,0,0"
-												   VerticalAlignment="Top" />
-										<TextBox Text="{Binding EditingSupplier.SoTaiKhoan}"
-												 FontSize="13"
-												 FontWeight="SemiBold"
-												 Foreground="#2B3674"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 VerticalAlignment="Bottom"
-												 Margin="10,0,10,6"
-												 Padding="0" />
-									</Grid>
-								</Border>
+									<components:FormInputControl Title="Tên ngân hàng"
+																 IconKind="Bank"
+																 TextValue="{Binding EditingSupplier.TenNganHang, UpdateSourceTrigger=PropertyChanged}" />
+									<components:FormInputControl Title="Người đại diện"
+																 IconKind="Person"
+																 TextValue="{Binding EditingSupplier.NguoiDaiDien, UpdateSourceTrigger=PropertyChanged}" />
 
-								<Border CornerRadius="10"
-										Background="White"
-										BorderBrush="#E2E8F0"
-										BorderThickness="1.5"
-										Height="50"
-										Margin="0,0,0,15">
-									<Grid>
-										<TextBlock Text="Mã số thuế"
-												   FontSize="10"
-												   Foreground="#A3AED0"
-												   Margin="12,4,0,0"
-												   VerticalAlignment="Top" />
-										<TextBox Text="{Binding EditingSupplier.MaSoThue}"
-												 FontSize="13"
-												 FontWeight="SemiBold"
-												 Foreground="#2B3674"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 VerticalAlignment="Bottom"
-												 Margin="10,0,10,6"
-												 Padding="0" />
-									</Grid>
-								</Border>
-							</StackPanel>
-						</Grid>
+								</StackPanel>
 
-						<Border Grid.Row="2"
-								CornerRadius="10"
-								Background="White"
-								BorderBrush="#E2E8F0"
-								BorderThickness="1.5"
-								Height="50"
-								Margin="0,0,0,15">
-							<Grid>
-								<TextBlock Text="Địa chỉ"
-										   FontSize="10"
-										   Foreground="#A3AED0"
-										   Margin="12,4,0,0"
-										   VerticalAlignment="Top" />
-								<TextBox Text="{Binding EditingSupplier.DiaChi}"
-										 FontSize="13"
-										 FontWeight="SemiBold"
-										 Foreground="#2B3674"
-										 BorderThickness="0"
-										 Background="Transparent"
-										 VerticalAlignment="Bottom"
-										 Margin="10,0,10,6"
-										 Padding="0" />
+								<StackPanel Grid.Column="2">
+									<components:FormInputControl Title="Email"
+																 IconKind="Email"
+																 IsRequired="True"
+																 TextValue="{Binding EditingSupplier.Email, UpdateSourceTrigger=PropertyChanged}" />
+
+									<components:FormInputControl Title="Số tài khoản"
+																 IconKind="Numeric"
+																 TextValue="{Binding EditingSupplier.SoTaiKhoan, UpdateSourceTrigger=PropertyChanged}" />
+									<components:FormInputControl Title="Mã số thuế"
+																 IconKind="Tag"
+																 TextValue="{Binding EditingSupplier.MaSoThue, UpdateSourceTrigger=PropertyChanged}" />
+
+								</StackPanel>
 							</Grid>
-						</Border>
-
-						<Border Grid.Row="3"
-								CornerRadius="10"
-								Background="White"
-								BorderBrush="#E2E8F0"
-								BorderThickness="1.5"
-								Height="50"
-								Margin="0,0,0,15">
-							<Border.Style>
-								<Style TargetType="Border">
-									<Setter Property="Visibility"
-											Value="Visible" />
-									<Style.Triggers>
-										<DataTrigger Binding="{Binding IsAddMode}"
-													 Value="True">
-											<Setter Property="Visibility"
-													Value="Collapsed" />
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</Border.Style>
+							<components:FormInputControl Title="Địa chỉ"
+														 IconKind="AddressMarker"
+														 Grid.Row="2"
+														 TextValue="{Binding EditingSupplier.DiaChi, UpdateSourceTrigger=PropertyChanged}" />
 							<Grid>
+								<Grid.Style>
+									<Style TargetType="Grid">
+										<Setter Property="Visibility"
+												Value="Visible" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding IsAddMode}"
+														 Value="True">
+												<Setter Property="Visibility"
+														Value="Collapsed" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</Grid.Style>
 								<StackPanel Orientation="Horizontal"
 											VerticalAlignment="Bottom"
 											Margin="10,0,10,8"
-											HorizontalAlignment="Right">
+											HorizontalAlignment="Left">
 									<TextBlock Text="Trạng thái: "
+											   FontSize="13"
+											   FontWeight="Bold"
+											   Foreground="{StaticResource PrimaryDarkColor}"
 											   VerticalAlignment="Center"
-											   Margin="0 0 10 0"></TextBlock>
+											   Margin="0 0 10 0" />
 
-									<ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
-												  IsChecked="{Binding EditingSupplier.ConHoatDong}"
+									<ToggleButton IsChecked="{Binding EditingSupplier.ConHoatDong}"
 												  ToolTip="Gạt để bật/tắt trạng thái giao dịch"
 												  Cursor="Hand" />
 
@@ -465,28 +274,28 @@
 									</TextBlock>
 								</StackPanel>
 							</Grid>
-						</Border>
 
-						<StackPanel Grid.Row="4"
-									Orientation="Horizontal"
-									HorizontalAlignment="Right"
-									Margin="0,10,0,0">
-							<Button Content="HỦY BỎ"
-									Width="120"
-									Height="40"
-									Margin="0,0,15,0"
-									Style="{StaticResource OutlineButtonStyle}"
-									Command="{Binding ClosePopupCommand}"
-									CommandParameter="{Binding}" />
-							<Button Content="LƯU THÔNG TIN"
-									Width="150"
-									Height="40"
-									Style="{StaticResource MainGradientButton}"
-									Command="{Binding SaveSupplierCommand}"
-									CommandParameter="{Binding}" />
 						</StackPanel>
-					</Grid>
-				</StackPanel>
+					</ScrollViewer>
+					<StackPanel Grid.Row="2"
+								Orientation="Horizontal"
+								HorizontalAlignment="Right"
+								Margin="0,0,0,0">
+						<Button Content="HỦY BỎ"
+								Width="120"
+								Height="40"
+								Margin="0,0,15,0"
+								Style="{StaticResource OutlineButtonStyle}"
+								Command="{Binding ClosePopupCommand}"
+								CommandParameter="{Binding}" />
+						<Button Content="LƯU THÔNG TIN"
+								Width="150"
+								Height="40"
+								Style="{StaticResource MainGradientButton}"
+								Command="{Binding SaveSupplierCommand}"
+								CommandParameter="{Binding}" />
+					</StackPanel>
+				</Grid>
 			</Border>
 		</Grid>
 	</Grid>
