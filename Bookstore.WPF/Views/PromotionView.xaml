@@ -121,11 +121,11 @@
 											ElementStyle="{StaticResource CellLeft}"
 											Width="150" />
 
-						<DataGridTextColumn Header="Đối tượng"
+						<!--<DataGridTextColumn Header="Đối tượng"
 											Binding="{Binding LoaiKhachHangApDung}"
 											HeaderStyle="{StaticResource LeftHeaderStyle}"
 											ElementStyle="{StaticResource CellLeft}"
-											Width="100" />
+											Width="100" />-->
 
 						<DataGridTemplateColumn Header="Thời gian áp dụng"
 												Width="150"
@@ -212,7 +212,7 @@
 																		ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																		
+																		ViewCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																		DeleteCommand="{Binding DataContext.DeletePromotionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 

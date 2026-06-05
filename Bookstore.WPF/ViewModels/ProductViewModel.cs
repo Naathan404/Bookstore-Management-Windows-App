@@ -19,13 +19,7 @@ namespace Bookstore.WPF.ViewModels
     {
         #region Phân quyền
         public bool CanView => false;
-        public bool CanEdit
-        {
-            get
-            {
-                return AppState.CurrentUser.Username == "admin";
-            }
-        }
+        public bool CanEdit => true;
         public bool CanDelete
         {
             get

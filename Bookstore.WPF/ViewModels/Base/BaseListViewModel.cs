@@ -16,8 +16,8 @@ namespace Bookstore.WPF.ViewModels.Base
     public abstract class BaseListViewModel : BaseViewModel
     {
         #region Phân quyền
-        public bool CanView => true;
-        public bool CanEdit
+        public virtual bool CanView => true;
+        public virtual bool CanEdit
         {
             get
             {
@@ -25,7 +25,7 @@ namespace Bookstore.WPF.ViewModels.Base
             }
         }
 
-        public bool CanDelete
+        public virtual bool CanDelete
         {
             get
             {

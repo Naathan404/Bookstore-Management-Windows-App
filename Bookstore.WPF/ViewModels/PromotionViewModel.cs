@@ -24,6 +24,7 @@ namespace Bookstore.WPF.ViewModels
 {
     public class PromotionViewModel : BaseListViewModel
     {
+        public override bool CanEdit => true;
         #region Dữ liệu và tìm kiếm
         private List<PromotionDTO> _allPromotions = new List<PromotionDTO>();
         public ObservableCollection<string> ListLoaiUuDai { get; set; } = new ObservableCollection<string>();
