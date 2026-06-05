@@ -245,7 +245,9 @@
 													YAxes="{Binding InventoryYAxes}"
 													Visibility="{Binding InventoryChartVisibility}"
 													TooltipPosition="Right"
-													LegendPosition="Hidden" />
+													LegendPosition="Hidden" 
+                                                    Margin="0 0 0 0"
+                                                    Padding="5"/>
 								<lvc:CartesianChart Series="{Binding DebtChartSeries}"
 													XAxes="{Binding DebtXAxes}"
 													YAxes="{Binding DebtYAxes}"
