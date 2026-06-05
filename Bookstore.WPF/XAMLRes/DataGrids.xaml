@@ -44,7 +44,7 @@
 				Value="True" />
 		<Setter Property="SelectionUnit"
 				Value="FullRow" />
-		<Setter Property="RowHeight"
+		<Setter Property="MinRowHeight"
 				Value="52" />
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
 				Value="Hidden" />
