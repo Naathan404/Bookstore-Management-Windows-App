@@ -284,6 +284,10 @@ namespace Bookstore.WPF.ViewModels
 
         public async void LoadMasterData()
         {
+            StaffList.Clear();
+            CustomerTypeList.Clear();
+            CategoryList.Clear();
+            DanhSachThang.Clear();
             _ = LoadFilterListsAsync();
             _ = LoadReportDataAsync();
         }
@@ -549,10 +553,23 @@ namespace Bookstore.WPF.ViewModels
             {
                 new RowSeries<double>
                 {
-                    Name = "Giá trị tồn kho", Values = invenValue, Fill = new SolidColorPaint(new SKColor(67, 24, 255)), MaxBarWidth = 20,
-                    XToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue:N0} đ",
-                    DataLabelsPaint = new SolidColorPaint(new SKColor(43, 54, 116)), DataLabelsSize = 11,
-                    DataLabelsFormatter = point => { double val = point.Coordinate.PrimaryValue; return val >= 1_000_000 ? $"{val / 1_000_000:N1}M" : val >= 1_000 ? $"{val / 1_000:N0}K" : $"{val:N0}"; },
+                    Name = "Giá trị tồn kho",
+                    Values = invenValue,
+                    Fill = new SolidColorPaint(new SKColor(67, 24, 255)),
+                    MaxBarWidth = 20,
+
+                    XToolTipLabelFormatter = point => {
+                        string bookName = data.InventoryBarLabels.ElementAtOrDefault(point.Index) ?? "Sách không xác định";
+                     
+                        return $"{bookName} \n {point.Coordinate.PrimaryValue:N0} đ";
+                    },
+
+                    DataLabelsPaint = new SolidColorPaint(new SKColor(43, 54, 116)),
+                    DataLabelsSize = 11,
+                    DataLabelsFormatter = point => {
+                        double val = point.Coordinate.PrimaryValue;
+                        return val >= 1_000_000 ? $"{val / 1_000_000:N1}M" : val >= 1_000 ? $"{val / 1_000:N0}K" : $"{val:N0}";
+                    },
                 }
             };
 
@@ -563,6 +580,7 @@ namespace Bookstore.WPF.ViewModels
         private void SetupDebtChart(ReportResultDto data)
         {
             if (data.DebtAxisLabels == null) return;
+            
 
             DebtChartSeries = new ObservableCollection<ISeries>
             {
