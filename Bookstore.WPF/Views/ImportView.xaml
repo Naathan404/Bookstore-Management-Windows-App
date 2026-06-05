@@ -478,7 +478,7 @@
 										<DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
 												<components:FilterInputControl ShowIcon="False"
-																			   UnitText="quyển"
+																			   IsCurrencyMode="True"
 																			   TextAlignment="Center"
 																			   TextValue="{Binding SoLuong, UpdateSourceTrigger=PropertyChanged}" />
 											</DataTemplate>

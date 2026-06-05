@@ -6,7 +6,7 @@
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 			 xmlns:components="clr-namespace:Bookstore.WPF.Views.Components"
 			 mc:Ignorable="d">
-	
+
 	<Grid>
 		<Grid x:Name="MainCategoryView"
 			  Margin="0">
@@ -18,10 +18,10 @@
 			<components:PageHeaderControl Title="QUẢN LÝ DANH MỤC"
 										  HeaderIcon="CategoryPlus"
 										  ShowAddButton="False"
-                                          Margin="20, 10, 20, 0"
-                                          ShowExportExcel="True"
-                                          ExportExcelCommand="{Binding ExportExcelCommand}"
-                                          ExportExcelCommandParameter="{Binding}"/>
+										  Margin="20, 10, 20, 0"
+										  ShowExportExcel="True"
+										  ExportExcelCommand="{Binding ExportExcelCommand}"
+										  ExportExcelCommandParameter="{Binding}" />
 
 			<TabControl Grid.Row="1"
 						Margin="20, 0, 20, 10"
@@ -435,129 +435,138 @@
 					</Grid>
 				</TabItem>
 
-                <TabItem Header="LOẠI KHÁCH HÀNG">
-                    <Grid Margin="0,15,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+				<TabItem Header="LOẠI KHÁCH HÀNG">
+					<Grid Margin="0,15,0,0">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="300" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+						<Grid Grid.Row="0"
+							  Margin="0,0,0,15">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="300" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
 
-                            <components:FilterInputControl Grid.Column="0"
-                                                   IconKind="Building"
-                                                   HintText="Tìm Loại khách hàng..."
-                                                   TextValue="{Binding SearchLoaiKhachHang}" 
-                                                           />
-                            <Button Grid.Column="2"
-                            Style="{StaticResource MainGradientButton}"
-                            Width="220"
-                            Command="{Binding OpenAddLoaiKhachHangCommand}"
-                                    CommandParameter="{Binding}"
-                            Content="+ THÊM LOẠI KHÁCH HÀNG"
-                            FontWeight="SemiBold" />
-                        </Grid>
+							<components:FilterInputControl Grid.Column="0"
+														   IconKind="Building"
+														   HintText="Tìm Loại khách hàng..."
+														   TextValue="{Binding SearchLoaiKhachHang}" />
+							<Button Grid.Column="2"
+									Style="{StaticResource MainGradientButton}"
+									Width="220"
+									Command="{Binding OpenAddLoaiKhachHangCommand}"
+									CommandParameter="{Binding}"
+									Content="+ THÊM LOẠI KHÁCH HÀNG"
+									FontWeight="SemiBold" />
+						</Grid>
 
-                        <Border Grid.Row="1" Style="{StaticResource DataGridCardStyle}">
-                            <DataGrid ItemsSource="{Binding FilteredLoaiKhachHangs}" Style="{StaticResource CleanDataGrid}">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="STT" Binding="{Binding Stt}" Width="50" HeaderStyle="{StaticResource CenterHeaderStyle}" ElementStyle="{StaticResource CellCenter}" />
+						<Border Grid.Row="1"
+								Style="{StaticResource DataGridCardStyle}">
+							<DataGrid ItemsSource="{Binding FilteredLoaiKhachHangs}"
+									  Style="{StaticResource CleanDataGrid}">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="STT"
+														Binding="{Binding Stt}"
+														Width="50"
+														HeaderStyle="{StaticResource CenterHeaderStyle}"
+														ElementStyle="{StaticResource CellCenter}" />
 
-                                    <DataGridTextColumn Header="Tên Loại khách hàng" Binding="{Binding Name}" HeaderStyle="{StaticResource LeftHeaderStyle}" ElementStyle="{StaticResource CellLeft}" Width="1.5*" />
+									<DataGridTextColumn Header="Tên Loại khách hàng"
+														Binding="{Binding Name}"
+														HeaderStyle="{StaticResource LeftHeaderStyle}"
+														ElementStyle="{StaticResource CellLeft}"
+														Width="1.5*" />
 
-                                    <DataGridTextColumn Header="Nợ tối đa có thể giao dịch" Binding="{Binding NoToiDa, StringFormat={}{0:N0} đ}" HeaderStyle="{StaticResource RightHeaderStyle}" ElementStyle="{StaticResource CellMoney}" Width="*" />
+									<DataGridTextColumn Header="Nợ tối đa có thể giao dịch"
+														Binding="{Binding NoToiDa, StringFormat={}{0:N0} đ}"
+														HeaderStyle="{StaticResource RightHeaderStyle}"
+														ElementStyle="{StaticResource CellMoney}"
+														Width="*" />
 
-                                    <DataGridTextColumn Header="Tỉ lệ thanh toán tối thiểu" 
-                    Binding="{Binding TiLeTra, StringFormat={}{0}%}" 
-                    HeaderStyle="{StaticResource CenterHeaderStyle}" 
-                    ElementStyle="{StaticResource CellCenter}" Width="*" />
+									<DataGridTextColumn Header="Tỉ lệ thanh toán tối thiểu"
+														Binding="{Binding TiLeTra, StringFormat={}{0}%}"
+														HeaderStyle="{StaticResource CenterHeaderStyle}"
+														ElementStyle="{StaticResource CellCenter}"
+														Width="*" />
 
-                                    <DataGridTemplateColumn Header="Thao tác" Width="100" HeaderStyle="{StaticResource CenterHeaderStyle}">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <components:DataGridActionPanel RowItem="{Binding}"
-                                                                        ShowEdit="True"
-                                                                        EditCommand="{Binding DataContext.EditLoaiKhachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                        ShowDelete="True"
-                                                                        DeleteCommand="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </Border>
-                    </Grid>
-                </TabItem>
+									<DataGridTemplateColumn Header="Thao tác"
+															Width="100"
+															HeaderStyle="{StaticResource CenterHeaderStyle}">
+										<DataGridTemplateColumn.CellTemplate>
+											<DataTemplate>
+												<components:DataGridActionPanel RowItem="{Binding}"
+																				ShowEdit="True"
+																				EditCommand="{Binding DataContext.EditLoaiKhachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																				ShowDelete="True"
+																				DeleteCommand="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+											</DataTemplate>
+										</DataGridTemplateColumn.CellTemplate>
+									</DataGridTemplateColumn>
+								</DataGrid.Columns>
+							</DataGrid>
+						</Border>
+					</Grid>
+				</TabItem>
 
-            </TabControl>
-			
-            <Grid Grid.RowSpan="2"
-				  Panel.ZIndex="1000"
-				  Visibility="{Binding IsPopupVisible}"
-				  Background="#80000000">
-                <Border Width="380"
-						Background="White"
-						CornerRadius="16"
-						VerticalAlignment="Center"
-						Padding="25">
-                    <StackPanel>
-                        <TextBlock Text="{Binding PopupTitle}"
+			</TabControl>
+
+			<Grid Grid.RowSpan="2"
+				  Style="{StaticResource PopupOverlayStyle}"
+				  Visibility="{Binding IsPopupVisible}">
+				<Border Width="380"
+						Style="{StaticResource PopupCardStyle}">
+					<StackPanel>
+						<TextBlock Text="{Binding PopupTitle}"
+								   Foreground="{StaticResource PrimaryDarkColor}"
 								   FontSize="18"
 								   FontWeight="Bold"
 								   Margin="0,0,0,15" />
 
-                        <TextBox Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}"
-								 materialDesign:HintAssist.Hint="Nhập tên..."
-								 Margin="0,0,0,15"
-								 FontWeight="SemiBold" />
+						<components:FormInputControl Title="Nhập tên"
+													 TextValue="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <StackPanel Visibility="{Binding IsLoaiKhachFieldsVisible}">
 
-                            <TextBox Text="{Binding NoToiDaForm, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:#,0}}"
-									 materialDesign:HintAssist.Hint="Hạn mức nợ tối đa (VNĐ)..."
-									 Margin="0,0,0,15"
-									 FontWeight="SemiBold" />
+						<StackPanel Visibility="{Binding IsLoaiKhachFieldsVisible}">
+							<components:FormInputControl Title="Hạn mức nợ tối đa"
+														 IsCurrencyMode="True"
+														 IconKind="Money"
+														 UnitText="đ"
+														 TextValue="{Binding NoToiDaForm, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
 
-                            <TextBox Text="{Binding TiLeTraForm, UpdateSourceTrigger=PropertyChanged}"
-									 materialDesign:HintAssist.Hint="Tỉ lệ trả tối thiểu (Ví dụ: 0.25)..."
-									 Margin="0,0,0,15"
-									 FontWeight="SemiBold" />
+							<components:FormInputControl Title="Tỉ lệ trả tối thiểu"
+														 IsCurrencyMode="True"
+														 IconKind="Money"
+														 UnitText="%"
+														 TextValue="{Binding TiLeTraForm, UpdateSourceTrigger=PropertyChanged}" />
+						</StackPanel>
 
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal"
+						<StackPanel Orientation="Horizontal"
 									HorizontalAlignment="Right"
 									Margin="0,10,0,0">
-                            <Button Content="HỦY"
+							<Button Content="HỦY"
 									Command="{Binding ClosePopupCommand}"
 									CommandParameter="{Binding}"
 									Style="{StaticResource OutlineButtonStyle}"
 									Width="80"
 									Margin="0,0,10,0" />
-                            <Button Content="LƯU"
+							<Button Content="LƯU"
 									Command="{Binding SaveCommand}"
 									CommandParameter="{Binding}"
 									Style="{StaticResource MainGradientButton}"
 									Width="100" />
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </Grid>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+			</Grid>
 
-            <Grid Grid.RowSpan="2"
-				  Panel.ZIndex="1001"
-				  Visibility="{Binding IsDauSachPopupVisible}"
-				  Background="#80000000">
+			<Grid Grid.RowSpan="2"
+				  Style="{StaticResource PopupOverlayStyle}"
+				  Visibility="{Binding IsDauSachPopupVisible}">
 				<Border Width="700"
-						Background="White"
-						CornerRadius="16"
-						VerticalAlignment="Center"
-						Padding="30">
+						Style="{StaticResource PopupCardStyle}">
 					<StackPanel>
 						<TextBlock Text="{Binding DauSachPopupTitle}"
 								   FontSize="22"
@@ -612,168 +621,72 @@
 										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions>
 
-									<StackPanel Grid.Column="0">
-										<TextBlock Text="Tên đầu sách *"
-												   FontWeight="SemiBold"
-												   Foreground="#A3AED0"
-												   Margin="0,0,0,5">
-											<TextBlock.Style>
-												<Style TargetType="TextBlock">
-													<Setter Property="Foreground"
-															Value="#A3AED0" />
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding EditingDauSach.Name, TargetNullValue=''}"
-																	 Value="">
-															<Setter Property="Foreground"
-																	Value="#EF4444" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</TextBlock.Style>
-										</TextBlock>
-										<Border CornerRadius="8"
-												BorderBrush="#E2E8F0"
-												BorderThickness="1"
-												Background="#F8FAFC"
-												Height="42"
-												Padding="10,0">
-											<TextBox Text="{Binding EditingDauSach.Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-													 materialDesign:HintAssist.Hint="Nhập tên..."
-													 BorderThickness="0"
-													 Background="Transparent"
-													 VerticalAlignment="Center" />
-										</Border>
-									</StackPanel>
+									<components:FormInputControl Title="Tên đầu sách"
+																 IsRequired="True"
+																 IconKind="BookAlert"
+																 TextValue="{Binding EditingDauSach.Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
 
-									<StackPanel Grid.Column="2">
-										<TextBlock Text="Thể loại *"
-												   FontWeight="SemiBold"
-												   Foreground="#A3AED0"
-												   Margin="0,0,0,5">
-											<TextBlock.Style>
-												<Style TargetType="TextBlock">
-													<Setter Property="Foreground"
-															Value="#A3AED0" />
-													<Style.Triggers>
-														<DataTrigger Binding="{Binding EditingDauSach.TenTheLoai, TargetNullValue=''}"
-																	 Value="">
-															<Setter Property="Foreground"
-																	Value="#EF4444" />
-														</DataTrigger>
-													</Style.Triggers>
-												</Style>
-											</TextBlock.Style>
-										</TextBlock>
-										<Border CornerRadius="8"
-												BorderBrush="#E2E8F0"
-												BorderThickness="1"
-												Background="#F8FAFC"
-												Height="42"
-												Padding="10,0">
-											<ComboBox ItemsSource="{Binding ListTheLoai}"
-													  SelectedItem="{Binding EditingDauSach.TenTheLoai, Mode=TwoWay}"
-													  materialDesign:HintAssist.Hint="Chọn thể loại..."
-													  BorderThickness="0"
-													  Background="Transparent"
-													  VerticalAlignment="Center" />
-										</Border>
-									</StackPanel>
+									<components:FormComboBoxControl Title="Thể loại"
+																	Grid.Column="2"
+																	IconKind="Tag"
+																	IsRequired="True"
+																	ItemsSource="{Binding ListTheLoai}"
+																	SelectedItem="{Binding EditingDauSach.TenTheLoai, Mode=TwoWay}" />
+
 								</Grid>
 
-								<StackPanel Margin="0,0,0,15">
-									<TextBlock Text="Tác giả *"
-											   FontWeight="SemiBold"
-											   Foreground="#A3AED0"
-											   Margin="0,0,0,5">
-										<TextBlock.Style>
-											<Style TargetType="TextBlock">
-												<Setter Property="Foreground"
-														Value="#A3AED0" />
-												<Style.Triggers>
-													<DataTrigger Binding="{Binding EditingBook.DanhSachTacGia.Count, TargetNullValue=0}"
-																 Value="0">
-														<Setter Property="Foreground"
-																Value="#EF4444" />
-													</DataTrigger>
-												</Style.Triggers>
-											</Style>
-										</TextBlock.Style>
-									</TextBlock>
-									<Border CornerRadius="8"
-											BorderBrush="#E2E8F0"
-											BorderThickness="1"
-											Background="#F8FAFC"
-											Height="42"
-											Padding="10,0">
-										<ComboBox ItemsSource="{Binding ListTatCaTacGia}"
-												  DisplayMemberPath="TenTacGia"
-												  SelectedItem="{Binding SelectedTacGiaToAdd}"
-												  materialDesign:HintAssist.Hint="Nhấn vào đây để chọn tác giả..."
-												  BorderThickness="0"
-												  Background="Transparent"
-												  VerticalAlignment="Center" />
-									</Border>
+								<components:FormComboBoxControl Title="Tác giả"
+																IconKind="People"
+																IsRequired="True"
+																IsEditable="True"
+																ItemsSource="{Binding ListTatCaTacGia}"
+																DisplayMemberPath="TenTacGia"
+																SelectedItem="{Binding SelectedTacGiaToAdd}" />
 
-									<ItemsControl ItemsSource="{Binding EditingDauSach.DanhSachTacGia}"
-												  Margin="0,10,0,0">
-										<ItemsControl.ItemsPanel>
-											<ItemsPanelTemplate>
-												<WrapPanel Orientation="Horizontal" />
-											</ItemsPanelTemplate>
-										</ItemsControl.ItemsPanel>
-										<ItemsControl.ItemTemplate>
-											<DataTemplate>
-												<Border Background="#EEF2FF"
-														CornerRadius="15"
-														Padding="10,5"
-														Margin="0,0,8,8">
-													<StackPanel Orientation="Horizontal">
-														<TextBlock Text="{Binding TenTacGia}"
-																   Foreground="#4318FF"
-																   FontWeight="SemiBold"
-																   VerticalAlignment="Center" />
-														<Button Command="{Binding DataContext.RemoveTacGiaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																CommandParameter="{Binding}"
-																Background="Transparent"
-																BorderThickness="0"
-																Padding="0"
-																Width="18"
-																Height="18"
-																Margin="5,0,0,0">
-															<materialDesign:PackIcon Kind="Close"
-																					 Width="14"
-																					 Height="14"
-																					 Foreground="#EF4444"
-																					 VerticalAlignment="Center" />
-														</Button>
-													</StackPanel>
-												</Border>
-											</DataTemplate>
-										</ItemsControl.ItemTemplate>
-									</ItemsControl>
-								</StackPanel>
 
-								<StackPanel Margin="0,0,0,20">
-									<TextBlock Text="Mô tả nội dung"
-											   FontWeight="SemiBold"
-											   Foreground="#A3AED0"
-											   Margin="0,0,0,5" />
-									<Border CornerRadius="8"
-											BorderBrush="#E2E8F0"
-											BorderThickness="1"
-											Background="#F8FAFC"
-											Padding="10"
-											Height="75">
-										<TextBox Text="{Binding EditingDauSach.MoTa, UpdateSourceTrigger=PropertyChanged}"
-												 materialDesign:HintAssist.Hint="Viết tóm tắt/mô tả..."
-												 TextWrapping="Wrap"
-												 AcceptsReturn="True"
-												 VerticalScrollBarVisibility="Auto"
-												 BorderThickness="0"
-												 Background="Transparent"
-												 VerticalAlignment="Top" />
-									</Border>
-								</StackPanel>
+								<ItemsControl ItemsSource="{Binding EditingDauSach.DanhSachTacGia}"
+											  Margin="0,-8,0,0">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<WrapPanel Orientation="Horizontal" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Border Background="#EEF2FF"
+													CornerRadius="15"
+													Padding="10,5"
+													Margin="0,0,8,8">
+												<StackPanel Orientation="Horizontal">
+													<TextBlock Text="{Binding TenTacGia}"
+															   Foreground="#4318FF"
+															   FontWeight="SemiBold"
+															   VerticalAlignment="Center" />
+													<Button Command="{Binding DataContext.RemoveTacGiaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+															CommandParameter="{Binding}"
+															Background="Transparent"
+															BorderThickness="0"
+															Padding="0"
+															Width="18"
+															Height="18"
+															Margin="5,0,0,0">
+														<materialDesign:PackIcon Kind="Close"
+																				 Width="14"
+																				 Height="14"
+																				 Foreground="#EF4444"
+																				 VerticalAlignment="Center" />
+													</Button>
+												</StackPanel>
+											</Border>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+
+								<components:FormInputControl Title="Mô tả nội dung"
+															 ShowIcon="False"
+															 IsMultiLine="True"
+															 InputHeight="100"
+															 TextValue="{Binding EditingDauSach.MoTa, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
 							</StackPanel>
 						</Grid>
 
