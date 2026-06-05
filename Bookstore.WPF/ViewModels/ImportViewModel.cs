@@ -171,6 +171,7 @@ namespace Bookstore.WPF.ViewModels
                 FilterSupplierList.Add(new NhaCungCapDto { MaNhaCungCap = 0, TenNhaCungCap = "Tất cả Nhà cung cấp" });
                 foreach (var item in data)
                 {
+                    if (!item.ConHoatDong) continue;
                     SupplierList.Add(item);
                     FilterSupplierList.Add(item);
                 }    
@@ -467,6 +468,7 @@ namespace Bookstore.WPF.ViewModels
     {
         public int MaNhaCungCap { get; set; }
         public string TenNhaCungCap { get; set; } = "";
+        public bool ConHoatDong { get; set; }
     }
 
     public class ImportOrderRequestUI : BaseViewModel
