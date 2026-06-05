@@ -273,6 +273,7 @@ namespace Bookstore.API.Controllers
 
                     foreach (var b in booksList)
                     {
+                        
                         int imported = importsInPeriod.GetValueOrDefault(b.ISBN, 0);
                         int sold = salesInPeriod.GetValueOrDefault(b.ISBN, 0);
                         int closing = b.TonKho;
@@ -480,6 +481,7 @@ namespace Bookstore.API.Controllers
 
                     foreach (var c in customers)
                     {
+                        if (c.MaKhachHang == 1) continue;
                         decimal newDebt = invoices.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.TongTien - x.SoTienTra);
 
                         decimal paidDebt = receipts.Where(x => x.MaKhachHang == c.MaKhachHang).Sum(x => x.SoTienThu);

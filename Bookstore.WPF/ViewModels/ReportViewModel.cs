@@ -278,6 +278,9 @@ namespace Bookstore.WPF.ViewModels
 
         public async void LoadMasterData()
         {
+            StaffList.Clear();
+            CustomerTypeList.Clear();
+            CategoryList.Clear();
             _ = LoadFilterListsAsync();
             _ = LoadReportDataAsync();
         }
@@ -534,6 +537,7 @@ namespace Bookstore.WPF.ViewModels
         private void SetupDebtChart(ReportResultDto data)
         {
             if (data.DebtAxisLabels == null) return;
+            
 
             DebtChartSeries = new ObservableCollection<ISeries>
             {
