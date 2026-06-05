@@ -196,7 +196,7 @@ namespace Bookstore.WPF.ViewModels
         }
 
         // --- CÁC HÀM GỌI API (Giữ nguyên) ---
-        private async Task LoadSuppliersAsync()
+        public async Task LoadSuppliersAsync()
         {
             IsLoading = true;
             try

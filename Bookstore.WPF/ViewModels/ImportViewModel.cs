@@ -14,6 +14,22 @@ namespace Bookstore.WPF.ViewModels
 {
     public class ImportViewModel : BaseListViewModel
     {
+        public bool IsAdmin
+        {
+            get => AppState.CurrentUser.Username == "admin";
+        }
+
+        private bool _isEdit = false;
+        public bool IsEdit
+        {
+            get => _isEdit;
+            set
+            {
+                _isEdit = value;
+                OnPropertyChanged(nameof(IsEdit));
+            }
+        }
+
         private List<ImportOrderResponse> _danhSachGoc = new();
 
         private ObservableCollection<ImportOrderResponse> _importOrders = new();
@@ -29,7 +45,16 @@ namespace Bookstore.WPF.ViewModels
         public NhaCungCapDto SelectedSupplier
         {
             get => _selectedSupplier;
-            set { _selectedSupplier = value; OnPropertyChanged(); TrangHienTai = 1; ApplyFilterAndPagination(); }
+            set { _selectedSupplier = value; OnPropertyChanged(); }
+        }
+
+        public ObservableCollection<NhaCungCapDto> FilterSupplierList { get; set; } = new();
+
+        private NhaCungCapDto _selectedFilterSupplier;
+        public NhaCungCapDto SelectedFilterSupplier
+        {
+            get => _selectedFilterSupplier;
+            set { _selectedFilterSupplier = value; OnPropertyChanged(); TrangHienTai = 1; ApplyFilterAndPagination(); }
         }
 
         private DateTime? _filterFromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
@@ -77,6 +102,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand ClearFilterCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand ViewDetailCommand { get; }
+        public ICommand EditCommand { get; }
         public ICommand DeleteImportOrderCommand { get; }
         public ICommand OpenAddImportCommand { get; }
         public ICommand ClosePopupCommand { get; }
@@ -86,6 +112,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand AddBookToImportCommand { get; }
         public ICommand RemoveImportDetailCommand { get; }
         public ICommand SaveImportOrderCommand { get; }
+        public ICommand UpdateImportOrderCommand { get; }
         public ICommand UpdateGhiChuCommand { get; }
 
         int minImport = 1;
@@ -100,12 +127,14 @@ namespace Bookstore.WPF.ViewModels
                 FilterToDate = null;
                 //SelectedSupplier = null;
                 SelectedSupplier = SupplierList.FirstOrDefault(x => x.MaNhaCungCap == 0);
+                SelectedFilterSupplier = FilterSupplierList.FirstOrDefault(x => x.MaNhaCungCap == 0);
             });
 
             FilterFromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             FilterToDate = DateTime.Today;
             RefreshCommand = new RelayCommand<object>(async (p) => await LoadDataAsync());
             ViewDetailCommand = new RelayCommand<ImportOrderResponse>(async (p) => await LoadDetailAsync(p));
+            EditCommand = new RelayCommand<ImportOrderResponse>(async (p) => await ExecuteEdit(p));
             DeleteImportOrderCommand = new RelayCommand<ImportOrderResponse>(ExecuteDelete);
             OpenAddImportCommand = new RelayCommand<object>((p) => PrepareAddPopup());
             ClosePopupCommand = new RelayCommand<object>((p) =>
@@ -122,6 +151,11 @@ namespace Bookstore.WPF.ViewModels
             UpdateGhiChuCommand = new RelayCommand<object>(async (p) => await ExecuteUpdateGhiChu());
 
 
+            LoadMasterData();
+        }
+
+        public async void LoadMasterData()
+        {
             _ = LoadSuppliersAsync();
             _ = LoadDataAsync();
         }
@@ -133,8 +167,14 @@ namespace Bookstore.WPF.ViewModels
             if (data != null)
             {
                 SupplierList.Clear();
-                SupplierList.Add(new NhaCungCapDto { MaNhaCungCap = 0, TenNhaCungCap = "Tất cả Nhà cung cấp" });
-                foreach (var item in data) SupplierList.Add(item);
+                FilterSupplierList.Clear();
+                FilterSupplierList.Add(new NhaCungCapDto { MaNhaCungCap = 0, TenNhaCungCap = "Tất cả Nhà cung cấp" });
+                foreach (var item in data)
+                {
+                    SupplierList.Add(item);
+                    FilterSupplierList.Add(item);
+                }    
+                SelectedFilterSupplier = FilterSupplierList[0];
                 SelectedSupplier = SupplierList[0];
             }
 
@@ -160,6 +200,7 @@ namespace Bookstore.WPF.ViewModels
 
         private async Task LoadDetailAsync(ImportOrderResponse order)
         {
+            IsEdit = false;
             if (order == null) return;
             try
             {
@@ -194,8 +235,8 @@ namespace Bookstore.WPF.ViewModels
                     x.TenNguoiTao.ToLower().Contains(kw));
             }
 
-            if (SelectedSupplier != null && SelectedSupplier.MaNhaCungCap > 0)
-                filtered = filtered.Where(x => x.MaNhaCungCap == SelectedSupplier.MaNhaCungCap);
+            if (SelectedFilterSupplier != null && SelectedFilterSupplier.MaNhaCungCap > 0)
+                filtered = filtered.Where(x => x.MaNhaCungCap == SelectedFilterSupplier.MaNhaCungCap);
 
             if (FilterFromDate.HasValue)
                 filtered = filtered.Where(x => x.NgayNhap.Date >= FilterFromDate.Value.Date);
@@ -235,6 +276,29 @@ namespace Bookstore.WPF.ViewModels
         //        }
         //    }
         //}
+
+        private async Task ExecuteEdit(ImportOrderResponse order)
+        {
+            IsEdit = true;
+            if (order == null) return;
+            try
+            {
+                var data = await ApiClient.GetAsync<ImportOrderDetailResponse>($"api/PhieuNhap/{order.MaPhieuNhap}");
+                if (data != null)
+                {
+                    DetailImportOrder = data;
+                    IsDetailPopupOpen = true;
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi kết nối hoặc không lấy được dữ liệu chi tiết từ máy chủ!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Có lỗi xảy ra: {ex.Message}", "Lỗi hệ thống", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         private async void ExecuteDelete(ImportOrderResponse order)
         {
@@ -407,6 +471,7 @@ namespace Bookstore.WPF.ViewModels
 
     public class ImportOrderRequestUI : BaseViewModel
     {
+        public int MaPhieuNhap { get; set; }
         public NhaCungCapDto SelectedSupplier { get; set; }
         public DateTime NgayNhap { get; set; } = DateTime.Now;
         public string GhiChu { get; set; } = "";
