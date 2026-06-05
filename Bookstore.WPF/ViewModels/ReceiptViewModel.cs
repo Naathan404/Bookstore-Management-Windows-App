@@ -14,7 +14,6 @@ namespace Bookstore.WPF.ViewModels
     // KẾ THỪA TỪ BASE LIST VIEW MODEL
     public class ReceiptViewModel : BaseListViewModel
     {
-        public override bool CanEdit => false;
         #region COMPONENTS
         public ReceiptPopupViewModel PopupThuTienVM { get; set; } = new ReceiptPopupViewModel();
         #endregion
@@ -82,7 +81,6 @@ namespace Bookstore.WPF.ViewModels
 
         public ICommand MoPopupThemCommand { get; }
         public ICommand MoPopupSuaCommand { get; }
-        public ICommand MoPopupXemCommand { get; }
         public ICommand XoaPhieuThuCommand { get; }
         public ICommand XoaLocCommand { get; }
 
@@ -95,7 +93,7 @@ namespace Bookstore.WPF.ViewModels
             // --- GIAO VIỆC MỞ POPUP CHO THẰNG CON ---
             MoPopupThemCommand = new RelayCommand<object>(p => PopupThuTienVM.MoPopupThemMoi());
             MoPopupSuaCommand = new RelayCommand<ReceiptResponse>(p => PopupThuTienVM.MoPopupSua(p));
-            MoPopupXemCommand = new RelayCommand<ReceiptResponse>(p => PopupThuTienVM.MoPopupXem(p));
+
             // --- CÁC VIỆC TRANG CHA TỰ LÀM ---
             XoaPhieuThuCommand = new RelayCommand<ReceiptResponse>(ExecuteXoaPhieuThu);
 

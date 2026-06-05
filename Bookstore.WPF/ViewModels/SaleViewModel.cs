@@ -551,7 +551,14 @@ namespace Bookstore.WPF.ViewModels
                 if (result != null && result.Any())
                 {
                     // Nạp kết quả vào ComboBox
-                    foreach (var customer in result) DanhSachKhachHang.Add(customer);
+                    foreach (var customer in result)
+                    {
+                        if (customer.MaLoaiKhachHang == 1 && customer.CongNo > 1000000) continue;
+                        if (customer.MaLoaiKhachHang == 2 && customer.CongNo > 5000000) continue;
+                        DanhSachKhachHang.Add(customer);
+
+                    } 
+                        
 
                     // Bắt được người dùng -> Đẩy thẳng lên ComboBox và báo xanh lá cây
                     KhachHangDuocChon = result.First();

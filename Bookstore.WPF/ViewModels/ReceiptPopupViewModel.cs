@@ -147,7 +147,7 @@ namespace Bookstore.WPF.ViewModels
                 if (customers != null)
                 {
                     // Lấy người có nợ HOẶC chính là người đang được truyền vào (để sửa/xem)
-                    var filtered = customers.Where(x => x.CongNo > 0 || x.MaKhachHang == maKhachHangBatBuoc).ToList();
+                    var filtered = customers.Where(x => (x.CongNo > 0 && x.MaKhachHang != 1 ) || x.MaKhachHang == maKhachHangBatBuoc).ToList();
                     DanhSachKhachHangCombobox = new ObservableCollection<CustomerResponse>(filtered);
                 }
             }

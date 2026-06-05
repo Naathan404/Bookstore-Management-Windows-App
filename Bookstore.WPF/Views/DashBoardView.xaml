@@ -674,7 +674,9 @@
 															Value="SemiBold" />
 													<Setter Property="Margin"
 															Value="10 0 10 0"></Setter>
-												</Style>
+                                                    <Setter Property="TextWrapping"
+															Value="Wrap"></Setter>
+                                                </Style>
 											</DataGridTextColumn.ElementStyle>
 										</DataGridTextColumn>
 										<DataGridTextColumn Header="Khách hàng"
@@ -777,7 +779,9 @@
 															Value="SemiBold" />
 													<Setter Property="Margin"
 															Value="10 0 10 0"></Setter>
-												</Style>
+                                                    <Setter Property="TextWrapping"
+															Value="Wrap"></Setter>
+                                                </Style>
 											</DataGridTextColumn.ElementStyle>
 										</DataGridTextColumn>
 										<DataGridTextColumn Header="Nhà cung cấp"
@@ -900,7 +904,9 @@
 															Value="SemiBold" />
 													<Setter Property="Margin"
 															Value="10 0 10 0"></Setter>
-												</Style>
+                                                    <Setter Property="TextWrapping"
+															Value="Wrap"></Setter>
+                                                </Style>
 											</DataGridTextColumn.ElementStyle>
 										</DataGridTextColumn>
 										<DataGridTextColumn Header="Khách hàng"
@@ -944,7 +950,7 @@
 										</DataGridTextColumn>
 										<DataGridTextColumn Header="Số tiền"
 															Binding="{Binding Amount, StringFormat='{}{0:#,0} đ'}"
-															Width="100"
+															Width="120"
 															HeaderStyle="{StaticResource CenterHeaderStyle}">
 											<DataGridTextColumn.ElementStyle>
 												<Style TargetType="TextBlock">
