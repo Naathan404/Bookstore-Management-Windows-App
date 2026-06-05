@@ -1126,7 +1126,7 @@
 																	 IconKind="AttachMoney"
 																	 FontWeight="Bold"
 																	 Foreground="{StaticResource PrimaryColor}"
-																	 TextValue="{Binding EditingBook.GiaNiemYet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+																	 TextValue="{Binding EditingBook.GiaNiemYet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US}" />
 										<components:FormInputControl Grid.Column="2"
 																	 Title="Đơn giá bán"
 																	 IsCurrencyMode="True"
@@ -1134,7 +1134,7 @@
 																	 IconKind="AttachMoney"
 																	 FontWeight="Bold"
 																	 Foreground="{StaticResource SuccessColor}"
-																	 TextValue="{Binding EditingBook.DonGiaBan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+																	 TextValue="{Binding EditingBook.DonGiaBan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:N0}, ConverterCulture=en-US}" />
 									</Grid>
 
 									<Grid Margin="0,0,0,15">
