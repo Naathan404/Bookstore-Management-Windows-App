@@ -19,7 +19,7 @@
 
 			<!-- ==================== HEADER ==================== -->
 			<components:PageHeaderControl Title="NHẬP KHO"
-										  HeaderIcon="TruckDelivery"
+										  HeaderIcon="Warehouse"
 										  ShowAddButton="True"
 										  AddTitle="THÊM"
 										  AddIcon="Plus"

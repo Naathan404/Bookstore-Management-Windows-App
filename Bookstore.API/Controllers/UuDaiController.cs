@@ -275,7 +275,7 @@ namespace Bookstore.API.Controllers
         public async Task<IActionResult> CreateUuDai([FromBody] PromotionDTO dto)
         {
             if (dto.SoLuongToiDa < 1 || dto.SoLuongToiDa > 200)
-                return BadRequest("Số lượng phát hành ưu đãi bắt buộc nằm trong khoảng từ 1 đến 200 theo QĐ6.1.");
+                return BadRequest("Số lượng phát hành ưu đãi bắt buộc nằm trong khoảng từ 1 đến 200.");
 
             if (await _context.UuDai.AnyAsync(x => x.Code == dto.Code))
                 return BadRequest("Mã Voucher Code này đã tồn tại.");
