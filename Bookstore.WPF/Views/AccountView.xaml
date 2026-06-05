@@ -192,7 +192,7 @@
 									</DataGridTemplateColumn>
 
 									<DataGridTemplateColumn Header="Thao tác"
-															Width="140"
+															Width="150"
 															HeaderStyle="{StaticResource CenterHeaderStyle}">
 										<DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
@@ -200,7 +200,7 @@
 															HorizontalAlignment="Center"
 															VerticalAlignment="Center">
 
-													<Button Style="{StaticResource MiniWarningButton}"
+													<Button Style="{StaticResource MiniActionButtonBase}"
 															ToolTip="Khôi phục mật khẩu mặc định"
 															Margin="0,0,8,0"
 															Command="{Binding DataContext.ResetPasswordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"

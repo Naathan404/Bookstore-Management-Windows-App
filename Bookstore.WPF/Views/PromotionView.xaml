@@ -187,7 +187,7 @@
 						</DataGridTemplateColumn>
 
 						<DataGridTemplateColumn Header="Thao tác"
-												Width="100"
+												Width="180"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
@@ -209,9 +209,11 @@
 										</Button>
 
 										<components:DataGridActionPanel RowItem="{Binding}"
-																		ShowEdit="True"
+																		ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																		ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																		ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																		
 																		EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																		ShowDelete="False"
 																		DeleteCommand="{Binding DataContext.DeletePromotionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
 									</StackPanel>

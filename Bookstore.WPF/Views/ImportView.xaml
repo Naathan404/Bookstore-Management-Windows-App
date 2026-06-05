@@ -125,13 +125,16 @@
 
 						<DataGridTemplateColumn Header="Thao tác"
 												HeaderStyle="{StaticResource CenterHeaderStyle}"
-												Width="100">
+												Width="150">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<components:DataGridActionPanel RowItem="{Binding}"
-																	ShowView="True"
+																	ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	
 																	ViewCommand="{Binding DataContext.ViewDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	ShowDelete="True"
+																	
 																	DeleteCommand="{Binding DataContext.DeleteImportOrderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>

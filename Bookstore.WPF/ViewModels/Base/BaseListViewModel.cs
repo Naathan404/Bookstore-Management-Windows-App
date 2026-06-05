@@ -1,4 +1,6 @@
 ﻿using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
+using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,26 @@ namespace Bookstore.WPF.ViewModels.Base
     /// </summary>
     public abstract class BaseListViewModel : BaseViewModel
     {
+        #region Phân quyền
+        public bool CanView => true;
+        public bool CanEdit
+        {
+            get
+            {
+                return AppState.CurrentUser.Username == "admin";
+            }
+        }
+
+        public bool CanDelete
+        {
+            get
+            {
+                return AppState.CurrentUser.Username == "admin";
+            }
+        }
+
+        #endregion
+
         #region 1. CÁC THUỘC TÍNH CHUNG (Universal Properties)
 
         private string _searchKeyword = string.Empty;

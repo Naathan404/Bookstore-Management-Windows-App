@@ -292,19 +292,20 @@
 
 						<!-- Cột Nút Hành Động -->
 						<DataGridTemplateColumn Header="Thao tác"
-												Width="180"
+												Width="200"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<components:DataGridActionPanel RowItem="{Binding}"
+																	ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	DeleteCommand="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowAction="True"
 																	ActionIcon="CartAdd"
 																	ActionCommand="{Binding DataContext.OpenViewPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	ActionText="Xem"
-																	ShowEdit="True"
-																	EditCommand="{Binding DataContext.OpenEditPopupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	ShowDelete="True"
-																	DeleteCommand="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+																	ActionText="Xem" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

@@ -43,7 +43,7 @@
 									 Height="15" />
 		</Button>
 
-		<Button Style="{StaticResource MiniPrimaryButton}"
+		<Button Style="{StaticResource MiniWarningButton}"
 				Visibility="{Binding ShowEdit, ElementName=Root, Converter={StaticResource BoolToVis}}"
 				Command="{Binding EditCommand, ElementName=Root}"
 				CommandParameter="{Binding RowItem, ElementName=Root}"

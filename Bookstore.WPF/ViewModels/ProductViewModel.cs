@@ -1,6 +1,7 @@
 ﻿using Bookstore.Share.DTOs;
 using Bookstore.WPF.Models;
 using Bookstore.WPF.Services;
+using Bookstore.WPF.Utils;
 using Bookstore.WPF.Views.Components;
 using Bookstore.WPF.Views.Popup;
 using MaterialDesignThemes.Wpf;
@@ -16,6 +17,25 @@ namespace Bookstore.WPF.ViewModels
 {
     public class ProductViewModel : BaseViewModel
     {
+        #region Phân quyền
+        public bool CanView => false;
+        public bool CanEdit
+        {
+            get
+            {
+                return AppState.CurrentUser.Username == "admin";
+            }
+        }
+        public bool CanDelete
+        {
+            get
+            {
+                return AppState.CurrentUser.Username == "admin";
+            }
+        }
+
+        #endregion
+
         public BookDetailPopupViewModel BookDetailPopupVM { get; set; } = new BookDetailPopupViewModel();
 
         #region Collections

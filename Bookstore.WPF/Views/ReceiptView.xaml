@@ -114,14 +114,15 @@
 											ElementStyle="{StaticResource CellProfit}"/>
 
 						<DataGridTemplateColumn Header="Thao tác"
-												Width="100"
+												Width="150"
 												HeaderStyle="{StaticResource CenterHeaderStyle}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<components:DataGridActionPanel RowItem="{Binding}"
-																	ShowView="True"
+																	ShowView="{Binding DataContext.CanView, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowEdit="{Binding DataContext.CanEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowDelete="{Binding DataContext.CanDelete, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ViewCommand="{Binding DataContext.MoPopupSuaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-																	ShowDelete="True"
 																	DeleteCommand="{Binding DataContext.XoaPhieuThuCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
