@@ -14,6 +14,7 @@ namespace Bookstore.WPF.ViewModels
     // KẾ THỪA TỪ BASE LIST VIEW MODEL
     public class ReceiptViewModel : BaseListViewModel
     {
+        public override bool CanEdit => false;
         #region COMPONENTS
         public ReceiptPopupViewModel PopupThuTienVM { get; set; } = new ReceiptPopupViewModel();
         #endregion
