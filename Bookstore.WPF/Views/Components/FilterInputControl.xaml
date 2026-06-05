@@ -2,6 +2,7 @@
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 xmlns:helpers="clr-namespace:Bookstore.WPF.Helpers"
 			 x:Name="Root">
 
 	<Border x:Name="ContainerBorder"
@@ -13,21 +14,27 @@
 
 		<Grid>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="38" />
+				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
 			<materialDesign:PackIcon x:Name="Icon"
+									 Grid.Column="0"
 									 Kind="{Binding IconKind, ElementName=Root}"
 									 Width="18"
 									 Height="18"
+									 Margin="10,0,6,0"
 									 Foreground="{StaticResource TextLightColor}"
 									 VerticalAlignment="Center"
-									 HorizontalAlignment="Center" />
+									 HorizontalAlignment="Center"
+									 Visibility="{Binding ShowIcon, ElementName=Root, Converter={StaticResource BoolToVis}}" />
 
 			<TextBox x:Name="InputBox"
 					 Grid.Column="1"
 					 Text="{Binding TextValue, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
+					 TextAlignment="{Binding TextAlignment, ElementName=Root}"
+					 helpers:TextBoxFormatHelper.IsCurrency="{Binding IsCurrencyMode, ElementName=Root}"
 					 Background="Transparent"
 					 BorderThickness="0"
 					 VerticalAlignment="Center"
@@ -38,8 +45,35 @@
 					 materialDesign:HintAssist.Hint="{Binding HintText, ElementName=Root}"
 					 materialDesign:HintAssist.Foreground="{StaticResource TextLightColor}"
 					 materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource PrimaryColor}"
-					 Margin="0,4,8,4">
+					 Margin="4,4,4,4">
 			</TextBox>
+
+			<TextBlock Grid.Column="2"
+					   Text="{Binding UnitText, ElementName=Root}"
+					   FontSize="13"
+					   FontWeight="SemiBold"
+					   Foreground="{StaticResource TextLightColor}"
+					   VerticalAlignment="Center"
+					   Margin="4,0,12,0">
+				<TextBlock.Style>
+					<Style TargetType="TextBlock">
+						<Setter Property="Visibility"
+								Value="Visible" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding UnitText, ElementName=Root}"
+										 Value="">
+								<Setter Property="Visibility"
+										Value="Collapsed" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding UnitText, ElementName=Root}"
+										 Value="{x:Null}">
+								<Setter Property="Visibility"
+										Value="Collapsed" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBlock.Style>
+			</TextBlock>
 		</Grid>
 
 		<Border.Style>
@@ -87,5 +121,4 @@
 			</BeginStoryboard>
 		</EventTrigger>
 	</UserControl.Triggers>
-
 </UserControl>

@@ -101,5 +101,13 @@ namespace Bookstore.WPF.Views.Components
             get { return (bool)GetValue(StaysOpenOnEditProperty); }
             set { SetValue(StaysOpenOnEditProperty, value); }
         }
+        public static readonly DependencyProperty ItemTemplateProperty =
+    DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(FormComboBoxControl), new PropertyMetadata(null));
+
+        public DataTemplate ItemTemplate
+        {
+            get { return (DataTemplate)GetValue(ItemTemplateProperty); }
+            set { SetValue(ItemTemplateProperty, value); }
+        }
     }
 }

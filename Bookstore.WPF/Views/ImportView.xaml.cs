@@ -24,5 +24,24 @@ namespace Bookstore.WPF.Views
         {
             InitializeComponent();
         }
+
+        private void DataGrid_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
+
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // Bỏ qua sự kiện cuộn hiện tại của DataGrid
+            e.Handled = true;
+
+            // Tạo ra một sự kiện cuộn chuột mới y hệt
+            var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+            eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+
+            // Bắn sự kiện đó lên cho thằng cha (ScrollViewer bọc ngoài) xử lý
+            var parent = VisualTreeHelper.GetParent((DependencyObject)sender) as UIElement;
+            parent?.RaiseEvent(eventArg);
+        }
     }
 }

@@ -38,5 +38,42 @@ namespace Bookstore.WPF.Views.Components
         }
         public static readonly DependencyProperty IconKindProperty =
             DependencyProperty.Register("IconKind", typeof(PackIconKind), typeof(FilterInputControl), new PropertyMetadata(PackIconKind.Magnify));
+        public bool ShowIcon
+        {
+            get { return (bool)GetValue(ShowIconProperty); }
+            set { SetValue(ShowIconProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowIconProperty =
+            DependencyProperty.Register("ShowIcon", typeof(bool), typeof(FilterInputControl), new PropertyMetadata(true));
+        // 1. Thuộc tính canh lề (Trái, Giữa, Phải)
+        public static readonly DependencyProperty TextAlignmentProperty =
+            DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(FilterInputControl), new PropertyMetadata(TextAlignment.Left));
+
+        public TextAlignment TextAlignment
+        {
+            get { return (TextAlignment)GetValue(TextAlignmentProperty); }
+            set { SetValue(TextAlignmentProperty, value); }
+        }
+
+        // 2. Thuộc tính bật/tắt định dạng tiền tệ
+        public static readonly DependencyProperty IsCurrencyModeProperty =
+            DependencyProperty.Register("IsCurrencyMode", typeof(bool), typeof(FilterInputControl), new PropertyMetadata(false));
+
+        public bool IsCurrencyMode
+        {
+            get { return (bool)GetValue(IsCurrencyModeProperty); }
+            set { SetValue(IsCurrencyModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty UnitTextProperty =
+    DependencyProperty.Register("UnitText", typeof(string), typeof(FilterInputControl), new PropertyMetadata(string.Empty));
+
+        public string UnitText
+        {
+            get { return (string)GetValue(UnitTextProperty); }
+            set { SetValue(UnitTextProperty, value); }
+        }
+
     }
 }

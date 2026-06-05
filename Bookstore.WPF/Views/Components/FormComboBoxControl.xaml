@@ -95,6 +95,7 @@
 						  materialDesign:HintAssist.Hint="{Binding HintText, ElementName=Root}"
 						  materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource PrimaryColor}"
 						  materialDesign:TextFieldAssist.UnderlineCornerRadius="5"
+						  ItemTemplate="{Binding ItemTemplate, ElementName=Root}"
 						  Margin="8,4,12,4" />
 			</Grid>
 

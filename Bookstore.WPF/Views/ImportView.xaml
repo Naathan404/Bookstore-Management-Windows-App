@@ -129,8 +129,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<components:DataGridActionPanel RowItem="{Binding}"
-																	ShowEdit="True"
-																	EditCommand="{Binding DataContext.ViewDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+																	ShowView="True"
+																	ViewCommand="{Binding DataContext.ViewDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
 																	ShowDelete="True"
 																	DeleteCommand="{Binding DataContext.DeleteImportOrderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 								</DataTemplate>
@@ -149,454 +149,438 @@
 		</Grid>
 
 		<!-- ==================== POPUP CHI TIẾT PHIẾU NHẬP ==================== -->
-        <Grid Background="#80000000"
-              Visibility="{Binding IsDetailPopupOpen, Converter={StaticResource BoolToVis}}"
-              VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="1000">
+		<Grid Style="{StaticResource PopupOverlayStyle}"
+			  Visibility="{Binding IsDetailPopupOpen, Converter={StaticResource BoolToVis}}">
 
-            <Grid Background="Transparent">
-                <Grid.InputBindings>
-                    <MouseBinding Gesture="LeftClick" Command="{Binding ClosePopupCommand}" />
-                </Grid.InputBindings>
-            </Grid>
+			<Grid Background="Transparent">
+				<Grid.InputBindings>
+					<MouseBinding Gesture="LeftClick"
+								  CommandParameter="{Binding}"
+								  Command="{Binding ClosePopupCommand}" />
+				</Grid.InputBindings>
+			</Grid>
 
-            <Border Width="850"
-                    Background="White"
-                    CornerRadius="16"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="750">
-                    <Grid Margin="30">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+			<Border Style="{StaticResource PopupCardStyle}"
+					Width="900"
+					Height="600">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<components:PopupHeaderControl Title="CHI TIẾT PHIẾU NHẬP KHO"
+												   IconKind="InformationOutline" />
 
-                        <Grid Grid.Row="0" Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="40" />
-                            </Grid.ColumnDefinitions>
+					<ScrollViewer VerticalScrollBarVisibility="Auto"
+								  Margin="0,0,0,12"
+								  Grid.Row="1">
+						<StackPanel>
+							<Grid Grid.Row="1">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="12" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
 
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <materialDesign:PackIcon Kind="InformationOutline"
-                                                         Width="24" Height="24"
-                                                         Foreground="#4318FF"
-                                                         Margin="0,0,8,0" />
-                                <TextBlock Text="CHI TIẾT PHIẾU NHẬP KHO"
-                                           FontSize="18" FontWeight="Bold"
-                                           Foreground="#2B3674"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
 
-                            <Button Grid.Column="1"
-                                    Content="✕" Width="30" Height="30"
-                                    HorizontalAlignment="Right" VerticalAlignment="Top"
-                                    Margin="12,0,0,0"
-                                    Background="Transparent" BorderThickness="0"
-                                    Foreground="#A3AED0"
-                                    Command="{Binding ClosePopupCommand}"
-                                    CommandParameter="{Binding}"/>
-                        </Grid>
+								<components:FormInputControl Title="Mã phiếu"
+															 IconKind="Barcode"
+															 IsEnabled="False"
+															 FontWeight="Bold"
+															 TextValue="{Binding DetailImportOrder.DisplayID, Mode=OneWay}" />
 
-                        <Grid Grid.Row="1" Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="12" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+								<components:FormInputControl Title="Ngày nhập"
+															 Grid.Column="2"
+															 IconKind="CalendarClock"
+															 IsEnabled="False"
+															 TextValue="{Binding DetailImportOrder.NgayNhap, Mode=OneWay, StringFormat={}{0:dd/MM/yyyy HH:mm}}" />
 
-                            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource FilterBorderStyle}" Background="#F8FAFC">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="Barcode" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,5,0">
-                                        <TextBlock Text="Mã phiếu:" FontSize="11" Foreground="#A3AED0" />
-                                        <TextBlock Text="{Binding DetailImportOrder.DisplayID}" FontSize="14" FontWeight="Bold" Foreground="#2B3674" />
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
+								<components:FormInputControl Title="Nhà cung cấp"
+															 Grid.Row="1"
+															 IconKind="TruckOutline"
+															 IsEnabled="False"
+															 TextValue="{Binding DetailImportOrder.TenNhaCungCap, Mode=OneWay, StringFormat={}{0:dd/MM/yyyy HH:mm}}" />
 
-                            <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource FilterBorderStyle}" Background="#F8FAFC">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="CalendarClock" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,5,0">
-                                        <TextBlock Text="Ngày nhập:" FontSize="11" Foreground="#A3AED0" />
-                                        <TextBlock Text="{Binding DetailImportOrder.NgayNhap, StringFormat={}{0:dd/MM/yyyy HH:mm}}" FontSize="14" FontWeight="SemiBold" Foreground="#2B3674" />
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource FilterBorderStyle}" Background="#F8FAFC">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="TruckOutline" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,5,0">
-                                        <TextBlock Text="Nhà cung cấp:" FontSize="11" Foreground="#A3AED0" />
-                                        <TextBlock Text="{Binding DetailImportOrder.TenNhaCungCap}" FontSize="14" FontWeight="SemiBold" Foreground="#2B3674" TextTrimming="CharacterEllipsis"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource FilterBorderStyle}" Background="#F8FAFC">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="AccountTie" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,5,0">
-                                        <TextBlock Text="Người lập phiếu:" FontSize="11" Foreground="#A3AED0" />
-                                        <TextBlock Text="{Binding DetailImportOrder.TenNguoiTao}" FontSize="14" FontWeight="SemiBold" Foreground="#2B3674" TextTrimming="CharacterEllipsis"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Grid>
+								<components:FormInputControl Title="Người lập phiếu"
+															 Grid.Row="1"
+															 Grid.Column="2"
+															 IconKind="AccountTie"
+															 IsEnabled="False"
+															 TextValue="{Binding DetailImportOrder.TenNguoiTao, Mode=OneWay}" />
+							</Grid>
+							<components:FormInputControl Title="Ghi chú"
+														 IconKind="NoteTextOutline"
+														 IsEnabled="False"
+														 TextValue="{Binding DetailImportOrder.GhiChu, Mode=OneWay}" />
 
 
-                        <Border Grid.Row="2" Style="{StaticResource FilterBorderStyle}" Margin="0,0,0,20">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="36" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <materialDesign:PackIcon Kind="NoteTextOutline" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					
 
-                                <TextBox Grid.Column="1" 
-                                 Text="{Binding DetailImportOrder.GhiChu, UpdateSourceTrigger=PropertyChanged}" 
-                                 Background="Transparent" BorderThickness="0"
-                                 VerticalAlignment="Center" HorizontalAlignment="Stretch"
-                                 FontSize="13" Foreground="#2B3674"
-                                 materialDesign:HintAssist.Hint="Ghi chú..."
-                                         Margin=" 0 0 15 0"/>
+							<StackPanel Grid.Row="3"
+										Orientation="Horizontal"
+										Margin="0,0,0,10"
+										VerticalAlignment="Center">
+								<TextBlock Text="CHI TIẾT HÀNG NHẬP"
+										   FontSize="14"
+										   FontWeight="Bold"
+										   Foreground="{StaticResource PrimaryDarkColor}" />
+								<TextBlock Text="{Binding DetailImportOrder.ChiTietSach.Count, StringFormat=' ({0} đầu sách)'}"
+										   FontSize="14"
+										   FontWeight="SemiBold"
+										   Foreground="#A3AED0" />
+							</StackPanel>
 
-                                <Button Grid.Column="2" Content="CẬP NHẬT" 
-                                Command="{Binding UpdateGhiChuCommand}"
-                                        CommandParameter="{Binding}"
-                                Height="32" Width="95" Margin="0,0,6,0" FontSize="11" FontWeight="Bold"
-                                Style="{StaticResource MainGradientButton}" Cursor="Hand"/>
-                            </Grid>
-                        </Border>
-                        
-                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10" VerticalAlignment="Center">
-                            <TextBlock Text="CHI TIẾT HÀNG NHẬP" FontSize="14" FontWeight="Bold" Foreground="#1E293B" />
-                            <TextBlock Text="{Binding DetailImportOrder.ChiTietSach.Count, StringFormat=' ({0} đầu sách)'}" FontSize="14" FontWeight="SemiBold" Foreground="#A3AED0" />
-                        </StackPanel>
+							<DataGrid Grid.Row="4"
+									  ItemsSource="{Binding DetailImportOrder.ChiTietSach}"
+									  AutoGenerateColumns="False"
+									  CanUserAddRows="False"
+									  IsReadOnly="True"
+									  Style="{StaticResource CleanDataGrid}"
+									  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+									  PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="STT"
+														Binding="{Binding STT}"
+														Width="50"
+														ElementStyle="{StaticResource CellCenter}" />
+									<DataGridTextColumn Header="Mã ISBN"
+														Binding="{Binding ISBN}"
+														Width="140"
+														ElementStyle="{StaticResource CellLeft}" />
+									<DataGridTextColumn Header="Tên sách"
+														Binding="{Binding TenSach}"
+														Width="*"
+														ElementStyle="{StaticResource CellLeft}" />
+									<DataGridTextColumn Header="Số lượng"
+														Binding="{Binding SoLuong}"
+														Width="80"
+														ElementStyle="{StaticResource CellCenter}" />
+									<DataGridTextColumn Header="Đơn giá nhập"
+														HeaderStyle="{StaticResource RightHeaderStyle}"
+														Binding="{Binding DonGia, StringFormat='{}{0:N0} đ'}"
+														Width="120"
+														ElementStyle="{StaticResource CellMoney}" />
+									<DataGridTextColumn Header="Thành tiền"
+														HeaderStyle="{StaticResource RightHeaderStyle}"
+														Binding="{Binding ThanhTien, StringFormat='{}{0:N0} đ'}"
+														Width="130"
+														ElementStyle="{StaticResource CellProfit}" />
+								</DataGrid.Columns>
+							</DataGrid>
 
-                        <DataGrid Grid.Row="4" ItemsSource="{Binding DetailImportOrder.ChiTietSach}" 
-                                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                                  Style="{StaticResource CleanDataGrid}" MaxHeight="300" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,20">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="50" ElementStyle="{StaticResource CellCenter}" />
-                                <DataGridTextColumn Header="Mã ISBN" Binding="{Binding ISBN}" Width="140" ElementStyle="{StaticResource CellLeft}" />
-                                <DataGridTextColumn Header="Tên sách" Binding="{Binding TenSach}" Width="*" ElementStyle="{StaticResource CellLeft}" />
-                                <DataGridTextColumn Header="Số lượng" Binding="{Binding SoLuong}" Width="80" ElementStyle="{StaticResource CellCenter}"/>
-                                <DataGridTextColumn Header="Đơn giá nhập" HeaderStyle="{StaticResource RightHeaderStyle}" Binding="{Binding DonGia, StringFormat={}{0:N0}}" Width="120" ElementStyle="{StaticResource CellMoney}" />
-                                <DataGridTextColumn Header="Thành tiền" HeaderStyle="{StaticResource RightHeaderStyle}" Binding="{Binding ThanhTien, StringFormat={}{0:N0}}" Width="130" ElementStyle="{StaticResource CellProfit}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
+						</StackPanel>
+					</ScrollViewer>
+					<Grid Grid.Row="5">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
 
-                        <Grid Grid.Row="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+						<Border Grid.Column="0"
+								Background="#FEF3C7"
+								Padding="12,8"
+								CornerRadius="8"
+								HorizontalAlignment="Left">
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Center">
+								<TextBlock Text="TỔNG TIỀN NHẬP:"
+										   FontSize="13"
+										   FontWeight="SemiBold"
+										   Foreground="#92400E"
+										   Margin="0,0,10,0"
+										   VerticalAlignment="Center" />
+								<TextBlock Text="{Binding DetailImportOrder.TongTien, StringFormat={}{0:N0} VNĐ}"
+										   FontSize="18"
+										   FontWeight="Bold"
+										   Foreground="#EF4444" />
+							</StackPanel>
+						</Border>
 
-                            <Border Grid.Column="0" Background="#FEF3C7" Padding="12,8" CornerRadius="8" HorizontalAlignment="Left">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="TỔNG TIỀN NHẬP:" FontSize="13" FontWeight="SemiBold" Foreground="#92400E" Margin="0,0,10,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="{Binding DetailImportOrder.TongTien, StringFormat={}{0:N0} VNĐ}" FontSize="18" FontWeight="Bold" Foreground="#EF4444" />
-                                </StackPanel>
-                            </Border>
-
-                            <Button Grid.Column="1" Content="ĐÓNG" 
-                                    Command="{Binding ClosePopupCommand}"
-                                    CommandParameter="{Binding}"
-                                    Width="120" Height="40" Cursor="Hand"
-                                    Style="{StaticResource OutlineButtonStyle}" />
-                        </Grid>
-                    </Grid>
-
-
-                </ScrollViewer>
-            </Border>
-        </Grid>
-
-        <!-- ==================== POPUP THÊM MỚI PHIẾU NHẬP ==================== -->
-        <Grid Background="#80000000"
-      Visibility="{Binding IsAddPopupOpen, Converter={StaticResource BoolToVis}}"
-      VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="1000">
-
-            <Grid Background="Transparent">
-                <Grid.InputBindings>
-                    <MouseBinding Gesture="LeftClick" Command="{Binding ClosePopupCommand}"
-                                  CommandParameter="{Binding}"/>
-                </Grid.InputBindings>
-            </Grid>
-
-            <Border Width="850"
-            Background="White"
-            CornerRadius="16"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="750">
-                    <Grid Margin="30">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <Grid Grid.Row="0" Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="40" />
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <materialDesign:PackIcon Kind="PackageVariantClosedPlus"
-                                                 Width="24" Height="24"
-                                                 Foreground="#4318FF"
-                                                 Margin="0,0,8,0" />
-                                <TextBlock Text="THÊM MỚI PHIẾU NHẬP KHO"
-                                   FontSize="18" FontWeight="Bold"
-                                   Foreground="#2B3674"
-                                   VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <Button Grid.Column="1"
-                            Content="✕" Width="30" Height="30"
-                            HorizontalAlignment="Right" VerticalAlignment="Top"
-                            Margin="12,0,0,0"
-                            Background="Transparent" BorderThickness="0"
-                            Foreground="#A3AED0"
-                            Command="{Binding ClosePopupCommand}"
-                                    CommandParameter="{Binding}"/>
-                        </Grid>
-
-                        <Grid Grid.Row="1" Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="12" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource FilterBorderStyle}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="TruckOutline" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <ComboBox Grid.Column="1" ItemsSource="{Binding SupplierList}" SelectedItem="{Binding NewImportOrder.SelectedSupplier, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="TenNhaCungCap" Margin="0 0 5 0" Background="Transparent" BorderThickness="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontSize="13" Foreground="#2B3674" materialDesign:HintAssist.Hint="Chọn nhà cung cấp *" />
-                                </Grid>
-                            </Border>
-
-                            <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource FilterBorderStyle}" Background="#F8FAFC">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="AccountTie" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <TextBox Grid.Column="1" Text="{Binding NewImportOrder.TenNguoiTao, Mode=OneWay}" IsReadOnly="True" Margin="0 0 5 0" Background="Transparent" BorderThickness="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontSize="13" Foreground="#9CA3AF" materialDesign:HintAssist.Hint="Người lập phiếu" />
-                                </Grid>
-                            </Border>
-
-                            <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource FilterBorderStyle}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="NoteEditOutline" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <TextBox Grid.Column="1" Text="{Binding NewImportOrder.GhiChu, UpdateSourceTrigger=PropertyChanged}" 
-                     Margin="0 0 5 0" Background="Transparent" BorderThickness="0"
-                     VerticalAlignment="Center" HorizontalAlignment="Stretch"
-                     FontSize="13" Foreground="#2B3674"
-                     materialDesign:HintAssist.Hint="Ghi chú thêm (Tùy chọn)..." />
-                                </Grid>
-                            </Border>
-                        </Grid>
-
-                        <Grid Grid.Row="2" Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.5*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <Border Grid.Column="0" Style="{StaticResource FilterBorderStyle}" Margin="0,0,8,0">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="BookSearchOutline" Width="18" Height="18" Foreground="#A3AED0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    <TextBox Grid.Column="1"
-										 Text="{Binding SearchBookKeyword, UpdateSourceTrigger=PropertyChanged}"
-										 Margin="0 0 5 0" Background="Transparent" BorderThickness="0"
-										 VerticalAlignment="Center" HorizontalAlignment="Stretch"
-										 FontSize="13" Foreground="#2B3674"
-										 materialDesign:HintAssist.Hint="Tìm tựa sách hoặc ISBN..." />
-                                </Grid>
-                            </Border>
-
-                            <Button Grid.Column="1" Content="TÌM" 
-								Command="{Binding SearchBookCommand}"
-                                    CommandParameter="{Binding}"
-								Height="40" Width="60" FontSize="13" FontWeight="Bold" Margin="0,0,12,0"
+						<Button Grid.Column="1"
+								Content="ĐÓNG"
+								Command="{Binding ClosePopupCommand}"
+								CommandParameter="{Binding}"
+								Width="120"
+								Height="40"
+								Cursor="Hand"
 								Style="{StaticResource OutlineButtonStyle}" />
+					</Grid>
+				</Grid>
 
-                            <ComboBox Grid.Column="2" 
-								  ItemsSource="{Binding SearchBookResults}"
-								  SelectedItem="{Binding SelectedSearchBook}"
-								  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-								  materialDesign:HintAssist.Hint="Chọn sách từ kết quả tìm kiếm..."
-								  Margin="0,0,12,0" FontSize="13">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                                <Run Text="{Binding ISBN}" FontWeight="Bold" Foreground="#4318FF"/>
-                                                <Run Text=" - "/>
-                                                <Run Text="{Binding TenSach}" FontWeight="Bold"/>
-                                                <Run Text="{Binding TonKho, StringFormat=' (Tồn: {0} cuốn)'}" FontStyle="Italic" FontSize="13"/>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+			</Border>
+		</Grid>
 
-                            <Button Grid.Column="3" Content="THÊM SÁCH" 
-							Command="{Binding AddBookToImportCommand}"
-                                    CommandParameter="{Binding}"
-                                    Width="90"
-							Height="40" FontSize="13" FontWeight="Bold"
-							Style="{StaticResource MainGradientButton}" />
-                        </Grid>
+		<!-- ==================== POPUP THÊM MỚI PHIẾU NHẬP ==================== -->
+		<Grid Style="{StaticResource PopupOverlayStyle}"
+			  Visibility="{Binding IsAddPopupOpen, Converter={StaticResource BoolToVis}}">
 
-                        <TextBlock Grid.Row="3" Text="CHI TIẾT HÀNG NHẬP" FontSize="14" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,10" />
+			<Grid Background="Transparent">
+				<Grid.InputBindings>
+					<MouseBinding Gesture="LeftClick"
+								  Command="{Binding ClosePopupCommand}"
+								  CommandParameter="{Binding}" />
+				</Grid.InputBindings>
+			</Grid>
 
-                        <DataGrid Grid.Row="4" ItemsSource="{Binding NewImportOrder.ChiTiet}" 
-                          AutoGenerateColumns="False" CanUserAddRows="False" 
-                          Style="{StaticResource CleanDataGrid}" MaxHeight="250" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,20">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="50" IsReadOnly="True" ElementStyle="{StaticResource CellCenter}" />
-                                <DataGridTextColumn Header="Mã ISBN" Binding="{Binding ISBN}" Width="110" IsReadOnly="True" ElementStyle="{StaticResource CellCenter}" />
-                                <DataGridTextColumn Header="Tên sách" Binding="{Binding TenSach}" Width="*" IsReadOnly="True" ElementStyle="{StaticResource CellLeft}" />
+			<Border Style="{StaticResource PopupCardStyle}"
+					Width="900"
+					Height="600">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<components:PopupHeaderControl Title="THÊM MỚI PHIẾU NHẬP KHO"
+												   IconKind="PackageVariantClosedPlus" />
 
-                                <DataGridTemplateColumn Header="Số lượng" Width="90">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBox Text="{Binding SoLuong, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" Margin="4" 
-                                             Style="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+					<ScrollViewer VerticalScrollBarVisibility="Auto"
+								  Margin="0,0,0,12"
+								  Grid.Row="1">
+						<StackPanel>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="12" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
 
-                                <DataGridTemplateColumn Header="Đơn giá nhập" Width="120">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBox Text="{Binding DonGia, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Right" Margin="4" 
-                                             Style="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+								<components:FormComboBoxControl Title="Chọn nhà cung cấp"
+																IsRequired="True"
+																IconKind="TruckOutline"
+																ItemsSource="{Binding SupplierList}"
+																SelectedItem="{Binding NewImportOrder.SelectedSupplier, UpdateSourceTrigger=PropertyChanged}"
+																DisplayMemberPath="TenNhaCungCap" />
 
-                                <DataGridTextColumn Header="Thành tiền" Binding="{Binding ThanhTien, StringFormat={}{0:N0}}" Width="120" IsReadOnly="True" ElementStyle="{StaticResource CellProfit}" />
+								<components:FormInputControl Title="Người lập phiếu"
+															 Grid.Column="2"
+															 IconKind="AccountTie"
+															 IsEnabled="False"
+															 TextValue="{Binding NewImportOrder.TenNguoiTao, Mode=OneWay}" />
 
-                                <DataGridTemplateColumn Width="50">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Command="{Binding DataContext.RemoveImportDetailCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                            CommandParameter="{Binding}" 
-                                            Background="Transparent" BorderThickness="0" Foreground="#EF4444" Width="30" Height="30" ToolTip="Xóa">
-                                                <materialDesign:PackIcon Kind="TrashCanOutline" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+								<components:FormInputControl Title="Ghi chú"
+															 Grid.Row="1"
+															 Grid.Column="0"
+															 Grid.ColumnSpan="3"
+															 IconKind="NoteEditOutline"
+															 TextValue="{Binding NewImportOrder.GhiChu, UpdateSourceTrigger=PropertyChanged}" />
 
-                                <DataGridTemplateColumn Width="60" Header="">
-                                    <DataGridTemplateColumn.HeaderStyle>
-                                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTemplateColumn.HeaderStyle>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Command="{Binding DataContext.RemoveImportDetailCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                CommandParameter="{Binding}" 
-                                                Style="{StaticResource MaterialDesignIconForegroundButton}" 
-                                                Foreground="#EF4444" 
-                                                Width="30" Height="30" 
-                                                HorizontalAlignment="Center"
-                                                ToolTip="Xóa sách này khỏi danh sách nhập">
-                                                <materialDesign:PackIcon Kind="TrashCanOutline" Width="18" Height="18" />
-                                            </Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
 
-                        <Grid Grid.Row="5" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+							</Grid>
 
-                            <Border Grid.Column="0" Background="#FEF3C7" Padding="12,8" CornerRadius="8" HorizontalAlignment="Left">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="TỔNG THANH TOÁN:" FontSize="13" FontWeight="SemiBold" Foreground="#92400E" Margin="0,0,10,0" VerticalAlignment="Center" />
-                                    <TextBlock Text="{Binding NewImportOrder.TongTien, StringFormat={}{0:N0} VNĐ}" FontSize="18" FontWeight="Bold" Foreground="#EF4444" />
-                                </StackPanel>
-                            </Border>
+							<Grid Grid.Row="2"
+								  Margin="0,0,0,20">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1.5*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="2*" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<components:FormInputControl Title="Tìm tựa sách hoặc ISBN"
+															 Grid.Column="0"
+															 Margin="0,0,8,0"
+															 IconKind="BookSearchOutline"
+															 TextValue="{Binding SearchBookKeyword, UpdateSourceTrigger=PropertyChanged}" />
+								<Button Grid.Column="1"
+										Content="TÌM"
+										Command="{Binding SearchBookCommand}"
+										CommandParameter="{Binding}"
+										Height="40"
+										Width="40"
+										FontSize="13"
+										FontWeight="Bold"
+										Margin="0,0,16,0"
+										Style="{StaticResource OutlineButtonStyle}" />
 
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                <Button Content="HỦY BỎ" 
-                                Command="{Binding ClosePopupCommand}"
-                                        CommandParameter="{Binding}"
-                                Width="120" Height="40" Margin="0,0,10,0" Cursor="Hand"
-                                Style="{StaticResource OutlineButtonStyle}" />
+								<components:FormComboBoxControl Title="Chọn sách từ kết quả tìm kiếm"
+																Grid.Column="2"
+																Margin="0,0,8,0"
+																IconKind="BookSearch"
+																ItemsSource="{Binding SearchBookResults}"
+																SelectedItem="{Binding SelectedSearchBook}">
 
-                                <Button Content="LƯU PHIẾU" 
-                                Command="{Binding SaveImportOrderCommand}"
-                                        CommandParameter="{Binding}"
-                                Width="140" Height="40" Cursor="Hand"
-                                Style="{StaticResource MainGradientButton}" />
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </ScrollViewer>
-            </Border>
-        </Grid>
-    </Grid>
+									<components:FormComboBoxControl.ItemTemplate>
+										<DataTemplate>
+											<TextBlock>
+												<Run Text="{Binding ISBN}"
+													 FontWeight="Bold"
+													 FontSize="12"
+													 Foreground="#4318FF" />
+												<Run Text=" - " />
+												<Run Text="{Binding TenSach}"
+													 FontSize="12"
+													 FontWeight="Bold" />
+												<Run Text="{Binding TonKho, StringFormat=' (Tồn: {0} cuốn)'}"
+													 FontStyle="Italic"
+													 FontSize="12" />
+											</TextBlock>
+										</DataTemplate>
+									</components:FormComboBoxControl.ItemTemplate>
+
+								</components:FormComboBoxControl>
+
+								<Button Grid.Column="3"
+										Content="THÊM"
+										Command="{Binding AddBookToImportCommand}"
+										CommandParameter="{Binding}"
+										Width="70"
+										Height="42"
+										FontSize="13"
+										FontWeight="Bold"
+										Style="{StaticResource MainGradientButton}" />
+							</Grid>
+
+							<TextBlock Grid.Row="3"
+									   Text="CHI TIẾT HÀNG NHẬP"
+									   FontSize="14"
+									   FontWeight="Bold"
+									   Foreground="{StaticResource PrimaryDarkColor}"
+									   Margin="0,0,0,10" />
+
+							<DataGrid Grid.Row="4"
+									  ItemsSource="{Binding NewImportOrder.ChiTiet}"
+									  AutoGenerateColumns="False"
+									  CanUserAddRows="False"
+									  Style="{StaticResource CleanDataGrid}"
+									  MaxHeight="250"
+									  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+									  PreviewMouseWheel="DataGrid_PreviewMouseWheel"
+									  Margin="0,0,0,20">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="STT"
+														Binding="{Binding STT}"
+														Width="50"
+														IsReadOnly="True"
+														ElementStyle="{StaticResource CellCenter}" />
+									<DataGridTextColumn Header="Mã ISBN"
+														Binding="{Binding ISBN}"
+														Width="110"
+														IsReadOnly="True"
+														ElementStyle="{StaticResource CellCenter}" />
+									<DataGridTextColumn Header="Tên sách"
+														Binding="{Binding TenSach}"
+														Width="*"
+														IsReadOnly="True"
+														ElementStyle="{StaticResource CellLeft}" />
+
+									<DataGridTemplateColumn Header="Số lượng"
+															HeaderStyle="{StaticResource CenterHeaderStyle}"
+															Width="120">
+										<DataGridTemplateColumn.CellTemplate>
+											<DataTemplate>
+												<components:FilterInputControl ShowIcon="False"
+																			   UnitText="quyển"
+																			   TextAlignment="Center"
+																			   TextValue="{Binding SoLuong, UpdateSourceTrigger=PropertyChanged}" />
+											</DataTemplate>
+										</DataGridTemplateColumn.CellTemplate>
+									</DataGridTemplateColumn>
+
+									<DataGridTemplateColumn Header="Đơn giá nhập"
+															HeaderStyle="{StaticResource CenterHeaderStyle}"
+															Width="120">
+										<DataGridTemplateColumn.CellTemplate>
+											<DataTemplate>
+												<components:FilterInputControl ShowIcon="False"
+																			   TextAlignment="Right"
+																			   IsCurrencyMode="True"
+																			   UnitText="đ"
+																			   TextValue="{Binding DonGia, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}, ConverterCulture=en-US}" />
+
+											</DataTemplate>
+										</DataGridTemplateColumn.CellTemplate>
+									</DataGridTemplateColumn>
+
+									<DataGridTextColumn Header="Thành tiền"
+														Binding="{Binding ThanhTien, StringFormat='{}{0:N0} đ'}"
+														Width="120"
+														IsReadOnly="True"
+														HeaderStyle="{StaticResource RightHeaderStyle}"
+														ElementStyle="{StaticResource CellProfit}" />
+
+									<DataGridTemplateColumn Width="50">
+										<DataGridTemplateColumn.CellTemplate>
+											<DataTemplate>
+												<Button Command="{Binding DataContext.RemoveImportDetailCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+														CommandParameter="{Binding}"
+														Style="{StaticResource MiniDeleteButtonStyle}"
+														Width="24"
+														Height="24"
+														ToolTip="Xóa">
+													<materialDesign:PackIcon Kind="TrashCanOutline"
+																			 Width="18"
+																			 Height="18"
+																			 HorizontalAlignment="Center"
+																			 VerticalAlignment="Center" />
+												</Button>
+											</DataTemplate>
+										</DataGridTemplateColumn.CellTemplate>
+									</DataGridTemplateColumn>
+
+								</DataGrid.Columns>
+							</DataGrid>
+						</StackPanel>
+					</ScrollViewer>
+
+					<Grid Grid.Row="2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<Border Grid.Column="0"
+								Background="#FEF3C7"
+								Padding="12,8"
+								CornerRadius="8"
+								HorizontalAlignment="Left">
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Center">
+								<TextBlock Text="TỔNG THANH TOÁN:"
+										   FontSize="13"
+										   FontWeight="SemiBold"
+										   Foreground="#92400E"
+										   Margin="0,0,10,0"
+										   VerticalAlignment="Center" />
+								<TextBlock Text="{Binding NewImportOrder.TongTien, StringFormat={}{0:N0} VNĐ}"
+										   FontSize="18"
+										   FontWeight="Bold"
+										   Foreground="#EF4444" />
+							</StackPanel>
+						</Border>
+
+						<StackPanel Grid.Row="2"
+									Orientation="Horizontal"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Center">
+							<Button Content="HỦY BỎ"
+									Command="{Binding ClosePopupCommand}"
+									CommandParameter="{Binding}"
+									Width="120"
+									Height="40"
+									Margin="0,0,10,0"
+									Cursor="Hand"
+									Style="{StaticResource OutlineButtonStyle}" />
+
+							<Button Content="LƯU PHIẾU"
+									Command="{Binding SaveImportOrderCommand}"
+									CommandParameter="{Binding}"
+									Width="140"
+									Height="40"
+									Cursor="Hand"
+									Style="{StaticResource MainGradientButton}" />
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
 </UserControl>
