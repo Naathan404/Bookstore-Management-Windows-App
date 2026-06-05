@@ -48,8 +48,8 @@
 													  Margin="0,0,8,0"
 													  IconKind="Truck"
 													  HintText="Nhà cung cấp"
-													  ItemsSource="{Binding SupplierList}"
-													  SelectedItem="{Binding SelectedSupplier}"
+													  ItemsSource="{Binding FilterSupplierList}"
+													  SelectedItem="{Binding SelectedFilterSupplier}"
 													  DisplayMemberPath="TenNhaCungCap" />
 
 					<components:FilterDatePickerControl Grid.Column="2"
@@ -197,16 +197,17 @@
 															 FontWeight="Bold"
 															 TextValue="{Binding DetailImportOrder.DisplayID, Mode=OneWay}" />
 
-								<components:FormInputControl Title="Ngày nhập"
+								<components:FormDatePickerControl Title="Ngày nhập"
 															 Grid.Column="2"
 															 IconKind="CalendarClock"
 															 IsEnabled="False"
-															 TextValue="{Binding DetailImportOrder.NgayNhap, Mode=OneWay, StringFormat={}{0:dd/MM/yyyy HH:mm}}" />
+															 SelectedDate="{Binding DetailImportOrder.NgayNhap, Mode=TwoWay, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
+                                                             />
 
 								<components:FormInputControl Title="Nhà cung cấp"
 															 Grid.Row="1"
 															 IconKind="TruckOutline"
-															 IsEnabled="False"
+                                                             IsEnabled="False"
 															 TextValue="{Binding DetailImportOrder.TenNhaCungCap, Mode=OneWay, StringFormat={}{0:dd/MM/yyyy HH:mm}}" />
 
 								<components:FormInputControl Title="Người lập phiếu"
@@ -218,7 +219,7 @@
 							</Grid>
 							<components:FormInputControl Title="Ghi chú"
 														 IconKind="NoteTextOutline"
-														 IsEnabled="False"
+														 IsEnabled="{Binding IsEdit}"
 														 TextValue="{Binding DetailImportOrder.GhiChu, Mode=OneWay}" />
 
 
@@ -282,6 +283,8 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="10" />
+							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 
 						<Border Grid.Column="0"
@@ -312,7 +315,15 @@
 								Height="40"
 								Cursor="Hand"
 								Style="{StaticResource OutlineButtonStyle}" />
-					</Grid>
+
+                        <Button Grid.Column="3" 
+                            Content="LƯU THÔNG TIN"
+								Width="150"
+								Height="40"
+								Style="{StaticResource MainGradientButton}"
+								Command="{Binding UpdateGhiChuCommand}"
+								CommandParameter="{Binding}" />
+                    </Grid>
 				</Grid>
 
 			</Border>
