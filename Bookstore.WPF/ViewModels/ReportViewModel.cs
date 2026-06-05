@@ -77,6 +77,22 @@ namespace Bookstore.WPF.ViewModels
             set { _toDate = value; OnPropertyChanged(nameof(ToDate)); }
         }
 
+        public ObservableCollection<string> DanhSachThang { get; set; } = new ObservableCollection<string>();
+
+        private string _selectedMonth;
+        public string SelectedMonth
+        {
+            get => _selectedMonth;
+            set
+            {
+                _selectedMonth = value;
+                OnPropertyChanged(nameof(SelectedMonth));
+
+                // Mỗi khi đổi tháng, tự động tính toán lại Từ Ngày - Đến Ngày
+                AutoCalculateDatesFromMonth(value);
+            }
+        }
+
         private int _selectedRevenueSubFilterType = 0;
         public int SelectedRevenueSubFilterType
         {
@@ -230,21 +246,10 @@ namespace Bookstore.WPF.ViewModels
 
         public ReportViewModel()
         {
+            
+
             ApplyReportCommand = new RelayCommand<object>(async (p) =>
             {
-                //OnPropertyChanged(nameof(SelectedReportTypeIndex));
-                //OnPropertyChanged(nameof(RevenueSecondaryFilterVisibility));
-                //OnPropertyChanged(nameof(DebtSecondaryFilterVisibility));
-                //OnPropertyChanged(nameof(RevenueChartVisibility));
-                //OnPropertyChanged(nameof(InventoryChartVisibility));
-                //OnPropertyChanged(nameof(DebtChartVisibility));
-                //OnPropertyChanged(nameof(RevenueGridVisibility));
-                //OnPropertyChanged(nameof(InventoryGridVisibility));
-                //OnPropertyChanged(nameof(DebtGridVisibility));
-                //OnPropertyChanged(nameof(ChartTitle));
-                //OnPropertyChanged(nameof(ChartIconKind));
-                //OnPropertyChanged(nameof(TableTitle));
-
                 // Kích hoạt thông báo để UI cập nhật ẩn/hiện các group bộ lọc lập tức
                 OnPropertyChanged(nameof(RevenueSecondaryFilterVisibility));
                 OnPropertyChanged(nameof(DebtSecondaryFilterVisibility));
@@ -263,6 +268,7 @@ namespace Bookstore.WPF.ViewModels
 
                 TrangHienTai = 1;
                 StatusText = "Nhấn 'Xem Báo Cáo' để tải dữ liệu.";
+
 
                 await LoadReportDataAsync();
             });
@@ -336,6 +342,13 @@ namespace Bookstore.WPF.ViewModels
                 CategoryList.Add("Tất cả thể loại");
                 if (categories != null) foreach (var c in categories) CategoryList.Add(c);
                 if (customers != null) foreach (var c in customers) CustomerTypeList.Add(c);
+
+                for (int i = 0; i < 24; i++)
+                {
+                    var d = DateTime.Today.AddMonths(-i);
+                    DanhSachThang.Add($"Tháng {d.Month:D2}/{d.Year}");
+                }
+                SelectedMonth = DanhSachThang[0];
             }
             catch { /* Bỏ qua lỗi load filter */ }
         }
@@ -474,6 +487,22 @@ namespace Bookstore.WPF.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        private void AutoCalculateDatesFromMonth(string monthYearStr)
+        {
+            if (string.IsNullOrEmpty(monthYearStr)) return;
+            try
+            {
+                var parts = monthYearStr.Replace("Tháng ", "").Split('/');
+                int month = int.Parse(parts[0]);
+                int year = int.Parse(parts[1]);
+
+                FromDate = new DateTime(year, month, 1);
+
+                ToDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+            }
+            catch { /* Bỏ qua nếu lỗi parse */ }
         }
 
         // ==========================================

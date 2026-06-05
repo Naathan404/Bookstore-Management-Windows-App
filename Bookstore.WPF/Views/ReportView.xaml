@@ -29,7 +29,7 @@
 										  ShowExportExcel="True"
 										  ExportExcelCommand="{Binding ExportExcelCommand}"
 										  ExportExcelCommandParameter="{Binding}"
-										  ShowExportPdf="True"
+										  ShowExportPdf="False"
 										  ExportPdfCommand="{Binding ExportPdfCommand}"
 										  ExportPdfCommandParameter="{Binding}" />
 <!---->
@@ -42,8 +42,15 @@
 													  HintText="Loại báo cáo"
 													  ItemsSource="{Binding ReportTypeList}"
 													  SelectedIndex="{Binding SelectedReportTypeIndex, Mode=TwoWay}" />
+					
+					<components:FilterComboBoxControl Grid.Column="0"
+													  Margin="0,0,12,0"
+													  IconKind="CalendarMonth"
+													  HintText="Kỳ báo cáo"
+													  ItemsSource="{Binding DanhSachThang}"
+													  SelectedItem="{Binding SelectedMonth}" />
 
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center"
 								Visibility="{Binding RevenueSecondaryFilterVisibility}">
                         <components:FilterDatePickerControl Width="150" Margin="0,0,8,0"
 															IconKind="CalendarStart"
@@ -55,7 +62,9 @@
 															HintText="Đến ngày"
 															SelectedDate="{Binding ToDate}" />
 
-                        <components:FilterComboBoxControl Width="140" Margin="0,0,8,0"
+						
+						
+						<components:FilterComboBoxControl Width="140" Margin="0,0,8,0"
 														  IconKind="FilterVariant"
 														  HintText="Lọc theo"
 														  ItemsSource="{Binding RevenueSubFilterTypeList}"
