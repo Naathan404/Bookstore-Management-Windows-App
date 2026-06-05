@@ -277,14 +277,14 @@ namespace Bookstore.WPF.ViewModels
             IsAccountVisible = listQuyen.Contains("AccountView") ? Visibility.Visible : Visibility.Collapsed;
             IsSettingVisible = listQuyen.Contains("SettingView") ? Visibility.Visible : Visibility.Collapsed;
 
-            // Command
-            // ==========================================
-            if (listQuyen.Contains("DashboardView"))
-            {
-                _dashboardViewModel = new DashboardViewModel();
-                ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(_dashboardViewModel));
+            //// Command
+            //// ==========================================
+            //if (listQuyen.Contains("DashboardView"))
+            //{
+            //    _dashboardViewModel = new DashboardViewModel();
+            //    ShowDashboardCommand = new RelayCommand<object>((p) => _handleChangeView(_dashboardViewModel));
 
-            }
+            //}
 
             // Command 
             // ==========================================
@@ -311,7 +311,11 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("InvoiceView"))
             {
                 _invoiceViewModel = new InvoiceViewModel();
-                ShowHoaDonCommand = new RelayCommand<object>((p) => _handleChangeView(_invoiceViewModel));
+                ShowHoaDonCommand = new RelayCommand<object>((p) =>
+                {
+                    _ = _invoiceViewModel.LoadDataAsync();
+                    _handleChangeView(_invoiceViewModel);
+                });
             }
 
             if (listQuyen.Contains("ProductView"))
@@ -344,13 +348,21 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("ImportView"))
             {
                 _importViewModel = new ImportViewModel();
-                ShowNhapKhoCommand = new RelayCommand<object>((p) => _handleChangeView(_importViewModel));
+                ShowNhapKhoCommand = new RelayCommand<object>((p) =>
+                {
+                    _importViewModel.LoadMasterData();
+                    _handleChangeView(_importViewModel);
+                });
             }
 
             if (listQuyen.Contains("SupplierView"))
             {
                 _supplierViewModel = new SupplierViewModel();
-                ShowNhaCungCapCommand = new RelayCommand<object>((p) => _handleChangeView(_supplierViewModel));
+                ShowNhaCungCapCommand = new RelayCommand<object>((p) =>
+                {
+                    _ = _supplierViewModel.LoadSuppliersAsync();
+                    _handleChangeView(_supplierViewModel);
+                });
             }
 
             if (listQuyen.Contains("PromotionView"))
@@ -378,7 +390,11 @@ namespace Bookstore.WPF.ViewModels
             if (listQuyen.Contains("ReportView"))
             {
                 _reportViewModel = new ReportViewModel();
-                ShowBaoCaoCommand = new RelayCommand<object>((p) => _handleChangeView(_reportViewModel));
+                ShowBaoCaoCommand = new RelayCommand<object>((p) =>
+                {
+                    _reportViewModel.LoadMasterData();
+                    _handleChangeView(_reportViewModel);
+                });
             }
 
             if (listQuyen.Contains("AccountView"))

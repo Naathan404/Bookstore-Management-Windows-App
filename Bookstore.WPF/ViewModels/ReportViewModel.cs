@@ -273,6 +273,11 @@ namespace Bookstore.WPF.ViewModels
             FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             ToDate = DateTime.Today;
 
+            LoadMasterData();
+        }
+
+        public async void LoadMasterData()
+        {
             _ = LoadFilterListsAsync();
             _ = LoadReportDataAsync();
         }

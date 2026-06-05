@@ -66,6 +66,7 @@ namespace Bookstore.WPF.ViewModels
         public ICommand XemChiTietCommand { get; }
         #endregion
 
+
         public InvoiceViewModel()
         {
             // Thiết lập số dòng trên trang mặc định (kế thừa từ BaseListViewModel)
