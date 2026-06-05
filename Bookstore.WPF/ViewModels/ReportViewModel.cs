@@ -500,7 +500,8 @@ namespace Bookstore.WPF.ViewModels
 
                 FromDate = new DateTime(year, month, 1);
 
-                ToDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+                DateTime cuoiThang = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+                ToDate = cuoiThang < DateTime.Today ? cuoiThang : DateTime.Today;
             }
             catch { /* Bỏ qua nếu lỗi parse */ }
         }

@@ -14,7 +14,7 @@
 			</Border.InputBindings>
 		</Border>
 
-		<Border Width="700"
+		<Border Width="350"
 				Style="{StaticResource PopupCardStyle}">
 			<StackPanel Width="250">
 				<components:PopupHeaderControl Grid.Row="0"

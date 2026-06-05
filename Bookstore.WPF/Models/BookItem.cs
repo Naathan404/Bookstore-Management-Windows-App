@@ -49,9 +49,14 @@ namespace Bookstore.WPF.Models
             get => _tiLeGiaBan;
             set
             {
-                _tiLeGiaBan = value;
-                OnPropertyChanged();
-                TinhLaiDonGiaBan();
+                if (_tiLeGiaBan != value)
+                {
+                    _tiLeGiaBan = value;
+                    OnPropertyChanged();
+
+                    _isManualDonGiaBan = false; // Reset cờ vì người dùng muốn tính lại theo tỷ lệ
+                    TinhLaiDonGiaBan();
+                }
             }
         }
 
@@ -61,9 +66,14 @@ namespace Bookstore.WPF.Models
             get => _giaNiemYet;
             set
             {
-                _giaNiemYet = value;
-                OnPropertyChanged();
-                TinhLaiDonGiaBan(); // Tự động tính lại giá khi đổi giá niêm yết
+                if (_giaNiemYet != value)
+                {
+                    _giaNiemYet = value;
+                    OnPropertyChanged();
+
+                    _isManualDonGiaBan = false; // QUAN TRỌNG: Phá cờ nhập tay để tính lại giá bán mới
+                    TinhLaiDonGiaBan();
+                }
             }
         }
 
@@ -73,26 +83,27 @@ namespace Bookstore.WPF.Models
             get => _donGiaBan;
             set
             {
-                _donGiaBan = value;
-                _isManualDonGiaBan = true; // Đánh dấu là đã nhập tay
-                OnPropertyChanged();
+                if (_donGiaBan != value)
+                {
+                    _donGiaBan = value;
+                    _isManualDonGiaBan = true; // Đánh dấu là đã nhập tay
+                    OnPropertyChanged();
+                }
             }
         }
 
         private bool _isManualDonGiaBan = false;
 
-        // Đưa logic tính toán ra một hàm rõ ràng
         public void ResetManualFlag()
         {
             _isManualDonGiaBan = false;
-            TinhLaiDonGiaBan(); // Khi bỏ nhập tay, bắt buộc tính lại theo công thức
+            TinhLaiDonGiaBan();
         }
 
         private void TinhLaiDonGiaBan()
         {
             if (!_isManualDonGiaBan)
             {
-                // Trực tiếp gán field _donGiaBan để không trigger setter của DonGiaBan (tránh vòng lặp)
                 _donGiaBan = Math.Round(_giaNiemYet * _tiLeGiaBan);
                 OnPropertyChanged(nameof(DonGiaBan));
             }
