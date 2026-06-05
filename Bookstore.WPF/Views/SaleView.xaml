@@ -106,14 +106,27 @@
 													<RowDefinition Height="*" />
 												</Grid.RowDefinitions>
 
-												<Border Grid.Row="0"
+												<Border x:Name="ImageBorder"
+														Grid.Row="0"
 														CornerRadius="15,15,0,0"
 														Cursor="Hand">
-
 													<Border.Background>
 														<ImageBrush ImageSource="{Binding BookData.HinhAnh}"
 																	Stretch="UniformToFill" />
 													</Border.Background>
+
+													<Border x:Name="BadgeTonKho"
+															HorizontalAlignment="Left"
+															VerticalAlignment="Top"
+															Background="#CC2B3674"
+															CornerRadius="15,0,10,0"
+															Padding="8,4">
+														<TextBlock x:Name="TextTonKho"
+																   Text="{Binding BookData.SoLuongTonKho, StringFormat='{}Kho: {0}'}"
+																   Foreground="White"
+																   FontSize="11"
+																   FontWeight="SemiBold" />
+													</Border>
 
 													<Border.InputBindings>
 														<MouseBinding MouseAction="LeftClick"
@@ -140,7 +153,8 @@
 																   Foreground="#2B3674"
 																   VerticalAlignment="Center" />
 
-														<components:TickComponent Grid.Column="1"
+														<components:TickComponent x:Name="CheckboxSach"
+																				  Grid.Column="1"
 																				  VerticalAlignment="Top"
 																				  IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 																				  Command="{Binding DataContext.ChonSachCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -175,6 +189,31 @@
 												</StackPanel>
 											</Grid>
 										</Border>
+
+										<DataTemplate.Triggers>
+											<DataTrigger Binding="{Binding BookData.SoLuongTonKho}"
+														 Value="0">
+												<Setter TargetName="BadgeTonKho"
+														Property="Background"
+														Value="#EF4444" />
+												<Setter TargetName="TextTonKho"
+														Property="Text"
+														Value="Hết hàng" />
+
+												<Setter TargetName="CheckboxSach"
+														Property="IsEnabled"
+														Value="False" />
+
+												<Setter TargetName="CheckboxSach"
+														Property="Opacity"
+														Value="0.4" />
+
+												<Setter TargetName="ImageBorder"
+														Property="Opacity"
+														Value="0.7" />
+											</DataTrigger>
+										</DataTemplate.Triggers>
+
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
