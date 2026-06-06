@@ -46,6 +46,11 @@
 - SQL Server (LocalDB)  
 - .NET 8.0 SDK  
 #### 2. Cấu hình Database
+- Chạy lệnh 
+    ```
+    cp Bookstore.API/appsettings.example.json Bookstore.API/appsettings.json
+    cp Bookstore.API/appsettings.Development.example.json Bookstore.API/appsettings.Development.json
+    ```
 - Mở file `appsetting.json` trong `Bookstore.API`
 - Chỉnh lại DefaultConnection phù hợp với SQL Server của máy. Thông thường cứ giữ nguyên
 - Mở Package Manager Console, chọn default project là `Bookstore.API` 
@@ -59,11 +64,6 @@
 - Dùng lệnh `Add-Migration InitialCreate -OutputDir Data/Migrations` để cập nhật Migrations khi thay đổi code database
 - Dùng lệnh 'Update-Database` để cập nhật Migrations vào database trong SQL Server
 - Nếu chạy migration bị sai thì dùng lệnh `Remove-Migration` để xóa
-#### 5. JWT token
-Chạy lệnh tải gói bằng Package Manager Console
-```cmd
-Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -Version 8.0.3
-```
 
 ---
 

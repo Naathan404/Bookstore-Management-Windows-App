@@ -427,7 +427,6 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-appsettings.json
-*.json
 Bookstore.API/appsettings.json
-Bookstore.API/appsettings.*.json
+Bookstore.API/appsettings.Development.json
+Bookstore.API/appsettings.Production.json
